@@ -1,0 +1,5 @@
+module add gnu
+module add gcc
+module add gnu-make/1.5
+make depend
+make
