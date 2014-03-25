@@ -346,7 +346,6 @@ void RuleTerm::SetAction(Expr *action_) {
   if (action)
     ParseError("Action-fältet får inte sättas flera gånger i samma högerled.");
   action = action_;
-  if (action) printf("Actionregel med op %d (HELP=%d)\n", (int) action->c.op.Op(), HELPIDENTSYM); // Viggotest
   isHelp = (action && action->c.op.Op() == HELPIDENTSYM);
   isAccepting = (action && action->c.op.Op() == ACCEPTIDENTSYM);
   isScrutinizing = (action && action->c.op.Op() == CHECKIDENTSYM);
