@@ -46,7 +46,7 @@ extern bool xTakeTime;
 #ifdef linux
 
 struct Timer {
-  typedef u_int64_t type;
+  typedef unsigned long long int type; // u_int64_t
   void Start()	{ starttime = getmicros(); }
   type Get()		{ return getmicros() - starttime; }
   type Restart()	// returns time in ns since last (Re)start

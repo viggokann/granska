@@ -4,6 +4,9 @@
  * comments:
  */
 
+#ifdef linux
+#include <cstdlib>
+#endif
 #include "message.h"
 
 #ifdef MESSAGES

@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 //class istream;
+#include <stdio.h>
 #include <iosfwd>
 
 /* Use prototypes in function declarations. */
