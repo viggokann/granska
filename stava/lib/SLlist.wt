@@ -1,0 +1,2467 @@
+#Syntax för en regel:
+#  ingångssuffix        lista av uppslagssuffix
+#
+#En regel kan negeras genom att man skriver ~ framför ingångssuffixet.
+#Exempel:     ~ar     a, ade
+#Negerade regler tas i nuvarande Stava dock inte alltid före övriga
+#regler, så det är inte säkert att det fungerar som man tänkt.
+#
+#Ett uppslagssuffix negeras genom att man skriver ~ framför.
+#Exempel:     ar      a, ~ade
+#(eri|and)[^sxz]s    @, en, ar   matchar ord som 
+#inte slutar med eri eller and eller på bokstäverna s, z eller x.
+#Delen före suffixet måste vara minst 2 bokstäver lång och bestå av minst
+#en stavelse (dvs inte bara konsonanter).
+#
+#Rader som inleds med #* eller ## tas bara med i SLlist.wt
+#Rader som inleds med ## tas dessutom med i SLlist för NE.
+
+#<nn> substantiv:
+
+a 	a, an, or	<nn.utr.sin.ind.nom> #{EL} # 101 (flicka) [1584 stycken, klar]
+an 	a, an, or	<nn.utr.sin.def.nom> #{EL} 
+or 	a, an, or	<nn.utr.plu.ind.nom> #{EL} 
+as 	a, an, or	<nn.utr.sin.ind.gen> 
+ans 	a, an, or	<nn.utr.sin.def.gen> 
+ors 	a, an, or	<nn.utr.plu.ind.gen> 
+orna 	a, an, or	<nn.utr.plu.def.nom> 
+ornas 	a, an, or	<nn.utr.plu.def.gen> 
+
+@ 	@, en, ar	<nn.utr.sin.ind.nom> #{EL} # 201 (stol) [3040 stycken, klar]
+en 	@, en, ar	<nn.utr.sin.def.nom> #{EL} 
+ar 	@, en, ar	<nn.utr.plu.ind.nom> #{EL} 
+[^sxz]s 	@, en, ar	<nn.utr.sin.ind.gen> 
+[sxz]@ 	@, en, ar	<nn.utr.sin.ind.gen> 
+ens 	@, en, ar	<nn.utr.sin.def.gen> 
+ars 	@, en, ar	<nn.utr.plu.ind.gen> 
+arna 	@, en, ar	<nn.utr.plu.def.nom> 
+arnas 	@, en, ar	<nn.utr.plu.def.gen> 
+
+e 	e, en, ar, ~arna	<nn.utr.sin.ind.nom> #{EL} # 211 (goss|e) [376 stycken, klar] # varning: felgenererar tillsammans med e, et och @, et och @, en, ar
+en 	e, en, ar, ~arna	<nn.utr.sin.def.nom> #{EL} 
+ar 	e, en, ar, ~arna	<nn.utr.plu.ind.nom> #{EL} 
+es 	e, en, ar, ~arna	<nn.utr.sin.ind.gen> 
+ens 	e, en, ar, ~arna	<nn.utr.sin.def.gen> 
+ars 	e, en, ar, ~arna	<nn.utr.plu.ind.gen> 
+arna 	e, en, ar, ~arna	<nn.utr.plu.def.nom> 
+arnas 	e, en, ar, ~arna	<nn.utr.plu.def.gen> 
+
+[^n]@ 	@, n, ar	<nn.utr.sin.ind.nom> #{EL} # 221 (fru) [67 stycken, klar]
+[^n]n 	@, n, ar	<nn.utr.sin.def.nom> #{EL} 
+[^n]ar 	@, n, ar	<nn.utr.plu.ind.nom> #{EL} 
+[^n]s 	@, n, ar	<nn.utr.sin.ind.gen> 
+[^n]ns 	@, n, ar	<nn.utr.sin.def.gen> 
+[^n]ars 	@, n, ar	<nn.utr.plu.ind.gen> 
+[^n]arna 	@, n, ar	<nn.utr.plu.def.nom> 
+[^n]arnas 	@, n, ar	<nn.utr.plu.def.gen> 
+
+<B>@ 	@, -n	<nn.utr.sin.ind.nom> #{EL} # (tv)
+<B>-n 	@, -n	<nn.utr.sin.def.nom> #{EL} 
+<B>-ns 	@, -n	<nn.utr.sin.def.gen> 
+
+<B>@ 	@, -t	<nn.neu.sin.ind.nom> #{EL} # (a)
+<B>-t 	@, -t	<nn.neu.sin.def.nom> #{EL} 
+<B>-ts 	@, -t	<nn.neu.sin.def.gen> 
+
+<B>@ 	@, -et	<nn.neu.sin.ind.nom> #{EL} # (n)
+<B>-et 	@, -et	<nn.neu.sin.def.nom> #{EL} 
+<B>-ets 	@, -et	<nn.neu.sin.def.gen> 
+
+<B>@ 	@, -et, -en	<nn.neu.sin.ind.nom> #{EL} # (x) (x)
+<B>-et 	@, -et, -en	<nn.neu.sin.def.nom> #{EL} 
+<B>-en 	@, -et, -en	<nn.neu.plu.ind.nom> #{EL} 
+<B>-ens 	@, -et, -en	<nn.neu.plu.def.gen> 
+
+<B>@ 	@, -na	<nn.neu.sin.ind.nom> #{EL} # (z)
+<B>-na 	@, -na	<nn.neu.plu.def.nom> #{EL} 
+<B>-nas 	@, -na	<nn.neu.plu.def.gen> 
+
+el 	el, eln, lar	<nn.utr.sin.ind.nom> #{EL} # 231 (nyckel) [230 stycken, klar]
+eln 	el, eln, lar	<nn.utr.sin.def.nom> #{EL} 
+lar 	el, eln, lar	<nn.utr.plu.ind.nom> #{EL} 
+els 	el, eln, lar	<nn.utr.sin.ind.gen> 
+elns 	el, eln, lar	<nn.utr.sin.def.gen> 
+lars 	el, eln, lar	<nn.utr.plu.ind.gen> 
+larna 	el, eln, lar	<nn.utr.plu.def.nom> 
+larnas 	el, eln, lar	<nn.utr.plu.def.gen> 
+
+er 	er, ern, rar	<nn.utr.sin.ind.nom> #{EL} # 232 (seger) [218 stycken, klar]
+ern 	er, ern, rar	<nn.utr.sin.def.nom> #{EL} 
+rar 	er, ern, rar	<nn.utr.plu.ind.nom> #{EL} 
+ers 	er, ern, rar	<nn.utr.sin.ind.gen> 
+erns 	er, ern, rar	<nn.utr.sin.def.gen> 
+rars 	er, ern, rar	<nn.utr.plu.ind.gen> 
+rarna 	er, ern, rar	<nn.utr.plu.def.nom> 
+rarnas 	er, ern, rar	<nn.utr.plu.def.gen> 
+
+en 	en, nen, nar, ~n	<nn.utr.sin.ind.nom> #{EL} # 233 (öken) äv 235 (botten)  [9 stycken, klar]
+nen 	en, nen, nar, ~n	<nn.utr.sin.def.nom> #{EL} 
+nar 	en, nen, nar, ~n	<nn.utr.plu.ind.nom> #{EL} 
+ens 	en, nen, nar, ~n	<nn.utr.sin.ind.gen> 
+nens 	en, nen, nar, ~n	<nn.utr.sin.def.gen> 
+nars 	en, nen, nar, ~n	<nn.utr.plu.ind.gen> 
+narna 	en, nen, nar, ~n	<nn.utr.plu.def.nom> 
+narnas 	en, nen, nar, ~n	<nn.utr.plu.def.gen> 
+
+(mor)en 	en, nar, ~nen	<nn.utr.sin.ind.nom nn.utr.sin.def.nom> #{EL} # 234 (fröken) [6 stycken, klar]
+(mor)nar 	en, nar, ~nen	<nn.utr.plu.ind.nom> #{EL} 
+(mor)ens 	en, nar, ~nen	<nn.utr.sin.ind.gen nn.utr.sin.def.gen> 
+(mor)nars 	en, nar, ~nen	<nn.utr.plu.ind.gen> 
+(mor)narna 	en, nar, ~nen	<nn.utr.plu.def.nom> 
+(mor)narnas 	en, nar, ~nen	<nn.utr.plu.def.gen> 
+
+mmel 	mmel, mmeln, mlar	<nn.utr.sin.ind.nom> #{EL} # 237 (drummel) [9 stycken, klar]
+mmeln 	mmel, mmeln, mlar	<nn.utr.sin.def.nom> #{EL} 
+mlar 	mmel, mmeln, mlar	<nn.utr.plu.ind.nom> #{EL} 
+mmels 	mmel, mmeln, mlar	<nn.utr.sin.ind.gen> 
+mmelns 	mmel, mmeln, mlar	<nn.utr.sin.def.gen> 
+mlars 	mmel, mmeln, mlar	<nn.utr.plu.ind.gen> 
+mlarna 	mmel, mmeln, mlar	<nn.utr.plu.def.nom> 
+mlarnas 	mmel, mmeln, mlar	<nn.utr.plu.def.gen> 
+
+[^m]el 	el, eln, ~lar, ~ler	<nn.utr.sin.ind.nom> #{EL} 
+[^m]eln 	el, eln, ~lar, ~ler	<nn.utr.sin.def.nom> #{EL} 
+[^m]els 	el, eln, ~lar, ~ler	<nn.utr.sin.ind.gen> 
+[^m]elns 	el, eln, ~lar, ~ler	<nn.utr.sin.def.gen> 
+
+mmer 	mmer, mmern	<nn.utr.sin.ind.nom> #{EL} # 238 (hummer) [9 stycken, klar]
+mmern 	mmer, mmern	<nn.utr.sin.def.nom> #{EL} 
+mmers 	mmer, mmern	<nn.utr.sin.ind.gen> 
+mrar 	mmer, mmern, mrar	<nn.utr.plu.ind.nom> #{EL} 
+mmerns 	mmer, mmern	<nn.utr.sin.def.gen> 
+mrars 	mmer, mmern, mrar	<nn.utr.plu.ind.gen> 
+mrarna 	mmer, mmern, mrar	<nn.utr.plu.def.nom> 
+mrarnas 	mmer, mmern, mrar	<nn.utr.plu.def.gen> 
+
+mmaren 	mmaren, mrar	<nn.utr.sin.def.nom> #{EL} # (sommar) [4 stycken]
+mrar 	mmaren, mrar	<nn.utr.plu.ind.nom> #{EL} 
+mrarna 	mmaren, mrar	<nn.utr.plu.def.nom> 
+mrarnas 	mmaren, mrar	<nn.utr.plu.def.gen> 
+
+m 	m, mmen, mmar	<nn.utr.sin.ind.nom> #{EL} # 241 (kam) äv 242 (lem) [31 stycken, klar]
+mmen 	m, mmen, mmar	<nn.utr.sin.def.nom> #{EL} 
+mmar 	m, mmen, mmar	<nn.utr.plu.ind.nom> #{EL} 
+ms 	m, mmen, mmar	<nn.utr.sin.ind.gen> 
+mmens 	m, mmen, mmar	<nn.utr.sin.def.gen> 
+mmars 	m, mmen, mmar	<nn.utr.plu.ind.gen> 
+mmarna 	m, mmen, mmar	<nn.utr.plu.def.nom> 
+mmarnas 	m, mmen, mmar	<nn.utr.plu.def.gen> 
+
+n 	n, nnen, nnar, ~nn, ~nne	<nn.utr.sin.ind.nom> #{EL} # 243 (mun) [borttagen, bara mun passar in]
+nnen 	n, nnen, nnar, ~nn, ~nne	<nn.utr.sin.def.nom> #{EL} 
+nnar 	n, nnen, nnar, ~nn, ~nne	<nn.utr.plu.ind.nom> #{EL} 
+ns 	n, nnen, nnar, ~nn, ~nne	<nn.utr.sin.ind.gen> #{EL} 
+nnens 	n, nnen, nnar, ~nn, ~nne	<nn.utr.sin.def.gen> #{EL} 
+nnarna 	n, nnen, nnar, ~nn, ~nne	<nn.utr.plu.def.nom> #{EL} 
+nnarnas 	n, nnen, nnar, ~nn, ~nne	<nn.utr.plu.def.gen> #{EL} 
+
+@ 	@, en, er, ~rare, ~ern, ~ret	<nn.utr.sin.ind.nom> #{EL} # 301 (film) [5182 stycken]
+en 	@, en, er, ~rare, ~ern, ~ret	<nn.utr.sin.def.nom> #{EL} 
+er 	@, en, er, ~rare, ~ern, ~ret	<nn.utr.plu.ind.nom> #{EL} 
+[^sxz]s 	@, en, er, ~rare, ~ern, ~ret	<nn.utr.sin.ind.gen> 
+[sxz]@ 	@, en, er, ~rare, ~ern, ~ret	<nn.utr.sin.ind.gen> 
+ens 	@, en, er, ~rare, ~ern, ~ret	<nn.utr.sin.def.gen> 
+ers 	@, en, er, ~rare, ~ern, ~ret	<nn.utr.plu.ind.gen> 
+erna 	@, en, er, ~rare, ~ern, ~ret	<nn.utr.plu.def.nom> 
+ernas 	@, en, er, ~rare, ~ern, ~ret	<nn.utr.plu.def.gen> 
+
+ik 	ik, iken, iker, ikern	<nn.utr.sin.ind.nom> #{EL} #
+iken 	ik, iken, iker, ikern	<nn.utr.sin.def.nom> #{EL} 
+iker 	ik, iken, iker, ikern	<nn.utr.plu.ind.nom> #{EL} 
+ikern 	ik, iken, iker, ikern	<nn.utr.sin.def.nom> #{EL} 
+iks 	ik, iken, iker, ikern	<nn.utr.sin.ind.gen> 
+ikens 	ik, iken, iker, ikern	<nn.utr.sin.def.gen> 
+ikerna 	ik, iken, iker, ikern	<nn.utr.plu.def.nom> 
+ikernas 	ik, iken, iker, ikern	<nn.utr.plu.def.gen> 
+
+@ 	@, en, er, ernas, ~rare	<nn.utr.sin.ind.nom> #{EL} #tillägg till 301 (katet) [14 stycken]
+en 	@, en, er, ernas, ~rare	<nn.utr.sin.def.nom> #{EL} 
+er 	@, en, er, ernas, ~rare	<nn.utr.plu.ind.nom> #{EL} 
+ernas 	@, en, er, ernas, ~rare	<nn.utr.plu.def.gen> #{EL} 
+[^sxz]s 	@, en, er, ernas, ~rare	<nn.utr.sin.ind.gen> 
+[sxz]@ 	@, en, er, ernas, ~rare	<nn.utr.sin.ind.gen> 
+ens 	@, en, er, ernas, ~rare	<nn.utr.sin.def.gen> 
+ers 	@, en, er, ernas, ~rare	<nn.utr.plu.ind.gen> 
+erna 	@, en, er, ernas, ~rare	<nn.utr.plu.def.nom> 
+ernas 	@, en, er, ernas, ~rare	<nn.utr.plu.def.gen> 
+
+@ 	@, et, er, ~t, ~ern, ~ret, ~a	<nn.neu.sin.ind.nom> #{EL} # 311 (vin)
+et 	@, et, er, ~t, ~ern, ~ret, ~a	<nn.neu.sin.def.nom> #{EL} 
+er 	@, et, er, ~t, ~ern, ~ret, ~a	<nn.neu.plu.ind.nom> #{EL} 
+[^sxz]s 	@, et, er, ~t, ~ern, ~ret, ~a	<nn.neu.sin.ind.gen> 
+[sxz]@ 	@, et, er, ~t, ~ern, ~ret, ~a	<nn.neu.sin.ind.gen> 
+ets 	@, et, er, ~t, ~ern, ~ret, ~a	<nn.neu.sin.def.gen> 
+ers 	@, et, er, ~t, ~ern, ~ret, ~a	<nn.neu.plu.ind.gen> 
+erna 	@, et, er, ~t, ~ern, ~ret, ~a	<nn.neu.plu.def.nom> 
+ernas 	@, et, er, ~t, ~ern, ~ret, ~a	<nn.neu.plu.def.gen> 
+
+@ 	@, et, er, erna, ~ern, ~ret, ~t	<nn.neu.sin.ind.nom nn.neu.plu.ind.nom> #{EL} # variant av 311 (vin)
+et 	@, et, er, erna, ~ern, ~ret, ~t	<nn.neu.sin.def.nom> #{EL} 
+er 	@, et, er, erna, ~ern, ~ret, ~t	<nn.neu.plu.ind.nom> #{EL} 
+erna 	@, et, er, erna, ~ern, ~ret, ~t	<nn.neu.plu.def.nom> #{EL} 
+s 	@, et, er, erna, ~ern, ~ret, ~t	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> 
+ets 	@, et, er, erna, ~ern, ~ret, ~t	<nn.neu.sin.def.gen> 
+ers 	@, et, er, erna, ~ern, ~ret, ~t	<nn.neu.plu.ind.gen> 
+ernas 	@, et, er, erna, ~ern, ~ret, ~t	<nn.neu.plu.def.gen> 
+en 	@, et, er, erna, ~ern, ~ret, ~t, en	<nn.neu.plu.def.nom> 
+ens 	@, et, er, erna, ~ern, ~ret, ~t, en	<nn.neu.plu.def.gen> 
+
+@ 	@, et, er, ~a, t	<nn.neu.sin.ind.nom> #{EL} # variant av 311 (te)
+et 	@, et, er, ~a, t	<nn.neu.sin.def.nom> #{EL} 
+er 	@, et, er, ~a, t	<nn.neu.plu.ind.nom> #{EL} 
+[^sxz]s 	@, et, er, ~a, t	<nn.neu.sin.ind.gen> 
+[sxz]@ 	@, et, er, ~a, t	<nn.neu.sin.ind.gen> 
+ets 	@, et, er, ~a, t	<nn.neu.sin.def.gen> 
+ers 	@, et, er, ~a, t	<nn.neu.plu.ind.gen> 
+erna 	@, et, er, ~a, t	<nn.neu.plu.def.nom> 
+ernas 	@, et, er, ~a, t	<nn.neu.plu.def.gen> 
+
+i 	i, it, iet, ier	<nn.neu.sin.ind.nom> #{EL} # 312 (parti) 311-variant med alternativt -t
+it 	i, it, iet, ier	<nn.neu.sin.def.nom> #{EL} 
+iet 	i, it, iet, ier	<nn.neu.sin.def.nom> #{EL} 
+ier 	i, it, iet, ier	<nn.neu.plu.ind.nom> #{EL} 
+is 	i, it, iet, ier	<nn.neu.sin.ind.gen> 
+its 	i, it, iet, ier	<nn.neu.sin.def.gen> 
+iers 	i, it, iet, ier	<nn.neu.plu.ind.gen> 
+ierna 	i, it, iet, ier	<nn.neu.plu.def.nom> 
+iernas 	i, it, iet, ier	<nn.neu.plu.def.gen> 
+iets 	i, it, iet, ier	<nn.neu.sin.def.gen> 
+
+i 	i, it, iet, ~ier	<nn.neu.sin.ind.nom> #{EL} # (fäkteri)
+it 	i, it, iet, ~ier	<nn.neu.sin.def.nom> #{EL} 
+iet 	i, it, iet, ~ier	<nn.neu.sin.def.nom> #{EL} 
+its 	i, it, iet, ~ier	<nn.neu.sin.def.gen> 
+
+e 	e, en, er, ~ar, ~ern, ~@	<nn.utr.sin.ind.nom> #{EL} # 319 (linje)
+en 	e, en, er, ~ar, ~ern, ~@	<nn.utr.sin.def.nom> #{EL} 
+er 	e, en, er, ~ar, ~ern, ~@	<nn.utr.plu.ind.nom> #{EL} 
+es 	e, en, er, ~ar, ~ern, ~@	<nn.utr.sin.ind.gen> 
+ens 	e, en, er, ~ar, ~ern, ~@	<nn.utr.sin.def.gen> 
+ers 	e, en, er, ~ar, ~ern, ~@	<nn.utr.plu.ind.gen> 
+erna 	e, en, er, ~ar, ~ern, ~@	<nn.utr.plu.def.nom> 
+ernas 	e, en, er, ~ar, ~ern, ~@	<nn.utr.plu.def.gen> 
+
+(ar|and)e 	e, en, ~er, ~ar, ~ern, ~et, ~@	<nn.utr.sin.ind.nom> #{EL} # 3?? (stiltje)
+(ar|and)en 	e, en, ~er, ~ar, ~ern, ~et, ~@	<nn.utr.sin.def.nom> #{EL} 
+(ar|and)es 	e, en, ~er, ~ar, ~ern, ~et, ~@	<nn.utr.sin.ind.gen> 
+(ar|and)ens 	e, en, ~er, ~ar, ~ern, ~et, ~@	<nn.utr.sin.def.gen> 
+
+@ 	@, n, er, ~r, ~eret	<nn.utr.sin.ind.nom> #{EL} # 321 (nivå/motor)
+n 	@, n, er, ~r, ~eret	<nn.utr.sin.def.nom> #{EL} 
+er 	@, n, er, ~r, ~eret	<nn.utr.plu.ind.nom> #{EL} 
+[^sxz]s 	@, n, er, ~r, ~eret	<nn.utr.sin.ind.gen> 
+[sxz]@ 	@, n, er, ~r, ~eret	<nn.utr.sin.ind.gen> 
+ns 	@, n, er, ~r, ~eret	<nn.utr.sin.def.gen> 
+ers 	@, n, er, ~r, ~eret	<nn.utr.plu.ind.gen> 
+erna 	@, n, er, ~r, ~eret	<nn.utr.plu.def.nom> 
+ernas 	@, n, er, ~r, ~eret	<nn.utr.plu.def.gen> 
+
+@ 	@, n, r, er, ~en, ~et	<nn.utr.sin.ind.nom> #{EL} # 322 (cello)
+n 	@, n, r, er, ~en, ~et	<nn.utr.sin.def.nom> #{EL} 
+r 	@, n, r, er, ~en, ~et	<nn.utr.plu.ind.nom> #{EL} 
+er 	@, n, r, er, ~en, ~et	<nn.utr.plu.ind.nom> #{EL} 
+[^sxz]s 	@, n, r, er, ~en, ~et	<nn.utr.sin.ind.gen> 
+[sxz]@ 	@, n, r, er, ~en, ~et	<nn.utr.sin.ind.gen> 
+ns 	@, n, r, er, ~en, ~et	<nn.utr.sin.def.gen> 
+rs 	@, n, r, er, ~en, ~et	<nn.utr.plu.ind.gen> 
+rna 	@, n, r, er, ~en, ~et	<nn.utr.plu.def.nom> 
+rnas 	@, n, r, er, ~en, ~et	<nn.utr.plu.def.gen> 
+ers 	@, n, r, er, ~en, ~et	<nn.utr.plu.ind.gen> 
+erna 	@, n, r, er, ~en, ~et	<nn.utr.plu.def.nom> 
+ernas 	@, n, r, er, ~en, ~et	<nn.utr.plu.def.gen> 
+
+el 	el, eln, ler	<nn.utr.sin.ind.nom> #{EL} # 331 (möbel)
+eln 	el, eln, ler	<nn.utr.sin.def.nom> #{EL} 
+ler 	el, eln, ler	<nn.utr.plu.ind.nom> #{EL} 
+els 	el, eln, ler	<nn.utr.sin.ind.gen> 
+elns 	el, eln, ler	<nn.utr.sin.def.gen> 
+lers 	el, eln, ler	<nn.utr.plu.ind.gen> 
+lerna 	el, eln, ler	<nn.utr.plu.def.nom> 
+lernas 	el, eln, ler	<nn.utr.plu.def.gen> 
+
+er 	er, ern, rer	<nn.utr.sin.ind.nom> #{EL} # 332 (fiber)
+ern 	er, ern, rer	<nn.utr.sin.def.nom> #{EL} 
+rer 	er, ern, rer	<nn.utr.plu.ind.nom> #{EL} 
+ers 	er, ern, rer	<nn.utr.sin.ind.gen> 
+erns 	er, ern, rer	<nn.utr.sin.def.gen> 
+rers 	er, ern, rer	<nn.utr.plu.ind.gen> 
+rerna 	er, ern, rer	<nn.utr.plu.def.nom> 
+rernas 	er, ern, rer	<nn.utr.plu.def.gen> 
+
+a 	a, an, er, ~or, ~ade, ~anet	<nn.utr.sin.ind.nom> #{EL} # 354 (musa)
+an 	a, an, er, ~or, ~ade, ~anet	<nn.utr.sin.def.nom> #{EL} 
+er 	a, an, er, ~or, ~ade, ~anet	<nn.utr.plu.ind.nom> #{EL} 
+as 	a, an, er, ~or, ~ade, ~anet	<nn.utr.sin.ind.gen> 
+ans 	a, an, er, ~or, ~ade, ~anet	<nn.utr.sin.def.gen> 
+ers 	a, an, er, ~or, ~ade, ~anet	<nn.utr.plu.ind.gen> 
+erna 	a, an, er, ~or, ~ade, ~anet	<nn.utr.plu.def.nom> 
+ernas 	a, an, er, ~or, ~ade, ~anet	<nn.utr.plu.def.gen> 
+
+o 	o, on, or, ~ona, ~oar	<nn.utr.sin.ind.nom> #{EL} # 381 (sko)
+on 	o, on, or, ~ona, ~oar	<nn.utr.sin.def.nom> #{EL} 
+or 	o, on, or, ~ona, ~oar	<nn.utr.plu.ind.nom> #{EL} 
+os 	o, on, or, ~ona, ~oar	<nn.utr.sin.ind.gen> 
+ons 	o, on, or, ~ona, ~oar	<nn.utr.sin.def.gen> 
+ors 	o, on, or, ~ona, ~oar	<nn.utr.plu.ind.gen> 
+orna 	o, on, or, ~ona, ~oar	<nn.utr.plu.def.nom> 
+ornas 	o, on, or, ~ona, ~oar	<nn.utr.plu.def.gen> 
+
+[uå]@ 	@, n, r, ~dde, ~ra	<nn.utr.sin.ind.nom> #{EL} # (bastu)
+[uå]n 	@, n, r, ~dde, ~ra	<nn.utr.sin.def.nom> #{EL} 
+[uå]r 	@, n, r, ~dde, ~ra	<nn.utr.plu.ind.nom> #{EL} 
+[uå]s 	@, n, r, ~dde, ~ra	<nn.utr.sin.ind.gen> 
+[uå]ns 	@, n, r, ~dde, ~ra	<nn.utr.sin.def.gen> 
+[uå]rs 	@, n, r, ~dde, ~ra	<nn.utr.plu.ind.gen> 
+[uå]rna 	@, n, r, ~dde, ~ra	<nn.utr.plu.def.nom> 
+[uå]rnas 	@, n, r, ~dde, ~ra	<nn.utr.plu.def.gen> 
+
+ie 	ie, ien, ier	<nn.utr.sin.ind.nom> #{EL} #   (vikarie)
+ien 	ie, ien, ier	<nn.utr.sin.def.nom> #{EL} 
+ier 	ie, ien, ier	<nn.utr.plu.ind.nom> #{EL} 
+ies 	ie, ien, ier	<nn.utr.sin.ind.gen> 
+iens 	ie, ien, ier	<nn.utr.sin.def.gen> 
+iers 	ie, ien, ier	<nn.utr.plu.ind.gen> 
+ierna 	ie, ien, ier	<nn.utr.plu.def.nom> 
+iernas 	ie, ien, ier	<nn.utr.plu.def.gen> 
+
+else 	else, elsen, elser	<nn.utr.sin.ind.nom> #{EL} # (förståelse)
+elsen 	else, elsen, elser	<nn.utr.sin.def.nom> #{EL} 
+elser 	else, elsen, elser	<nn.utr.plu.ind.nom> #{EL} 
+elses 	else, elsen, elser	<nn.utr.sin.ind.gen> 
+elsens 	else, elsen, elser	<nn.utr.sin.def.gen> 
+elsers 	else, elsen, elser	<nn.utr.plu.ind.gen> 
+elserna 	else, elsen, elser	<nn.utr.plu.def.nom> 
+elsernas 	else, elsen, elser	<nn.utr.plu.def.gen> 
+
+else 	else, elset, elser	<nn.neu.sin.ind.nom> #{EL} # (fängelse)
+elset 	else, elset, elser	<nn.neu.sin.def.nom> #{EL} 
+elser 	else, elset, elser	<nn.neu.plu.ind.nom> #{EL} 
+elses 	else, elset, elser	<nn.neu.sin.ind.gen> 
+elsets 	else, elset, elser	<nn.neu.sin.def.gen> 
+elsers 	else, elset, elser	<nn.neu.plu.ind.gen> 
+elserna 	else, elset, elser	<nn.neu.plu.def.nom> 
+elsernas 	else, elset, elser	<nn.neu.plu.def.gen> 
+
+else 	else, a	<nn.utr.sin.ind.nom> #{EL} # (bebyggelse) [149 stycken]
+a 	else, a	<vb.inf.akt> #{EL} 
+elses 	else, a	<nn.utr.sin.ind.gen> 
+elsen 	else, a	<nn.utr.sin.def.nom> 
+elsens 	else, a	<nn.utr.sin.def.gen> 
+elser 	else, a	<nn.utr.plu.ind.nom> 
+elsers 	else, a	<nn.utr.plu.ind.gen> 
+elserna 	else, a	<nn.utr.plu.def.nom> 
+elsernas 	else, a	<nn.utr.plu.def.gen> 
+
+[^e]@ 	@, et, ~er, ~eten	<nn.neu.sin.ind.nom nn.neu.plu.ind.nom> #{EL} # 401 (bord)
+[^e]et 	@, et, ~er, ~eten	<nn.neu.sin.def.nom> #{EL} 
+[^esxz]s 	@, et, ~er, ~eten	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> 
+[sxz]@ 	@, et, ~er, ~eten	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> 
+[^e]ets 	@, et, ~er, ~eten	<nn.neu.sin.def.gen> 
+(eri)[^e]en 	@, et, ~er, ~eten	<nn.neu.plu.def.nom> #
+(eri)[^e]ens 	@, et, ~er, ~eten	<nn.neu.plu.def.gen> 
+@ 	@, et, er, ern	<nn.neu.sin.ind.nom nn.neu.plu.ind.nom> #{EL} #
+et 	@, et, er, ern	<nn.neu.sin.def.nom> #{EL} 
+[^sxz]s 	@, et, er, ern	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> # 401 (bord)
+[sxz]@ 	@, et, er, ern	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> # 401 (bord)
+ets 	@, et, er, ern	<nn.neu.sin.def.gen> 
+en 	@, et, er, ern	<nn.neu.plu.def.nom> #
+ens 	@, et, er, ern	<nn.neu.plu.def.gen> 
+
+e 	e, et, en, ~ar, ~er	<nn.neu.sin.ind.nom> #{EL} # 411 (samhälle)
+et 	e, et, en, ~ar, ~er	<nn.neu.sin.def.nom> #{EL} 
+en 	e, et, en, ~ar, ~er	<nn.neu.plu.ind.nom> #{EL} 
+es 	e, et, en, ~ar, ~er	<nn.neu.sin.ind.gen> 
+ets 	e, et, en, ~ar, ~er	<nn.neu.sin.def.gen> 
+ens 	e, et, en, ~ar, ~er	<nn.neu.plu.ind.gen> 
+(ar)ena 	e, et, en, ~ar, ~er, ~@	<nn.neu.plu.def.nom> # (and|end) kan läggas till för
+(ar)enas 	e, et, en, ~ar, ~er, ~@	<nn.neu.plu.def.gen> # andena,endena har egna regler
+
+(el)[^ae]@ 	@, t, n, ~tet, ~ten, ~nhet, ~er, ~are	<nn.neu.sin.ind.nom> #{EL} # (tapto) [160 stycken]
+(el)[^ae]t 	@, t, n, ~tet, ~ten, ~nhet, ~er, ~are	<nn.neu.sin.def.nom> #{EL} 
+(el)[^ae]n 	@, t, n, ~tet, ~ten, ~nhet, ~er, ~are	<nn.neu.plu.ind.nom> #{EL} 
+(el)[^ae]s 	@, t, n, ~tet, ~ten, ~nhet, ~er, ~are	<nn.neu.sin.ind.gen> 
+(el)[^ae]ts 	@, t, n, ~tet, ~ten, ~nhet, ~er, ~are	<nn.neu.sin.def.gen> 
+(el)[^ae]ns 	@, t, n, ~tet, ~ten, ~nhet, ~er, ~are	<nn.neu.plu.ind.gen> 
+(el)[^ae]na 	@, t, n, ~tet, ~ten, ~nhet, ~er, ~are	<nn.neu.plu.def.nom> 
+(el)[^ae]nas 	@, t, n, ~tet, ~ten, ~nhet, ~er, ~are	<nn.neu.plu.def.gen> 
+
+ar 	ar, arn, ~aren	<nn.utr.sin.ind.nom> #{EL} # (dollar)
+arn 	ar, arn, ~aren	<nn.utr.sin.def.nom> #{EL} 
+ars 	ar, arn, ~aren	<nn.utr.sin.ind.gen> 
+arns 	ar, arn, ~aren	<nn.utr.sin.def.gen> 
+
+(mm)er 	er, ern	<nn.utr.sin.ind.nom nn.utr.plu.ind.nom> #{EL} # 421 (order)
+(mm)ern 	er, ern	<nn.utr.sin.def.nom> #{EL} 
+(mm)ers 	er, ern	<nn.utr.sin.ind.gen nn.utr.plu.ind.gen> 
+(mm)erns 	er, ern	<nn.utr.sin.def.gen> 
+[^dm]erna 	er, ern, ~rar, ~rer, ~ror, ~ar, ~erer	<nn.utr.plu.def.nom> 
+[^dm]ernas 	er, ern, ~rar, ~rer, ~ror, ~ar, ~erer	<nn.utr.plu.def.gen> 
+
+[ou]r 	r, rn, ~rna, ~rer, ~ren, ~rnen	<nn.utr.sin.ind.nom> #{EL} # (terror)
+[ou]rn 	r, rn, ~rna, ~rer, ~ren, ~rnen	<nn.utr.sin.def.nom> #{EL} 
+[ou]rs 	r, rn, ~rna, ~rer, ~ren, ~rnen	<nn.utr.sin.ind.gen> 
+[ou]rns 	r, rn, ~rna, ~rer, ~ren, ~rnen	<nn.utr.sin.def.gen> 
+
+er 	er, ern, erna	<nn.utr.sin.ind.nom nn.utr.plu.ind.nom> #{EL} # 421 (order)
+ern 	er, ern, erna	<nn.utr.sin.def.nom> #{EL} 
+erna 	er, ern, erna	<nn.utr.plu.def.nom> #{EL} 
+ers 	er, ern, erna	<nn.utr.sin.ind.gen nn.utr.plu.ind.gen> 
+erns 	er, ern, erna	<nn.utr.sin.def.gen> 
+ernas 	er, ern, erna	<nn.utr.plu.def.gen> 
+
+ier 	ier, ierna	<nn.utr.plu.ind.nom> #{EL} # (scenarier)
+ierna 	ier, ierna	<nn.utr.plu.def.nom> #{EL} 
+iers 	ier, ierna	<nn.utr.plu.ind.gen> 
+iernas 	ier, ierna	<nn.utr.plu.def.gen> 
+
+[^i]er 	er, erna, ~et, ~ret, ~ren	<nn.utr.plu.ind.nom> #{EL} # (morötter)
+[^i]erna 	er, erna, ~et, ~ret, ~ren	<nn.utr.plu.def.nom> #{EL} 
+[^i]ers 	er, erna, ~et, ~ret, ~ren	<nn.utr.plu.ind.gen> 
+[^i]ernas 	er, erna, ~et, ~ret, ~ren	<nn.utr.plu.def.gen> 
+
+or 	or, orna	<nn.utr.plu.ind.nom> #{EL} # (inälvor)
+orna 	or, orna	<nn.utr.plu.def.nom> #{EL} 
+ors 	or, orna	<nn.utr.plu.ind.gen> 
+ornas 	or, orna	<nn.utr.plu.def.gen> 
+
+ar 	ar, arna	<nn.utr.plu.ind.nom> #{EL} # (kalsingar)
+arna 	ar, arna	<nn.utr.plu.def.nom> #{EL} 
+ars 	ar, arna	<nn.utr.plu.ind.gen> 
+arnas 	ar, arna	<nn.utr.plu.def.gen> 
+
+are 	are, aren, ~areer	<nn.utr.sin.ind.nom nn.utr.plu.ind.nom> #{EL} # 422 (kypare)
+aren 	are, aren, ~areer	<nn.utr.sin.def.nom> #{EL} 
+ares 	are, aren, ~areer	<nn.utr.sin.ind.gen nn.utr.plu.ind.gen> 
+arens 	are, aren, ~areer	<nn.utr.sin.def.gen> 
+arna 	are, aren, ~areer	<nn.utr.plu.def.nom> 
+arnas 	are, aren, ~areer	<nn.utr.plu.def.gen> 
+arn 	are, aren, ~areer	<nn.utr.sin.def.nom> 
+arns 	are, aren, ~areer	<nn.utr.sin.def.gen> 
+erska 	are, aren, ~areer	<nn.utr.sin.ind.nom> 
+erskan 	are, aren, ~areer	<nn.utr.sin.def.nom> 
+erskor 	are, aren, ~areer	<nn.utr.plu.ind.nom> 
+erskas 	are, aren, ~areer	<nn.utr.sin.ind.gen> 
+erskans 	are, aren, ~areer	<nn.utr.sin.def.gen> 
+erskors 	are, aren, ~areer	<nn.utr.plu.ind.gen> 
+erskorna 	are, aren, ~areer	<nn.utr.plu.def.nom> 
+erskornas 	are, aren, ~areer	<nn.utr.plu.def.gen> 
+arinna 	are, aren, ~areer	<nn.utr.sin.ind.nom> #{EL} 
+arinnan 	are, aren, ~areer	<nn.utr.sin.def.nom> #{EL} 
+arinnor 	are, aren, ~areer	<nn.utr.plu.ind.nom> #{EL} 
+arinnas 	are, aren, ~areer	<nn.utr.sin.ind.gen> #{EL} 
+arinnans 	are, aren, ~areer	<nn.utr.sin.def.gen> #{EL} 
+arinnors 	are, aren, ~areer	<nn.utr.plu.ind.gen> #{EL} 
+arinnorna 	are, aren, ~areer	<nn.utr.plu.def.nom> #{extra} 
+arinnornas 	are, aren, ~areer	<nn.utr.plu.def.gen> #{extra} 
+
+ande 	ande, ~a, ~anden, ~ant	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> #{EL} # (rogivande)
+ande 	ande, ~a, ~anden, ~ant	<nn.utr.sin.ind.nom> #{extra} 
+
+ande 	ande, anden	<nn.utr.sin.ind.nom nn.utr.plu.ind.nom> #{EL} # 423 (ordförande)
+anden 	ande, anden	<nn.utr.sin.def.nom> #{EL} 
+andes 	ande, anden	<nn.utr.sin.ind.gen nn.utr.plu.ind.gen> 
+andens 	ande, anden	<nn.utr.sin.def.gen> 
+andena 	ande, anden	<nn.utr.plu.def.nom> 
+andenas 	ande, anden	<nn.utr.plu.def.gen> 
+
+(lig|ing|ion|itet|ism)@ 	@, en, ~n, ~ar, ~er, ~et, ~e, ~or, ~are, ~ent, ~nde, ~onde, ~nen	<nn.utr.sin.ind.nom> #{EL} # 424 (mil) jfr 551
+(lig|ing|ion|itet|ism)en 	@, en, ~n, ~ar, ~er, ~et, ~e, ~or, ~are, ~ent, ~nde, ~onde, ~nen	<nn.utr.sin.def.nom> #{EL} 
+(lig|ing|ion|itet|ism)[^sxz]s 	@, en, ~n, ~ar, ~er, ~et, ~e, ~or, ~are, ~ent, ~nde, ~onde, ~nen	<nn.utr.sin.ind.gen> 
+(lig|ing|ion|itet|ism)[sxz]@ 	@, en, ~n, ~ar, ~er, ~et, ~e, ~or, ~are, ~ent, ~nde, ~onde, ~nen	<nn.utr.sin.ind.gen> 
+(lig|ing|ion|itet|ism)ens 	@, en, ~n, ~ar, ~er, ~et, ~e, ~or, ~are, ~ent, ~nde, ~onde	<nn.utr.sin.def.gen> 
+
+[^rln]ing 	ing, ingen, ~ingar, ~inget	<nn.utr.sin.ind.nom> #{EL} # (mobbing)
+[^rln]ingen 	ing, ingen, ~ingar, ~inget	<nn.utr.sin.def.nom> #{EL} 
+[^rln]ings 	ing, ingen, ~ingar, ~inget	<nn.utr.sin.ind.gen> 
+[^rln]ingens 	ing, ingen, ~ingar, ~inget	<nn.utr.sin.def.gen> 
+
+et 	et, eten, ~etet, ~eter	<nn.utr.sin.ind.nom> #{EL} # förbättrar 424, inga fel i dom tillkommande orden!
+eten 	et, eten, ~etet, ~eter	<nn.utr.sin.def.nom> #{EL} 
+ets 	et, eten, ~etet, ~eter	<nn.utr.sin.ind.gen> 
+etens 	et, eten, ~etet, ~eter	<nn.utr.sin.def.gen> 
+
+[ae]ge 	ge, get	<nn.neu.sin.ind.nom> #{EL} # 425 (garage) [44 förekomster]
+[ae]get 	ge, get	<nn.neu.sin.def.nom> #{EL} 
+[ae]ge 	ge, get	<nn.neu.plu.ind.nom> #{extra} 
+[ae]ges 	ge, get	<nn.neu.sin.ind.gen> 
+[ae]gets 	ge, get	<nn.neu.sin.def.gen> 
+[ae]ges 	ge, get	<nn.neu.plu.ind.gen> #{extra} 
+[ae]gen 	ge, get	<nn.neu.plu.def.nom> 
+[ae]gens 	ge, get	<nn.neu.plu.def.gen> 
+
+e 	e, et, ~en, ~er	<nn.neu.sin.ind.nom> #{EL} # (väte)
+et 	e, et, ~en, ~er	<nn.neu.sin.def.nom> #{EL} 
+es 	e, et, ~en, ~er	<nn.neu.sin.ind.gen> 
+ets 	e, et, ~en, ~er	<nn.neu.sin.def.gen> 
+
+e 	e, et, ena	<nn.neu.sin.ind.nom> #{EL} # (forte)
+et 	e, et, ena	<nn.neu.sin.def.nom> #{EL} 
+ena 	e, et, ena	<nn.neu.plu.def.nom> #{EL} 
+en 	e, et, ena	<nn.neu.plu.ind.nom> 
+ens 	e, et, ena	<nn.neu.plu.ind.gen> #
+enas 	e, et, ena	<nn.neu.plu.def.gen> 
+es 	e, et, ena	<nn.neu.sin.ind.gen> #
+ets 	e, et, ena	<nn.neu.sin.def.gen> #
+
+a 	a, at, an, ~ade, ~or	<nn.neu.sin.ind.nom> #{EL} # (hjärta)
+at 	a, at, an, ~ade, ~or	<nn.neu.sin.def.nom> #{EL} 
+an 	a, at, an, ~ade, ~or	<nn.neu.plu.ind.nom> #{EL} 
+as 	a, at, an, ~ade, ~or	<nn.neu.sin.ind.gen> 
+ats 	a, at, an, ~ade, ~or	<nn.neu.sin.def.gen> 
+ans 	a, at, an, ~ade, ~or	<nn.neu.plu.ind.gen> 
+ana 	a, at, an, ~ade, ~or	<nn.neu.plu.def.nom> 
+anas 	a, at, an, ~ade, ~or	<nn.neu.plu.def.gen> 
+
+[gr]a 	a, at, on	<nn.neu.sin.ind.nom> #{EL} # (öga, öra)
+[gr]at 	a, at, on	<nn.neu.sin.def.nom> #{EL} 
+[gr]on 	a, at, on	<nn.neu.plu.ind.nom> #{EL} 
+[gr]as 	a, at, on	<nn.neu.sin.ind.gen> 
+[gr]ats 	a, at, on	<nn.neu.sin.def.gen> 
+[gr]ons 	a, at, on	<nn.neu.plu.ind.gen> 
+[gr]ona 	a, at, on	<nn.neu.plu.def.nom> 
+[gr]onas 	a, at, on	<nn.neu.plu.def.gen> 
+[gr]onen 	a, at, on	<nn.neu.plu.def.nom> 
+[gr]onens 	a, at, on	<nn.neu.plu.def.gen> 
+
+[^i]@ 	@, n, en, ~ar, ~er, ~et, ~e, ~or, ~are	<nn.utr.sin.ind.nom> #{EL} #  (asur)
+[^i]n 	@, n, en, ~ar, ~er, ~et, ~e, ~or, ~are	<nn.utr.sin.def.nom> #{EL} 
+[^i]en 	@, n, en, ~ar, ~er, ~et, ~e, ~or, ~are	<nn.utr.sin.def.nom> #{EL} 
+[^isxz]s 	@, n, en, ~ar, ~er, ~et, ~e, ~or, ~are	<nn.utr.sin.ind.gen> 
+[sxz]@ 	@, n, en, ~ar, ~er, ~et, ~e, ~or, ~are	<nn.utr.sin.ind.gen> 
+[^i]ns 	@, n, en, ~ar, ~er, ~et, ~e, ~or, ~are	<nn.utr.sin.def.gen> 
+[^i]ens 	@, n, en, ~ar, ~er, ~et, ~e, ~or, ~are	<nn.utr.sin.def.gen> 
+
+é 	é, ét	<nn.neu.sin.ind.nom> #{EL} # (kafé) [8 stycken]
+ét 	é, ét	<nn.neu.sin.def.nom> #{EL} 
+éer 	é, ét	<nn.neu.plu.ind.nom> 
+és 	é, ét	<nn.neu.sin.ind.gen> 
+éts 	é, ét	<nn.neu.sin.def.gen> 
+éers 	é, ét	<nn.neu.plu.ind.gen> 
+éerna 	é, ét	<nn.neu.plu.def.nom> 
+éernas 	é, ét	<nn.neu.plu.def.gen> 
+éet 	é, ét	<nn.neu.sin.def.nom> 
+éets 	é, ét	<nn.neu.sin.def.gen> 
+
+é 	é, én, ~éer	<nn.utr.sin.ind.nom> #{EL} # (teodicé) [8 stycken]
+én 	é, én, ~éer	<nn.utr.sin.def.nom> #{EL} 
+és 	é, én, ~éer	<nn.utr.sin.ind.gen> 
+éns 	é, én, ~éer	<nn.utr.sin.def.gen> 
+
+el 	el, let, ~ler	<nn.neu.sin.ind.nom> #{EL} # 431 (segel)
+let 	el, let, ~ler	<nn.neu.sin.def.nom> #{EL} 
+el 	el, let, ~ler	<nn.neu.plu.ind.nom> #{extra} 
+els 	el, let, ~ler	<nn.neu.sin.ind.gen> 
+lets 	el, let	<nn.neu.sin.def.gen> 
+els 	el, let, ~ler	<nn.neu.plu.ind.gen> #{extra} 
+len 	el, let	<nn.neu.plu.def.nom> 
+lens 	el, let	<nn.neu.plu.def.gen> 
+
+el 	el, let, ler	<nn.neu.sin.ind.nom> #{EL} # (sekel)
+let 	el, let, ler	<nn.neu.sin.def.nom> #{EL} 
+ler 	el, let, ler	<nn.neu.plu.ind.nom> #{EL} 
+els 	el, let, ler	<nn.neu.sin.ind.gen> 
+lets 	el, let, ler	<nn.neu.sin.def.gen> 
+lers 	el, let, ler	<nn.neu.plu.ind.gen> 
+lerna 	el, let, ler	<nn.neu.plu.def.nom> 
+lernas 	el, let, ler	<nn.neu.plu.def.gen> 
+
+mmel 	mmel, mlet	<nn.neu.sin.ind.nom> #{EL} # (fummel)
+mlet 	mmel, mlet	<nn.neu.sin.def.nom> #{EL} 
+mmel 	mmel, mlet	<nn.neu.plu.ind.nom> #{extra} 
+mmels 	mmel, mlet	<nn.neu.sin.ind.gen> 
+mlets 	mmel, mlet	<nn.neu.sin.def.gen> 
+mmels 	mmel, mlet	<nn.neu.plu.ind.gen> #{extra} 
+mlen 	mmel, mlet	<nn.neu.plu.def.nom> 
+mlens 	mmel, mlet	<nn.neu.plu.def.gen> 
+
+er 	er, ret, erna	<nn.neu.sin.ind.nom nn.neu.plu.ind.nom> #{EL} # 432 (fönster) [58 stycken, klar]
+ret 	er, ret, erna	<nn.neu.sin.def.nom> #{EL} 
+erna 	er, ret, erna	<nn.neu.plu.def.nom> #{EL} 
+ers 	er, ret, erna	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> 
+rets 	er, ret, erna	<nn.neu.sin.def.gen> 
+ers 	er, ret, erna	<nn.neu.plu.ind.gen> #{extra} 
+ren 	er, ret, erna	<nn.neu.plu.def.nom> 
+rens 	er, ret, erna	<nn.neu.plu.def.gen> 
+ernas 	er, ret, erna	<nn.neu.plu.def.gen> 
+
+er 	er, ret, ren	<nn.neu.sin.ind.nom nn.neu.plu.ind.nom> #{EL} # (under) [27 stycken, klar]
+ret 	er, ret, ren	<nn.neu.sin.def.nom> #{EL} 
+ren 	er, ret, ren	<nn.neu.plu.def.nom> #{EL} 
+ers 	er, ret, ren	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> 
+rets 	er, ret, ren	<nn.neu.sin.def.gen> 
+rens 	er, ret, ren	<nn.neu.plu.def.gen> #
+
+er 	er, ret, ~ren, ~erna	<nn.neu.sin.ind.nom> #{EL} # (mörker)
+ret 	er, ret, ~ren, ~erna	<nn.neu.sin.def.nom> #{EL} 
+ers 	er, ret, ~ren, ~erna	<nn.neu.sin.ind.gen> 
+rets 	er, ret, ~ren, ~erna	<nn.neu.sin.def.gen> 
+
+en 	en, net, nen, ~n, ~er	<nn.neu.sin.ind.nom nn.neu.plu.ind.nom> #{EL} # 433 (tecken)
+net 	en, net, nen, ~n, ~er	<nn.neu.sin.def.nom> #{EL} 
+nen 	en, net, nen, ~n, ~er	<nn.neu.plu.def.nom> #{EL} 
+ens 	en, net, nen, ~n, ~er	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> 
+nets 	en, net, nen, ~n, ~er	<nn.neu.sin.def.gen> 
+nens 	en, net, nen, ~n, ~er	<nn.neu.plu.def.gen> 
+
+mmer 	mmer, mret	<nn.neu.sin.ind.nom> #{EL} # 434 (nummer)
+mret 	mmer, mret	<nn.neu.sin.def.nom> #{EL} 
+mmer 	mmer, mret	<nn.neu.plu.ind.nom> #{extra} 
+mmers 	mmer, mret	<nn.neu.sin.ind.gen> 
+mrets 	mmer, mret	<nn.neu.sin.def.gen> 
+mren 	mmer, mret	<nn.neu.plu.def.nom> 
+mmers 	mmer, mret	<nn.neu.plu.def.gen> #{extra} 
+mrens 	mmer, mret	<nn.neu.plu.def.gen> 
+mmerna 	mmer, mret	<nn.neu.plu.def.nom> 
+mmernas 	mmer, mret	<nn.neu.plu.def.gen> 
+
+n 	n, nnet, ~nn, ~nne	<nn.neu.sin.ind.nom nn.neu.plu.ind.nom> #{EL} # (krypin)
+nnet 	n, nnet, ~nn, ~nne	<nn.neu.sin.def.nom> #{EL} 
+ns 	n, nnet, ~nn, ~nne	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> 
+nnets 	n, nnet, ~nn, ~nne	<nn.neu.sin.def.gen> 
+nnen 	n, nnet, ~nn, ~nne	<nn.neu.plu.def.nom> 
+nnens 	n, nnet, ~nn, ~nne	<nn.neu.plu.def.gen> 
+
+m 	m, mmet, mmen, ~mna	<nn.neu.sin.ind.nom nn.neu.plu.ind.nom> #{EL} # 441 (program)
+mmet 	m, mmet, mmen, ~mna	<nn.neu.sin.def.nom> #{EL} 
+mmen 	m, mmet, mmen, ~mna	<nn.neu.plu.def.nom> #{EL} 
+ms 	m, mmet, mmen, ~mna	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> 
+mmets 	m, mmet, mmen, ~mna	<nn.neu.sin.def.gen> 
+mmens 	m, mmet, mmen, ~mna	<nn.neu.plu.def.gen> #
+
+m 	m, mmet, ~mmen	<nn.neu.sin.ind.nom> #{EL} # (beröm)
+mmet 	m, mmet, ~mmen	<nn.neu.sin.def.nom> #{EL} 
+ms 	m, mmet, ~mmen	<nn.neu.sin.ind.gen> 
+mmets 	m, mmet, ~mmen	<nn.neu.sin.def.gen> 
+
+um 	um, umet, a	<nn.neu.sin.ind.nom> #{EL} # 521 (narkotikum)
+umet 	um, umet, a	<nn.neu.sin.def.nom> #{EL} 
+a 	um, umet, a	<nn.neu.plu.ind.nom> #{EL} 
+ums 	um, umet, a	<nn.neu.sin.ind.gen> 
+umets 	um, umet, a	<nn.neu.sin.def.gen> 
+as 	um, umet, a	<nn.neu.plu.ind.gen> 
+umen 	um, umet, a	<nn.neu.plu.def.nom> 
+umens 	um, umet, a	<nn.neu.plu.def.gen> 
+
+um 	um, et, a	<nn.neu.sin.ind.nom nn.neu.plu.ind.nom> #{EL} #
+et 	um, et, a	<nn.neu.sin.def.nom> #{EL} 
+a 	um, et, a	<nn.neu.plu.ind.nom> #{EL} 
+ums 	um, et, a	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> 
+
+um 	um, et, ~a, ~er	<nn.neu.sin.ind.nom> #{EL} # (beryllium)
+et 	um, et, ~a, ~er	<nn.neu.sin.def.nom> #{EL} 
+ums 	um, et, ~a, ~er	<nn.neu.sin.ind.gen> 
+ets 	um, et, ~a, ~er	<nn.neu.sin.def.gen> 
+as 	um, et, a	<nn.neu.plu.ind.gen> 
+
+um 	um, umet, er	<nn.neu.sin.ind.nom> #{EL} # 523 (spektrum)
+umet 	um, umet, er	<nn.neu.sin.def.nom> #{EL} 
+er 	um, umet, er	<nn.neu.plu.ind.nom> #{EL} 
+ums 	um, umet, er	<nn.neu.sin.ind.gen> 
+umets 	um, umet, er	<nn.neu.sin.def.gen> 
+ers 	um, umet, er	<nn.neu.plu.ind.gen> 
+erna 	um, umet, er	<nn.neu.plu.def.nom> 
+ernas 	um, umet, er	<nn.neu.plu.def.gen> 
+
+um 	um, et, er, ~erna	<nn.neu.sin.ind.nom> #{EL} 
+et 	um, et, er, ~erna	<nn.neu.sin.def.nom> #{EL} 
+er 	um, et, er, ~erna	<nn.neu.plu.ind.nom> #{EL} 
+ums 	um, et, er, ~erna	<nn.neu.sin.ind.gen> 
+ets 	um, et, er, ~erna	<nn.neu.sin.def.gen> 
+ers 	um, et, er, ~erna	<nn.neu.plu.ind.gen> 
+erna 	um, et, er, ~erna	<nn.neu.plu.def.nom> 
+ernas 	um, et, er, ~erna	<nn.neu.plu.def.gen> 
+
+um 	um, en, er, ~et, ~umet	<nn.utr.sin.ind.nom> #{EL} # (nerium)
+en 	um, en, er, ~et, ~umet	<nn.utr.sin.def.nom> #{EL} 
+er 	um, en, er, ~et, ~umet	<nn.utr.plu.ind.nom> #{EL} 
+ums 	um, en, er, ~et, ~umet	<nn.utr.sin.ind.gen> 
+ens 	um, en, er, ~et, ~umet	<nn.utr.sin.def.gen> 
+ers 	um, en, er, ~et, ~umet	<nn.utr.plu.ind.gen> 
+erna 	um, en, er, ~et, ~umet	<nn.utr.plu.def.nom> 
+ernas 	um, en, er, ~et, ~umet	<nn.utr.plu.def.gen> 
+
+erska 	erska	<nn.utr.sin.ind.nom> #{EL} # (svägerska) [122 stycken]
+erskan 	erska	<nn.utr.sin.def.nom> 
+erskor 	erska	<nn.utr.plu.ind.nom> 
+erskas 	erska	<nn.utr.sin.ind.gen> 
+erskans 	erska	<nn.utr.sin.def.gen> 
+erskors 	erska	<nn.utr.plu.ind.gen> 
+erskorna 	erska	<nn.utr.plu.def.nom> 
+erskornas 	erska	<nn.utr.plu.def.gen> 
+
+inna 	inna, ~ann, ~innade, ~inde	<nn.utr.sin.ind.nom> #{EL} # (författarinna) [69 stycken]
+innan 	inna, ~ann, ~innade, ~inde	<nn.utr.sin.def.nom> 
+innor 	inna, ~ann, ~innade, ~inde	<nn.utr.plu.ind.nom> 
+innas 	inna, ~ann, ~innade, ~inde	<nn.utr.sin.ind.gen> 
+innans 	inna, ~ann, ~innade, ~inde	<nn.utr.sin.def.gen> 
+innors 	inna, ~ann, ~innade, ~inde	<nn.utr.plu.ind.gen> 
+innorna 	inna, ~ann, ~innade, ~inde	<nn.utr.plu.def.nom> 
+innornas 	inna, ~ann, ~innade, ~inde	<nn.utr.plu.def.gen> 
+
+itet 	itet, iteten	<nn.utr.sin.ind.nom> #{EL} # (atonalitet) [262 stycken]
+iteten 	itet, iteten	<nn.utr.sin.def.nom> #{EL} 
+iteter 	itet, iteten	<nn.utr.plu.ind.nom> 
+itets 	itet, iteten	<nn.utr.sin.ind.gen> 
+itetens 	itet, iteten	<nn.utr.sin.def.gen> 
+iteters 	itet, iteten	<nn.utr.plu.ind.gen> 
+iteterna 	itet, iteten	<nn.utr.plu.def.nom> 
+iteternas 	itet, iteten	<nn.utr.plu.def.gen> 
+
+ism 	ism	<nn.utr.sin.ind.nom> #{EL} # (naivism)
+ismen 	ism	<nn.utr.sin.def.nom> 
+ismer 	ism	<nn.utr.plu.ind.nom> 
+isms 	ism	<nn.utr.sin.ind.gen> 
+ismens 	ism	<nn.utr.sin.def.gen> 
+ismers 	ism	<nn.utr.plu.ind.gen> 
+ismerna 	ism	<nn.utr.plu.def.nom> 
+ismernas 	ism	<nn.utr.plu.def.gen> 
+
+i 	i, in, ien, ~ier, ~ina	<nn.utr.sin.ind.nom> #{EL} # (teknologi) [271 stycken] (utvidgar 424)
+in 	i, in, ien, ~ier, ~ina	<nn.utr.sin.def.nom> #{EL} 
+ien 	i, in, ien, ~ier, ~ina	<nn.utr.sin.def.nom> #{EL} 
+ier 	i, in, ien, ~ier, ~ina	<nn.utr.plu.ind.nom> 
+is 	i, in, ien, ~ier, ~ina	<nn.utr.sin.ind.gen> 
+ins 	i, in, ien, ~ier, ~ina	<nn.utr.sin.def.gen> 
+iens 	i, in, ien, ~ier, ~ina	<nn.utr.sin.def.gen> 
+iers 	i, in, ien, ~ier, ~ina	<nn.utr.plu.ind.gen> 
+ierna 	i, in, ien, ~ier, ~ina	<nn.utr.plu.def.nom> 
+iernas 	i, in, ien, ~ier, ~ina	<nn.utr.plu.def.gen> 
+
+i 	i, in, ~it, ~ien, ~ier	<nn.utr.sin.ind.nom> #{EL} # (spagetti)
+in 	i, in, ~it, ~ien, ~ier	<nn.utr.sin.def.nom> #{EL} 
+is 	i, in, ~it, ~ien, ~ier	<nn.utr.sin.ind.gen> 
+ins 	i, in, ~it, ~ien, ~ier	<nn.utr.sin.def.gen> 
+
+ion 	ion, ionen	<nn.utr.sin.ind.nom> #{EL} # (kommunikation)
+ionen 	ion, ionen	<nn.utr.sin.def.nom> #{EL} 
+ioner 	ion, ionen	<nn.utr.plu.ind.nom> 
+ions 	ion, ionen	<nn.utr.sin.ind.gen> 
+ionens 	ion, ionen	<nn.utr.sin.def.gen> 
+ioners 	ion, ionen	<nn.utr.plu.ind.gen> 
+ionerna 	ion, ionen	<nn.utr.plu.def.nom> 
+ionernas 	ion, ionen	<nn.utr.plu.def.gen> 
+
+a 	a, an, ~or, ~ade, ~de, ~um, ~ans	<nn.utr.sin.ind.nom> #{EL} # (toa) [215 stycken]
+an 	a, an, ~or, ~ade, ~de, ~um, ~ans	<nn.utr.sin.def.nom> #{EL} 
+as 	a, an, ~or, ~ade, ~de, ~um, ~ans	<nn.utr.sin.ind.gen> 
+ans 	a, an, ~or, ~ade, ~de, ~um, ~ans	<nn.utr.sin.def.gen> 
+an 	an, ans	<nn.utr.sin.ind.nom nn.utr.sin.def.nom> #{EL} # (biverkan)
+ans 	an, ans	<nn.utr.sin.ind.gen nn.utr.sin.def.gen> #{EL} #
+
+[aéouyåäö]@ 	@, n, ~t, ~r, ~er, ~ar	<nn.utr.sin.ind.nom> #{EL} # (purjo)
+[aéouyåäö]n 	@, n, ~t, ~r, ~er, ~ar	<nn.utr.sin.def.nom> #{EL} 
+[aéouyåäö]s 	@, n, ~t, ~r, ~er, ~ar	<nn.utr.sin.ind.gen> 
+[aéouyåäö]ns 	@, n, ~t, ~r, ~er, ~ar	<nn.utr.sin.def.gen> 
+
+men 	men, mina	<nn.utr.sin.ind.nom nn.utr.sin.def.nom> #{EL} # (tentamen)
+mina 	men, mina	<nn.utr.plu.ind.nom nn.utr.plu.def.nom> #{EL} 
+mens 	men, mina	<nn.utr.sin.ind.gen nn.utr.sin.def.gen> 
+minas 	men, mina	<nn.utr.plu.ind.gen nn.utr.plu.def.gen> #
+
+#<jj> adjektiv:
+
+@ 	@, t, are, ~aren	<jj.pos.utr.sin.ind.nom> #{EL} # 601 (blek)
+t 	@, t, are, ~aren	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+are 	@, t, are, ~aren	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+[^sxz]s 	@, t, are, ~aren	<jj.pos.utr.sin.ind.gen> 
+[sxz]@ 	@, t, are, ~aren	<jj.pos.utr.sin.ind.gen> 
+a 	@, t, are, ~aren	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+as 	@, t, are, ~aren	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+e 	@, t, are, ~aren	<jj.pos.mas.sin.def.nom> 
+es 	@, t, are, ~aren	<jj.pos.mas.sin.def.gen> 
+ares 	@, t, are, ~aren	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+ast 	@, t, are, ~aren	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+aste 	@, t, are, ~aren	<jj.suv.utr/neu.sin/plu.def.nom> 
+astes 	@, t, are, ~aren	<jj.suv.utr/neu.sin/plu.def.gen> 
+ts 	@, t, are, ~aren	<jj.pos.neu.sin.ind.gen> 
+het 	@, t, are, ~aren	<nn.utr.sin.ind.nom> 
+heten 	@, t, are, ~aren	<nn.utr.sin.def.nom> 
+heter 	@, t, are, ~aren	<nn.utr.plu.ind.nom> 
+hets 	@, t, are, ~aren	<nn.utr.sin.ind.gen> 
+hetens 	@, t, are, ~aren	<nn.utr.sin.def.gen> 
+heters 	@, t, are, ~aren	<nn.utr.plu.ind.gen> 
+heterna 	@, t, are, ~aren	<nn.utr.plu.def.nom> 
+heternas 	@, t, are, ~aren	<nn.utr.plu.def.gen> 
+
+@ 	@, t, are, ast, aren	<jj.pos.utr.sin.ind.nom> #{EL} # (sen) [22 stycken]
+t 	@, t, are, ast, aren	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+are 	@, t, are, ast, aren	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+ast 	@, t, are, ast, aren	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> #{EL} 
+aren 	@, t, are, ast, aren	<nn.utr.sin.def.nom> #{EL} 
+[^sxz]s 	@, t, are, ast, aren	<jj.pos.utr.sin.ind.gen> 
+[sxz]@ 	@, t, are, ast, aren	<jj.pos.utr.sin.ind.gen> 
+a 	@, t, are, ast, aren	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+as 	@, t, are, ast, aren	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+e 	@, t, are, ast, aren	<jj.pos.mas.sin.def.nom> 
+es 	@, t, are, ast, aren	<jj.pos.mas.sin.def.gen> 
+ares 	@, t, are, ast, aren	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+aste 	@, t, are, ast, aren	<jj.suv.utr/neu.sin/plu.def.nom> 
+astes 	@, t, are, ast, aren	<jj.suv.utr/neu.sin/plu.def.gen> 
+ts 	@, t, are, ast, aren	<jj.pos.neu.sin.ind.gen> 
+het 	@, t, are, ast, aren	<nn.utr.sin.ind.nom> 
+heten 	@, t, are, ast, aren	<nn.utr.sin.def.nom> 
+heter 	@, t, are, ast, aren	<nn.utr.plu.ind.nom> 
+hets 	@, t, are, ast, aren	<nn.utr.sin.ind.gen> 
+hetens 	@, t, are, ast, aren	<nn.utr.sin.def.gen> 
+heters 	@, t, are, ast, aren	<nn.utr.plu.ind.gen> 
+heterna 	@, t, are, ast, aren	<nn.utr.plu.def.nom> 
+heternas 	@, t, are, ast, aren	<nn.utr.plu.def.gen> 
+
+are 	are, ast, ~t	<jj.pos.utr.sin.ind.nom> #{EL} # (fjärmare)
+ast 	are, ast, ~t	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> #{EL} 
+ares 	are, ast, ~t	<jj.pos.utr.sin.ind.gen> 
+aste 	are, ast, ~t	<jj.suv.utr/neu.sin/plu.def.nom> 
+astes 	are, ast, ~t	<jj.suv.utr/neu.sin/plu.def.gen> 
+
+@ 	@, tt, are, ~aren	<jj.pos.utr.sin.ind.nom> #{EL} # 602 (blå)
+tt 	@, tt, are, ~aren	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+are 	@, tt, are, ~aren	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+[^sxz]s 	@, tt, are, ~aren	<jj.pos.utr.sin.ind.gen> 
+[sxz]@ 	@, tt, are, ~aren	<jj.pos.utr.sin.ind.gen> 
+a 	@, tt, are, ~aren	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+as 	@, tt, are, ~aren	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+e 	@, tt, are, ~aren	<jj.pos.mas.sin.def.nom> 
+es 	@, tt, are, ~aren	<jj.pos.mas.sin.def.gen> 
+ares 	@, tt, are, ~aren	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+ast 	@, tt, are, ~aren	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+aste 	@, tt, are, ~aren	<jj.suv.utr/neu.sin/plu.def.nom> 
+astes 	@, tt, are, ~aren	<jj.suv.utr/neu.sin/plu.def.gen> 
+tts 	@, tt, are, ~aren	<jj.pos.neu.sin.ind.gen> 
+het 	@, tt, are, ~aren	<nn.utr.sin.ind.nom> 
+heten 	@, tt, are, ~aren	<nn.utr.sin.def.nom> 
+heter 	@, tt, are, ~aren	<nn.utr.plu.ind.nom> 
+hets 	@, tt, are, ~aren	<nn.utr.sin.ind.gen> 
+hetens 	@, tt, are, ~aren	<nn.utr.sin.def.gen> 
+heters 	@, tt, are, ~aren	<nn.utr.plu.ind.gen> 
+heterna 	@, tt, are, ~aren	<nn.utr.plu.def.nom> 
+heternas 	@, tt, are, ~aren	<nn.utr.plu.def.gen> 
+
+
+t 	t, tare, ~taren	<jj.pos.utr.sin.ind.nom jj.pos.neu.sin.ind.nom ab> #{EL} # 603 (lätt)
+tare 	t, tare, ~taren	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+ts 	t, tare, ~taren	<jj.pos.utr.sin.ind.gen jj.pos.neu.sin.ind.gen> 
+ta 	t, tare, ~taren	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+tas 	t, tare, ~taren	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+te 	t, tare, ~taren	<jj.pos.mas.sin.def.nom> 
+tes 	t, tare, ~taren	<jj.pos.mas.sin.def.gen> 
+tares 	t, tare, ~taren	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+tast 	t, tare, ~taren	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+taste 	t, tare, ~taren	<jj.suv.utr/neu.sin/plu.def.nom> 
+tastes 	t, tare, ~taren	<jj.suv.utr/neu.sin/plu.def.gen> 
+thet 	t, tare, ~taren	<nn.utr.sin.ind.nom> 
+theten 	t, tare, ~taren	<nn.utr.sin.def.nom> 
+theter 	t, tare, ~taren	<nn.utr.plu.ind.nom> 
+thets 	t, tare, ~taren	<nn.utr.sin.ind.gen> 
+thetens 	t, tare, ~taren	<nn.utr.sin.def.gen> 
+theters 	t, tare, ~taren	<nn.utr.plu.ind.gen> 
+theterna 	t, tare, ~taren	<nn.utr.plu.def.nom> 
+theternas 	t, tare, ~taren	<nn.utr.plu.def.gen> 
+
+nn 	nn, nt, nnare, ~nnaren	<jj.pos.utr.sin.ind.nom> #{EL} # (stinn)
+nt 	nn, nt, nnare, ~nnaren	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+nnare 	nn, nt, nnare, ~nnaren	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+nns 	nn, nt, nnare, ~nnaren	<jj.pos.utr.sin.ind.gen> 
+nna 	nn, nt, nnare, ~nnaren	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+nnas 	nn, nt, nnare, ~nnaren	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+nne 	nn, nt, nnare, ~nnaren	<jj.pos.mas.sin.def.nom> 
+nnes 	nn, nt, nnare, ~nnaren	<jj.pos.mas.sin.def.gen> 
+nnares 	nn, nt, nnare, ~nnaren	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+nnast 	nn, nt, nnare, ~nnaren	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+nnaste 	nn, nt, nnare, ~nnaren	<jj.suv.utr/neu.sin/plu.def.nom> 
+nnastes 	nn, nt, nnare, ~nnaren	<jj.suv.utr/neu.sin/plu.def.gen> 
+nts 	nn, nt, nnare, ~nnaren	<jj.pos.neu.sin.ind.gen> 
+nnhet 	nn, nt, nnare, ~nnaren	<nn.utr.sin.ind.nom> 
+nnheten 	nn, nt, nnare, ~nnaren	<nn.utr.sin.def.nom> 
+nnheter 	nn, nt, nnare, ~nnaren	<nn.utr.plu.ind.nom> 
+nnhets 	nn, nt, nnare, ~nnaren	<nn.utr.sin.ind.gen> 
+nnhetens 	nn, nt, nnare, ~nnaren	<nn.utr.sin.def.gen> 
+nnheters 	nn, nt, nnare, ~nnaren	<nn.utr.plu.ind.gen> 
+nnheterna 	nn, nt, nnare, ~nnaren	<nn.utr.plu.def.nom> 
+nnheternas 	nn, nt, nnare, ~nnaren	<nn.utr.plu.def.gen> 
+
+ta 	ta, tare, ~taren, ~t	<jj.pos.utr.sin.ind.nom jj.pos.neu.sin.ind.nom jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom ab.pos> #{EL} # (äkta)
+tare 	ta, tare, ~taren, ~t	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+tas 	ta, tare, ~taren, ~t	<jj.pos.utr.sin.ind.gen jj.pos.neu.sin.ind.gen jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+te 	ta, tare, ~taren, ~t	<jj.pos.mas.sin.def.nom> 
+tes 	ta, tare, ~taren, ~t	<jj.pos.mas.sin.def.gen> 
+tares 	ta, tare, ~taren, ~t	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+tast 	ta, tare, ~taren, ~t	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+taste 	ta, tare, ~taren, ~t	<jj.suv.utr/neu.sin/plu.def.nom> 
+tastes 	ta, tare, ~taren, ~t	<jj.suv.utr/neu.sin/plu.def.gen> 
+thet 	ta, tare, ~taren, ~t	<nn.utr.sin.ind.nom> 
+theten 	ta, tare, ~taren, ~t	<nn.utr.sin.def.nom> 
+theter 	ta, tare, ~taren, ~t	<nn.utr.plu.ind.nom> 
+thets 	ta, tare, ~taren, ~t	<nn.utr.sin.ind.gen> 
+thetens 	ta, tare, ~taren, ~t	<nn.utr.sin.def.gen> 
+theters 	ta, tare, ~taren, ~t	<nn.utr.plu.ind.gen> 
+theterna 	ta, tare, ~taren, ~t	<nn.utr.plu.def.nom> 
+theternas 	ta, tare, ~taren, ~t	<nn.utr.plu.def.gen> 
+
+
+d 	d, tt, dare, ~daren	<jj.pos.utr.sin.ind.nom> #{EL} # (vid) [19 stycken]
+tt 	d, tt, dare, ~daren	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+dare 	d, tt, dare, ~daren	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+ds 	d, tt, dare, ~daren	<jj.pos.utr.sin.ind.gen> 
+da 	d, tt, dare, ~daren	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+das 	d, tt, dare, ~daren	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+de 	d, tt, dare, ~daren	<jj.pos.mas.sin.def.nom> 
+des 	d, tt, dare, ~daren	<jj.pos.mas.sin.def.gen> 
+dares 	d, tt, dare, ~daren	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+dast 	d, tt, dare, ~daren	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+daste 	d, tt, dare, ~daren	<jj.suv.utr/neu.sin/plu.def.nom> 
+dastes 	d, tt, dare, ~daren	<jj.suv.utr/neu.sin/plu.def.gen> 
+tts 	d, tt, dare, ~daren	<jj.pos.neu.sin.ind.gen> 
+dhet 	d, tt, dare, ~daren	<nn.utr.sin.ind.nom> 
+dheten 	d, tt, dare, ~daren	<nn.utr.sin.def.nom> 
+dheter 	d, tt, dare, ~daren	<nn.utr.plu.ind.nom> 
+dhets 	d, tt, dare, ~daren	<nn.utr.sin.ind.gen> 
+dhetens 	d, tt, dare, ~daren	<nn.utr.sin.def.gen> 
+dheters 	d, tt, dare, ~daren	<nn.utr.plu.ind.gen> 
+dheterna 	d, tt, dare, ~daren	<nn.utr.plu.def.nom> 
+dheternas 	d, tt, dare, ~daren	<nn.utr.plu.def.gen> 
+
+
+d 	d, t, dare, ~daren	<jj.pos.utr.sin.ind.nom> #{EL} # (hård)
+t 	d, t, dare, ~daren	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+dare 	d, t, dare, ~daren	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+ds 	d, t, dare, ~daren	<jj.pos.utr.sin.ind.gen> 
+da 	d, t, dare, ~daren	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+das 	d, t, dare, ~daren	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+de 	d, t, dare, ~daren	<jj.pos.mas.sin.def.nom> 
+des 	d, t, dare, ~daren	<jj.pos.mas.sin.def.gen> 
+dares 	d, t, dare, ~daren	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+dast 	d, t, dare, ~daren	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+daste 	d, t, dare, ~daren	<jj.suv.utr/neu.sin/plu.def.nom> 
+dastes 	d, t, dare, ~daren	<jj.suv.utr/neu.sin/plu.def.gen> 
+ts 	d, t, dare, ~daren	<jj.pos.neu.sin.ind.gen> 
+dhet 	d, t, dare, ~daren	<nn.utr.sin.ind.nom> 
+dheten 	d, t, dare, ~daren	<nn.utr.sin.def.nom> 
+dheter 	d, t, dare, ~daren	<nn.utr.plu.ind.nom> 
+dhets 	d, t, dare, ~daren	<nn.utr.sin.ind.gen> 
+dhetens 	d, t, dare, ~daren	<nn.utr.sin.def.gen> 
+dheters 	d, t, dare, ~daren	<nn.utr.plu.ind.gen> 
+dheterna 	d, t, dare, ~daren	<nn.utr.plu.def.nom> 
+dheternas 	d, t, dare, ~daren	<nn.utr.plu.def.gen> 
+
+
+
+m 	m, mt, mma, mmare, ~mmaren	<jj.pos.utr.sin.ind.nom> #{EL} # 608 (ensam) [107 stycken]
+mt 	m, mt, mma, mmare, ~mmaren	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+mma 	m, mt, mma, mmare, ~mmaren	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> #{EL} 
+mmare 	m, mt, mma, mmare, ~mmaren	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+ms 	m, mt, mma, mmare, ~mmaren	<jj.pos.utr.sin.ind.gen> 
+mmas 	m, mt, mma, mmare, ~mmaren	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+mme 	m, mt, mma, mmare, ~mmaren	<jj.pos.mas.sin.def.nom> 
+mmes 	m, mt, mma, mmare, ~mmaren	<jj.pos.mas.sin.def.gen> 
+mmares 	m, mt, mma, mmare, ~mmaren	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+mmast 	m, mt, mma, mmare, ~mmaren	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+mmaste 	m, mt, mma, mmare, ~mmaren	<jj.suv.utr/neu.sin/plu.def.nom> 
+mmastes 	m, mt, mma, mmare, ~mmaren	<jj.suv.utr/neu.sin/plu.def.gen> 
+mts 	m, mt, mma, mmare, ~mmaren	<jj.pos.neu.sin.ind.gen> 
+mhet 	m, mt, mma, mmare, ~mmaren	<nn.utr.sin.ind.nom> 
+mheten 	m, mt, mma, mmare, ~mmaren	<nn.utr.sin.def.nom> 
+mheter 	m, mt, mma, mmare, ~mmaren	<nn.utr.plu.ind.nom> 
+mhets 	m, mt, mma, mmare, ~mmaren	<nn.utr.sin.ind.gen> 
+mhetens 	m, mt, mma, mmare, ~mmaren	<nn.utr.sin.def.gen> 
+mheters 	m, mt, mma, mmare, ~mmaren	<nn.utr.plu.ind.gen> 
+mheterna 	m, mt, mma, mmare, ~mmaren	<nn.utr.plu.def.nom> 
+mheternas 	m, mt, mma, mmare, ~mmaren	<nn.utr.plu.def.gen> 
+
+mmen 	mmen, mmet, mna	<jj.pos.utr.sin.ind.nom> #{EL} # (ljummen)
+mmet 	mmen, mmet, mna	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+mna 	mmen, mmet, mna	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> #{EL} 
+mnare 	mmen, mmet, mna	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+mmens 	mmen, mmet, mna	<jj.pos.utr.sin.ind.gen> 
+mnas 	mmen, mmet, mna	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+mne 	mmen, mmet, mna	<jj.pos.mas.sin.def.nom> 
+mnes 	mmen, mmet, mna	<jj.pos.mas.sin.def.gen> 
+mnares 	mmen, mmet, mna	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+mnast 	mmen, mmet, mna	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+mnaste 	mmen, mmet, mna	<jj.suv.utr/neu.sin/plu.def.nom> 
+mnastes 	mmen, mmet, mna	<jj.suv.utr/neu.sin/plu.def.gen> 
+mmets 	mmen, mmet, mna	<jj.pos.neu.sin.ind.gen> 
+mmenhet 	mmen, mmet, mna	<nn.utr.sin.ind.nom> 
+mmenheten 	mmen, mmet, mna	<nn.utr.sin.def.nom> 
+mmenheter 	mmen, mmet, mna	<nn.utr.plu.ind.nom> 
+mmenhets 	mmen, mmet, mna	<nn.utr.sin.ind.gen> 
+mmenhetens 	mmen, mmet, mna	<nn.utr.sin.def.gen> 
+mmenheters 	mmen, mmet, mna	<nn.utr.plu.ind.gen> 
+mmenheterna 	mmen, mmet, mna	<nn.utr.plu.def.nom> 
+mmenheternas 	mmen, mmet, mna	<nn.utr.plu.def.gen> 
+
+[^n]en 	en, et, na, nare, ~naren	<jj.pos.utr.sin.ind.nom> #{EL} # 613 (angelägen) [350 stycken]
+[^n]et 	en, et, na, nare, ~naren	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+[^n]na 	en, et, na, nare, ~naren	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> #{EL} 
+[^n]nare 	en, et, na, nare, ~naren	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+[^n]ens 	en, et, na, nare, ~naren	<jj.pos.utr.sin.ind.gen> 
+[^n]nas 	en, et, na, nare, ~naren	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+[^n]ne 	en, et, na, nare, ~naren	<jj.pos.mas.sin.def.nom> 
+[^n]nes 	en, et, na, nare, ~naren	<jj.pos.mas.sin.def.gen> 
+[^n]nares 	en, et, na, nare, ~naren	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+[^n]nast 	en, et, na, nare, ~naren	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+[^n]naste 	en, et, na, nare, ~naren	<jj.suv.utr/neu.sin/plu.def.nom> 
+[^n]nastes 	en, et, na, nare, ~naren	<jj.suv.utr/neu.sin/plu.def.gen> 
+[^n]ets 	en, et, na, nare, ~naren	<jj.pos.neu.sin.ind.gen> 
+[^n]enhet 	en, et, na, nare, ~naren	<nn.utr.sin.ind.nom> 
+[^n]enheten 	en, et, na, nare, ~naren	<nn.utr.sin.def.nom> 
+[^n]enheter 	en, et, na, nare, ~naren	<nn.utr.plu.ind.nom> 
+[^n]enhets 	en, et, na, nare, ~naren	<nn.utr.sin.ind.gen> 
+[^n]enhetens 	en, et, na, nare, ~naren	<nn.utr.sin.def.gen> 
+[^n]enheters 	en, et, na, nare, ~naren	<nn.utr.plu.ind.gen> 
+[^n]enheterna 	en, et, na, nare, ~naren	<nn.utr.plu.def.nom> 
+[^n]enheternas 	en, et, na, nare, ~naren	<nn.utr.plu.def.gen> 
+
+
+er 	er, ert, ra, ~erna	<jj.pos.utr.sin.ind.nom> #{EL} # (tapper) [34 stycken]
+ert 	er, ert, ra, ~erna	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+ra 	er, ert, ra, ~erna	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> #{EL} 
+ers 	er, ert, ra, ~erna	<jj.pos.utr.sin.ind.gen> 
+erts 	er, ert, ra, ~erna	<jj.pos.neu.sin.ind.gen> 
+ras 	er, ert, ra, ~erna	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+re 	er, ert, ra, ~erna	<jj.pos.mas.sin.def.nom> 
+res 	er, ert, ra, ~erna	<jj.pos.mas.sin.def.gen> 
+rare 	er, ert, ra, ~erna	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+rares 	er, ert, ra, ~erna	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+rast 	er, ert, ra, ~erna	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+raste 	er, ert, ra, ~erna	<jj.suv.utr/neu.sin/plu.def.nom> 
+rastes 	er, ert, ra, ~erna	<jj.suv.utr/neu.sin/plu.def.gen> 
+erhet 	er, ert, ra, ~erna	<nn.utr.sin.ind.nom> 
+erheten 	er, ert, ra, ~erna	<nn.utr.sin.def.nom> 
+erheter 	er, ert, ra, ~erna	<nn.utr.plu.ind.nom> 
+erhets 	er, ert, ra, ~erna	<nn.utr.sin.ind.gen> 
+erhetens 	er, ert, ra, ~erna	<nn.utr.sin.def.gen> 
+erheters 	er, ert, ra, ~erna	<nn.utr.plu.ind.gen> 
+erheterna 	er, ert, ra, ~erna	<nn.utr.plu.def.nom> 
+erheternas 	er, ert, ra, ~erna	<nn.utr.plu.def.gen> 
+
+erst 	erst	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> #{EL} # (ytterst)
+ersta 	erst	<jj.suv.utr/neu.sin/plu.def.nom> 
+erstas 	erst	<jj.suv.utr/neu.sin/plu.def.gen> 
+
+t 	t, thet	<jj.pos.utr.sin.ind.nom jj.pos.neu.sin.ind.nom ab> #{EL} # (täppt)
+thet 	t, thet	<nn.utr.sin.ind.nom> #{EL} 
+ts 	t, thet	<jj.pos.utr.sin.ind.gen jj.pos.neu.sin.ind.gen> 
+ta 	t, thet	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+tas 	t, thet	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+te 	t, thet	<jj.pos.mas.sin.def.nom> 
+tes 	t, thet	<jj.pos.mas.sin.def.gen> 
+tare 	t, thet	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+tares 	t, thet	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+tast 	t, thet	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+taste 	t, thet	<jj.suv.utr/neu.sin/plu.def.nom> 
+tastes 	t, thet	<jj.suv.utr/neu.sin/plu.def.gen> 
+theten 	t, thet	<nn.utr.sin.def.nom> 
+theter 	t, thet	<nn.utr.plu.ind.nom> 
+thets 	t, thet	<nn.utr.sin.ind.gen> 
+thetens 	t, thet	<nn.utr.sin.def.gen> 
+theters 	t, thet	<nn.utr.plu.ind.gen> 
+theterna 	t, thet	<nn.utr.plu.def.nom> 
+theternas 	t, thet	<nn.utr.plu.def.gen> 
+
+d 	d, dhet	<jj.pos.utr.sin.ind.nom> #{EL} # (rofylld) [170 stycken, klar]
+dhet 	d, dhet	<nn.utr.sin.ind.nom> #{EL} 
+ds 	d, dhet	<jj.pos.utr.sin.ind.gen> 
+t 	d, dhet, t	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+ts 	d, dhet, t	<jj.pos.neu.sin.ind.gen> 
+da 	d, dhet	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+das 	d, dhet	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+de 	d, dhet	<jj.pos.mas.sin.def.nom> 
+des 	d, dhet	<jj.pos.mas.sin.def.gen> 
+dare 	d, dhet	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+dares 	d, dhet	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+dast 	d, dhet	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+daste 	d, dhet	<jj.suv.utr/neu.sin/plu.def.nom> 
+dastes 	d, dhet	<jj.suv.utr/neu.sin/plu.def.gen> 
+dheten 	d, dhet	<nn.utr.sin.def.nom> 
+dheter 	d, dhet	<nn.utr.plu.ind.nom> 
+dhets 	d, dhet	<nn.utr.sin.ind.gen> 
+dhetens 	d, dhet	<nn.utr.sin.def.gen> 
+dheters 	d, dhet	<nn.utr.plu.ind.gen> 
+dheterna 	d, dhet	<nn.utr.plu.def.nom> 
+dheternas 	d, dhet	<nn.utr.plu.def.gen> 
+
+d 	d, dhet, tt	<jj.pos.utr.sin.ind.nom> #{EL} 
+dhet 	d, dhet, tt	<nn.utr.sin.ind.nom> #{EL} 
+tt 	d, dhet, tt	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+tts 	d, dhet, tt	<jj.pos.neu.sin.ind.gen> 
+
+dd 	dd, ddhet	<jj.pos.utr.sin.ind.nom> #{EL} 
+ddhet 	dd, ddhet	<nn.utr.sin.ind.nom> #{EL} 
+tt 	dd, ddhet	<jj.pos.neu.sin.ind.nom ab.pos> 
+tts 	dd, ddhet	<jj.pos.neu.sin.ind.gen> 
+
+ad 	ad, at, ade, ~a	<jj.pos.utr.sin.ind.nom> #{EL} # (obarkad) [20 stycken]
+at 	ad, at, ade, ~a	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+ade 	ad, at, ade, ~a	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom jj.pos.mas.sin.def.nom> #{EL} 
+ads 	ad, at, ade, ~a	<jj.pos.utr.sin.ind.gen> 
+ats 	ad, at, ade, ~a	<jj.pos.neu.sin.ind.gen> 
+ades 	ad, at, ade, ~a	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen jj.pos.mas.sin.def.gen> #
+
+(el|er)[^mns]@ 	@, het, t	<jj.pos.utr.sin.ind.nom> #{EL} # (svår) [116 stycken, klar]
+(el|er)[^mns]het 	@, het, t	<nn.utr.sin.ind.nom> #{EL} 
+(el|er)[^mns]t 	@, het, t	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+(el|er)[^mns]s 	@, het, t	<jj.pos.utr.sin.ind.gen> 
+(el|er)[^mn]ts 	@, het, t	<jj.pos.neu.sin.ind.gen> 
+(el|er)[^mn]a 	@, het, t	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+(el|er)[^mn]as 	@, het, t	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+(el|er)[^mn]e 	@, het, t	<jj.pos.mas.sin.def.nom> 
+(el|er)[^mn]es 	@, het, t	<jj.pos.mas.sin.def.gen> 
+(el|er)[^mn]are 	@, het, t, are	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{EL} 
+(el|er)[^mn]ares 	@, het, t, are	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+(el|er)[^mn]ast 	@, het, t, are	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+(el|er)[^mn]aste 	@, het, t, are	<jj.suv.utr/neu.sin/plu.def.nom> 
+(el|er)[^mn]astes 	@, het, t, are	<jj.suv.utr/neu.sin/plu.def.gen> 
+
+@ 	@, het, t	<jj.pos.utr.sin.ind.nom> #{EL} # (svår) [159 stycken, klar]
+het 	@, het, t	<nn.utr.sin.ind.nom> #{EL} 
+t 	@, het, t	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+heten 	@, het, t	<nn.utr.sin.def.nom> 
+heter 	@, het, t	<nn.utr.plu.ind.nom> 
+hets 	@, het, t	<nn.utr.sin.ind.gen> 
+hetens 	@, het, t	<nn.utr.sin.def.gen> 
+heters 	@, het, t	<nn.utr.plu.ind.gen> 
+heterna 	@, het, t	<nn.utr.plu.def.nom> 
+heternas 	@, het, t	<nn.utr.plu.def.gen> 
+
+en 	en, enhet	<jj.pos.utr.sin.ind.nom> #{EL} # (tillgiven) [115 stycken]
+enhet 	en, enhet	<nn.utr.sin.ind.nom> #{EL} 
+enheten 	en, enhet	<nn.utr.sin.def.nom> 
+enheter 	en, enhet	<nn.utr.plu.ind.nom> 
+enhets 	en, enhet	<nn.utr.sin.ind.gen> 
+enhetens 	en, enhet	<nn.utr.sin.def.gen> 
+enheters 	en, enhet	<nn.utr.plu.ind.gen> 
+enheterna 	en, enhet	<nn.utr.plu.def.nom> 
+enheternas 	en, enhet	<nn.utr.plu.def.gen> 
+[^m]ens 	en, enhet, ~enheten	<jj.pos.utr.sin.ind.gen> 
+[^m]et 	en, enhet, ~enheten	<jj.pos.neu.sin.ind.nom ab.pos> 
+[^m]ets 	en, enhet, ~enheten	<jj.pos.neu.sin.ind.gen> 
+[^m]na 	en, enhet, ~enheten	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+[^m]nas 	en, enhet, ~enheten	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+[^m]ne 	en, enhet, ~enheten	<jj.pos.mas.sin.def.nom> 
+[^m]nes 	en, enhet, ~enheten	<jj.pos.mas.sin.def.gen> 
+[^m]nare 	en, enhet, ~enheten	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+[^m]nares 	en, enhet, ~enheten	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+[^m]nast 	en, enhet, ~enheten	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+[^m]naste 	en, enhet, ~enheten	<jj.suv.utr/neu.sin/plu.def.nom> 
+[^m]nastes 	en, enhet, ~enheten	<jj.suv.utr/neu.sin/plu.def.gen> 
+
+el 	el, elt, la	<jj.pos.utr.sin.ind.nom> #{EL} # (dunkel) [85 stycken]
+elt 	el, elt, la	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+la 	el, elt, la	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> #{EL} 
+els 	el, elt, la	<jj.pos.utr.sin.ind.gen> 
+elts 	el, elt, la	<jj.pos.neu.sin.ind.gen> 
+las 	el, elt, la	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+le 	el, elt, la	<jj.pos.mas.sin.def.nom> 
+les 	el, elt, la	<jj.pos.mas.sin.def.gen> 
+lare 	el, elt, la	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+lares 	el, elt, la	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+last 	el, elt, la	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+laste 	el, elt, la	<jj.suv.utr/neu.sin/plu.def.nom> 
+lastes 	el, elt, la	<jj.suv.utr/neu.sin/plu.def.gen> 
+elhet 	el, elt, la	<nn.utr.sin.ind.nom> 
+elheten 	el, elt, la	<nn.utr.sin.def.nom> 
+elheter 	el, elt, la	<nn.utr.plu.ind.nom> 
+elhets 	el, elt, la	<nn.utr.sin.ind.gen> 
+elhetens 	el, elt, la	<nn.utr.sin.def.gen> 
+elheters 	el, elt, la	<nn.utr.plu.ind.gen> 
+elheterna 	el, elt, la	<nn.utr.plu.def.nom> 
+elheternas 	el, elt, la	<nn.utr.plu.def.gen> 
+
+
+bar 	bar, bart	<jj.pos.utr.sin.ind.nom> #{EL} # (vändbar) [344 stycken]
+bart 	bar, bart	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+bars 	bar, bart	<jj.pos.utr.sin.ind.gen> 
+barts 	bar, bart	<jj.pos.neu.sin.ind.gen> 
+bara 	bar, bart	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+baras 	bar, bart	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+bare 	bar, bart	<jj.pos.mas.sin.def.nom> #
+bares 	bar, bart	<jj.pos.mas.sin.def.gen> 
+barare 	bar, bart	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+barares 	bar, bart	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+barast 	bar, bart	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+baraste 	bar, bart	<jj.suv.utr/neu.sin/plu.def.nom> 
+barastes 	bar, bart	<jj.suv.utr/neu.sin/plu.def.gen> 
+barhet 	bar, bart	<nn.utr.sin.ind.nom> 
+barheten 	bar, bart	<nn.utr.sin.def.nom> 
+barheter 	bar, bart	<nn.utr.plu.ind.nom> 
+barhets 	bar, bart	<nn.utr.sin.ind.gen> 
+barhetens 	bar, bart	<nn.utr.sin.def.gen> 
+barheters 	bar, bart	<nn.utr.plu.ind.gen> 
+barheterna 	bar, bart	<nn.utr.plu.def.nom> 
+barheternas 	bar, bart	<nn.utr.plu.def.gen> 
+
+ell 	ell, ellt	<jj.pos.utr.sin.ind.nom> #{EL} # (visuell) [126 stycken]
+ellt 	ell, ellt	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+ells 	ell, ellt	<jj.pos.utr.sin.ind.gen> 
+ellts 	ell, ellt	<jj.pos.neu.sin.ind.gen> 
+ella 	ell, ellt	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+ellas 	ell, ellt	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+elle 	ell, ellt	<jj.pos.mas.sin.def.nom> 
+elles 	ell, ellt	<jj.pos.mas.sin.def.gen> 
+ellare 	ell, ellt	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+ellares 	ell, ellt	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+ellast 	ell, ellt	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+ellaste 	ell, ellt	<jj.suv.utr/neu.sin/plu.def.nom> 
+ellastes 	ell, ellt	<jj.suv.utr/neu.sin/plu.def.gen> 
+ellhet 	ell, ellt	<nn.utr.sin.ind.nom> 
+ellheten 	ell, ellt	<nn.utr.sin.def.nom> 
+ellheter 	ell, ellt	<nn.utr.plu.ind.nom> 
+ellhets 	ell, ellt	<nn.utr.sin.ind.gen> 
+ellhetens 	ell, ellt	<nn.utr.sin.def.gen> 
+ellheters 	ell, ellt	<nn.utr.plu.ind.gen> 
+ellheterna 	ell, ellt	<nn.utr.plu.def.nom> 
+ellheternas 	ell, ellt	<nn.utr.plu.def.gen> 
+
+iv 	iv, ivt	<jj.pos.utr.sin.ind.nom> #{EL} # (vegetativ) [175 stycken]
+ivt 	iv, ivt	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+ivs 	iv, ivt	<jj.pos.utr.sin.ind.gen> 
+ivts 	iv, ivt	<jj.pos.neu.sin.ind.gen> 
+iva 	iv, ivt	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+ivas 	iv, ivt	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+ive 	iv, ivt	<jj.pos.mas.sin.def.nom> 
+ives 	iv, ivt	<jj.pos.mas.sin.def.gen> 
+ivare 	iv, ivt	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+ivares 	iv, ivt	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+ivast 	iv, ivt	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+ivaste 	iv, ivt	<jj.suv.utr/neu.sin/plu.def.nom> 
+ivastes 	iv, ivt	<jj.suv.utr/neu.sin/plu.def.gen> 
+ivhet 	iv, ivt	<nn.utr.sin.ind.nom> 
+ivheten 	iv, ivt	<nn.utr.sin.def.nom> 
+ivheter 	iv, ivt	<nn.utr.plu.ind.nom> 
+ivhets 	iv, ivt	<nn.utr.sin.ind.gen> 
+ivhetens 	iv, ivt	<nn.utr.sin.def.gen> 
+ivheters 	iv, ivt	<nn.utr.plu.ind.gen> 
+ivheterna 	iv, ivt	<nn.utr.plu.def.nom> 
+ivheternas 	iv, ivt	<nn.utr.plu.def.gen> 
+
+sk 	sk, skt	<jj.pos.utr.sin.ind.nom> #{EL} # (vrensk) [1609 stycken]
+skt 	sk, skt	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+sks 	sk, skt	<jj.pos.utr.sin.ind.gen> 
+skts 	sk, skt	<jj.pos.neu.sin.ind.gen> 
+ska 	sk, skt	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+skas 	sk, skt	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+ske 	sk, skt	<jj.pos.mas.sin.def.nom> 
+skes 	sk, skt	<jj.pos.mas.sin.def.gen> 
+skare 	sk, skt	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+skares 	sk, skt	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+skast 	sk, skt	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+skaste 	sk, skt	<jj.suv.utr/neu.sin/plu.def.nom> 
+skastes 	sk, skt	<jj.suv.utr/neu.sin/plu.def.gen> 
+skhet 	sk, skt	<nn.utr.sin.ind.nom> 
+skheten 	sk, skt	<nn.utr.sin.def.nom> 
+skheter 	sk, skt	<nn.utr.plu.ind.nom> 
+skhets 	sk, skt	<nn.utr.sin.ind.gen> 
+skhetens 	sk, skt	<nn.utr.sin.def.gen> 
+skheters 	sk, skt	<nn.utr.plu.ind.gen> 
+skheterna 	sk, skt	<nn.utr.plu.def.nom> 
+skheternas 	sk, skt	<nn.utr.plu.def.gen> 
+
+
+är 	är, ärt	<jj.pos.utr.sin.ind.nom> #{EL} # (vulgär) [95 stycken] undantag: utlär
+ärt 	är, ärt	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+ärs 	är, ärt	<jj.pos.utr.sin.ind.gen> 
+ärts 	är, ärt	<jj.pos.neu.sin.ind.gen> 
+ära 	är, ärt	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+äras 	är, ärt	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+äre 	är, ärt	<jj.pos.mas.sin.def.nom> 
+äres 	är, ärt	<jj.pos.mas.sin.def.gen> 
+ärare 	är, ärt	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+ärares 	är, ärt	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+ärast 	är, ärt	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+äraste 	är, ärt	<jj.suv.utr/neu.sin/plu.def.nom> 
+ärastes 	är, ärt	<jj.suv.utr/neu.sin/plu.def.gen> 
+ärhet 	är, ärt	<nn.utr.sin.ind.nom> 
+ärheten 	är, ärt	<nn.utr.sin.def.nom> 
+ärheter 	är, ärt	<nn.utr.plu.ind.nom> 
+ärhets 	är, ärt	<nn.utr.sin.ind.gen> 
+ärhetens 	är, ärt	<nn.utr.sin.def.gen> 
+ärheters 	är, ärt	<nn.utr.plu.ind.gen> 
+ärheterna 	är, ärt	<nn.utr.plu.def.nom> 
+ärheternas 	är, ärt	<nn.utr.plu.def.gen> 
+
+
+ös 	ös, öst	<jj.pos.utr.sin.ind.nom jj.pos.utr.sin.ind.gen> #{EL} # (viskös) [94 stycken]
+öst 	ös, öst	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+östs 	ös, öst	<jj.pos.neu.sin.ind.gen> 
+ösa 	ös, öst	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+ösas 	ös, öst	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+öse 	ös, öst	<jj.pos.mas.sin.def.nom> 
+öses 	ös, öst	<jj.pos.mas.sin.def.gen> 
+ösare 	ös, öst	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+ösares 	ös, öst	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+ösast 	ös, öst	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+ösaste 	ös, öst	<jj.suv.utr/neu.sin/plu.def.nom> 
+ösastes 	ös, öst	<jj.suv.utr/neu.sin/plu.def.gen> 
+löshet 	lös, löst	<nn.utr.sin.ind.nom> # [20 stycken]
+lösheten 	lös, löst	<nn.utr.sin.def.nom> 
+lösheter 	lös, löst	<nn.utr.plu.ind.nom> 
+löshets 	lös, löst	<nn.utr.sin.ind.gen> 
+löshetens 	lös, löst	<nn.utr.sin.def.gen> 
+lösheters 	lös, löst	<nn.utr.plu.ind.gen> 
+lösheterna 	lös, löst	<nn.utr.plu.def.nom> 
+lösheternas 	lös, löst	<nn.utr.plu.def.gen> 
+
+ig 	ig, igt	<jj.pos.utr.sin.ind.nom> #{EL} # (vitsig) [2152 stycken, klar]
+igt 	ig, igt	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+igs 	ig, igt	<jj.pos.utr.sin.ind.gen> 
+igts 	ig, igt	<jj.pos.neu.sin.ind.gen> 
+igare 	ig, igt	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+igares 	ig, igt	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+igast 	ig, igt	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+igaste 	ig, igt	<jj.suv.utr/neu.sin/plu.def.nom> 
+igastes 	ig, igt	<jj.suv.utr/neu.sin/plu.def.gen> 
+ige 	ig, igt	<jj.pos.mas.sin.def.nom> 
+iges 	ig, igt	<jj.pos.mas.sin.def.gen> 
+iga 	ig, igt	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+igas 	ig, igt	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+ighet 	ig, igt	<nn.utr.sin.ind.nom> 
+igheten 	ig, igt	<nn.utr.sin.def.nom> 
+igheter 	ig, igt	<nn.utr.plu.ind.nom> 
+ighets 	ig, igt	<nn.utr.sin.ind.gen> 
+ighetens 	ig, igt	<nn.utr.sin.def.gen> 
+igheters 	ig, igt	<nn.utr.plu.ind.gen> 
+igheterna 	ig, igt	<nn.utr.plu.def.nom> 
+igheternas 	ig, igt	<nn.utr.plu.def.gen> 
+
+ad 	ad, at, ~ade, ~aden	<jj.pos.utr.sin.ind.nom> #{EL} # (sofistikerad) [668 stycken]
+at 	ad, at, ~ade, ~aden	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+ade 	ad, at, ~ade, ~aden	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom jj.pos.mas.sin.def.nom> 
+ads 	ad, at, ~ade, ~aden	<jj.pos.utr.sin.ind.gen> 
+ades 	ad, at, ~ade, ~aden	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen jj.pos.mas.sin.def.gen> #
+ats 	ad, at, ~ade, ~aden	<jj.pos.neu.sin.ind.gen> 
+as 	ad, at, as, ~ade, ~aden	<jj.pos.utr.sin.ind.gen> #{EL} 
+
+sam 	sam, ~samen	<jj.pos.utr.sin.ind.nom> #{EL} # ensam [119 stycken]
+sams 	sam, ~samen	<jj.pos.utr.sin.ind.gen> 
+samt 	sam, ~samen	<jj.pos.neu.sin.ind.nom ab.pos> 
+samts 	sam, ~samen	<jj.pos.neu.sin.ind.gen> 
+samma 	sam, ~samen	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+sammas 	sam, ~samen	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+samme 	sam, ~samen	<jj.pos.mas.sin.def.nom> 
+sammes 	sam, ~samen	<jj.pos.mas.sin.def.gen> 
+sammare 	sam, ~samen	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+sammares 	sam, ~samen	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+sammast 	sam, ~samen	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+sammaste 	sam, ~samen	<jj.suv.utr/neu.sin/plu.def.nom> 
+sammastes 	sam, ~samen	<jj.suv.utr/neu.sin/plu.def.gen> 
+samhet 	sam, ~samen	<nn.utr.sin.ind.nom> 
+samheten 	sam, ~samen	<nn.utr.sin.def.nom> 
+samheter 	sam, ~samen	<nn.utr.plu.ind.nom> 
+samhets 	sam, ~samen	<nn.utr.sin.ind.gen> 
+samhetens 	sam, ~samen	<nn.utr.sin.def.gen> 
+samheters 	sam, ~samen	<nn.utr.plu.ind.gen> 
+samheterna 	sam, ~samen	<nn.utr.plu.def.nom> 
+samheternas 	sam, ~samen	<nn.utr.plu.def.gen> 
+
+en 	en, et, na, ~a	<jj.pos.utr.sin.ind.nom> #{EL} # (bunden)
+et 	en, et, na, ~a	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+na 	en, et, na, ~a	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> #{EL} 
+ens 	en, et, na, ~a	<jj.pos.utr.sin.ind.gen> 
+ets 	en, et, na, ~a	<jj.pos.neu.sin.ind.gen> 
+nas 	en, et, na, ~a	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+ne 	a, it, en, na	<jj.pos.mas.sin.def.nom> 
+nes 	a, it, en, na	<jj.pos.mas.sin.def.gen> 
+
+nnen 	nnen, nnet, nna	<jj.pos.utr.sin.ind.nom> #{EL} # oregelbundna verb, NE-tillägg
+nnet 	nnen, nnet, nna	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+nna 	nnen, nnet, nna	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> #{EL} 
+nnens 	nnen, nnet, nna	<jj.pos.utr.sin.ind.gen> #{extra} 
+nnets 	nnen, nnet, nna	<jj.pos.neu.sin.ind.gen> #{extra} 
+nnas 	nnen, nnet, nna	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> #{extra} 
+nne 	nnen, nnet, nna	<jj.pos.utr.sin.ind.nom> #{extra} 
+nnes 	nnen, nnet, nna	<jj.pos.utr.sin.ind.gen> #{extra} 
+
+het 	het, heten	<nn.utr.sin.ind.nom> #{EL} # (yppigheter) [595 stycken]
+heten 	het, heten	<nn.utr.sin.def.nom> #{EL} 
+heter 	het, heten	<nn.utr.plu.ind.nom> 
+hets 	het, heten	<nn.utr.sin.ind.gen> 
+hetens 	het, heten	<nn.utr.sin.def.gen> 
+heters 	het, heten	<nn.utr.plu.ind.gen> 
+heterna 	het, heten	<nn.utr.plu.def.nom> 
+heternas 	het, heten	<nn.utr.plu.def.gen> 
+
+(mm)al 	al, alt, ~alet	<jj.pos.utr.sin.ind.nom> #{EL} # (radikal)
+(mm)alt 	al, alt, ~alet	<jj.pos.neu.sin.ind.nom ab.pos> #{EL} 
+(mm)als 	al, alt, ~alet	<jj.pos.utr.sin.ind.gen> 
+(mm)ala 	al, alt, ~alet	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> 
+(mm)alas 	al, alt, ~alet	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> 
+(mm)alare 	al, alt, ~alet	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+(mm)alares 	al, alt, ~alet	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+(mm)alast 	al, alt, ~alet	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+(mm)alasts 	al, alt, ~alet	<jj.pos.neu.sin.ind.gen> 
+(mm)alaste 	al, alt, ~alet	<jj.suv.utr/neu.sin/plu.def.nom> 
+(mm)alastes 	al, alt, ~alet	<jj.suv.utr/neu.sin/plu.def.gen> 
+
+<B>gammal 	gammal, gamla	<jj.pos.utr.sin.ind.nom> #{EL} #
+<B>gamla 	gammal, gamla	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> #{EL} 
+<B>gammals 	gammal, gamla	<jj.pos.utr.sin.ind.gen> 
+<B>gamlas 	gammal, gamla	<jj.pos.utr/neu.sin.def.gen jj.pos.utr/neu.plu.ind/def.gen> #
+<B>gamle 	gammal, gamla	<jj.pos.mas.sin.def.nom> #
+<B>gamles 	gammal, gamla	<jj.pos.mas.sin.def.gen> #
+<B>äldre 	gammal, gamla	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #
+<B>äldres 	gammal, gamla	<jj.kom.utr/neu.sin/plu.ind/def.gen> #
+<B>äldst 	gammal, gamla	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> #
+<B>äldsts 	gammal, gamla	<jj.pos.neu.sin.ind.gen> #
+<B>äldsta 	gammal, gamla	<jj.suv.utr/neu.sin/plu.def.nom> #
+<B>äldstas 	gammal, gamla	<jj.suv.utr/neu.sin/plu.def.gen> #
+<B>äldste 	gammal, gamla	<jj.pos.mas.sin.def.nom> #
+<B>äldstes 	gammal, gamla	<jj.pos.mas.sin.def.gen> #
+
+<B>liten 	liten, små	<jj.pos.utr.sin.ind.nom> #{EL} #
+<B>små 	liten, små	<jj.pos.utr/neu.plu.ind/def.nom> #{EL} 
+<B>litens 	liten, små	<jj.pos.utr.sin.ind.gen> 
+<B>lilla 	liten, små	<jj.pos.utr/neu.sin.def.nom> #
+<B>lillas 	liten, små	<jj.pos.utr/neu.sin.def.gen> #
+<B>lille 	liten, små	<jj.pos.mas.sin.def.nom> #
+<B>lilles 	liten, små	<jj.pos.mas.sin.def.gen> #
+<B>mindre 	liten, små	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #
+<B>mindres 	liten, små	<jj.kom.utr/neu.sin/plu.ind/def.gen> #
+<B>minst 	liten, små	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> #
+<B>minsts 	liten, små	<jj.pos.neu.sin.ind.gen> #
+<B>minsta 	liten, små	<jj.suv.utr/neu.sin/plu.def.nom> #
+<B>minstas 	liten, små	<jj.suv.utr/neu.sin/plu.def.gen> #
+<B>minste 	liten, små	<jj.pos.mas.sin.def.nom> #
+<B>minstes 	liten, små	<jj.pos.mas.sin.def.gen> #
+
+erst 	erst, ersta	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> #{EL} #
+ersta 	erst, ersta	<jj.suv.utr/neu.sin/plu.def.nom> #{EL} 
+erstas 	erst, ersta	<jj.suv.utr/neu.sin/plu.def.gen> 
+erste 	erst, ersta	<jj.pos.mas.sin.def.nom> #
+erstes 	erst, ersta	<jj.pos.mas.sin.def.gen> #
+
+ism 	ism, ~istisk, ~isk	<nn.utr.sin.ind.nom> #{EL} #  (puritanism)
+istisk 	ism, ~istisk, ~isk	<jj.pos.utr.sin.ind.nom> 
+istiskt 	ism, ~istisk, ~isk	<jj.pos.neu.sin.ind.nom ab.pos> #
+istiska 	ism, ~istisk, ~isk	<jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom> #
+istiskhet 	ism, ~istisk, ~isk	<nn.utr.sin.ind.nom> 
+istiskheten 	ism, ~istisk, ~isk	<nn.utr.sin.def.nom> 
+istiskheter 	ism, ~istisk, ~isk	<nn.utr.plu.ind.nom> #
+
+#<vb> verb:
+
+a 	a, ade	<vb.inf.akt vb.imp.akt> #{EL} #  (övertyga) [5280 stycken]
+ade 	a, ade	<vb.prt.akt pc.prf.mas.sin.def.nom pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #{EL} 
+as 	a, ade	<vb.inf.sfo vb.prs.sfo> 
+ar 	a, ade	<vb.prs.akt> 
+at 	a, ade	<vb.sup.akt pc.prf.neu.sin.ind.nom ab> 
+ats 	a, ade	<vb.sup.sfo pc.prf.neu.sin.ind.gen> 
+ades 	a, ade	<vb.prt.sfo pc.prf.mas.sin.def.gen pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> #
+ad 	a, ade	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> 
+ads 	a, ade	<pc.prf.utr.sin.ind.gen> 
+ande 	a, ade	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+andes 	a, ade	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+andet 	a, ade	<nn.neu.sin.def.nom> 
+andets 	a, ade	<nn.neu.sin.def.gen> 
+anden 	a, ade	<nn.neu.plu.ind.nom> 
+andens 	a, ade	<nn.neu.plu.ind.gen> 
+andena 	a, ade	<nn.neu.plu.def.nom> 
+andenas 	a, ade	<nn.neu.plu.def.gen> 
+
+a 	a, de, ~ade	<vb.inf.akt> #{EL} # 721 (stänga)
+de 	a, de, ~ade	<vb.prt.akt pc.prf.mas.sin.def.nom> #{EL} 
+as 	a, de, ~ade	<vb.inf.sfo> 
+[^r]er 	a, de, ~ade	<vb.prs.akt> 
+[r]@ 	a, de, ~ade	<vb.prs.akt> #{extra} #
+es 	a, de, ~ade	<vb.prs.sfo> 
+s 	a, de, ~ade	<vb.prs.sfo> 
+des 	a, de, ~ade	<vb.prt.sfo pc.prf.mas.sin.def.gen> 
+[^d]t 	a, de, ~ade	<vb.sup.akt pc.prf.neu.sin.ind.nom ab> 
+[^d]ts 	a, de, ~ade	<vb.sup.sfo pc.prf.neu.sin.ind.gen> 
+ande 	a, de, ~ade	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+andes 	a, de, ~ade	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+andet 	a, de, ~ade	<nn.neu.sin.def.nom> 
+andets 	a, de, ~ade	<nn.neu.sin.def.gen> 
+d 	a, de, ~ade	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> 
+ds 	a, de, ~ade	<pc.prf.utr.sin.ind.gen> 
+da 	a, de, ~ade	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> 
+das 	a, de, ~ade	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> 
+@ 	a, de, ~ade	<vb.imp.akt> 
+anden 	a, de, ~ade	<nn.neu.plu.ind.nom> 
+andens 	a, de, ~ade	<nn.neu.plu.ind.gen> 
+andena 	a, de, ~ade	<nn.neu.plu.def.nom> 
+andenas 	a, de, ~ade	<nn.neu.plu.def.gen> 
+
+a 	a, de, t, ~den, ade	<vb.inf.akt> #{EL} # (yr)
+de 	a, de, t, ~den, ade	<vb.prt.akt pc.prf.mas.sin.def.nom> #{EL} 
+t 	a, de, t, ~den, ade	<vb.sup.akt pc.prf.neu.sin.ind.nom ab> #{EL} 
+as 	a, de, t, ~den, ade	<vb.inf.sfo> 
+[r]@ 	a, de, t, ~den, ade	<vb.prs.akt> #{extra} #
+es 	a, de, t, ~den, ade	<vb.prs.sfo> 
+s 	a, de, t, ~den, ade	<vb.prs.sfo> 
+des 	a, de, t, ~den, ade	<vb.prt.sfo pc.prf.mas.sin.def.gen> 
+[^d]ts 	a, de, t, ~den, ade	<vb.sup.sfo pc.prf.neu.sin.ind.gen> 
+ande 	a, de, t, ~den, ade	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+andes 	a, de, t, ~den, ade	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+andet 	a, de, t, ~den, ade	<nn.neu.sin.def.nom> 
+andets 	a, de, t, ~den, ade	<nn.neu.sin.def.gen> 
+d 	a, de, t, ~den, ade	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> 
+ds 	a, de, t, ~den, ade	<pc.prf.utr.sin.ind.gen> 
+da 	a, de, t, ~den, ade	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> 
+das 	a, de, t, ~den, ade	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> 
+@ 	a, de, t, ~den, ade	<vb.imp.akt> 
+anden 	a, de, t, ~den, ade	<nn.neu.plu.ind.nom> 
+andens 	a, de, t, ~den, ade	<nn.neu.plu.ind.gen> 
+andena 	a, de, t, ~den, ade	<nn.neu.plu.def.nom> 
+andenas 	a, de, t, ~den, ade	<nn.neu.plu.def.gen> 
+
+mma 	mma, mde	<vb.inf.akt> #{EL} # 722 (stämma)
+mde 	mma, mde	<vb.prt.akt pc.prf.mas.sin.def.nom> #{EL} 
+mmer 	mma, mde	<vb.prs.akt> 
+mmas 	mma, mde	<vb.inf.sfo> 
+mmes 	mma, mde	<vb.prs.sfo> 
+ms 	mma, mde	<vb.prs.sfo> 
+mdes 	mma, mde	<vb.prt.sfo pc.prf.mas.sin.def.gen> 
+mt 	mma, mde	<vb.sup.akt pc.prf.neu.sin.ind.nom ab.pos> #
+mts 	mma, mde	<vb.sup.sfo pc.prf.neu.sin.ind.gen> 
+mmande 	mma, mde	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+mmandes 	mma, mde	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+mmandet 	mma, mde	<nn.neu.sin.def.nom> 
+mmandets 	mma, mde	<nn.neu.sin.def.gen> 
+md 	mma, mde	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> 
+mds 	mma, mde	<pc.prf.utr.sin.ind.gen> 
+mda 	mma, mde	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> 
+mdas 	mma, mde	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> 
+mdare 	mma, mde	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> 
+mdares 	mma, mde	<jj.kom.utr/neu.sin/plu.ind/def.gen> 
+mdast 	mma, mde	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> 
+mdaste 	mma, mde	<jj.suv.utr/neu.sin/plu.def.nom> 
+mdastes 	mma, mde	<jj.suv.utr/neu.sin/plu.def.gen> 
+m 	mma, mde	<vb.imp.akt> 
+mmanden 	mma, mde	<nn.neu.plu.ind.nom> 
+mmandens 	mma, mde	<nn.neu.plu.ind.gen> 
+mmandena 	mma, mde	<nn.neu.plu.def.nom> 
+mmandenas 	mma, mde	<nn.neu.plu.def.gen> 
+
+nna 	nna, nde, ~nnas	<vb.inf.akt> #{EL} # 723 (spänna)
+nde 	nna, nde, ~nnas	<vb.prt.akt pc.prf.mas.sin.def.nom> #{EL} 
+nner 	nna, nde, ~nnas	<vb.prs.akt> 
+nnas 	nna, nde, ~nnas	<vb.inf.sfo> 
+nnes 	nna, nde, ~nnas	<vb.prs.sfo> 
+nns 	nna, nde, ~nnas	<vb.prs.sfo> 
+ndes 	nna, nde, ~nnas	<vb.prt.sfo pc.prf.mas.sin.def.gen> 
+nt 	nna, nde, ~nnas	<vb.sup.akt pc.prf.neu.sin.ind.nom ab> 
+nts 	nna, nde, ~nnas	<vb.sup.sfo pc.prf.neu.sin.ind.gen> 
+nnande 	nna, nde, ~nnas	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+nnandes 	nna, nde, ~nnas	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+nnandet 	nna, nde, ~nnas	<nn.neu.sin.def.nom> 
+nnandets 	nna, nde, ~nnas	<nn.neu.sin.def.gen> 
+nd 	nna, nde, ~nnas	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> 
+nds 	nna, nde, ~nnas	<pc.prf.utr.sin.ind.gen jj.pos.utr.sin.ind.gen> #
+nda 	nna, nde, ~nnas	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> 
+ndas 	nna, nde, ~nnas	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> 
+nn 	nna, nde, ~nnas	<vb.imp.akt> 
+nnanden 	nna, nde, ~nnas	<nn.neu.plu.ind.nom> 
+nnandens 	nna, nde, ~nnas	<nn.neu.plu.ind.gen> 
+nnandena 	nna, nde, ~nnas	<nn.neu.plu.def.nom> 
+nnandenas 	nna, nde, ~nnas	<nn.neu.plu.def.gen> 
+
+[^aeiouyåäö]da 	da, de, t, ~ig	<vb.inf.akt pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #{EL} # 724 (tända)
+[^aeiouyåäö]de 	da, de, t, ~ig	<vb.prt.akt pc.prf.mas.sin.def.nom> #{EL} 
+[^aeiouyåäö]t 	da, de, t, ~ig	<vb.sup.akt pc.prf.neu.sin.ind.nom ab> #{EL} 
+[^aeiouyåäö]der 	da, de, t, ~ig	<vb.prs.akt> 
+[^aeiouyåäö]das 	da, de, t, ~ig	<vb.inf.sfo pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> #
+[^aeiouyåäö]des 	da, de, t, ~ig	<vb.prs.sfo> 
+[^aeiouyåäö]ds 	da, de, t, ~ig	<vb.prs.sfo> 
+[^aeiouyåäö]ts 	da, de, t, ~ig	<vb.sup.sfo pc.prf.neu.sin.ind.gen> 
+[^aeiouyåäö]dande 	da, de, t, ~ig	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+[^aeiouyåäö]dandes 	da, de, t, ~ig	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+[^aeiouyåäö]dandet 	da, de, t, ~ig	<nn.neu.sin.def.nom> 
+[^aeiouyåäö]dandets 	da, de, t, ~ig	<nn.neu.sin.def.gen> 
+[^aeiouyåäö]danden 	da, de, t, ~ig	<nn.neu.plu.ind.nom> 
+[^aeiouyåäö]dandens 	da, de, t, ~ig	<nn.neu.plu.ind.gen> 
+[^aeiouyåäö]dandena 	da, de, t, ~ig	<nn.neu.plu.def.nom> 
+[^aeiouyåäö]dandenas 	da, de, t, ~ig	<nn.neu.plu.def.gen> 
+[^aeiouyåäö]d 	da, de, t, ~ig	<vb.imp.akt> 
+
+
+a 	a, te, ~ade	<vb.inf.akt> #{EL} # 727 (söka)
+te 	a, te, ~ade	<vb.prt.akt pc.prf.mas.sin.def.nom> #{EL} 
+er 	a, te, ~ade	<vb.prs.akt> 
+as 	a, te, ~ade	<vb.inf.sfo> 
+es 	a, te, ~ade	<vb.prs.sfo> 
+[^sxz]s 	a, te, ~ade	<vb.prs.sfo> 
+[sxz]@ 	a, te, ~ade	<vb.prs.sfo> 
+tes 	a, te, ~ade	<vb.prt.sfo pc.prf.mas.sin.def.gen> 
+t 	a, te, ~ade	<vb.sup.akt pc.prf.utr.sin.ind.nom pc.prf.neu.sin.ind.nom ab> #
+ts 	a, te, ~ade	<vb.sup.sfo pc.prf.utr.sin.ind.gen pc.prf.neu.sin.ind.gen> #
+ande 	a, te, ~ade	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+andes 	a, te, ~ade	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+andet 	a, te, ~ade	<nn.neu.sin.def.nom> 
+andets 	a, te, ~ade	<nn.neu.sin.def.gen> 
+anden 	a, te, ~ade	<nn.neu.plu.ind.nom> 
+andens 	a, te, ~ade	<nn.neu.plu.ind.gen> 
+andena 	a, te, ~ade	<nn.neu.plu.def.nom> 
+andenas 	a, te, ~ade	<nn.neu.plu.def.gen> 
+ta 	a, te, ~ade	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> 
+tas 	a, te, ~ade	<vb.inf.sfo pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> #
+@ 	a, te, ~ade	<vb.imp.akt> 
+
+
+@ 	@, dde, tt	<vb.inf.akt vb.imp.akt> #{EL} # 731 (sy)
+dde 	@, dde, tt	<vb.prt.akt pc.prf.mas.sin.def.nom> #{EL} 
+tt 	@, dde, tt	<vb.sup.akt pc.prf.neu.sin.ind.nom ab> #{EL} 
+tts 	@, dde, tt	<vb.sup.sfo pc.prf.neu.sin.ind.gen> 
+r 	@, r, dde, tt	<vb.prs.akt> #{EL} 
+s 	@, r, dde, tt	<vb.inf.sfo vb.prs.sfo> 
+dd 	@, dde, tt, dd	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> #{EL} 
+dds 	@, dde, tt, dd	<pc.prf.utr.sin.ind.gen> 
+dda 	@, dde, tt	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> 
+ddas 	@, dde, tt	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> 
+ddes 	@, dde, tt	<vb.prt.sfo pc.prf.mas.sin.def.gen> 
+ende 	@, dde, tt	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+endes 	@, dde, tt	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+endet 	@, dde, tt	<nn.neu.sin.def.nom> 
+endets 	@, dde, tt	<nn.neu.sin.def.gen> 
+enden 	@, dde, tt	<nn.neu.plu.ind.nom> 
+endens 	@, dde, tt	<nn.neu.plu.ind.gen> 
+endena 	@, dde, tt	<nn.neu.plu.def.nom> 
+endenas 	@, dde, tt	<nn.neu.plu.def.gen> 
+
+ende 	ende, endet	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> #{EL} # (seende) [64 stycken]
+endet 	ende, endet	<nn.neu.sin.def.nom> #{EL} 
+enden 	ende, endet	<nn.neu.plu.ind.nom> 
+endens 	ende, endet	<nn.neu.plu.ind.gen> 
+endena 	ende, endet	<nn.neu.plu.def.nom> 
+endenas 	ende, endet	<nn.neu.plu.def.gen> 
+endets 	ende, endet	<nn.neu.sin.def.gen> 
+endes 	ende, endet	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+
+da 	da, dde	<vb.inf.akt> #{EL} # (spädde, grodde) [62 stycken]
+dde 	da, dde	<vb.prt.akt pc.prf.mas.sin.def.nom> #{EL} 
+ddes 	da, dde	<vb.prt.sfo pc.prf.mas.sin.def.gen> 
+dd 	da, dde	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> 
+dds 	da, dde	<pc.prf.utr.sin.ind.gen> 
+tt 	da, dde	<vb.sup.akt pc.prf.neu.sin.ind.nom ab> 
+tts 	da, dde	<vb.sup.sfo pc.prf.neu.sin.ind.gen> 
+[^aoå]das 	da, dde	<vb.inf.sfo vb.prs.sfo> # (späda [53 stycken])
+[^aoå]d 	da, dde	<vb.imp.akt> 
+[^aoå]ds 	da, dde	<vb.prs.sfo> 
+[^aoå]des 	da, dde	<vb.prs.sfo> 
+[^aoå]der 	da, dde	<vb.prs.akt> 
+
+sätta 	sätta	<vb.inf.akt> #{EL} 
+sätter 	sätta	<vb.prs.akt> 
+satte 	sätta	<vb.prt.akt pc.prf.mas.sin.def.nom> #
+satt 	sätta	<vb.prt.akt vb.sup.akt pc.prf.utr.sin.ind.nom pc.prf.neu.sin.ind.nom> #
+sätt 	sätta	<vb.imp.akt> 
+sättas 	sätta	<vb.inf.sfo vb.prs.sfo> #
+sätts 	sätta	<vb.prs.sfo> 
+sättes 	sätta	<vb.prs.sfo> 
+sattes 	sätta	<vb.prt.sfo pc.prf.mas.sin.def.gen> #
+satts 	sätta	<vb.sup.sfo vb.prt.sfo pc.prf.utr.sin.ind.gen pc.prf.neu.sin.ind.gen> #
+satta 	sätta	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+sattas 	sätta	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> #
+sättande 	sätta	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+sättandes 	sätta	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+sättandet 	sätta	<nn.neu.sin.def.nom> 
+sättandets 	sätta	<nn.neu.sin.def.gen> 
+sättanden 	sätta	<nn.neu.plu.ind.nom> 
+sättandens 	sätta	<nn.neu.plu.ind.gen> 
+sättandena 	sätta	<nn.neu.plu.def.nom> 
+sättandenas 	sätta	<nn.neu.plu.def.gen> 
+
+<B>lägga 	lägga, läggande	<vb.inf.akt> #{EL} #
+<B>läggande 	lägga, läggande	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> #{EL} 
+<B>läggas 	lägga, läggande	<vb.inf.sfo vb.prs.sfo> 
+<B>lägger 	lägga, läggande	<vb.prs.akt> 
+<B>lade 	lägga, läggande	<vb.prt.akt> #
+<B>la 	lägga, läggande	<vb.prt.akt> #
+<B>lagt 	lägga, läggande	<vb.sup.akt pc.prf.neu.sin.ind.nom> #
+<B>lagd 	lägga, läggande	<pc.prf.utr.sin.ind.nom> #
+<B>lagds 	lägga, läggande	<pc.prf.utr.sin.ind.gen> #
+<B>lagda 	lägga, läggande	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+<B>lagdas 	lägga, läggande	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> #
+<B>lagde 	lägga, läggande	<pc.prf.mas.sin.def.nom> #
+<B>lagdes 	lägga, läggande	<pc.prf.mas.sin.def.gen> #
+<B>lägg 	lägga, läggande	<vb.imp.akt> 
+<B>läggs 	lägga, läggande	<vb.prs.sfo> 
+<B>lägges 	lägga, läggande	<vb.prs.sfo> 
+<B>lades 	lägga, läggande	<vb.prt.sfo> #
+<B>las 	lägga, läggande	<vb.prt.sfo> #
+<B>lagts 	lägga, läggande	<vb.sup.sfo pc.prf.neu.sin.ind.gen> #
+<B>läggandes 	lägga, läggande	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+<B>läggandet 	lägga, läggande	<nn.neu.sin.def.nom> 
+<B>läggandets 	lägga, läggande	<nn.neu.sin.def.gen> 
+<B>lägganden 	lägga, läggande	<nn.neu.plu.ind.nom> 
+<B>läggandens 	lägga, läggande	<nn.neu.plu.ind.gen> 
+<B>läggandena 	lägga, läggande	<nn.neu.plu.def.nom> 
+<B>läggandenas 	lägga, läggande	<nn.neu.plu.def.gen> 
+
+<B>ge 	ge, gav	<vb.inf.akt vb.imp.akt> #{EL} #
+<B>gav 	ge, gav	<vb.prt.akt> #{EL} 
+<B>ges 	ge, gav	<vb.inf.sfo vb.prs.sfo> 
+<B>giva 	ge, gav	<vb.inf.akt> #
+<B>givas 	ge, gav	<vb.inf.sfo> #
+<B>gives 	ge, gav	<vb.prs.sfo> #
+<B>ger 	ge, gav	<vb.prs.akt> #
+<B>giver 	ge, gav	<vb.prs.akt> #
+<B>gett 	ge, gav	<vb.sup.akt pc.prf.neu.sin.ind.nom> #
+<B>givit 	ge, gav	<vb.sup.akt> #
+<B>givet 	ge, gav	<pc.prf.neu.sin.ind.nom> #
+<B>givets 	ge, gav	<pc.prf.neu.sin.ind.gen> #
+<B>given 	ge, gav	<pc.prf.utr.sin.ind.nom> #
+<B>givens 	ge, gav	<pc.prf.utr.sin.ind.gen> #
+<B>givna 	ge, gav	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+<B>givnas 	ge, gav	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> #
+<B>givne 	ge, gav	<pc.prf.mas.sin.def.nom> #
+<B>givnes 	ge, gav	<pc.prf.mas.sin.def.gen> #
+<B>giv 	ge, gav	<vb.imp.akt> #
+<B>gavs 	ge, gav	<vb.prt.sfo> #
+<B>getts 	ge, gav	<vb.sup.sfo pc.prf.neu.sin.ind.gen> #
+<B>givits 	ge, gav	<vb.sup.sfo> #
+<B>givets 	ge, gav	<pc.prf.neu.sin.ind.gen> #
+<B>givande 	ge, gav	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+<B>givandes 	ge, gav	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+<B>givandet 	ge, gav	<nn.neu.sin.def.nom> 
+<B>givandets 	ge, gav	<nn.neu.sin.def.gen> 
+<B>givanden 	ge, gav	<nn.neu.plu.ind.nom> 
+<B>givandens 	ge, gav	<nn.neu.plu.ind.gen> 
+<B>givandena 	ge, gav	<nn.neu.plu.def.nom> 
+<B>givandenas 	ge, gav	<nn.neu.plu.def.gen> 
+<B>givning 	ge, gav	<nn.neu.sin.ind.nom> #
+<B>givnings 	ge, gav	<nn.neu.sin.ind.gen> #
+<B>givningen 	ge, gav	<nn.neu.sin.def.nom> #
+<B>givningens 	ge, gav	<nn.neu.sin.def.gen> #
+<B>givningar 	ge, gav	<nn.neu.plu.ind.nom> #
+<B>givningars 	ge, gav	<nn.neu.plu.ind.gen> #
+<B>givningarna 	ge, gav	<nn.neu.plu.def.nom> #
+<B>givningarnas 	ge, gav	<nn.neu.plu.def.gen> #
+
+[fg]å 	å, ick	<vb.inf.akt vb.imp.akt> #{EL} #
+[fg]ick 	å, ick	<vb.prt.akt> #{EL} 
+[fg]icks 	å, ick	<vb.prt.sfo> 
+
+<B>uta 	uta, öt, utit	<vb.inf.akt> #{EL} #
+<B>öt 	uta, öt, utit	<vb.prt.akt> #{EL} 
+<B>utit 	uta, öt, utit	<vb.sup.akt> #{EL} 
+<B>öts 	uta, öt, utit	<vb.prt.sfo> 
+
+<B>yta 	yta, öt, utit	<vb.inf.akt> #{EL} #
+<B>öt 	yta, öt, utit	<vb.prt.akt> #{EL} 
+<B>utit 	yta, öt, utit	<vb.sup.akt> #{EL} 
+<B>öts 	yta, öt, utit	<vb.prt.sfo> 
+
+<B>og 	og, agit	<vb.prt.akt> #{EL} #
+<B>agit 	og, agit	<vb.sup.akt> #{EL} 
+<B>ogs 	og, agit	<vb.prt.sfo> 
+<B>agits 	og, agit	<vb.sup.sfo> #
+<B>agen 	og, agit	<pc.prf.utr.sin.ind.nom> #
+<B>agens 	og, agit	<pc.prf.utr.sin.ind.gen> #
+<B>aget 	og, agit	<pc.prf.neu.sin.ind.nom> #
+<B>agets 	og, agit	<pc.prf.neu.sin.ind.gen> #
+<B>agna 	og, agit	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+<B>agnas 	og, agit	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.gen> #
+<B>agne 	og, agit	<pc.prf.mas.sin.def.nom> #
+<B>agnes 	og, agit	<pc.prf.mas.sin.def.gen> #
+<B>agnare 	og, agit	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #
+<B>agnares 	og, agit	<jj.kom.utr/neu.sin/plu.ind/def.gen> #
+<B>agnast 	og, agit	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> #
+<B>agnaste 	og, agit	<jj.suv.utr/neu.sin/plu.def.nom> #
+<B>agnastes 	og, agit	<jj.suv.utr/neu.sin/plu.def.gen> # 
+
+<B>åta 	åta, ät, åtit	<vb.inf.akt> #{EL} #
+<B>ät 	åta, ät, åtit	<vb.prt.akt> #{EL} 
+<B>åtit 	åta, ät, åtit	<vb.sup.akt> #{EL} 
+<B>äts 	åta, ät, åtit	<vb.prt.sfo> 
+<B>åts 	åta, ät, åtit	<vb.prs.sfo> #
+<B>åtas 	åta, ät, åtit	<vb.inf.sfo> #
+<B>åtits 	åta, ät, åtit	<vb.sup.sfo> #
+<B>åten 	åta, ät, åtit	<pc.prf.utr.sin.ind.nom> #
+<B>åtens 	åta, ät, åtit	<pc.prf.utr.sin.ind.gen> #
+<B>åtet 	åta, ät, åtit	<pc.prf.neu.sin.ind.nom> #
+<B>åtets 	åta, ät, åtit	<pc.prf.neu.sin.ind.gen> #
+<B>åtna 	åta, ät, åtit	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+<B>åtnas 	åta, ät, åtit	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.gen> #
+<B>åtne 	åta, ät, åtit	<pc.prf.mas.sin.def.nom> #
+<B>åtnes 	åta, ät, åtit	<pc.prf.mas.sin.def.gen> #
+<B>åtnare 	åta, ät, åtit	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #
+<B>åtnares 	åta, ät, åtit	<jj.kom.utr/neu.sin/plu.ind/def.gen> #
+<B>åtnast 	åta, ät, åtit	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> #
+<B>åtnaste 	åta, ät, åtit	<jj.suv.utr/neu.sin/plu.def.nom> #
+<B>åtnastes 	åta, ät, åtit	<jj.suv.utr/neu.sin/plu.def.gen> # 
+
+[a]git 	git, @	<vb.sup.akt> #{EL} #
+[a]@ 	git, @	<vb.inf.akt vb.imp.akt> #{EL} 
+[a]s 	git, @	<vb.inf.sfo vb.prs.sfo> 
+[a]r 	git, @	<vb.prs.akt> #
+[a]ga 	git, @	<vb.inf.akt> #
+[g]er 	git, @	<vb.prs.akt> #
+[a]gas 	git, @	<vb.inf.sfo> #
+[a]ges 	git, @	<vb.prs.sfo> #
+[a]gande 	git, @	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+[a]gandes 	git, @	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+[a]gandet 	git, @	<nn.neu.sin.def.nom> 
+[a]gandets 	git, @	<nn.neu.sin.def.gen> 
+[a]ganden 	git, @	<nn.neu.plu.ind.nom> 
+[a]gandens 	git, @	<nn.neu.plu.ind.gen> 
+[a]gandena 	git, @	<nn.neu.plu.def.nom> 
+[a]gandenas 	git, @	<nn.neu.plu.def.gen> 
+
+<B>inna 	inna, ann, unnit	<vb.inf.akt> #{EL} #
+<B>ann 	inna, ann, unnit	<vb.prt.akt> #{EL} 
+<B>unnit 	inna, ann, unnit	<vb.sup.akt> #{EL} 
+<B>inn 	inna, ann, unnit	<vb.imp.akt> 
+<B>innas 	inna, ann, unnit	<vb.inf.sfo> #
+<B>inner 	inna, ann, unnit	<vb.prs.akt> #
+<B>inns 	inna, ann, unnit	<vb.prs.sfo> #
+<B>anns 	inna, ann, unnit	<vb.prt.sfo> #
+<B>unnits 	inna, ann, unnit	<vb.sup.sfo> #
+<B>unnet 	inna, ann, unnit	<pc.prf.neu.sin.ind.nom> #
+<B>unnets 	inna, ann, unnit	<pc.prf.neu.sin.ind.gen> #
+<B>unnen 	inna, ann, unnit	<pc.prf.utr.sin.ind.nom> #
+<B>unnens 	inna, ann, unnit	<pc.prf.utr.sin.ind.gen> #
+<B>unna 	inna, ann, unnit	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+<B>unnas 	inna, ann, unnit	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.gen> #
+<B>unne 	inna, ann, unnit	<pc.prf.mas.sin.def.nom> #
+<B>unnes 	inna, ann, unnit	<pc.prf.mas.sin.def.gen> #
+<B>innandes 	inna, ann, unnit	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+<B>innandet 	inna, ann, unnit	<nn.neu.sin.def.nom> 
+<B>innandets 	inna, ann, unnit	<nn.neu.sin.def.gen> 
+
+<B>[k]omma 	omma, om	<vb.inf.akt> #{EL} #
+<B>[k]om 	omma, om	<vb.prt.akt vb.imp.akt> #{EL} 
+<B>[k]ommer 	omma, om	<vb.prs.akt> 
+<B>[k]ommit 	omma, om	<vb.sup.akt> #
+<B>[k]ommits 	omma, om	<vb.sup.sfo> #
+<B>[k]ommas 	omma, om	<vb.inf.sfo> #
+<B>[k]oms 	omma, om	<vb.prs.sfo vb.prt.sfo> #
+<B>[k]ommen 	omma, om	<pc.prf.utr.sin.ind.nom> #
+<B>[k]ommens 	omma, om	<pc.prf.utr.sin.ind.gen> #
+<B>[k]ommet 	omma, om	<pc.prf.neu.sin.ind.nom> #
+<B>[k]ommets 	omma, om	<pc.prf.neu.sin.ind.gen> #
+<B>[k]omna 	omma, om	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+<B>[k]omnas 	omma, om	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> #
+<B>[k]omne 	omma, om	<pc.prf.mas.sin.def.nom> #
+<B>[k]omnes 	omma, om	<pc.prf.mas.sin.def.gen> #
+<B>[k]ommande 	omma, om	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+<B>[k]ommandes 	omma, om	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+<B>[k]ommandet 	omma, om	<nn.neu.sin.def.nom> 
+<B>[k]ommandets 	omma, om	<nn.neu.sin.def.gen> 
+<B>[k]ommanden 	omma, om	<nn.neu.plu.ind.nom> 
+<B>[k]ommandens 	omma, om	<nn.neu.plu.ind.gen> 
+<B>[k]ommandena 	omma, om	<nn.neu.plu.def.nom> 
+<B>[k]ommandenas 	omma, om	<nn.neu.plu.def.gen> 
+
+as 	as, ades, ~agt	<vb.inf.sfo vb.prs.sfo> #{EL} # 751 (brottas)
+ades 	as, ades, ~agt	<vb.prt.sfo> #{EL} 
+ats 	as, ades, ~agt	<vb.sup.sfo> 
+ande 	as, ades, ~agt	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+andes 	as, ades, ~agt	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+andet 	as, ades, ~agt	<nn.neu.sin.def.nom> 
+andets 	as, ades, ~agt	<nn.neu.sin.def.gen> 
+anden 	as, ades, ~agt	<nn.neu.plu.ind.nom> 
+andens 	as, ades, ~agt	<nn.neu.plu.ind.gen> 
+andena 	as, ades, ~agt	<nn.neu.plu.def.nom> 
+andenas 	as, ades, ~agt	<nn.neu.plu.def.gen> 
+
+as 	as, des	<vb.inf.sfo vb.prs.sfo> #{EL} # (yvas)
+des 	as, des	<vb.prt.sfo> #{EL} 
+ts 	as, des	<vb.sup.sfo> 
+ande 	as, des	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> 
+andes 	as, des	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+andet 	as, des	<nn.neu.sin.def.nom> 
+andets 	as, des	<nn.neu.sin.def.gen> 
+anden 	as, des	<nn.neu.plu.ind.nom> 
+andens 	as, des	<nn.neu.plu.ind.gen> 
+andena 	as, des	<nn.neu.plu.def.nom> 
+andenas 	as, des	<nn.neu.plu.def.gen> 
+
+as 	as, tes, ~des, ~a	<vb.inf.sfo vb.prs.sfo> #{EL} # (kräkas)
+tes 	as, tes, ~des, ~a	<vb.prt.sfo> #{EL} 
+s 	as, tes, ~des, ~a	<vb.prs.sfo> #{EL} 
+ts 	as, tes, ~des, ~a	<vb.sup.sfo> #{extra} #
+
+[n]nas 	nas, des, ts	<vb.inf.sfo> #{EL} # (nännas)
+[n]des 	nas, des, ts	<vb.prt.sfo> #{EL} 
+[n]ts 	nas, des, ts	<vb.sup.sfo> #{EL} 
+[n]s 	nas, des, ts	<vb.inf.sfo vb.prs.sfo> 
+
+it 	it, a, et, en, ~iter	<vb.sup.akt> #{EL} # (vunnit) [199 stycken]
+a 	it, a, et, en, ~iter	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #{EL} 
+et 	it, a, et, en, ~iter	<pc.prf.neu.sin.ind.nom> #{EL} 
+en 	it, a, et, en, ~iter	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> #{EL} 
+its 	it, a, et, en, ~iter	<vb.sup.sfo> 
+ets 	it, a, et, en, ~iter	<pc.prf.neu.sin.ind.gen> 
+ens 	it, a, et, en, ~iter	<pc.prf.utr.sin.ind.gen> 
+(lug|lag)as 	it, a, et, en, ~iter, ~ade	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> 
+[^mn]na 	it, a, et, en, ~iter, ~ade	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> 
+[^mn]nas 	it, a, et, en, ~iter, ~ade	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> 
+[^mn]ne 	it, a, et, en, ~iter, ~ade	<pc.prf.mas.sin.def.nom> 
+[^mn]nes 	it, a, et, en, ~iter, ~ade	<pc.prf.mas.sin.def.gen> 
+(lug|lag)[^mn]@ 	it, a, et, en, ~iter, ~ade	<vb.imp.akt> #
+
+it 	it, en, et, na	<vb.sup.akt> #{EL} # oregelbundna verb med 6 former i SAOL
+en 	it, en, et, na	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> #{EL} 
+et 	it, en, et, na	<pc.prf.neu.sin.ind.nom> #{EL} 
+na 	it, en, et, na	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #{EL} 
+its 	it, en, et, na	<vb.sup.sfo> 
+ens 	it, en, et, na	<pc.prf.utr.sin.ind.gen> 
+ets 	it, en, et, na	<pc.prf.neu.sin.ind.gen> 
+nas 	it, en, et, na	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> 
+ne 	it, en, et, na	<pc.prf.mas.sin.def.nom> 
+nes 	it, en, et, na	<pc.prf.mas.sin.def.gen> 
+
+a 	a, ande, ~ade	<vb.inf.akt> #{EL} # (äta)
+ande 	a, ande, ~ade	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> #{EL} 
+as 	a, ande, ~ade	<vb.inf.sfo vb.prs.sfo> 
+(dj|mm)@ 	a, ande, ~ade	<vb.imp.akt> 
+(mm|unn)[^s]s 	a, ande, ~ade	<vb.prs.sfo> 
+ms 	mma, mmande, ~mmade	<vb.prs.sfo> 
+es 	a, ande, ~ade	<vb.prs.sfo> 
+er 	a, ande, ~ade, ~andet	<vb.prs.akt> 
+andet 	a, ande, ~ade	<nn.neu.sin.def.nom> 
+andets 	a, ande, ~ade	<nn.neu.sin.def.gen> 
+andes 	a, ande, ~ade	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+anden 	a, ande, ~ade	<nn.neu.plu.ind.nom> 
+andens 	a, ande, ~ade	<nn.neu.plu.ind.gen> 
+andena 	a, ande, ~ade	<nn.neu.plu.def.nom> 
+andenas 	a, ande, ~ade	<nn.neu.plu.def.gen> 
+
+a 	a, ande, andets	<vb.inf.akt> #{EL} # (ljuda)
+ande 	a, ande, andets	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> #{EL} 
+andets 	a, ande, andets	<nn.neu.sin.def.gen> #{EL} 
+as 	a, ande, andets	<vb.inf.sfo vb.prs.sfo> 
+@ 	a, ande, andets	<vb.imp.akt> 
+[^s]s 	a, ande, andets	<vb.prs.sfo> 
+es 	a, ande, andets	<vb.prs.sfo> 
+er 	a, ande, andets	<vb.prs.akt> 
+andet 	a, ande, andets	<nn.neu.sin.def.nom> 
+andes 	a, ande, andets	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+anden 	a, ande, andets	<nn.neu.plu.ind.nom> 
+andens 	a, ande, andets	<nn.neu.plu.ind.gen> 
+andena 	a, ande, andets	<nn.neu.plu.def.nom> 
+andenas 	a, ande, andets	<nn.neu.plu.def.gen> 
+
+[eoåö]@ 	@, ende	<vb.inf.akt vb.imp.akt> #{EL} # (se)
+[eoåö]ende 	@, ende	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> #{EL} 
+[eoåö]s 	@, ende	<vb.inf.sfo vb.prs.sfo> 
+[eoåö]r 	@, ende	<vb.prs.akt> 
+[eoåö]endet 	@, ende	<nn.neu.sin.def.nom> 
+[eoåö]endets 	@, ende	<nn.neu.sin.def.gen> 
+[eoåö]enden 	@, ende	<nn.neu.plu.ind.nom> 
+[eoåö]endens 	@, ende	<nn.neu.plu.ind.gen> 
+[eoåö]endena 	@, ende	<nn.neu.plu.def.nom> 
+[eoåö]endenas 	@, ende	<nn.neu.plu.def.gen> 
+[eoåö]endes 	@, ende	<pc.prs.utr/neu.sin/plu.ind/def.gen nn.neu.sin.ind.gen ab> 
+
+[eoåö]@ 	@, ende, tt	<vb.inf.akt vb.imp.akt> #{EL} 
+[eoåö]ende 	@, ende, tt	<pc.prs.utr/neu.sin/plu.ind/def.nom nn.neu.sin.ind.nom> #{EL} 
+[eoåö]tt 	@, ende, tt	<vb.sup.akt pc.prf.neu.sin.ind.nom ab> #{EL} 
+[eoåö]tts 	@, ende, tt	<vb.sup.sfo pc.prf.neu.sin.ind.gen> 
+
+a 	a, it, en, na, ~ade, ~or	<vb.inf.akt> #{EL} # oregelbundna verb, NE-tillägg
+it 	a, it, en, na, ~ade, ~or	<vb.sup.akt> #{EL} 
+en 	a, it, en, na, ~ade, ~or	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> #{EL} 
+na 	a, it, en, na, ~ade, ~or	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #{EL} 
+as 	a, it, en, na, ~ade, ~or	<vb.inf.sfo> #{extra} 
+s 	a, it, en, na, ~ade, ~or	<vb.inf.sfo vb.prs.sfo> #{extra} #
+its 	a, it, en, na, ~ade, ~or	<vb.sup.sfo> #{extra} #
+ens 	a, it, en, na, ~ade, ~or	<pc.prf.utr.sin.ind.gen> #{extra} #
+et 	a, it, en, na, ~ade, ~or	<pc.prf.neu.sin.ind.nom> #{extra} #
+ets 	a, it, en, na, ~ade, ~or	<pc.prf.neu.sin.ind.gen> #{extra} #
+nas 	a, it, en, na, ~ade, ~or	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.gen> #{extra} #
+ne 	a, it, en, na, ~ade, ~or	<pc.prf.mas.sin.def.nom> #{extra} #
+nes 	a, it, en, na, ~ade, ~or	<pc.prf.mas.sin.def.gen> #{extra} #
+nare 	a, it, en, na, ~ade, ~or	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #{extra} #
+nares 	a, it, en, na, ~ade, ~or	<jj.kom.utr/neu.sin/plu.ind/def.gen> #{extra} #
+nast 	a, it, en, na, ~ade, ~or	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> #{extra} #
+naste 	a, it, en, na, ~ade, ~or	<jj.suv.utr/neu.sin/plu.def.nom> #{extra} #
+nastes 	a, it, en, na, ~ade, ~or	<jj.suv.utr/neu.sin/plu.def.gen> #{extra} # 
+
+<B>yta 	yta, öt, utit	<vb.inf.akt> #{EL} #  oregelbudna verb (ryta)
+<B>öt 	yta, öt, utit	<vb.prt.akt> #{EL} 
+<B>utit 	yta, öt, utit	<vb.sup.akt> #{EL} 
+<B>ytas 	yta, öt, utit	<vb.inf.sfo> 
+<B>yts 	yta, öt, utit	<vb.prs.sfo> #
+<B>öts 	yta, öt, utit	<vb.prt.sfo> #
+
+<B>se 	se, såg, sett	<vb.inf.akt> #{EL} #
+<B>såg 	se, såg, sett	<vb.prt.akt> #{EL} 
+<B>sett 	se, såg, sett	<vb.sup.akt> #{EL} 
+<B>sågs 	se, såg, sett	<vb.prt.sfo> 
+
+<B>gå 	gå, gick, gått	<vb.inf.akt vb.imp.akt> #{EL} #
+<B>gick 	gå, gick, gått	<vb.prt.akt> #{EL} 
+<B>gått 	gå, gick, gått	<vb.sup.akt> #{EL} 
+<B>gicks 	gå, gick, gått	<vb.prt.sfo> 
+<B>gåtts 	gå, gick, gått	<vb.sup.sfo pc.prf.neu.sin.ind.gen> 
+<B>gången 	gå, gick, gått	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> #
+<B>gångna 	gå, gick, gått	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+<B>gångens 	gå, gick, gått	<pc.prf.utr.sin.ind.gen> #
+<B>gånget 	gå, gick, gått	<pc.prf.neu.sin.ind.nom> #
+<B>gångets 	gå, gick, gått	<pc.prf.neu.sin.ind.gen> #
+<B>gångnas 	gå, gick, gått	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.gen> #
+<B>gångne 	gå, gick, gått	<pc.prf.mas.sin.def.nom> #
+<B>gångnes 	gå, gick, gått	<pc.prf.mas.sin.def.gen> #
+<B>gångnare 	gå, gick, gått	<jj.kom.utr/neu.sin/plu.ind/def.nom ab.kom> #
+<B>gångnares 	gå, gick, gått	<jj.kom.utr/neu.sin/plu.ind/def.gen> #
+<B>gångnast 	gå, gick, gått	<jj.suv.utr/neu.sin/plu.ind.nom ab.suv> #
+<B>gångnaste 	gå, gick, gått	<jj.suv.utr/neu.sin/plu.def.nom> #
+<B>gångnastes 	gå, gick, gått	<jj.suv.utr/neu.sin/plu.def.gen> #
+
+<B>be 	be, bad	<vb.inf.akt vb.imp.akt> #{EL} #
+<B>bad 	be, bad	<vb.prt.akt> #{EL} 
+<B>bads 	be, bad	<vb.prt.sfo> 
+<B>bed 	be, bad	<vb.imp.akt> #
+<B>beds 	be, bad	<vb.inf.sfo> #
+<B>bes 	be, bad	<vb.inf.sfo> #
+<B>bedes 	be, bad	<vb.inf.sfo> #
+<B>ber 	be, bad	<vb.prs.akt> #
+<B>beder 	be, bad	<vb.prs.akt> #
+<B>bett 	be, bad	<vb.sup.akt> #
+<B>betts 	be, bad	<vb.sup.sfo> #
+<B>bedd 	be, bad	<pc.prf.utr.sin.ind.nom> #
+<B>bedda 	be, bad	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+<B>bedds 	be, bad	<pc.prf.utr.sin.ind.gen> #
+<B>bett 	be, bad	<pc.prf.neu.sin.ind.nom> #
+<B>betts 	be, bad	<pc.prf.neu.sin.ind.gen> #
+<B>beddas 	be, bad	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.gen> #
+<B>bedde 	be, bad	<pc.prf.mas.sin.def.nom> #
+<B>beddes 	be, bad	<pc.prf.mas.sin.def.gen> #
+
+<B>slå 	slå, slog, slagit	<vb.inf.akt vb.imp.akt> #{EL} #
+<B>slog 	slå, slog, slagit	<vb.prt.akt> #{EL} 
+<B>slagit 	slå, slog, slagit	<vb.sup.akt> #{EL} 
+<B>slås 	slå, slog, slagit	<vb.inf.sfo> 
+<B>slår 	slå, slog, slagit	<vb.prs.akt> #
+<B>slogs 	slå, slog, slagit	<vb.prt.sfo> #
+<B>slagits 	slå, slog, slagit	<vb.sup.sfo> #
+
+<B>ta 	ta, tog	<vb.inf.akt vb.imp.akt> #{EL} #
+<B>tog 	ta, tog	<vb.prt.akt> #{EL} 
+<B>tas 	ta, tog	<vb.inf.sfo> 
+<B>tar 	ta, tog	<vb.prs.akt> #
+<B>togs 	ta, tog	<vb.prt.sfo> #
+<B>tagits 	ta, tog	<vb.sup.akt> #
+<B>tagits 	ta, tog	<vb.sup.sfo> #
+
+<B>dra 	dra, drog, dragit	<vb.inf.akt vb.imp.akt> #{EL} #
+<B>drog 	dra, drog, dragit	<vb.prt.akt> #{EL} 
+<B>dragit 	dra, drog, dragit	<vb.sup.akt> #{EL} 
+<B>dras 	dra, drog, dragit	<vb.inf.sfo> 
+<B>drar 	dra, drog, dragit	<vb.prs.akt> #
+<B>drogs 	dra, drog, dragit	<vb.prt.sfo> #
+<B>dragits 	dra, drog, dragit	<vb.sup.sfo> #
+
+<B>binda 	binda, band	<vb.inf.akt> #{EL} #
+<B>band 	binda, band	<vb.prt.akt> #{EL} 
+<B>bands 	binda, band	<vb.prt.sfo> 
+
+<B>bita 	bita, bet	<vb.inf.akt> #{EL} #
+<B>bet 	bita, bet	<vb.prt.akt> #{EL} 
+<B>bets 	bita, bet	<vb.prt.sfo> 
+
+<B>falla 	falla, föll	<vb.inf.akt> #{EL} #
+<B>föll 	falla, föll	<vb.prt.akt> #{EL} 
+<B>fölls 	falla, föll	<vb.prt.sfo> 
+
+<B>hålla 	hålla, höll	<vb.inf.akt> #{EL} #
+<B>höll 	hålla, höll	<vb.prt.akt> #{EL} 
+<B>hölls 	hålla, höll	<vb.prt.sfo> 
+
+<B>hugga 	hugga, högg	<vb.inf.akt> #{EL} #
+<B>högg 	hugga, högg	<vb.prt.akt> #{EL} 
+<B>höggs 	hugga, högg	<vb.prt.sfo> 
+
+<B>gripa 	gripa, grep	<vb.inf.akt> #{EL} #
+<B>grep 	gripa, grep	<vb.prt.akt> #{EL} 
+<B>greps 	gripa, grep	<vb.prt.sfo> 
+
+<B>gjuta 	gjuta, göt	<vb.inf.akt> #{EL} #
+<B>göt 	gjuta, göt	<vb.prt.akt> #{EL} 
+<B>göts 	gjuta, göt	<vb.prt.sfo> 
+
+<B>fara 	fara, for	<vb.inf.akt> #{EL} #
+<B>for 	fara, for	<vb.prt.akt> #{EL} 
+<B>fors 	fara, for	<vb.prt.sfo> 
+
+<B>bjuda 	bjuda, bjöd	<vb.inf.akt> #{EL} #
+<B>bjöd 	bjuda, bjöd	<vb.prt.akt> #{EL} 
+<B>bjöds 	bjuda, bjöd	<vb.prt.sfo> 
+
+<B>brista 	brista, brast	<vb.inf.akt> #{EL} #
+<B>brast 	brista, brast	<vb.prt.akt> #{EL} 
+<B>brasts 	brista, brast	<vb.prt.sfo> 
+
+<B>sjunga 	sjunga, sjöng	<vb.inf.akt> #{EL} #
+<B>sjöng 	sjunga, sjöng	<vb.prt.akt> #{EL} 
+<B>sjöngs 	sjunga, sjöng	<vb.prt.sfo> 
+
+<B>skjuta 	skjuta, sköt	<vb.inf.akt> #{EL} #
+<B>sköt 	skjuta, sköt	<vb.prt.akt> #{EL} 
+<B>sköts 	skjuta, sköt	<vb.prt.sfo> 
+
+<B>supa 	supa, söp	<vb.inf.akt> #{EL} #
+<B>söp 	supa, söp	<vb.prt.akt> #{EL} 
+<B>söps 	supa, söp	<vb.prt.sfo> 
+
+<B>sjuda 	sjuda, sjöd	<vb.inf.akt> #{EL} #
+<B>sjöd 	sjuda, sjöd	<vb.prt.akt> #{EL} 
+<B>sjöds 	sjuda, sjöd	<vb.prt.sfo> 
+
+<B>sjunka 	sjunka, skönk	<vb.inf.akt> #{EL} #
+<B>skönk 	sjunka, skönk	<vb.prt.akt> #{EL} 
+<B>sjönks 	sjunka, skönk	<vb.prt.sfo> 
+
+<B>springa 	springa, sprang	<vb.inf.akt> #{EL} #
+<B>sprang 	springa, sprang	<vb.prt.akt> #{EL} 
+<B>sprangs 	springa, sprang	<vb.prt.sfo> 
+
+<B>dö 	dö, dog	<vb.inf.akt> #{EL} #
+<B>dog 	dö, dog	<vb.prt.akt> #{EL} 
+<B>dogs 	dö, dog	<vb.prt.sfo> 
+
+<B>äta 	äta, åt	<vb.inf.akt> #{EL} #
+<B>åt 	äta, åt	<vb.prt.akt> #{EL} 
+<B>åts 	äta, åt	<vb.prt.sfo> 
+
+<B>skriva 	skriva, skrev	<vb.inf.akt> #{EL} #
+<B>skrev 	skriva, skrev	<vb.prt.akt> #{EL} 
+<B>skrevs 	skriva, skrev	<vb.prt.sfo> 
+
+<B>slita 	slita, slet	<vb.inf.akt> #{EL} #
+<B>slet 	slita, slet	<vb.prt.akt> #{EL} 
+<B>slets 	slita, slet	<vb.prt.sfo> 
+
+<B>spinna 	spinna, spann	<vb.inf.akt> #{EL} #
+<B>spann 	spinna, spann	<vb.prt.akt> #{EL} 
+<B>spanns 	spinna, spann	<vb.prt.sfo> 
+
+<B>rysa 	rysa, rös	<vb.inf.akt> #{EL} #
+<B>rös 	rysa, rös	<vb.prt.akt> #{EL} 
+<B>ryst 	rysa, rös	<vb.sup.akt> 
+
+<B>le 	le, log	<vb.inf.akt> #{EL} #
+<B>log 	le, log	<vb.prt.akt> #{EL} 
+<B>logs 	le, log	<vb.prt.sfo> 
+
+<B>rida 	rida, red	<vb.inf.akt> #{EL} #
+<B>red 	rida, red	<vb.prt.akt> #{EL} 
+<B>reds 	rida, red	<vb.prt.sfo> 
+
+<B>nypa 	nypa, nöp, nupit	<vb.inf.akt> #{EL} #
+<B>nöp 	nypa, nöp, nupit	<vb.prt.akt> #{EL} 
+<B>nupit 	nypa, nöp, nupit	<vb.sup.akt> #{EL} 
+<B>nöps 	nypa, nöp, nupit	<vb.prt.sfo> 
+
+<B>bringa 	bringa, bragt	<vb.inf.akt vb.imp.akt> #{EL} #
+<B>bragt 	bringa, bragt	<vb.sup.akt pc.prf.utr.sin.ind.nom> #{EL} 
+<B>bragtes 	bringa, bragt	<vb.prt.sfo> 
+<B>bragte 	bringa, bragt	<vb.prt.akt pc.prf.mas.sin.def.nom> #
+<B>bragts 	bringa, bragt	<vb.sup.sfo> #
+<B>bragta 	bringa, bragt	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+<B>bragtas 	bringa, bragt	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> #
+<B>bragtes 	bringa, bragt	<pc.prf.mas.sin.def.gen> #
+
+<B>tvinga 	tvinga, tvang	<vb.inf.akt vb.imp.akt> #{EL} #
+<B>tvang 	tvinga, tvang	<vb.prt.akt> #{EL} 
+<B>tvangs 	tvinga, tvang	<vb.prt.sfo> 
+
+<B>skina 	skina, sken, skinit	<vb.inf.akt> #{EL} #
+<B>sken 	skina, sken, skinit	<vb.prt.akt> #{EL} 
+<B>skinit 	skina, sken, skinit	<vb.sup.akt> #{EL} 
+<B>skin 	skina, sken, skinit	<vb.imp.akt> 
+
+<B>smälta 	smälta, smälte, smält	<vb.inf.akt> #{EL} #
+<B>smälte 	smälta, smälte, smält	<vb.prt.akt> #{EL} 
+<B>smält 	smälta, smälte, smält	<vb.sup.akt> #{EL} 
+<B>smältes 	smälta, smälte, smält	<vb.prt.sfo> 
+
+<B>sprätta 	sprätta, sprätte, sprätt	<vb.inf.akt> #{EL} #
+<B>sprätte 	sprätta, sprätte, sprätt	<vb.prt.akt> #{EL} 
+<B>sprätt 	sprätta, sprätte, sprätt	<vb.sup.akt> #{EL} 
+<B>sprättes 	sprätta, sprätte, sprätt	<vb.prt.sfo> 
+
+<B>stryka 	stryka, strök, strukit	<vb.inf.akt> #{EL} #
+<B>strök 	stryka, strök, strukit	<vb.prt.akt> #{EL} 
+<B>strukit 	stryka, strök, strukit	<vb.sup.akt> #{EL} 
+<B>ströks 	stryka, strök, strukit	<vb.prt.sfo> 
+
+<B>välta 	välta, välte, vält	<vb.inf.akt> #{EL} #
+<B>välte 	välta, välte, vält	<vb.prt.akt> #{EL} 
+<B>vält 	välta, välte, vält	<vb.sup.akt> #{EL} 
+<B>vältes 	välta, välte, vält	<vb.prt.sfo> 
+
+<B>vika 	vika, vek, vikit	<vb.inf.akt> #{EL} #
+<B>vek 	vika, vek, vikit	<vb.prt.akt> #{EL} 
+<B>vikit 	vika, vek, vikit	<vb.sup.akt> #{EL} 
+<B>veks 	vika, vek, vikit	<vb.inf.sfo> 
+
+<B>knipa 	knipa, knep, knipit	<vb.inf.akt> #{EL} #
+<B>knep 	knipa, knep, knipit	<vb.prt.akt> #{EL} 
+<B>knipit 	knipa, knep, knipit	<vb.sup.akt> #{EL} 
+<B>kneps 	knipa, knep, knipit	<vb.prt.sfo> 
+
+<B>lyfta 	lyfta, lyfte, lyft	<vb.inf.akt> #{EL} #
+<B>lyfte 	lyfta, lyfte, lyft	<vb.prt.akt> #{EL} 
+<B>lyft 	lyfta, lyfte, lyft	<vb.sup.akt> #{EL} 
+<B>lyftes 	lyfta, lyfte, lyft	<vb.prt.sfo> 
+
+<B>riva 	riva, rev, rivit	<vb.inf.akt> #{EL} #
+<B>rev 	riva, rev, rivit	<vb.prt.akt> #{EL} 
+<B>rivit 	riva, rev, rivit	<vb.sup.akt> #{EL} 
+<B>revs 	riva, rev, rivit	<vb.prt.sfo> 
+
+<B>skära 	skära, skar, skurit	<vb.inf.akt> #{EL} #
+<B>skar 	skära, skar, skurit	<vb.prt.akt> #{EL} 
+<B>skurit 	skära, skar, skurit	<vb.sup.akt> #{EL} 
+<B>skars 	skära, skar, skurit	<vb.prt.sfo> 
+
+<B>sticka 	sticka, stack, stuckit	<vb.inf.akt> #{EL} #
+<B>stack 	sticka, stack, stuckit	<vb.prt.akt> #{EL} 
+<B>stuckit 	sticka, stack, stuckit	<vb.sup.akt> #{EL} 
+<B>stacks 	sticka, stack, stuckit	<vb.prt.sfo> 
+
+<B>svära 	svära, svor, svurit	<vb.inf.akt> #{EL} #
+<B>svor 	svära, svor, svurit	<vb.prt.akt> #{EL} 
+<B>svurit 	svära, svor, svurit	<vb.sup.akt> #{EL} 
+<B>svors 	svära, svor, svurit	<vb.prt.sfo> 
+
+<B>gnida 	gnida, gned	<vb.inf.akt> #{EL} #
+<B>gned 	gnida, gned	<vb.prt.akt> #{EL} 
+<B>gneds 	gnida, gned	<vb.inf.sfo> 
+
+<B>smyga 	smyga, smög	<vb.inf.akt> #{EL} #
+<B>smög 	smyga, smög	<vb.prt.akt> #{EL} 
+<B>smögs 	smyga, smög	<vb.inf.sfo> 
+
+<B>uga 	uga, ög	<vb.inf.akt> #{EL} # (suga, ljuga)
+<B>ög 	uga, ög	<vb.prt.akt> #{EL} 
+<B>ögs 	uga, ög	<vb.inf.sfo> 
+
+<B>ligga 	ligga, låg	<vb.inf.akt> #{EL} #
+<B>låg 	ligga, låg	<vb.prt.akt> #{EL} 
+<B>legat 	ligga, låg	<vb.sup.akt> #{EL} 
+<B>ligg 	ligga, låg	<vb.imp.akt> #{EL} #
+
+<B>stå 	stå, stod	<vb.inf.akt vb.imp.akt> #{EL} #
+<B>stod 	stå, stod	<vb.prt.akt> #{EL} 
+<B>stås 	stå, stod	<vb.inf.sfo> 
+<B>står 	stå, stod	<vb.prs.akt> #
+<B>stods 	stå, stod	<vb.prt.sfo> #
+<B>stått 	stå, stod	<vb.sup.akt> #
+<B>ståtts 	stå, stod	<vb.sup.sfo> #
+
+<B>göra 	göra, gjorde	<vb.inf.akt> #{EL} #
+<B>gjorde 	göra, gjorde	<vb.prt.akt> #{EL} 
+<B>gjordes 	göra, gjorde	<vb.prt.sfo> 
+<B>gjort 	göra, gjorde	<vb.sup.akt> #
+<B>gjorts 	göra, gjorde	<vb.sup.sfo> #
+<B>gör 	göra, gjorde	<vb.prs.akt vb.imp.akt> #
+
+<B>bära 	bära, bar	<vb.inf.akt> #{EL} #
+<B>bar 	bära, bar	<vb.prt.akt> #{EL} 
+<B>bars 	bära, bar	<vb.prt.sfo> 
+<B>bär 	bära, bar	<vb.imp.akt> #
+<B>burit 	bära, bar	<vb.sup.akt> #
+<B>burits 	bära, bar	<vb.sup.sfo> #
+<B>buren 	bära, bar	<pc.prf.utr.sin.ind.nom jj.pos.utr.sin.ind.nom> #
+<B>burens 	bära, bar	<pc.prf.utr.sin.ind.gen> #
+<B>buret 	bära, bar	<pc.prf.neu.sin.ind.nom ab> #
+<B>burets 	bära, bar	<pc.prf.neu.sin.ind.gen> #
+<B>burna 	bära, bar	<pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #
+<B>burnas 	bära, bar	<pc.prf.utr/neu.sin.def.gen pc.prf.utr/neu.plu.ind/def.gen> #
+
+<B>säga 	säga, sade	<vb.inf.akt> #{EL} #
+<B>sade 	säga, sade	<vb.prt.akt> #{EL} 
+<B>sades 	säga, sade	<vb.prt.sfo> 
+<B>sas 	säga, sade	<vb.prt.sfo> #
+<B>sagt 	säga, sade	<vb.sup.akt> #
+<B>sagts 	säga, sade	<vb.sup.sfo> #
+
+#<nn> substantiv:
+
+ning 	ning	<nn.utr.sin.ind.nom> #{EL} # [2281 stycken]
+nings 	ning	<nn.utr.sin.ind.gen> 
+ningen 	ning	<nn.utr.sin.def.nom> 
+ningens 	ning	<nn.utr.sin.def.gen> 
+ningar 	ning	<nn.utr.plu.ind.nom> 
+ningars 	ning	<nn.utr.plu.ind.gen> 
+ningarna 	ning	<nn.utr.plu.def.nom> 
+ningarnas 	ning	<nn.utr.plu.def.gen> 
+
+ring 	ring	<nn.utr.sin.ind.nom> #{EL} # [1680 stycken]
+rings 	ring	<nn.utr.sin.ind.gen> 
+ringen 	ring	<nn.utr.sin.def.nom> 
+ringens 	ring	<nn.utr.sin.def.gen> 
+ringar 	ring	<nn.utr.plu.ind.nom> 
+ringars 	ring	<nn.utr.plu.ind.gen> 
+ringarna 	ring	<nn.utr.plu.def.nom> 
+ringarnas 	ring	<nn.utr.plu.def.gen> 
+
+ling 	ling	<nn.utr.sin.ind.nom> #{EL} # [256 stycken]
+lings 	ling	<nn.utr.sin.ind.gen> 
+lingen 	ling	<nn.utr.sin.def.nom> 
+lingens 	ling	<nn.utr.sin.def.gen> 
+lingar 	ling	<nn.utr.plu.ind.nom> 
+lingars 	ling	<nn.utr.plu.ind.gen> 
+lingarna 	ling	<nn.utr.plu.def.nom> 
+lingarnas 	ling	<nn.utr.plu.def.gen> 
+
+era 	era, erade	<vb.inf.akt vb.imp.akt> #{EL} # (tentering) [273 förutom dom som redan finns med]
+erade 	era, erade	<vb.prt.akt pc.prf.mas.sin.def.nom pc.prf.utr/neu.sin.def.nom pc.prf.utr/neu.plu.ind/def.nom> #{EL} 
+ering 	era, erade	<nn.utr.sin.ind.nom> 
+erings 	era, erade	<nn.utr.sin.ind.gen> 
+eringen 	era, erade	<nn.utr.sin.def.nom> #
+eringens 	era, erade	<nn.utr.sin.def.gen> #
+eringar 	era, erade	<nn.utr.plu.ind.nom> #
+eringars 	era, erade	<nn.utr.plu.ind.gen> #
+eringarna 	era, erade	<nn.utr.plu.def.nom> #
+eringarnas 	era, erade	<nn.utr.plu.def.gen> #
+
+<B>man 	man, mannen, män	<nn.utr.sin.ind.nom> #{EL} 
+<B>mannen 	man, mannen, män	<nn.utr.sin.def.nom> #{EL} 
+<B>män 	man, mannen, män	<nn.utr.plu.ind.nom> #{EL} 
+<B>mans 	man, mannen, män	<nn.utr.sin.ind.gen> 
+<B>mannens 	man, mannen, män	<nn.utr.sin.def.gen> 
+<B>mäns 	man, mannen, män	<nn.utr.plu.ind.gen> #
+<B>männen 	man, mannen, män	<nn.utr.plu.def.nom> #
+<B>männens 	man, mannen, män	<nn.utr.plu.def.gen> #
+
+<B>stad 	stad, staden, städer	<nn.utr.sin.ind.nom> #{EL} 
+<B>staden 	stad, staden, städer	<nn.utr.sin.def.nom> #{EL} 
+<B>städer 	stad, staden, städer	<nn.utr.plu.ind.nom> #{EL} 
+<B>stads 	stad, staden, städer	<nn.utr.sin.ind.gen> 
+<B>stadens 	stad, staden, städer	<nn.utr.sin.def.gen> 
+<B>städers 	stad, staden, städer	<nn.utr.plu.ind.gen> 
+<B>städerna 	stad, staden, städer	<nn.utr.plu.def.nom> 
+<B>städernas 	stad, staden, städer	<nn.utr.plu.def.gen> 
+
+<B>fader 	fader, fadern, fäder	<nn.utr.sin.ind.nom> #{EL} 
+<B>fadern 	fader, fadern, fäder	<nn.utr.sin.def.nom> #{EL} 
+<B>fäder 	fader, fadern, fäder	<nn.utr.plu.ind.nom> #{EL} 
+<B>faders 	fader, fadern, fäder	<nn.utr.sin.ind.gen> 
+<B>faderns 	fader, fadern, fäder	<nn.utr.sin.def.gen> 
+<B>fäders 	fader, fadern, fäder	<nn.utr.plu.ind.gen> 
+<B>fäderna 	fader, fadern, fäder	<nn.utr.plu.def.nom> 
+<B>fädernas 	fader, fadern, fäder	<nn.utr.plu.def.gen> 
+
+<B>far 	far, fadern, fäder	<nn.utr.sin.ind.nom> #{EL} 
+<B>fadern 	far, fadern, fäder	<nn.utr.sin.def.nom> #{EL} 
+<B>fäder 	far, fadern, fäder	<nn.utr.plu.ind.nom> #{EL} 
+<B>fars 	far, fadern, fäder	<nn.utr.sin.ind.gen> 
+<B>faderns 	far, fadern, fäder	<nn.utr.sin.def.gen> 
+<B>fäders 	far, fadern, fäder	<nn.utr.plu.ind.gen> 
+<B>fäderna 	far, fadern, fäder	<nn.utr.plu.def.nom> 
+<B>fädernas 	far, fadern, fäder	<nn.utr.plu.def.gen> 
+
+<B>moder 	moder, mödrar	<nn.utr.sin.ind.nom> #{EL} #
+<B>mödrar 	moder, mödrar	<nn.utr.plu.ind.nom> #{EL} 
+<B>moders 	moder, mödrar	<nn.utr.sin.ind.gen> 
+<B>modern 	moder, mödrar	<nn.utr.sin.def.nom> 
+<B>moderns 	moder, mödrar	<nn.utr.sin.def.gen> 
+<B>mödrars 	moder, mödrar	<nn.utr.plu.ind.gen> 
+<B>mödrarna 	moder, mödrar	<nn.utr.plu.def.nom> 
+<B>mödrarnas 	moder, mödrar	<nn.utr.plu.def.gen> 
+<B>mor 	moder, mödrar	<nn.utr.sin.ind.nom> #
+<B>mors 	moder, mödrar	<nn.utr.sin.ind.gen> #
+morn 	moder, mödrar	<nn.utr.sin.def.nom> #
+morns 	moder, mödrar	<nn.utr.sin.def.gen> #
+
+<B>broder 	broder	<nn.utr.sin.ind.nom> #{EL} #
+<B>broders 	broder	<nn.utr.plu.ind.nom> 
+<B>brodern 	broder	<nn.utr.sin.def.nom> 
+<B>broderns 	broder	<nn.utr.sin.def.gen> 
+<B>bröder 	broder	<nn.utr.plu.ind.nom> #
+<B>bröders 	broder	<nn.utr.plu.ind.gen> 
+<B>bröderna 	broder	<nn.utr.plu.def.nom> 
+<B>brödernas 	broder	<nn.utr.plu.def.gen> 
+<B>bror 	broder	<nn.utr.sin.ind.nom> #
+<B>brors 	broder	<nn.utr.sin.ind.gen> #
+brorn 	broder	<nn.utr.sin.def.nom> #
+brorns 	broder	<nn.utr.sin.def.gen> #
+
+<B>son 	son, sonen, söner	<nn.utr.sin.ind.nom> #{EL} 
+<B>sonen 	son, sonen, söner	<nn.utr.sin.def.nom> #{EL} 
+<B>söner 	son, sonen, söner	<nn.utr.plu.ind.nom> #{EL} 
+<B>sons 	son, sonen, söner	<nn.utr.sin.ind.gen> 
+<B>sonens 	son, sonen, söner	<nn.utr.sin.def.gen> 
+<B>söners 	son, sonen, söner	<nn.utr.plu.ind.gen> 
+<B>sönerna 	son, sonen, söner	<nn.utr.plu.def.nom> 
+<B>sönernas 	son, sonen, söner	<nn.utr.plu.def.gen> 
+
+<B>fot 	fot, fötter	<nn.utr.sin.ind.nom> #{EL} #
+<B>fötter 	fot, fötter	<nn.utr.plu.ind.nom> #{EL} 
+<B>fötters 	fot, fötter	<nn.utr.plu.ind.gen> 
+<B>fötterna 	fot, fötter	<nn.utr.plu.def.nom> 
+<B>fötternas 	fot, fötter	<nn.utr.plu.def.gen> 
+
+<B>rot 	rot, rötter	<nn.utr.sin.ind.nom> #{EL} #
+<B>rötter 	rot, rötter	<nn.utr.plu.ind.nom> #{EL} 
+<B>rötters 	rot, rötter	<nn.utr.plu.ind.gen> 
+<B>rötterna 	rot, rötter	<nn.utr.plu.def.nom> 
+<B>rötternas 	rot, rötter	<nn.utr.plu.def.gen> 
+
+<B>nöt 	nöt, nötter	<nn.utr.sin.ind.nom> #{EL} #
+<B>nötter 	nöt, nötter	<nn.utr.plu.ind.nom> #{EL} 
+<B>nötters 	nöt, nötter	<nn.utr.plu.ind.gen> 
+<B>nötterna 	nöt, nötter	<nn.utr.plu.def.nom> 
+<B>nötternas 	nöt, nötter	<nn.utr.plu.def.gen> 
+
+<B>historia 	historia, historien	<nn.utr.sin.ind.nom> #{EL} 
+<B>historien 	historia, historien	<nn.utr.sin.def.nom> #{EL} 
+<B>historias 	historia, historien	<nn.utr.sin.ind.gen> 
+<B>historiens 	historia, historien	<nn.utr.sin.def.gen> 
+<B>historier 	historia, historien	<nn.utr.plu.ind.nom> 
+<B>historiers 	historia, historien	<nn.utr.plu.ind.gen> 
+<B>historierna 	historia, historien	<nn.utr.plu.def.nom> 
+<B>historiernas 	historia, historien	<nn.utr.plu.def.gen> 
+
+<B>bok 	bok, böcker	<nn.utr.sin.ind.nom> #{EL} #
+<B>böcker 	bok, böcker	<nn.utr.plu.ind.nom> #{EL} 
+<B>boks 	bok, böcker	<nn.utr.sin.ind.gen> 
+<B>böckers 	bok, böcker	<nn.utr.plu.ind.gen> 
+<B>boken 	bok, böcker	<nn.utr.sin.def.nom> 
+<B>bokens 	bok, böcker	<nn.utr.sin.def.gen> 
+<B>böckerna 	bok, böcker	<nn.utr.plu.def.nom> 
+<B>böckernas 	bok, böcker	<nn.utr.plu.def.gen> 
+
+<B>botten 	botten, bottnen	<nn.utr.sin.ind.nom nn.utr.sin.def.nom> #{EL} #
+<B>bottnen 	botten, bottnen	<nn.utr.sin.def.nom> #{EL} 
+<B>bottens 	botten, bottnen	<nn.utr.sin.ind.gen nn.utr.sin.def.gen> 
+<B>bottnens 	botten, bottnen	<nn.utr.sin.def.gen> 
+<B>bottnar 	botten, bottnen	<nn.utr.plu.ind.nom> #
+<B>bottnars 	botten, bottnen	<nn.utr.plu.ind.gen> 
+<B>bottnarna 	botten, bottnen	<nn.utr.plu.def.nom> 
+<B>bottnarnas 	botten, bottnen	<nn.utr.plu.def.gen> 
+
+<B>vatten 	vatten, vattnet	<nn.neu.sin.ind.nom nn.neu.plu.ind.nom> #{EL} #
+<B>vattnet 	vatten, vattnet	<nn.neu.sin.def.nom> #{EL} 
+<B>vattens 	vatten, vattnet	<nn.neu.sin.ind.gen nn.neu.plu.ind.gen> 
+<B>vattnets 	vatten, vattnet	<nn.neu.sin.def.gen> 
+<B>vattnen 	vatten, vattnet	<nn.neu.plu.def.nom> 
+<B>vattnens 	vatten, vattnet	<nn.neu.plu.def.gen> 
+
+<B>and 	and, änder	<nn.utr.sin.ind.nom> #{EL} #
+<B>änder 	and, änder	<nn.utr.plu.ind.nom> #{EL} 
+<B>ands 	and, änder	<nn.utr.sin.ind.gen> 
+<B>anden 	and, änder	<nn.utr.sin.def.nom> 
+<B>andens 	and, änder	<nn.utr.sin.def.gen> 
+<B>änders 	and, änder	<nn.utr.plu.ind.gen> 
+<B>änderna 	and, änder	<nn.utr.plu.def.nom> 
+<B>ändernas 	and, änder	<nn.utr.plu.def.gen> 
+
+<B>ång 	ång, änger	<nn.utr.sin.ind.nom> #{EL} # (tång)
+<B>änger 	ång, änger	<nn.utr.plu.ind.nom> #{EL} 
+<B>ångs 	ång, änger	<nn.utr.sin.ind.gen> 
+<B>ängers 	ång, änger	<nn.utr.plu.ind.gen> 
+<B>ången 	ång, änger	<nn.utr.sin.def.nom> 
+<B>ångens 	ång, änger	<nn.utr.sin.def.gen> 
+<B>ängerna 	ång, änger	<nn.utr.plu.def.nom> 
+<B>ängernas 	ång, änger	<nn.utr.plu.def.gen> 
+
+<B>bo 	bo, boet	<nn.neu.sin.ind.nom> #{EL} #
+<B>boet 	bo, boet	<nn.neu.sin.def.nom> #{EL} 
+<B>bos 	bo, boet	<nn.neu.sin.ind.gen> 
+<B>boets 	bo, boet	<nn.neu.sin.def.gen> 
+<B>bon 	bo, boet	<nn.neu.plu.ind.nom> #
+<B>bons 	bo, boet	<nn.neu.plu.ind.gen> #
+<B>boen 	bo, boet	<nn.neu.plu.def.nom> 
+<B>boens 	bo, boet	<nn.neu.plu.def.gen> 
+<B>bona 	bo, boet	<nn.neu.plu.def.nom> 
+<B>bonas 	bo, boet	<nn.neu.plu.def.gen> 
+
+#<ab> adverb:
+ligen 	ligen	<ab> #{EL} # (månatligen)
+(be|se)[e]des 	des	<ab> #{EL} # (sammaledes)
+vis 	vis, ~visen, ~viset, ~vishet	<ab> #{EL} # (månadsvis)

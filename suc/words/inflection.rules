@@ -1,0 +1,434 @@
+$nn.utr.sin.ind.nom	nn.utr.sin.def.nom	nn.utr.plu.ind.nom	nn.utr.plu.def.nom	nn.utr.sin.ind.gen	nn.utr.sin.def.gen	nn.utr.plu.ind.gen	nn.utr.plu.def.gen	nn.utr.sms
+u1	het	=	en	er	erna	s	ens	ers	ernas	=
+u1	Ce	e	en	ar	arna	es	ens	ars	arnas	=
+u1s	Ce	e	en	ar	arna	es	ens	ars	arnas	s
+u1es	Ce	e	en	ar	arna	es	ens	ars	arnas	es
+u1e	Ce	e	en	ar	arna	es	ens	ars	arnas	e
+u1m	me	me	men	mar	marna	mes	mens	mars	marnas	=
+u1-	Ce	e	en	ar	arna	es	ens	ars	arnas
+u1	Vmmer	mer	mern	rar	rarna	mers	merns	rars	rarnas	mer
+u1	Vmmel	mel	meln	lar	larna	mels	melns	lars	larnas	mel
+u1	banjo,bro,flo,ho,jojo,lo,mo,oro	=	n	ar	arna	s	ns	ars	arnas	=
+u1	behå,byrå,hå,slå,så,^å	=	n	ar	arna	s	ns	ars	arnas	=
+u1	Cy,Cu,Cö,^ö	=	n	ar	arna	s	ns	ars	arnas	=
+u1	Vmmar	mar	maren	rar	rarna	mars	marens	rars	rarnas	mar
+u1	s	=	en	ar	arna	=	ens	ars	arnas	=
+u1	C	=	en	ar	arna	s	ens	ars	arnas	=
+u2	fe,sul,intervju,kansler,portmonnä,essä,kö,miljö	=	n	er	erna	s	ns	ers	ernas	=
+u2	Ci,é,y,Cå	=	n	er	erna	s	ns	ers	ernas	=
+u2	Cel	el	eln	ler	lerna	els	elns	lers	lernas	el
+u2	Cer	er	ern	rer	rerna	ers	erns	rers	rernas	er
+u2	musa	a	an	er	erna	as	ans	ers	ernas	=
+u2	um	um	en	er	erna	ums	ens	ers	ernas	e
+u2	s	=	en	er	erna	=	ens	ers	ernas	=
+u2	C	=	en	er	erna	s	ens	ers	ernas	=
+u2s	C	=	en	er	erna	s	ens	ers	ernas	s
+u3	Cande,er	=	n	=	na	s	ns	s	nas	=
+u3	are	e	en	e	na	es	ens	es	nas	=
+u3	mma	mma	mman	mmor	mmorna	mmas	mmans	mmors	mmornas	m
+u3	a	a	an	or	orna	as	ans	ors	ornas	=
+u3	Cel	el	eln	lor	lorna	els	elns	lors	lornas	el
+u3	s	=	en	or	orna	=	ens	ors	ornas	s
+u3	C	=	en	or	orna	s	ens	ors	ornas	=
+u3e	a	a	an	or	orna	as	ans	ors	ornas	e
+u3o	a	a	an	or	orna	as	ans	ors	ornas	o
+u3s	a	a	an	or	orna	as	ans	ors	ornas	s
+u3u	a	a	an	or	orna	as	ans	ors	ornas	u
+u3a	a	a	an	or	orna	as	ans	ors	ornas	a
+u3es	a	a	an	or	orna	as	ans	ors	ornas	es
+u3er	ra	ra	ran	ror	rorna	ras	rans	rors	rornas	er
+u3el	la	la	lan	lor	lorna	las	lans	lors	lornas	el
+u3mel	la	la	lan	lor	lorna	las	lans	lors	lornas	mel
+u6	Cen	en	nen	nar	narna	ens	nens	nars	narnas	en
+u6	Vn	=	nen	nar	narna	s	nens	nars	narnas	=
+u6	Vm	=	men	mar	marna	s	mens	mars	marnas	=
+u6	Cel	el	eln	lar	larna	els	elns	lars	larnas	el
+u6	Cer	er	ern	rar	rarna	ers	erns	rars	rarnas	er
+u7	or	=	n	er	erna	s	ns	ers	ernas	=
+u7	Vn	=	nen	ner	nerna	s	nens	ners	nernas	=
+u7	Vm	=	men	mer	merna	s	mens	mers	mernas	=
+u7	el	=	en	er	erna	s	ens	ers	ernas	=
+u7	e,o,u,å	=	n	r	rna	s	ns	rs	rnas	=
+u8	bio	=	n	grafer	graferna	s	ns	grafers	grafernas	=
+u8	farao	=	n	ner	nerna	s	ns	ners	nernas	=
+u8	bok	ok	oken	öcker	öckerna	oks	okens	öckers	öckernas	ok
+u8	tång	ång	ången	änger	ängerna	ångs	ångens	ängers	ängernas	ång
+u8	fot,rot	ot	oten	ötter	ötterna	ots	otens	ötters	ötternas	ot
+u8	bekant	=	-	a	-	s	-	as	-	=
+u8	fröken	en	en	nar	narna	ens	s	nars	narnas	en
+u8	xen	xen	xen	xnar	xnarna	xens	xens	xnars	xnarnas	xen
+u8	man	an	annen	än	ännen	ans	annens	äns	ännens	ans
+u8na	man	an	annen	än	ännen	ans	annens	äns	ännens	anna
+u8	and	and	anden	änder	änderna	ands	andens	änders	ändernas	and
+u8	morgon,afton	on	onen	nar	narna	ons	onens	nars	narnas	on
+u8	son	on	onen	öner	önerna	ons	onens	öners	önernas	on
+u8	rbror	or	orn	öder	öderna	ors	orns	öders	ödernas	ors
+u8	bror	or	odern	öder	öderna	ors	oderns	öders	ödernas	ors
+u8	mor	or	odern	ödrar	ödrarna	ors	oderns	ödrars	ödrarnas	or
+u8	far	ar	adern	äder	äderna	ars	aderns	äders	ädernas	ar
+u8	broder	oder	odern	öder	öderna	oders	oderns	öders	ödernas	oders
+u8	moder	oder	odern	ödrar	ödrarna	oders	oderns	ödrars	ödrarnas	oders
+u8	fader	ader	adern	äder	äderna	aders	aderns	äders	ädernas	aders
+u8	officer	=	en	are	arna	s	ens	ares	arnas	s
+u8	toker	er	ern	ar	arna	ers	erns	ars	arnas	er
+u8	ammare	mare	maren	rar	rarna	mares	marens	rars	rarnas	mar
+u8	dotter	otter	ottern	öttrar	öttrarna	otters	otterns	öttrars	öttrarnas otter
+u8	eforus	us	us	er	erna	us	us	ers	ernas	us
+u8	ryllis	is	isen	er	erna	is	isens	ers	ernas	is
+u8	lus,mus	us	usen	öss	össen	us	usens	öss	össens	us
+u8	us	us	us	i	i	us	us	is	is	i
+u8	gås	gås	gåsen	gäss	gässen	gås	gåsens	gäss	jässens	gås
+u8	get,gnet,nöt	=	en	ter	terna	s	ens	ters	ternas	=
+u8	ledamot	ot	oten	öter	öterna	ots	otens	öters	öternas	ots
+u8	natt	att	atten	ätter	ätterna	atts	attens	ätters	ätternas	att
+u8	bokstav	av	aven	äver	äverna	avs	avens	ävers	ävernas	avs	
+u8	historia	a	en	er	erna	as	ens	ers	ernas	e
+u8	niello,albino	o	on	er	erna	os	ons	ers	ernas	o
+u8	stad	ad	aden	äder	äderna	ads	adens	äders	ädernas	ad
+u8	bonde	onde	onden	önder	önderna	ondes	ondens	önders	öndernas	onde
+u8	jävul	ul	ulen	lar	larna	uls	ulens	lars	larnas	uls
+u8	jävel	el	elen	lar	larna	els	elens	lars	larnas	els
+u8	predikan	an	an	ningar	ningarna	ans	ans	ningars	ningarnas	o
+u8	men	en	en	ina	ina	ens	ens	inas	inas	ens
+u8	spann	ann	annen	änner	ännerna	anns	annens	änners	ännernas	ann
+u8	snö	=	n	=	n	s	ns	s	ns	=
+u8	orden	rden	rden	rdnar	rdnarna	rdens	rdens	rdnars	rdnarnas	rdens
+u8	sägen	en	nen	ner	nerna	ens	nens	ners	nernas	ens
+u8	re	e	en	er	erna	es	ens	ers	erna	=
+u8	himmel	mel	len	lar	larna	mels	lens	lars	larna	mel
+u8	begäran	=	=	-	-	s	s	-	-	-
+u0	gisslan	=	=	=	=	s	s	s	s	=
+u0	slalom	=	en	-	-	s	ens	-	-	=
+u4	syn,dom,lm	=	en	-	-	s	ens	-	-	s
+u4	service	=	n	-	-	-	ns	-	-	=
+u4	V,Cel,Cer,pur,dar,par,lar,ror,for,mor	=	n	-	-	s	ns	-	-	=
+u4	halm,rom,skam,slum	=	men	-	-	s	mens	)
+u4	s	=	en	-	-	=	ens	=
+u4	C	=	en	-	-	s	ens	=
+uf	C,V	=	:n	:ar	:arna	:s	:ns	:ars	:arnas	.
+$nn.utr.sin.ind.nom	nn.utr.sin.ind.gen	nn.utr.sms
+u9	campus,dekanus	=	=	=
+u9	Can	=	s	s
+u9	uari,mars,april,maj,juni,juli,augusti,ber	=	s	=
+u9	babord,styrbord	=	s	s
+u9	syd,öst,väst,norr	=	s	=
+u9	badminton,bekostnad,början,facit,herr,media	=	s	=
+$nn.neu.sin.ind.nom	nn.neu.sin.def.nom	nn.neu.plu.ind.nom	nn.neu.plu.def.nom	nn.neu.sin.ind.gen	nn.neu.sin.def.gen	nn.neu.plu.ind.gen	nn.neu.plu.def.gen nn.neu.sms
+n1	nde	=	t	=	n	s	ts	s	ns	=
+n1	e	=	t	=	n	s	ts	s	ns	s
+n1	Vmmer	mer	ret	mer	ren	mers	rets	mers	rens	mer
+n1	Vmmel	mel	let	mel	len	mels	lets	mels	lens	mel
+n1	ton	=	net	=	nen	s	nets	s	nens	=
+n1	s	=	et	=	en	=	ets	=	ens	=
+n1	C	=	et	=	en	s	ets	s	ens	=
+n1s	C	=	et	=	en	s	ets	s	ens	s
+n1-	C	=	et	=	en	s	ets	s	ens
+n2	are	e	et	en	na	es	ets	ens	nas	=
+n2	huvud	=	et	en	ena	es	ets	ens	enas	=
+n2	ä,ö,bi,bo	=	et	n	na	s	ets	ns	nas	=
+n2	V	=	t	n	na	s	ts	ns	nas	=
+n2s	e	e	et	en	ena	es	ets	ens	enas	s
+n2e	e	=	t	n	na	s	ts	ns	nas	=
+n2es	e	=	t	n	na	s	ts	ns	nas	s
+n2el	le	le	let	len	lena	les	lets	lens	lenas	el
+n2-	V	=	t	n	na	s	ts	ns	nas	.
+n4	Cer	er	ret	er	ren	ers	rets	ers	rens	er
+n4	Cel	el	let	el	len	els	lets	els	lens	el
+n4	Cen	en	net	en	nen	ens	nets	ens	nens	en
+n4	Vm	=	met	=	men	s	mets	s	mens	s
+n5	e	=	t	r	rna	s	ts	rs	rnas	=
+n5	Cel	el	let	ler	lerna	els	lets	lers	lernas	el
+n5	um	um	et	er	erna	ums	ets	ers	ernas	e
+n5	ma	a	at	er	erna	as	ats	ers	ernas	a
+n5	s	=	et	er	erna	=	ets	ers	ernas	=
+n5	i,y,é,C	=	et	er	erna	s	ets	ers	ernas	=
+n6	öra	a	at	on	onen	as	ats	ons	onens	=
+n6b	öra	a	at	on	onen	as	ats	ons	onens	on
+n6	öga	a	at	on	onen	as	ats	ons	onens	on
+n6	finger	er	ret	rar	rarna	ers	rets	rars	rarnas	er
+n6	land	and	andet	änder	änderna	ands	andets	änders	ändernas	and
+n6	ema	=	t	ta	tan	s	ts	tas	tans	=
+n6	papper,sar	=	et	=	na	s	ets	s	nas	s
+n6	te	=	et	er	erna	s	ets	ers	ernas	=
+n6	um	um	um	a	a	ums	ums	as	as	=
+n6	facit	=	=	=	=	s	s	s	s	=
+n6	väsen	=	det	=	dena	s	dets	dens	denas	s
+n6	stadion	=	=	=	=	s	s	s	s	=
+n7	väsen	=	det	=	de	s	dets	des	des	=
+n7	stadion	ion	ion	er	erna	ions	ions	ers	ernas	=
+$nn.neu.sin.ind.nom	nn.neu.sin.ind.gen	nn.neu.sms
+n8	zoo,väsen	=	s	=
+$nn.neu.sin.ind.nom	nn.neu.sin.def.nom	nn.neu.plu.ind.nom	nn.neu.plu.def.nom	nn.neu.sin.ind.gen	nn.neu.sin.def.gen	nn.neu.plu.ind.gen	nn.neu.plu.def.gen nn.neu.sms
+n3	ium,i	=	et	-	-	s	ets	=
+n3	um	=	-	-	-	s	-	=
+n3	Vm	=	met	-	-	s	mets	=
+n3	mmer	mer	ret	-	-	mers	rets	mer
+n3	Cer	er	ret	-	-	ers	rets	er
+n3	mmel	mel	let	-	-	mels	lets	mel
+n3	Cel	el	let	-	-	els	lets	el
+n3	Cen	en	net	-	-	ens	net	en
+n3	e	=	t	-	-	s	ts	=
+n3	s	=	et	-	-	=	ets	=
+n3	u,y,ö,C	=	et	-	-	s	ets	=
+$nn.utr.plu.ind.nom	nn.utr.plu.def.nom	nn.utr.plu.ind.gen	nn.utr.plu.def.gen	nn.neu.sms
+up1	kläder,kontanter,specerier	er	erna	ers	ernas	=
+$jj.pos.utr.sin.ind.nom	jj.pos.neu.sin.ind.nom	ab.pos	jj.pos.utr/neu.sin.def.nom	jj.pos.utr/neu.plu.ind/def.nom	jj.pos.utr/neu.sin/plu.ind/def.nom	jj.pos.sms	jj.pos.mas.sin.def.nom	jj.kom.utr/neu.sin/plu.ind/def.nom	jj.suv.utr/neu.sin/plu.ind.nom	 jj.suv.utr/neu.sin/plu.def.nom
+a1	liten	liten	litet	-	lilla	små	-	lille	små	mindre	minst	minsta	minste
+a1	stor	or	ort	-	ora	ora	ora	ore	or	örre	örst	örsta	örste
+a1	hög	=	t	t	a	a	a	e	=	re	st	sta	ste
+a1	låg	åg	ågt	ågt	åga	åga	åga	åge	åg	ägre	ägst	ägsta	ägste
+a1	bra	bra	bra	väl	bra	bra	bra	bra	väl	bättre	bäst	bästa	äste
+a1	dålig	dålig	dåligt	dåligt	dåliga	dåliga	dåliga	dålige	-	sämre	sämst	sämsta	sämste	
+a1	gammal	gammal	gammalt	gammalt	gamla	gamla	-	gamle	gammel	äldre	äldst	äldsta	äldste
+a1	nära	a	a	a	a	a	-	e	=	mare	mst	msta	mste
+a1	mången	mången	månget	-	-	många	-	mång	-	fler	flest	flesta
+a1	fler	r	r	-	-	ra	ra	-	r	r	st	sta	
+a1	annan	nan	nat	-	dra	dra	dra	dre
+a1	hel	hel	helt	helt	hela	hela	-	hel	hele	helare	helast	helaste
+a1	stel	stel	stelt	stelt	stela	stela	-	stel	stele	stelare	stelast	stelaste
+a1	Cer	er	ert	ert	ra	ra	-	er	re	rare	rast	raste
+a1	Cel	el	elt	elt	la	la	-	el	le	lare	last	laste
+a1	t	=	=	=	a	a	-	=	e	are	ast	aste
+a1	dd	dd	tt	tt	dda	dda	-	-	dde	ddare	ddast	ddaste
+a1	Cd	d	t	t	da	da	-	-	de	dare	dast	daste
+a1	nn	n	t	t	na	na	-	-	ne	nare	nast	naste
+a1	beige,orange	e	t	-	a	-	a	e	e	are	ast	aste
+a1	blå,grå	=	tt	tt	=	=	-	=	e	are	ast	aste
+a1	a	=	=	=	=	=	-	-	=	re	st	ste
+a1	d	d	t	t	de	de	-	de
+a1	C	=	t	t	a	a	-	=	e	are	ast	aste
+a2	nära	a	a	a	a	a	-	e	-	mare	mast	maste	maste
+a2	Vm	=	t	t	ma	ma	-	-	me	mare	mast	maste
+a2	Cen	en	et	et	na	na	-	-	ne	nare	nast	naste
+a2	fri,ny,fly,rå,slö	=	tt	tt	a	a	-	e	are	ast	aste
+a2	t	=	t	t	a	a	-	=	e	are	ast	aste
+a2	dd	=	-	-	a	a	-	-	e	are	ast	aste
+a2	Vd	d	tt	tt	da	da	-	d	de	dare	dast	daste
+a3	dd	dd	tt	tt	dda	dda	-	-	dde
+a3	ad	d	t	t	de	de	-	-	de
+a3	t	=	=	=	a	a	-	-	e
+a3	Cd	d	t	t	da	da	-	-	de
+a3	Cer	er	ert	ert	ra	ra	-	-	re
+a3	Cel	el	elt	elt	la	la	-	-	le
+a3	mmen	men	met	met	na	na	-	-	ne
+a3	nnen	en	et	et	a	a	-	-	e
+a3	Cen	en	et	et	na	na	-	-	ne
+a3	C	=	t	t	a	a	-	-	e
+a4	fri	=	tt	tt	a	a	-	-	e
+a4	Vd	d	tt	tt	da	da	-	-	de
+a4	t,Vg	=	t	t	a	a	-	-	e
+$jj.pos.utr/neu.sin/plu.ind/def.nom
+a5   	C,V	-	-
+$vb.inf.akt	vb.prs.akt	vb.prt.akt	vb.sup.akt	vb.imp	pc.prs.utr/neu.sin/plu.ind/def.nom jj.pos.utr.sin.ind.nom jj.pos.neu.sin.ind.nom jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom	vb.inf.sfo	vb.prs.sfo	vb.prt.sfo vb.sup.sfo -	vb.prs.sfo	pc.gen - - - -
+v1	a	=	r	de	t	=	nde	d	t	de	de	s	s	des	ts	s	ndes	ds	ts	des	des
+$vb.inf.sfo	vb.prs.sfo	vb.prt.sfo	vb.sup.sfo	vb.imp	pc.prs.utr/neu.sin/plu.ind/def.nom jj.pos.utr.sin.ind.nom jj.pos.neu.sin.ind.nom jj.pos.utr/neu.sin.def.nom jj.pos.utr/neu.plu.ind/def.nom	vb.inf.sfo	vb.prs.sfo vb.prt.sfo vb.sup.sfo -	-	pc.gen - - - -
+v1	finnas	innas	inns	anns	unnits	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+v1	as	s	s	des	ts	s	ndes	-	-	d	-	-	-	-	-	-	-	-	ts	des	des
+$vb.inf.akt	vb.prs.akt	vb.prt.akt	vb.sup.akt	vb.imp	pc.prs.utr/neu.sin/plu.ind/def.nom jj.pos.utr.sin.ind.nom jj.pos.neu.sin.ind.nom jj.pos.utr/neu.sin.def.nom jj.pos.mas.sin.def.nom	vb.inf.sfo	vb.prs.sfo vb.prt.sfo vb.sup.sfo -	-	pc.gen - - - vb.prs.sfo
+v2	nda	da	der	de	t	d	dande	d	t	da	de	das	des	des	ts	das	dandes	ds	ts	das	des
+v2	da	da	der	dde	tt	d	dande	dd	tt	dda	dde	das	des	ddes	tts	das	dande	dds	tts	ddas	ddes	ds
+v2	mma	ma	mer	de	t	=	mande	d	t	da	de	mas	mes	des	ts	-	mandes	ds	ts	das	des
+v2	nna	na	ner	de	t	n	nande	d	t	da	de	nas	nes	des	ts	-	nandes	ds	ts	das	des
+v2	ja	a	er	de	t	=	ande	d	t	da	de	as	es	des	ts	as	andes	ds	ts	das	des
+v2	Vra	a	=	de	t	=	ande	d	t	da	de	as	es	des	ts	-	andes	ds	ts	das	des
+v2	ala,åla	a	=	de	t	=	ande	d	t	da	de	as	s	des	ts	-	andes	ds	ts	das	des
+v2	das	das	ds	ddes	tts	-	dandes	-	-	-	-	das	ddes	-	-	das	-	-	tts	ddas	ddes
+v2	ännas	nas	nns	ndes	nts	-	nandes	-	-	-	-	nnas	nnes	-	-	nnas	-	-	nts	ndas	ndes
+v2	as	as	s	des	ts	-	andes	-	-	-	-	as	es	-	-	as	-	-	ts	das	des
+v2	ga,la,ma,na,ra,va	a	er	de	t	=	ande	d	t	da	de	as	s	des	ts	-	andes	ds	ts	das	des
+v6	stå	å	år	od	ått	å	ående	-	-	-	-	ås	ås	ods	åtts	ås	åendes	-	-	-	-
+v5	förnimma	imma	immer	amm	ummit	imm	immande	ummen	ummet	umna	umne	immas	imms	amms	ummits	immas	immandes	ummens	ummets	umnas	umnes
+v5	begrava	ava	aver	ov	avit	av	avande	aven	avet	avna	avne	avas	avs	ovs	avits	avas	avandes	avens	avets	avnas	avnes
+v5	dväljas	äljas	äljs	aldes	alts
+v5	förgäta	äta	äter	at	ätit	ät	ätande	äten	ätet	ätna	ätne	ätas	äts	ats	ätits	ätas	ätandes	ätens	ätets	ätnas	ätnes
+v5	spricka	icka	icker	ack	uckit	ick	ickande	ucken	ucket	uckna	uckne	ickas	-	acks	uckits	ickas	ickandes	uckens	uckets	ucknas	ucknes
+v5	springa	inga	inger	ang	ungit	ing	ingande	ungen	unget	ungna	ungne	ingas	ings	angs	ungits	ingas	ingandes	ungens	ungets	ungnas	ungnes
+v5	spritta	itta	itter	att	uttit	itt	ittande	utten	uttet	uttna	uttne	ittas	-	atts	uttits	ittas	ittandes	uttens	uttets	uttnas	uttnes
+v5	bringa	inga	ingar	agte	agt	inga	ingande	agt	agt	agta	agte	ingas	ingas	agtes	agts	ingas	ingandes	agts	agts	agtas	agtes
+v5	brista	ista	ister	ast	ustit	ist	istande	usten	ustet	ustna	ustne	istas	istes	asts	ustits	istas	istandes	ustens	ustets	ustnas	ustnes
+v5	dricka,sticka	icka	icker	ack	uckit	ick	ickande	ucken	ucket	uckna	uckne	ickas	icks	acks	uckits	ickas	ickandes	uckens	uckets	ucknas	ucknes
+v5	glädja	ädja	äder	adde	att	äd	ädande	add	att	adda	adde	ädjas	äds	addes	atts	ädjas	ädandes	adds	atts	addas	addes
+v5	klinga	inga	ingar	ang	ungit	inga	ingande
+v5	kvälja	älja	äljer	alde	alt	älj	äljande
+v5	minnas	nas	ns	des	-	ns	nande
+v5	sjunga	unga	unger	öng	ungit	ung	ungande	ungen	unget	ungna	ungne	ungas	ungs	öngs	ungits	ungas	ungandes	ungens	ungets	ungnas	ungnes
+v5	sjunka	unka	unker	önk	unkit	unk	unkande	unken	unket	unkna	unkne
+v5	skilja	ja	jer	de	t	j	jande	d	t	da	de	jas	jes	des	ts	jas	jandes	ds	ts	das	des
+v5	skjuta,gjuta	juta	juter	öt	jutit	jut	jutande	juten	jutet	jutna	jutne	jutas	juts	öts	jutits	jutas	jutandes	jutens	jutets	jutnas	jutnes
+v5	sprida,strida	ida	ider	ed	idit	id	idande	idd	itt	idda	idde	idas	ids	eds	idits	idas	idandes	idds	itts	iddas	iddes
+v5	skrida,glida,gnida,kvida,vrida,lida,rida	ida	ider	ed	idit	id	idande	iden	idet	idna	idne	idas	ids	eds	idits	idas	idandes	idens	idets	idnas	idnes
+v5	skälva	älva	älver	alv	älvt	älv	älvande
+v5	slinka	inka	inker	ank	unkit	ink	inkande	unken	unket	unkna	unkne	inkas	inks	anks	unkits	inkas	inkandes	unkens	unkets	unkans	unkens
+v5	slinta	inta	inter	ant	untit	int	intande	-	-	-	-	intas	ints	ants	untits	intas	intandes
+v5	slippa	ippa	ipper	app	uppit	ipp	ippande	uppen	uppet	uppna	uppne	ippas	ipps	apps	uppits	ippas	ippandes	uppens	uppets	uppnas	uppnes
+v5	smälla	älla	äller	all	ällt	äll	ällande	-	-	-	-	ällas	älls	alls	ällts	ällas	ällandes
+v5	smälta,svälta	älta	älter	alt	ultit	ält	ältande	ulten	ultet	ultna	ultne	ältas	älts	alts	ultits	ältas	ältandes	ultens	ultets	ultnas	ultnes
+v5	smörja	örja	örjer	orde	ort	örj	örjande	ord	ort	orda	orde	örjas	örjs	ordes	orts	örjas	örjandes	ords	orts	ordas	ordes
+v5	stinga	inga	inger	ang	ungit	ing	ingande	ungen	unget	ungna	ungne	ingas	-	angs	ungits	ingas	ingandes	ungens	ungets	ungnas	ungnes
+v5	stinka	inka	inker	ank	unkit	ink	inkande	-	-	-	-	inkas	-	anks	unkits	inkas	inkandes
+v5	stjäla	jäla	jäl	al	ulit	jäl	jälande	ulen	ulet	ulna	ulne	jälas	jäls	als	ulits	jälas	jälandes	ulens	ulets	ulnas	ulnes
+v5	stryka	yka	yker	ök	ukit	yk	ykande	uken	uket	ukna	ukne	ykas	yks	öks	ukits	ykas	ykandes	ukens	ukets	uknas	uknes
+v5	strypa	ypa	yper	öp	ypt	yp	ypande	ypt	ypt	ypta	ypte	ypas	yps	öps	ypts	ypas	ypandes	ypts	ypts	yptas	yptes
+v5	stödja	dja	der	dde	tt	d	dande	dd	tt	dda	dde	djas	ds	ddes	tts	djas	dandes	dds	tts	ddas	ddes
+v5	svinna	inna	inner	ann	unnit	inn	innande	unnen
+v5	svälja,tälja,välja	älja	äljer	alde	alt	älj	äljande	ald	alt	alda	alde	äljas	äljs	aldes	alts	äljas	äljandes	alds	alts	aldas	aldes
+v5	svärja	ärja	ärjer	or	urit	ärj	ärjande	uren	uret	urna	urne	ärjas	ärjs	ors	urits	ärjas	ärjandes	urens	urets	urnas	urnes
+v5	trivas	ivas	ivs	evs	ivits
+v5	tvinga	inga	ingar	ang	ungit	inga	ingande	ungen	unget	ungna	ungne	ingas	ingas	angs	ungits	ingas	ingandes	ungens	ungets	ungnas	ungnes
+v5	bedja	edja	eder	ad	ett	ed	edjande	edd	ett	edda	edde	edjas	eds	ads	etts	edjas	edjandes	edds	etts	eddas	eddes
+v5	binda	inda	inder	and	undit	ind	indande	unden	undet	undna	undne	indas	inds	ands	undits	indas	indandes	undens	undets	undnas	undnes
+v5	bjuda,sjuda	uda	uder	öd	udit	ud	udande	uden	udet	udna	udne	udas	uds	öds	udits	udas	udandes	udens	udets	udnas	udnes
+v5	bliva	iva	ir	ev	ivit	iv	ivande	iven	ivet	ivna	ivne	ivas	irs	evs	ivits	ivas	ivandes	ivens	ivets	ivnas	ivnes
+v5	dimpa	impa	imper	amp	umpit	imp	impande	umpen	umpet	umpna	umpne	impas	impes	amps	umpits	impas	impandes	umpens	umpets	umpnas	umpnes
+v5	draga,taga	aga	ager	og	agit	ag	agande	agen	aget	agna	agne	agas	as	ogs	agits	agas	agandes	agens	agets	agnas	agnes
+v5	drypa,krypa	ypa	yper	öp	upit	yp	ypande	upen	upet	upna	upne	ypas	yps	öps	upits	ypas	ypandes	upens	upets	upnas	upnes
+v5	dölja	ölja	öljer	olde	olt	ölj	öljande	old	olt	olda	olde	öljas	öljs	oldes	olt	öljas	öljandes	olds	olts	oldas	oldes
+v5	falla	alla	aller	öll	allit	all	allande	allen	allet	allna	allne	allas	alls	ölls	allits	allas	allandes	allens	allets	allnas	allnes
+v5	flyga,smyga	yga	yger	ög	ugit	yg	ygande	ugen	uget	ugna	ugne	ygas	ygs	ögs	ugits	ygas	ygandes	ugens	ugets	ugnas	ugnes
+v5	fnysa,frysa	ysa	yser	ös	usit	ys	ysande	usen	uset	usna	usne	ysas	yses	ös	usits	ysas	ysandes	usens	usets	usnas	usnes
+v5	gifta	a	er	e	=	=	ande	=	=	a	e	as	s	es	s	as	andes	s	s	as	es
+v5	gripa,pipa	ipa	iper	ep	ipit	ip	ipande	ipen	ipet	ipna	ipne	ipas	ips	eps	ipits	ipas	ipandes	ipens	ipets	ipnas	ipnes
+v5	gråta,låta	åta	åter	ät	åtit	åt	åtande	åten	åtet	åtna	åtne	åtas	åts	äts	åtits	åtas	åtandes	åtens	åtets	åtnas	åtnes
+v5	hugga	ugga	ugger	ögg	uggit	ugg	uggande	uggen	ugget	uggna	uggne	uggas	uggs	öggs	uggits	uggas	uggandes	uggens	uggets	uggnas	uggnes
+v5	hålla	ålla	åller	öll	ållit	åll	ållande	ållen	ållet	ållna	ållne	ållas	ålls	ölls	ållits	ållas	ållandes	ållens	ållets	ållnas	ållnes
+v5	klyva	yva	yver	öv	uvit	yv	yvande	uven	uvet	uvna	uvne	yvas	yvs	övs	uvits	yvas	yvandes	uvens	uvets	uvnas	uvnes
+v5	knipa	ipa	iper	ep	ipt	ip	ipande	ipen	ipet	ipna	ipne	ipas	ips	eps	ipts	ipas	ipandes	ipen	ipets	ipnas	ipnes
+v5	komma	ma	mer	=	mit	=	mande	men	met	na	ne	mas	ms	s	mits	mas	mandes	mens	mets	nas	nes
+v5	kunna	unna	an	unde	unnat
+v5	kväda	äda	äder	ad	ädit	äd	ädande	äden	ädet	ädna	ädne	ädas	äds	ads	ädits	ädas	ädandes	ädens	ädets	ädnas	ädnes
+v5	ligga	igga	igger	åg	egat	igg	iggande	egad	egat	egade	egade	iggas	iggs	ågs	egats	iggas	iggandes	egad	egats	egades	egades
+v5	ljuda	uda	uder	öd	udit	ud	udande	udd	utt	udda	udde	udas	uds	öds	udits	udas	udandes	udds	utts	uddas	uddes
+v5	ljuga,suga	uga	uger	ög	ugit	ug	ugande	ugen	uget	ugna	ugne	ugas	ugs	ögs	ugits	ugas	ugandes	ugens	ugets	ugnas	ugnes
+v5	lägga	ägga	ägger	a	agt	ägg	äggande	agd	agt	agda	agde	äggas	äggs	as	agts	äggas	äggandes	agds	agts	agdas	agdes
+v5	njuta	uta	uter	öt	utit	ut	utande	uten	utet	utna	utne	utas	uts	öts	utits	utas	utandes	utens	utets	utnas	utnes
+v5	rädas	as	s	des	its
+v5	simma	imma	immar	am	ummit	imma	immande	ummen	ummet	umna	umne	immas	immas	ams	ummits	immas	immandes	ummens	ummets	umna	umnes
+v5	sitta	itta	itter	att	uttit	itt	ittande	utten	uttet	uttna	uttne	ittas	itts	atts	uttits	ittas	ittandes	uttens	uttets	uttnas	uttnes
+v5	skina	ina	iner	en	init	in	inande	-	-	-	-	inas	ins	ens	inits	inas	inandes
+v5	skita	ita	iter	et	itit	it	itande	-	-	-	-	itas	its	ets	itits	itas	itandes
+v5	skola	ola	a	ulle	olat
+v5	skrika,snika,svika,vika	ika	iker	ek	ikit	ik	ikande	iken	iket	ikna	ikne	ikas	iks	eks	ikits	ikas	ikandes	ikens	ikets	iknas	iknes
+v5	skära,bära	ära	är	ar	urit	är	ärande	uren	uret	urna	urne	äras	ärs	ars	urits	äras	ärandes	urens	urets	urnas	urnes
+v5	slita,smita,bita	ita	iter	et	itit	it	itande	iten	itet	itna	itne	itas	its	ets	itits	itas	itandes	itens	itets	itnas	itnes
+v5	sluta	uta	uter	öt	utit	uta	utande	uten	utet	utna	utne	utas	uts	öts	utits	utas	utandes	utens	utets	utnas	utnes
+v5	slåss	åss	åss	ogs	agits
+v5	stiga,niga	iga	iger	eg	igit	ig	igande	igen	iget	igna	igne	igas	igs	egs	igits	igas	igandes	igens	igets	ignas	ignes
+v5	svida	ida	ider	ed	idit	id	idande	-	-	-	-	idas	ids	eds	idits	idas	idandes
+v5	svära	ära	är	or	urit	är	ärande	uren	uret	urna	urne	äras	ärs	ors	urits	äras	ärandes	urens	urets	urnas	urnes
+v5	sälja	älja	äljer	ålde	ålt	älj	äljande	åld	ålt	ålda	ålde	äljas	äljs	åldes	ålts	äljas	äljandes	ålds	ålts	ålda	åldes
+v5	sätta	ätta	ätter	atte	att	ätt	ättande	att	att	atta	atte	ättas	ätts	attes	atts	ättas	ättandes	atts	atts	attas	attes
+v5	tjuta	uta	uter	öt	utit	ut	utande	uten	utet	utna	utne	utas	-	öts	utits	utas	utandes	utens	utets	utnas	utnes
+v5	tryta	yta	yter	öt	utit	yt	ytande	uten	utet	utna	utne	-	yts
+v5	tämja	ja	jer	de	t	j	jande	d	t	da	de	jas	js	des	ts	jas	jandes	ds	ts	das	des
+v5	töras	öras	örs	ordes	orts
+v5	varda	da	-	t	-	-	dande
+v5	vilja	ilja	ill	ille	elat
+v5	vinna,brinna,finna,hinna,rinna,spinna	inna	inner	ann	unnit	inn	innande	unnen	unnet	unna	unne	innas	inns	anns	unnits	innas	innandes	unnens	unnets	unnas	unnes
+v5	vänja	änja	änjer	ande	ant	änj	änjande	and	ant	anda	ande	änjas	änjs	andes	ants	änjas	änjandes	ands	ants	andas	andes
+v5	byta	yta	yter	öt	ytit	yt	ytande	ytt	ytt	ytta	ytte	ytas	yts	öts	ytits	ytas	ytandes	ytts	ytts	yttas	yttes
+v5	böra	öra	ör	orde	ort
+v5	duga	uga	uger	ög	ugt	-	ugande
+v5	dyka	yka	yker	ök	ykt	yk	ykande	-	-	-	-	ykas	yks	öks	ykts	ykas	ykandes
+v5	fara	ara	ar	or	arit	ar	arande	aren	aret	arna	arne	aras	ars	ors	arits	aras	arandes	arens	arets	arnas	arnes
+v5	fisa	isa	iser	es	isit	is	isande	isen	iset	isna	isne	isas	ises	es	isits	isas	isandes	isens	isets	isnas	isnes
+v5	gala	ala	al	ol	alit	al	alande	alen	alet	alna	alne	alas	als	ols	alits	alas	alandes	alens	alets	alnas	alnes
+v5	giva	iva	iver	av	ivit	iv	ivande	iven	ivet	ivna	ivne	ivas	ivs	avs	ivits	ivas	ivandes	ivens	ivets	ivnas	ivnes
+v5	göra	öra	ör	jorde	jort	ör	örande	jord	jort	jorda	jorde	öras	ör	jordes	jorts	öras	örandes	jords	jorts	jordas	jordes
+v5	hava	va	ver	de	ft	v	vande	vd
+v5	heta	a	er	te	at	-	ande	-	-	-	-	-	s	tes	ats	-	andes
+v5	koka	a	ar	te	t	a	ande	t	t	ta	te	as	as	tes	ts	as	andes	ts	ts	tas	tes
+v5	lyda	yda	yder	öd	ytt	yd	ydande	-	-	-	-	ydas	ydes	öds	ytts	ydas	ydandes
+v5	lysa	ysa	yser	ös	yst	ys	ysande	yst	yst	ysta	ystne	ysas	yses	ös	ysts	ysas	ysandes	ysts	ysts	ystas	ystnes
+v5	löpa	öpa	öper	opp	upit	öp	öpande	upen	upet	upna	upne
+v5	mysa,rysa	ysa	yser	ös	yst	ys	ysande	-	-	-	-	ysas	yses	ös	ysts	ysas	ysandes
+v5	nypa	ypa	yper	öp	ypit	yp	ypande	ypen	ypet	ypna	ypne	ypas	yps	öps	ypits	ypas	ypandes	ypens	ypets	ypnas	ypnes
+v5	nysa	ysa	yser	ös	ysit	ys	ysande	ysen	yset	ysna	ysne	ysas	ys	öss	ysits	ysas	ysandes	ysens	ysets	ysnas	ysnes
+v5	pysa	ysa	yser	ös	yst	ys	ysande	yst	yst	ysta	yste	ysas	yses	ös	ysts	ysas	ysandes	ysts	ysts	ystas	ystes
+v5	riva,skriva,driva,kliva	iva	iver	ev	ivit	iv	ivande	iven	ivet	ivna	ivne	ivas	ivs	evs	ivits	ivas	ivandes	ivens	ivets	ivnas	ivnes
+v5	ryka	yka	yker	ök	ykt	yk	ykande	ykta	ykt	ykta	ykte	ykas	yks	öks	ykts	ykas	ykandes	yktas	ykts	yktas	yktes
+v5	ryta,skryta,bryta,flyta,knyta,snyta	yta	yter	öt	utit	yt	ytande	uten	utet	utna	utne	ytas	yts	öts	utits	ytas	ytandes	utens	utets	utnas	utnes
+v5	sova	a	er	=	it	=	ande	en	et	na	ne	as	s	s	its	as	andes	ens	ets	nas	nes
+v5	supa	upa	uper	öp	upit	up	upande	upen	upet	upna	upne	upas	ups	öps	upits	upas	upandes	upens	upets	upnas	upnes
+v5	säga	äga	äger	ade	agt	äg	ägande	agd	agt	agda	agde	ägas	ägs	ades	agts	ägas	ägandes	agds	agts	agdas	agdes
+v5	säja	äja	äjer	a	agt	äj	äjande	agd	agt	agda	agde	äjas	ägs	as	agts	äjas	äjandes	agds	agts	agdas	agdes
+v5	tala	ala	alar	alte	alt	åla	alande	ald	alt	alda	alde	alas	alas	altes	alts	alas	alandes	alds	alts	aldas	aldes
+v5	tiga	iga	iger	eg	igit	ig	igande	egen	eget	egna	egne	igas	igs	egs	igits	igas	igandes	egens	egets	egnas	egnes
+v5	veta	eta	et	isste	etat	et	etande	-	-	-	-	etas	et	isstes	etats	etas	etandes
+v5	vina	ina	iner	en	init	in	inande	inen	inet	ina	ine	inas	iner	ens	inits	inas	inandes	inens	inets	inas	ines
+v5	växa	äxa	äxer	äxte	uxit	äx	äxande	uxen	uxet	uxna	uxne	äxas	-	äxtes	uxits	äxas	äxandes	uxens	uxets	uxnas	uxnes
+v5	bli	i	ir	ev	ivit	i	ivande	iven	ivet	ivna	ivne
+v5	slå	å	år	og	agit	å	ående	agen	aget	agna	agne	ås	ås	ogs	agits	ås	åendes	agens	agets	agnas	agnes
+v5	stå	å	år	od	ått	å	ående	ådd	ått	ådda	ådde	ås	ås	ods	åtts	ås	åendes	ådds	åtts	åddas	åddes
+v5	två	å	år	ådde	agit	å	ående	agen	aget	agna	agne
+v5	äta	äta	äter	åt	ätit	ät	ätande	äten	ätet	ätna	ätne	ätas	äts	åts	ätits	ätas	ätandes	ätens	ätets	ätnas	ätnes
+v5	be	e	er	ad	ett	ed	edjande	edd	ett	edda	edde	es	eds	ads	etts	edjas	edjandes	edds	etts	eddas	eddes
+v5	dö	ö	ör	og	ött	ö	öende
+v5	få	å	år	ick	ått	-	ående	ådd	ått	ådda	ådde	ås	ås	icks	åtts	-	åendes	ådds	åtts	åddas	åddes
+v5	ge	e	er	av	ett	e	ivande	iven	ivet	ivna	ivne	es	es	avs	etts	es	ivandes	ivens	ivets	ivnas	ivnes
+v5	gå	å	år	ick	ått	å	ående	ången	ånget	ångna	ångne	ås	ås	icks	åtts	ås	åendes	ångens	ångets	ångnas	ångnes
+v5	ha	=	r	de	ft	=	vande	vd	ft	vda	vde	s	s	ddes	fts	s	vandes	vds	fts	vdas	vdes
+v5	le	e	er	og	ett	e	eende	edd	ett	edda	edde	es	es	ogs	etts	es	eendes	edds	etts	eddas	eddes
+v5	må	=	tte
+v5	se	e	er	åg	ett	e	eende	edd	ett	edda	edde	es	es	ågs	etts	es	eendes	edds	etts	eddas	eddes
+v5	dra,ta	a	ar	og	agit	a	agande	agen	aget	agna	agne	as	as	ogs	agits	as	agandes	agens	agets	agnas	agnes
+$vb.inf.akt	vb.prs.akt	vb.sup.akt
+v5	måste	e	e	=
+$vb.inf.akt	vb.prs.akt	vb.prt.akt	vb.sup.akt	vb.imp	pc.prs.utr/neu.sin/plu.ind/def.nom jj.pos.utr.sin.ind.nom jj.pos.neu.sin.ind.nom jj.pos.utr/neu.sin.def.nom jj.pos.mas.sin.def.nom	vb.inf.sfo	vb.prs.sfo vb.prt.sfo vb.sup.sfo -	-	pc.gen - - - vb.prs.sfo
+v4	^bete,^bre,^ske^,^te	=	r	dde	tt	=	ende	dd	tt	dda	dde	s	s	ddes	tts	s	endes	dds	tts	ddas	ddes
+v4	bo,glo,gno,gro,ro,sko,tro	=	r	dde	tt	=	ende	dd	tt	dda	dde	s	s	ddes	tts	s	endes	dds	tts	ddas	ddes
+v4	bry,fly,gry,sky,spy,sy,ty	=	r	dde	tt	=	ende	dd	tt	dda	dde	s	s	ddes	tts	s	endes	dds	tts	ddas	ddes
+v4	brå,flå,klå,må,nå,rå,spå,så,två	=	r	dde	tt	=	ende	dd	tt	dda	dde	s	s	ddes	tts	s	endes	dds	tts	ddas	ddes
+v4	klä,strö	=	r	dde	tt	=	ende	dd	tt	dda	dde	s	s	ddes	tts	s	endes	dds	tts	ddas	ddes
+v4	ses,brås,påstås,umgås	s	-	-	-	-	-	-	-	-	-	s	s	ddes	tts	s	endes	dds	tts	ddas	ddes
+v3	Cta	a	er	e	=	=	ande	=	=	a	e	as	es	es	s	as	andes	s	s	as	es
+v3	nna	na	ner	te	t	n	nande	d	t	ta	te	nas	nes	tes	ts	nas	nandes	ds	ts	tas	tes
+v3	as	as	es	tes	ts	-	-	-	-	-	-	-	-	-	-	-	-	-	ts	tas	tes
+v3	sa	a	er	te	t	=	ande	t	t	ta	te	as	es	tes	ts	as	andes	ts	ts	tas	tes
+v3	ka,pa,sa,ta,xa	a	er	te	t	=	ande	t	t	ta	te	as	s	tes	ts	as	andes	ts	ts	tas	tes
+$vb.inf.akt.kop	vb.prs.akt.kop	vb.prt.akt.kop	vb.sup.akt.kop	vb.imp.akt.kop	pc.prs.utr/neu.sin/plu.ind/def.nom
+v5	vara	vara	är	var	varit	var	varande
+$pm.nom	pm.gen	pm.sms
+p1	z	=	=	=
+p1	s	=	=	=
+p1	x	=	=	=
+p1	C,V	=	s	=
+p1s	C,V	=	s	s
+$dt.utr.sin.ind	dt.utr.sin.def	dt.neu.sin.ind	dt.neu.sin.def	dt.utr/neu.plu.def	dt.utr/neu.plu.ind
+d1	^en	en	den	ett	det	de	några
+$dt.utr.sin.ind	dt.utr.sin.def	dt.neu.sin.ind	dt.neu.sin.def	dt.utr/neu.plu.ind
+d1	^någon	on	-	ot	-	ra
+d1	^ingen	en	-	et	-	a
+$dt.utr.sin.def	dt.utr.sin.ind	dt.neu.sin.ind	dt.neu.sin.def	dt.utr/neu.plu.def	dt.utr/neu.plu.ind
+d2	^den	den	en	ett	det	de	några
+d2	^denna	denna	en	ett	detta	dessa	några
+$dt.utr.sin.ind/def	dt.neu.sin.ind/def	dt.utr/neu.plu.ind/def
+d3	^all	=	t	a
+$pn.utr.sin.def.sub	pn.utr.sin.def.obj	 ps.utr/neu.sin/plu.def
+q1	^jag	jag	mig	min
+q1	^du	du	dig	din
+q1	^hon	on	enne	ennes
+q1	^han	an	onom	ans
+$pn.utr/neu.plu.def.sub	pn.utr/neu.plu.def.obj	 ps.utr.sin.def
+q1	^vi	vi	oss	vår
+q1	^ni	ni	er	er
+$pn.utr/neu.plu.def.sub	pn.utr/neu.plu.def.obj	 ps.utr/neu.sin/plu.def
+q1	^de	=	m	ras
+$pn.utr.sin.ind.sub/obj	pn.neu.sin.ind.sub/obj	pn.utr.sin.def.sub/obj	pn.neu.sin.def.sub/obj	pn.utr/neu.plu.def.sub/obj
+q2	^en	en	ett	denna	detta	dessa
+$pn.neu.sin.def.sub/obj	pn.utr.sin.ind.sub/obj	pn.neu.sin.ind.sub/obj	pn.utr.sin.def.sub/obj	pn.utr/neu.plu.def.sub/obj
+q2	^detta	detta	en	ett	denna	dessa
+$ps.utr.sin.def	ps.neu.sin.def	ps.utr/neu.plu.def
+q3	^sin	n	tt	na
+q3	^min	n	tt	na
+q3	^din	n	tt	na
+q3	^vår	=	t	a
+q3	^er	=	t	a
+$hd.utr.sin.ind	    hd.neu.sin.ind	hd.utr/neu.plu.ind
+h1	vilken	en	et	a
+$hp.utr.sin.ind	    hp.neu.sin.ind	hp.utr/neu.plu.ind
+h2	vilken	en	et	a
+$rg.utr.sin.ind.nom	rg.neu.sin.ind.nom
+r1	^en	n	tt
+$rg.neu.sin.ind.nom	rg.utr.sin.ind.nom
+r2	^ett	tt	n
+

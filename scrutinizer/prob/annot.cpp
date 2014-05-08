@@ -7,45 +7,46 @@
 
 //#define NO_ANNOT_FROM_FILE	// don't read from file, use hard-coded annotations
 
-
-Prob::annot_map Prob::annots;
-std::vector<Prob::New_annot> Prob::not_annot;
-
 static std::map<std::string, Prob::annot_t> type_map;
 static void init_types();
 
 
-
 #ifndef NO_ANNOT_FROM_FILE
 
-#include <util/PlatformUtils.hpp>
-#include <parsers/DOMParser.hpp>
-#include <dom/DOM_NamedNodeMap.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/dom/DOMNamedNodeMap.hpp>
+#include <xercesc/dom/DOMNodeList.hpp>
 #include "domerror.h"
+//#include <xercesc/sax/HandlerBase.hpp>
+//#include <xercesc/sax/ErrorHandler.hpp>
 #include <iostream>
-
-
-
-static std::string to_string(const DOMString &s)
+namespace Prob
 {
-    char *p = s.transcode();
+	annot_map annots;
+	std::vector<New_annot> not_annot;
+}
+using namespace Prob;
+
+static std::string to_string(const XMLCh *s)
+{
+    //char *p = s.transcode();	
+    char *p = XMLString::transcode(s);
     std::string t(p);
     //delete [] p;	// jb: why doesn't this work?
     return t;
 }
 
-static int get_int(const DOMString &s)
+static int get_int(const XMLCh *s)
 {
     std::string str = to_string(s);
-    if(str == "FALSE_ALARM")
-	return Prob::FALSE_ALARM;
-    else
-	return atoi(str.c_str());
+    if(str == "FALSE_ALARM") return FALSE_ALARM;
+    else return atoi(str.c_str());
 }
 
-static int get_enum(const DOMString &s)
+static int get_enum(const XMLCh *s)
 {
-    typedef std::map<std::string, Prob::annot_t> map;
+    typedef std::map<std::string, annot_t> map;
     map::const_iterator it = type_map.find(to_string(s));
 
     if(it == type_map.end())
@@ -57,163 +58,162 @@ static int get_enum(const DOMString &s)
 	return it->second;
 }
 
-std::ostream &operator<< (std::ostream &o, const DOMString &s)
+std::ostream &operator<< (std::ostream &o, const XMLCh *s)
 {
     return o << to_string(s);
 }
 
-void Prob::init_annot(Prob::annot_map &annots, std::string file)
+namespace Prob
 {
-    init_types();
-
-    if(file == "")
-	return;
-
-    const char		    *xmlFile = file.c_str();
-    DOMParser::ValSchemes    valScheme = DOMParser::Val_Auto;
-    bool                     doNamespaces    = false;
-    bool                     doSchema        = false;
-
-    // Instantiate the DOM parser
-    DOMParser parser;
-    parser.setValidationScheme(valScheme);
-    parser.setDoNamespaces(doNamespaces);
-    parser.setDoSchema(doSchema);
-
-    // Create our error handler and install it
-    DOMCountErrorHandler errorHandler;
-    parser.setErrorHandler(&errorHandler);
-
-    unsigned long duration;
-    try
-    {
-        const unsigned long startMillis = XMLPlatformUtils::getCurrentMillis();
-        parser.parse(xmlFile);
-        const unsigned long endMillis = XMLPlatformUtils::getCurrentMillis();
-        duration = endMillis - startMillis;
-    }
-    catch (...)
-    {
-	std::cerr << "\nERROR: Unexpected exception during parsing: '" << xmlFile << "'\n";
-	throw "error during XML parsing";
-    }
-
-    //
-    //  Extract the DOM tree, get the list of all the elements and report the
-    //  length as the count of elements.
-    //
-
-    DOM_Document doc = parser.getDocument();
-    DOM_NodeList nl  = doc.getElementsByTagName("s");
-    unsigned int sz = nl.getLength();
-
-    if(errorHandler.getSawErrors())
-    {
-	std::cerr << "\nERROR: Unexpected exception during parsing: '" << xmlFile << "'\n";
-	throw "error during XML parsing";
-    }
-
-    // Print out the stats that we collected and time taken.
-    //std::cout << xmlFile << ": " << duration << " ms" << std::endl;
-
-    try
-    {
-	for(unsigned int i = 0; i < sz; i++)
+	void init_annot(annot_map &annots, std::string file)
 	{
-	    Annot r;
+		init_types();
 
-	    r.value[0] = PROBCHECK_OK;
-	    r.count    = 0;
-	    r.type[0]  = NO_TYPE;
-	    r.type[1]  = NO_TYPE;
-	    r.type[2]  = NO_TYPE;
+		if(file == "")
+		return;
 
-	    // sentence
-	    DOM_Node		n = nl.item(i);
-	    DOM_NamedNodeMap	nn = n.getAttributes();
-	    int offset = get_int(nn.getNamedItem("ref").getNodeValue());
-	    //std::cout << "offset = " << r.offset << std::endl;
+		const char *xmlFile = file.c_str();
+        
+		// Instantiate the DOM parser
+        XercesDOMParser* parser = new XercesDOMParser();
+		parser->setValidationScheme(XercesDOMParser::Val_Auto);
+		parser->setDoNamespaces(false);
+		parser->setDoSchema(false);
 
-	    DOM_NodeList cl = n.getChildNodes();
-	    for(unsigned int j = 0; j < cl.getLength(); j++)
-	    {
-		// annotation
-		DOM_Node attr = cl.item(j);
-		if(attr.getNodeType() != DOM_Node::ELEMENT_NODE)
-		    continue; 
-		
-		r.type[r.count] = NO_TYPE;
+		// Create our error handler and install it
+		ErrorHandler* errHandler = (ErrorHandler*) new HandlerBase();
+        parser->setErrorHandler(errHandler);
 
-		DOM_NodeList tl = attr.getChildNodes();
-		for(unsigned int k = 0; k < tl.getLength(); k++)
+		try
 		{
-		    // annotation type
-		    DOM_Node data = tl.item(k);
-		    if(data.getNodeType() != DOM_Node::ELEMENT_NODE)
-			continue; 
-
-		    if(to_string(data.getNodeName()) == "type")
-		    {
-			if(r.type[r.count] == NO_TYPE)
-			    r.type[r.count] = 0;
-
-			int anntype = get_enum(data.getFirstChild().getNodeValue());
-			if(anntype == -1)
-			{
-		#if 0
-			    // use this if you want to ignore annotations containing
-			    // erroneous error types
-			    r.type[r.count] = ERR_TYPE;
-			    break;
-		#endif
-			}
-			else
-    			    r.type[r.count] |= anntype;
-
-			//std::cout << "        " << data.getNodeName() 
-			//	  << " = " << std::hex << r.type[r.count]
-			//	  << std::dec << std::endl;
-		    }
-		    else if(to_string(data.getNodeName()) == "range")
-		    {
-			DOM_NamedNodeMap na = data.getAttributes();
-
-			r.value[r.count] = get_int(na.getNamedItem("from").getNodeValue());
-			//r.value[r.count] = get_int(na.getNamedItem("to").getNodeValue());
-		    }
-		    else if(to_string(data.getNodeName()) == "position")
-		    {
-			DOM_NamedNodeMap na = data.getAttributes();
-
-			r.value[r.count] = get_int(na.getNamedItem("pos").getNodeValue());
-		    }
+			const unsigned long startMillis = XMLPlatformUtils::getCurrentMillis();
+			parser->parse(xmlFile);
+			const unsigned long endMillis = XMLPlatformUtils::getCurrentMillis();
+			unsigned long duration = endMillis - startMillis;
 		}
-		r.count++;
-	    }
-	    annots[offset] = r;
+		catch (...)
+		{
+		std::cerr << "\nERROR: Unexpected exception during parsing: '" << xmlFile << "'\n";
+		throw "error during XML parsing";
+		}
+
+		//
+		//  Extract the DOM tree, get the list of all the elements and report the
+		//  length as the count of elements.
+		//
+		DOMDocument *doc = parser->getDocument();
+		DOMNodeList *nl  = doc->getElementsByTagName(XMLString::transcode("s"));
+		unsigned int sz = nl->getLength();
+
+		/*if(errHandler->getSawErrors())
+		{
+		std::cerr << "\nERROR: Unexpected exception during parsing: '" << xmlFile << "'\n";
+		throw "error during XML parsing";
+		}*/
+
+		// Print out the stats that we collected and time taken.
+		//std::cout << xmlFile << ": " << duration << " ms" << std::endl;
+
+		try
+		{
+			for(unsigned int i = 0; i < sz; i++)
+			{
+				
+				Annot r;
+
+				r.value[0] = -11;
+				r.count    = 0;
+				r.type[0]  = NO_TYPE;
+				r.type[1]  = NO_TYPE;
+				r.type[2]  = NO_TYPE;
+
+				// sentence
+				DOMNode	*n = nl->item(i);
+				DOMNamedNodeMap	*nn = n->getAttributes();
+				int offset = get_int(nn->getNamedItem(XMLString::transcode("ref"))->getNodeValue());
+				//std::cout << "offset = " << r.offset << std::endl;
+
+				DOMNodeList *cl = n->getChildNodes();
+				for(unsigned int j = 0; j < cl->getLength(); j++)
+				{
+					// annotation
+					DOMNode *attr = cl->item(j);
+					if(attr->getNodeType() != DOMNode::ELEMENT_NODE)
+						continue; 
+					
+					r.type[r.count] = NO_TYPE;
+
+					DOMNodeList *tl = attr->getChildNodes();
+					for(unsigned int k = 0; k < tl->getLength(); k++)
+					{
+						// annotation type
+						DOMNode *data = tl->item(k);
+						if(data->getNodeType() != DOMNode::ELEMENT_NODE)
+						continue; 
+
+						if(to_string(data->getNodeName()) == "type")
+						{
+							if(r.type[r.count] == NO_TYPE)
+								r.type[r.count] = 0;
+
+							int anntype = get_enum(data->getFirstChild()->getNodeValue());
+							if(anntype == -1)
+							{
+						#if 0
+								// use this if you want to ignore annotations containing
+								// erroneous error types
+								r.type[r.count] = ERR_TYPE;
+								break;
+						#endif
+							}
+							else
+									r.type[r.count] |= anntype;
+
+							//std::cout << "        " << data.getNodeName() 
+							//	  << " = " << std::hex << r.type[r.count]
+							//	  << std::dec << std::endl;
+						}
+						else if(to_string(data->getNodeName()) == "range")
+						{
+							DOMNamedNodeMap *na = data->getAttributes();
+
+							r.value[r.count] = get_int(na->getNamedItem(XMLString::transcode("from"))->getNodeValue());
+							//r.value[r.count] = get_int(na.getNamedItem("to").getNodeValue());
+						}
+						else if(to_string(data->getNodeName()) == "position")
+						{
+							DOMNamedNodeMap *na = data->getAttributes();
+
+							r.value[r.count] = get_int(na->getNamedItem(XMLString::transcode("pos"))->getNodeValue());
+						}
+					}
+					r.count++;
+				}
+				annots[offset] = r;
+			}
+		}
+		catch(...)
+		{
+			throw "error in the annotation tree XML file";
+		}
 	}
-    }
-    catch(...)
-    {
-	throw "error in the annotation tree XML file";
-    }
+
 }
-
-
 #else  // if !NO_ANNOT_FROM_FILE
-
-void Prob::init_annot(Prob::annot_map &annots, std::string)
+namespace Prob
 {
-    init_types();
+	void init_annot(std::map<int, Annot> &annots, std::string)
+	{
+		init_types();
 
-    // init annots here
+		// init annots here
+	}
 }
 #endif
 
 
 void init_types()
 {
-    using namespace Prob;
 
     type_map["NO_TYPE"]		= NO_TYPE;
     type_map["PH_INTERPOSED"]	= PH_INTERPOSED;
@@ -237,76 +237,72 @@ void init_types()
 namespace Prob
 {
     extern const AbstractSentence *current_sentence;
+
+	void not_annotated(int from, int to, std::string comment, const AbstractSentence *s)
+	{
+		New_annot a;
+		a.from = from;
+		a.to = to;
+		a.comment = comment;
+		
+		if(!s)
+		s = current_sentence;
+		a.offset = s->GetWordToken(0 + 2)->Offset();
+
+		const int context = 100;
+		int begin = from - context;
+		int end   = to + context;
+		if(begin < 0)
+		begin = 0;
+		if(end > s->NWords())
+		end = s->NWords();
+
+		for(int i = begin; i < end; i++)
+		{
+			if(i == from)
+				a.text += "[";
+			a.text += s->GetWordToken(i + 2)->RealString();
+			if(i == to)
+				a.text += "]";
+			a.text += " ";
+		}
+		not_annot.push_back(a);
+	}
+
+	void output_new_annotations()
+	{
+		for(unsigned int i = 0; i < not_annot.size(); i++)
+		{
+	#if 0	// mark all as potential grammatical errors
+		std::cout << "\t<s ref=\"" << not_annot[i].offset
+			  << "\">" << std::endl;
+		std::cout << "\t\t<annot>" << std::endl;
+		if(not_annot[i].from == not_annot[i].to)
+			std::cout << "\t\t\t<position pos=\"" << not_annot[i].from
+				  << "\"/>" << std::endl;
+		else
+			std::cout << "\t\t\t<range from=\"" << not_annot[i].from
+				  << "\" to=\"" << not_annot[i].to << "\"/>"
+				  << std::endl;
+		std::cout << "\t\t\t<text>" << not_annot[i].text 
+			  << "</text>" << std::endl;
+		std::cout << "\t\t\t<type></type>" << std::endl;
+		std::cout << "\t\t\t<comment>" << not_annot[i].comment 
+			  << "</comment>" << std::endl;
+		std::cout << "\t\t</annot>" << std::endl;
+		std::cout << "\t</s>" << std::endl;
+	#else	// mark all as false
+		std::cout << "\t<s ref=\"" << not_annot[i].offset
+			  << "\">" << std::endl;
+		std::cout << "\t\t<annot>" << std::endl;
+		std::cout << "\t\t\t<position pos=\"FALSE_ALARM\"/>" << std::endl;
+		std::cout << "\t\t\t<text>" << not_annot[i].text 
+			  << "</text>" << std::endl;
+		std::cout << "\t\t\t<comment>pos = " << not_annot[i].from
+			  << "</comment>" << std::endl;
+		std::cout << "\t\t</annot>" << std::endl;
+		std::cout << "\t</s>" << std::endl;
+	#endif
+		}
+	}
 }
-
-void Prob::not_annotated(int                         from,
-                            int                         to,
-                            std::string                 comment,
-                            const AbstractSentence     *s)
-{
-    New_annot a;
-    a.from = from;
-    a.to = to;
-    a.comment = comment;
-    
-    if(!s)
-	s = current_sentence;
-    a.offset = s->GetWordToken(0 + 2)->Offset();
-
-    const int context = 100;
-    int begin = from - context;
-    int end   = to + context;
-    if(begin < 0)
-	begin = 0;
-    if(end > s->NWords())
-	end = s->NWords();
-
-    for(int i = begin; i < end; i++)
-    {
-	if(i == from)
-	    a.text += "[";
-	a.text += s->GetWordToken(i + 2)->RealString();
-	if(i == to)
-	    a.text += "]";
-	a.text += " ";
-    }
-    not_annot.push_back(a);
-}
-
-void Prob::output_new_annotations()
-{
-    for(unsigned int i = 0; i < not_annot.size(); i++)
-    {
-#if 0	// mark all as potential grammatical errors
-	std::cout << "\t<s ref=\"" << not_annot[i].offset
-		  << "\">" << std::endl;
-	std::cout << "\t\t<annot>" << std::endl;
-	if(not_annot[i].from == not_annot[i].to)
-	    std::cout << "\t\t\t<position pos=\"" << not_annot[i].from
-		      << "\"/>" << std::endl;
-	else
-	    std::cout << "\t\t\t<range from=\"" << not_annot[i].from
-		      << "\" to=\"" << not_annot[i].to << "\"/>"
-		      << std::endl;
-	std::cout << "\t\t\t<text>" << not_annot[i].text 
-		  << "</text>" << std::endl;
-	std::cout << "\t\t\t<type></type>" << std::endl;
-	std::cout << "\t\t\t<comment>" << not_annot[i].comment 
-		  << "</comment>" << std::endl;
-	std::cout << "\t\t</annot>" << std::endl;
-	std::cout << "\t</s>" << std::endl;
-#else	// mark all as false
-	std::cout << "\t<s ref=\"" << not_annot[i].offset
-		  << "\">" << std::endl;
-	std::cout << "\t\t<annot>" << std::endl;
-	std::cout << "\t\t\t<position pos=\"FALSE_ALARM\"/>" << std::endl;
-	std::cout << "\t\t\t<text>" << not_annot[i].text 
-		  << "</text>" << std::endl;
-	std::cout << "\t\t\t<comment>pos = " << not_annot[i].from
-		  << "</comment>" << std::endl;
-	std::cout << "\t\t</annot>" << std::endl;
-	std::cout << "\t</s>" << std::endl;
-#endif
-    }
-}
-

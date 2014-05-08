@@ -1,35 +1,38 @@
 #ifndef DOMERROR_H
 #define DOMERROR_H
 
-
-#include <sax/SAXParseException.hpp>
-#include <sax/ErrorHandler.hpp>
+//#include <xercesc/sax/SAXParseException.hpp>
+//#include <xercesc/sax/ErrorHandler.hpp>
+#include <xercesc/sax/HandlerBase.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
 #include <iostream>
 
-class SAXParseException;
+//class SAXParseException;
 
+using namespace xercesc;
 
 // ---------------------------------------------------------------------------
-//  Simple error handler deriviative to install on parser
+// Simple error handler deriviative to install on parser
 // ---------------------------------------------------------------------------
-class DOMCountErrorHandler : public ErrorHandler
+
+class DOMCountErrorHandler : public HandlerBase
 {
 public:
     // -----------------------------------------------------------------------
-    //  Constructors and Destructor
+    // Constructors and Destructor
     // -----------------------------------------------------------------------
     DOMCountErrorHandler();
     ~DOMCountErrorHandler();
 
 
     // -----------------------------------------------------------------------
-    //  Getter methods
+    // Getter methods
     // -----------------------------------------------------------------------
     bool getSawErrors() const;
 
 
     // -----------------------------------------------------------------------
-    //  Implementation of the SAX ErrorHandler interface
+    // Implementation of the SAX ErrorHandler interface
     // -----------------------------------------------------------------------
     void warning(const SAXParseException& e);
     void error(const SAXParseException& e);
@@ -39,33 +42,33 @@ public:
 
 private :
     // -----------------------------------------------------------------------
-    //  Unimplemented constructors and operators
+    // Unimplemented constructors and operators
     // -----------------------------------------------------------------------
     DOMCountErrorHandler(const DOMCountErrorHandler&);
     void operator=(const DOMCountErrorHandler&);
 
 
     // -----------------------------------------------------------------------
-    //  Private data members
+    // Private data members
     //
-    //  fSawErrors
-    //      This is set if we get any errors, and is queryable via a getter
-    //      method. Its used by the main code to suppress output if there are
-    //      errors.
+    // fSawErrors
+    // This is set if we get any errors, and is queryable via a getter
+    // method. Its used by the main code to suppress output if there are
+    // errors.
     // -----------------------------------------------------------------------
-    bool    fSawErrors;
+    bool fSawErrors;
 };
 
 
 // ---------------------------------------------------------------------------
-//  This is a simple class that lets us do easy (though not terribly efficient)
-//  trancoding of XMLCh data to local code page for display.
+// This is a simple class that lets us do easy (though not terribly efficient)
+// trancoding of XMLCh data to local code page for display.
 // ---------------------------------------------------------------------------
 class StrX
 {
 public :
     // -----------------------------------------------------------------------
-    //  Constructors and Destructor
+    // Constructors and Destructor
     // -----------------------------------------------------------------------
     StrX(const XMLCh* const toTranscode)
     {
@@ -80,7 +83,7 @@ public :
 
 
     // -----------------------------------------------------------------------
-    //  Getter methods
+    // Getter methods
     // -----------------------------------------------------------------------
     const char* localForm() const
     {
@@ -89,12 +92,12 @@ public :
 
 private :
     // -----------------------------------------------------------------------
-    //  Private data members
+    // Private data members
     //
-    //  fLocalForm
-    //      This is the local code page form of the string.
+    // fLocalForm
+    // This is the local code page form of the string.
     // -----------------------------------------------------------------------
-    char*   fLocalForm;
+    char* fLocalForm;
 };
 
 inline std::ostream& operator<<(std::ostream & target, const StrX& toDump)
@@ -120,7 +123,7 @@ inline DOMCountErrorHandler::~DOMCountErrorHandler()
 
 
 // ---------------------------------------------------------------------------
-//  DOMCountHandlers: Overrides of the SAX ErrorHandler interface
+// DOMCountHandlers: Overrides of the SAX ErrorHandler interface
 // ---------------------------------------------------------------------------
 inline void DOMCountErrorHandler::error(const SAXParseException& e)
 {
@@ -128,7 +131,7 @@ inline void DOMCountErrorHandler::error(const SAXParseException& e)
     std::cerr << "\nError at file " << StrX(e.getSystemId())
          << ", line " << e.getLineNumber()
          << ", char " << e.getColumnNumber()
-         << "\n  Message: " << StrX(e.getMessage()) << std::endl;
+         << "\n Message: " << StrX(e.getMessage()) << std::endl;
 }
 
 inline void DOMCountErrorHandler::fatalError(const SAXParseException& e)
@@ -137,7 +140,7 @@ inline void DOMCountErrorHandler::fatalError(const SAXParseException& e)
     std::cerr << "\nFatal Error at file " << StrX(e.getSystemId())
          << ", line " << e.getLineNumber()
          << ", char " << e.getColumnNumber()
-         << "\n  Message: " << StrX(e.getMessage()) << std::endl;
+         << "\n Message: " << StrX(e.getMessage()) << std::endl;
 }
 
 inline void DOMCountErrorHandler::warning(const SAXParseException& e)
@@ -145,7 +148,7 @@ inline void DOMCountErrorHandler::warning(const SAXParseException& e)
     std::cerr << "\nWarning at file " << StrX(e.getSystemId())
          << ", line " << e.getLineNumber()
          << ", char " << e.getColumnNumber()
-         << "\n  Message: " << StrX(e.getMessage()) << std::endl;
+         << "\n Message: " << StrX(e.getMessage()) << std::endl;
 }
 
 inline void DOMCountErrorHandler::resetErrors()

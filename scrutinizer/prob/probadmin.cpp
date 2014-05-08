@@ -15,6 +15,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <stdlib.h>
 
 #ifdef TRY_PAROLE_TTT
 #include "trigrams.h"

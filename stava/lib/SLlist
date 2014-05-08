@@ -1,0 +1,1782 @@
+
+as      a, an, or 
+ans     a, an, or
+ors     a, an, or
+orna    a, an, or
+ornas   a, an, or
+
+[^sxz]s @, en, ar 
+ens     @, en, ar
+ars     @, en, ar
+arna    @, en, ar
+arnas   @, en, ar
+
+es      e, en, ar, ~arna 
+ens     e, en, ar, ~arna
+ars     e, en, ar, ~arna
+arna    e, en, ar, ~arna
+arnas   e, en, ar, ~arna
+
+[^n]s       @, n, ar  
+[^n]ns      @, n, ar
+[^n]ars     @, n, ar
+[^n]arna    @, n, ar
+[^n]arnas   @, n, ar
+
+<B>-ns     @, -n 
+
+<B>-ts     @, -t 
+
+<B>-ets    @, -et 
+
+<B>-ens    @, -et, -en 
+
+<B>-nas    @, -na 
+
+els     el, eln, lar 
+elns    el, eln, lar
+lars    el, eln, lar
+larna   el, eln, lar
+larnas  el, eln, lar
+
+ers     er, ern, rar 
+erns    er, ern, rar
+rars    er, ern, rar
+rarna   er, ern, rar
+rarnas  er, ern, rar
+
+ens     en, nen, nar, ~n 
+nens    en, nen, nar, ~n
+nars    en, nen, nar, ~n
+narna   en, nen, nar, ~n
+narnas  en, nen, nar, ~n
+
+(mor)ens     en, nar, ~nen 
+(mor)nars    en, nar, ~nen
+(mor)narna   en, nar, ~nen
+(mor)narnas  en, nar, ~nen
+
+mmels    mmel, mmeln, mlar 
+mmelns   mmel, mmeln, mlar
+mlars    mmel, mmeln, mlar
+mlarna   mmel, mmeln, mlar
+mlarnas  mmel, mmeln, mlar
+
+[^m]els		el, eln, ~lar, ~ler
+[^m]elns	el, eln, ~lar, ~ler
+
+mmers    mmer, mmern 
+
+mmerns   mmer, mmern
+mrars    mmer, mmern, mrar
+mrarna   mmer, mmern, mrar
+mrarnas  mmer, mmern, mrar
+
+mrarna	mmaren, mrar 
+mrarnas	mmaren, mrar
+
+ms      m, mmen, mmar 
+mmens   m, mmen, mmar
+mmars   m, mmen, mmar
+mmarna  m, mmen, mmar
+mmarnas m, mmen, mmar
+
+[^sxz]s @, en, er, ~rare, ~ern, ~ret 
+ens     @, en, er, ~rare, ~ern, ~ret
+ers     @, en, er, ~rare, ~ern, ~ret
+erna    @, en, er, ~rare, ~ern, ~ret
+ernas   @, en, er, ~rare, ~ern, ~ret
+
+iks    ik, iken, iker, ikern 
+ikens   ik, iken, iker, ikern
+ikerna  ik, iken, iker, ikern
+ikernas ik, iken, iker, ikern
+
+[^sxz]s @, en, er, ernas, ~rare 
+ens     @, en, er, ernas, ~rare
+ers     @, en, er, ernas, ~rare
+erna    @, en, er, ernas, ~rare
+ernas   @, en, er, ernas, ~rare
+
+[^sxz]s @, et, er, ~t, ~ern, ~ret, ~a 
+ets     @, et, er, ~t, ~ern, ~ret, ~a
+ers     @, et, er, ~t, ~ern, ~ret, ~a
+erna    @, et, er, ~t, ~ern, ~ret, ~a
+ernas   @, et, er, ~t, ~ern, ~ret, ~a
+
+s       @, et, er, erna, ~ern, ~ret, ~t 
+ets     @, et, er, erna, ~ern, ~ret, ~t
+ers     @, et, er, erna, ~ern, ~ret, ~t
+ernas   @, et, er, erna, ~ern, ~ret, ~t
+en      @, et, er, erna, ~ern, ~ret, ~t, en
+ens     @, et, er, erna, ~ern, ~ret, ~t, en
+
+[^sxz]s @, et, er, ~a, t 
+ets     @, et, er, ~a, t
+ers     @, et, er, ~a, t
+erna    @, et, er, ~a, t
+ernas   @, et, er, ~a, t
+
+is       i, it, iet, ier  
+its      i, it, iet, ier
+iers     i, it, iet, ier
+ierna    i, it, iet, ier
+iernas   i, it, iet, ier
+iets     i, it, iet, ier
+
+its      i, it, iet, ~ier 
+
+es      e, en, er, ~ar, ~ern, ~@ 
+ens     e, en, er, ~ar, ~ern, ~@
+ers     e, en, er, ~ar, ~ern, ~@
+erna    e, en, er, ~ar, ~ern, ~@
+ernas   e, en, er, ~ar, ~ern, ~@
+
+(ar|and)es	e, en, ~er, ~ar, ~ern, ~et, ~@ 
+(ar|and)ens	e, en, ~er, ~ar, ~ern, ~et, ~@
+
+[^sxz]s @, n, er, ~r, ~eret 
+ns      @, n, er, ~r, ~eret
+ers     @, n, er, ~r, ~eret
+erna    @, n, er, ~r, ~eret
+ernas   @, n, er, ~r, ~eret
+
+[^sxz]s @, n, r, er, ~en, ~et  
+ns      @, n, r, er, ~en, ~et
+rs      @, n, r, er, ~en, ~et
+rna     @, n, r, er, ~en, ~et
+rnas    @, n, r, er, ~en, ~et
+ers     @, n, r, er, ~en, ~et
+erna    @, n, r, er, ~en, ~et
+ernas   @, n, r, er, ~en, ~et
+
+els     el, eln, ler 
+elns    el, eln, ler
+lers    el, eln, ler
+lerna   el, eln, ler
+lernas  el, eln, ler
+
+ers     er, ern, rer 
+erns    er, ern, rer
+rers    er, ern, rer
+rerna   er, ern, rer
+rernas  er, ern, rer
+
+as      a, an, er, ~or, ~ade, ~anet 
+ans     a, an, er, ~or, ~ade, ~anet
+ers     a, an, er, ~or, ~ade, ~anet
+erna    a, an, er, ~or, ~ade, ~anet
+ernas   a, an, er, ~or, ~ade, ~anet
+
+os       o, on, or, ~ona, ~oar 
+ons      o, on, or, ~ona, ~oar
+ors      o, on, or, ~ona, ~oar
+orna     o, on, or, ~ona, ~oar
+ornas    o, on, or, ~ona, ~oar
+
+[uå]s   @, n, r, ~dde, ~ra   
+[uå]ns  @, n, r, ~dde, ~ra
+[uå]rs  @, n, r, ~dde, ~ra
+[uå]rna @, n, r, ~dde, ~ra
+[uå]rnas        @, n, r, ~dde, ~ra
+
+ies      ie, ien, ier  
+iens     ie, ien, ier
+iers     ie, ien, ier
+ierna    ie, ien, ier
+iernas   ie, ien, ier
+
+elses    else, elsen, elser 
+elsens   else, elsen, elser
+elsers   else, elsen, elser
+elserna  else, elsen, elser
+elsernas else, elsen, elser
+
+elses    else, elset, elser 
+elsets   else, elset, elser
+elsers   else, elset, elser
+elserna  else, elset, elser
+elsernas else, elset, elser
+
+elses   else, a 
+elsen   else, a
+elsens  else, a
+elser   else, a
+elsers  else, a
+elserna else, a
+elsernas        else, a
+
+[^esxz]s  @, et, ~er, ~eten   
+[^e]ets      @, et, ~er, ~eten
+(eri)[^e]en  @, et, ~er, ~eten 
+(eri)[^e]ens @, et, ~er, ~eten
+
+[^sxz]s  @, et, er, ern 
+ets      @, et, er, ern
+en  @, et, er, ern 
+ens @, et, er, ern
+
+es      e, et, en, ~ar, ~er   
+ets     e, et, en, ~ar, ~er
+ens     e, et, en, ~ar, ~er
+(ar)ena     e, et, en, ~ar, ~er, ~@ 
+(ar)enas    e, et, en, ~ar, ~er, ~@ 
+
+(el)[^ae]s @, t, n, ~tet, ~ten, ~nhet, ~er, ~are 
+(el)[^ae]ts @, t, n, ~tet, ~ten, ~nhet, ~er, ~are
+(el)[^ae]ns @, t, n, ~tet, ~ten, ~nhet, ~er, ~are
+(el)[^ae]na @, t, n, ~tet, ~ten, ~nhet, ~er, ~are
+(el)[^ae]nas @, t, n, ~tet, ~ten, ~nhet, ~er, ~are
+
+ars	ar, arn, ~aren 
+arns	ar, arn, ~aren
+
+(mm)ers     er, ern 
+(mm)erns    er, ern
+[^dm]erna    er, ern, ~rar, ~rer, ~ror, ~ar, ~erer
+[^dm]ernas   er, ern, ~rar, ~rer, ~ror, ~ar, ~erer
+
+[ou]rs	r, rn, ~rna, ~rer, ~ren, ~rnen 
+[ou]rns	r, rn, ~rna, ~rer, ~ren, ~rnen
+
+ers	er, ern, erna 
+erns	er, ern, erna
+ernas	er, ern, erna
+
+iers	ier, ierna 
+iernas	ier, ierna
+
+[^i]ers	er, erna, ~et, ~ret, ~ren 
+[^i]ernas	er, erna, ~et, ~ret, ~ren
+
+ors	or, orna 
+ornas	or, orna
+
+ars	ar, arna 
+arnas	ar, arna
+
+ares    are, aren, ~areer 
+arens   are, aren, ~areer
+arna    are, aren, ~areer
+arnas   are, aren, ~areer
+arn     are, aren, ~areer
+arns    are, aren, ~areer
+erska   are, aren, ~areer
+erskan  are, aren, ~areer
+erskor  are, aren, ~areer
+erskas  are, aren, ~areer
+erskans are, aren, ~areer
+erskors are, aren, ~areer
+erskorna        are, aren, ~areer
+erskornas       are, aren, ~areer
+
+andes	ande, anden 
+andens  ande, anden
+andena  ande, anden
+andenas ande, anden
+
+(lig|ing|ion|itet|ism)[^sxz]s  @, en, ~n, ~ar, ~er, ~et, ~e, ~or, ~are, ~ent, ~nde, ~onde, ~nen    
+(lig|ing|ion|itet|ism)ens   @, en, ~n, ~ar, ~er, ~et, ~e, ~or, ~are, ~ent, ~nde, ~onde
+
+[^rln]ings	ing, ingen, ~ingar, ~inget 
+[^rln]ingens	ing, ingen, ~ingar, ~inget
+
+ets   et, eten, ~etet, ~eter 
+etens et, eten, ~etet, ~eter
+
+[ae]ges         ge, get
+[ae]gets        ge, get
+
+[ae]gen         ge, get
+[ae]gens        ge, get
+
+es      e, et, ~en, ~er 
+ets     e, et, ~en, ~er
+
+en	e, et, ena 
+ens	e, et, ena 
+enas	e, et, ena
+es	e, et, ena 
+ets	e, et, ena 
+
+as a, at, an, ~ade, ~or 
+ats        a, at, an, ~ade, ~or
+ans        a, at, an, ~ade, ~or
+ana        a, at, an, ~ade, ~or
+anas       a, at, an, ~ade, ~or
+
+[gr]as     a, at, on 
+[gr]ats    a, at, on
+[gr]ons    a, at, on
+[gr]ona    a, at, on
+[gr]onas   a, at, on
+[gr]onen   a, at, on
+[gr]onens  a, at, on
+
+[^isxz]s @, n, en, ~ar, ~er, ~et, ~e, ~or, ~are 
+[^i]ns      @, n, en, ~ar, ~er, ~et, ~e, ~or, ~are
+[^i]ens     @, n, en, ~ar, ~er, ~et, ~e, ~or, ~are
+
+éer	é, ét 
+és	é, ét
+éts	é, ét
+éers	é, ét
+éerna	é, ét
+éernas	é, ét
+éet	é, ét
+éets	é, ét
+
+és	é, én, ~éer 
+éns	é, én, ~éer
+
+els     el, let, ~ler
+lets    el, let
+
+len     el, let
+lens    el, let
+
+els     el, let, ler     
+lets    el, let, ler
+lers    el, let, ler
+lerna   el, let, ler
+lernas  el, let, ler
+
+mmels   mmel, mlet
+mlets   mmel, mlet
+
+mlen    mmel, mlet
+mlens   mmel, mlet
+
+ers     er, ret, erna 
+rets    er, ret, erna
+
+ren     er, ret, erna
+rens    er, ret, erna
+ernas   er, ret, erna
+
+ers     er, ret, ren 
+rets    er, ret, ren
+rens    er, ret, ren 
+
+ers	er, ret, ~ren, ~erna 
+rets	er, ret, ~ren, ~erna
+
+ens     en, net, nen, ~n, ~er 
+nets    en, net, nen, ~n, ~er
+nens    en, net, nen, ~n, ~er
+
+mmers   mmer, mret
+mrets   mmer, mret
+mren    mmer, mret
+
+mrens   mmer, mret
+mmerna  mmer, mret
+mmernas mmer, mret
+
+ns      n, nnet, ~nn, ~nne 
+nnets   n, nnet, ~nn, ~nne
+nnen    n, nnet, ~nn, ~nne
+nnens   n, nnet, ~nn, ~nne
+
+ms      m, mmet, mmen, ~mna 
+mmets   m, mmet, mmen, ~mna
+mmens   m, mmet, mmen, ~mna 
+
+ms	m, mmet, ~mmen 
+mmets	m, mmet, ~mmen
+
+ums     um, umet, a     
+umets   um, umet, a
+as      um, umet, a
+umen    um, umet, a
+umens   um, umet, a
+
+ums     um, et, a 
+
+ums     um, et, ~a, ~er 
+ets     um, et, ~a, ~er
+as      um, et, a
+
+ums     um, umet, er    
+umets   um, umet, er
+ers     um, umet, er
+erna    um, umet, er
+ernas   um, umet, er
+
+ums     um, et, er, ~erna
+ets     um, et, er, ~erna
+ers     um, et, er, ~erna
+erna    um, et, er, ~erna
+ernas   um, et, er, ~erna
+
+ums	um, en, er, ~et, ~umet 
+ens	um, en, er, ~et, ~umet
+ers	um, en, er, ~et, ~umet
+erna	um, en, er, ~et, ~umet
+ernas	um, en, er, ~et, ~umet
+
+erskan          erska 
+erskor          erska
+erskas          erska
+erskans         erska
+erskors         erska
+erskorna        erska
+erskornas       erska
+
+innan   inna, ~ann, ~innade, ~inde 
+innor   inna, ~ann, ~innade, ~inde
+innas   inna, ~ann, ~innade, ~inde
+innans  inna, ~ann, ~innade, ~inde
+innors  inna, ~ann, ~innade, ~inde
+innorna inna, ~ann, ~innade, ~inde
+innornas        inna, ~ann, ~innade, ~inde
+
+iteter  itet, iteten 
+itets   itet, iteten
+itetens itet, iteten
+iteters itet, iteten
+iteterna        itet, iteten
+iteternas       itet, iteten
+
+ismen   ism 
+ismer   ism
+isms	ism
+ismens  ism
+ismers  ism
+ismerna ism
+ismernas        ism
+
+ier     i, in, ien, ~ier, ~ina 
+is      i, in, ien, ~ier, ~ina
+ins     i, in, ien, ~ier, ~ina
+iens    i, in, ien, ~ier, ~ina
+iers    i, in, ien, ~ier, ~ina
+ierna   i, in, ien, ~ier, ~ina
+iernas  i, in, ien, ~ier, ~ina
+
+is	i, in, ~it, ~ien, ~ier 
+ins	i, in, ~it, ~ien, ~ier
+
+ioner	ion, ionen 
+ions	ion, ionen
+ionens	ion, ionen
+ioners	ion, ionen
+ionerna	ion, ionen
+ionernas	ion, ionen
+
+as	a, an, ~or, ~ade, ~de, ~um, ~ans 
+ans	a, an, ~or, ~ade, ~de, ~um, ~ans
+
+[àéouyåäö]s	@, n, ~t, ~r, ~er, ~ar 
+[àéouyåäö]ns	@, n, ~t, ~r, ~er, ~ar
+
+mens	men, mina 
+minas	men, mina 
+
+[^sxz]s @, t, are, ~aren 
+a       @, t, are, ~aren
+as      @, t, are, ~aren
+e       @, t, are, ~aren
+es      @, t, are, ~aren
+ares    @, t, are, ~aren
+ast     @, t, are, ~aren
+aste    @, t, are, ~aren
+astes   @, t, are, ~aren
+ts      @, t, are, ~aren
+het     @, t, are, ~aren
+heten   @, t, are, ~aren
+heter   @, t, are, ~aren
+hets    @, t, are, ~aren
+hetens  @, t, are, ~aren
+heters  @, t, are, ~aren
+heterna @, t, are, ~aren
+heternas @, t, are, ~aren
+
+[^sxz]s	@, t, are, ast, aren 
+a       @, t, are, ast, aren
+as      @, t, are, ast, aren
+e       @, t, are, ast, aren
+es      @, t, are, ast, aren
+ares    @, t, are, ast, aren
+aste    @, t, are, ast, aren
+astes   @, t, are, ast, aren
+ts      @, t, are, ast, aren
+het     @, t, are, ast, aren
+heten   @, t, are, ast, aren
+heter   @, t, are, ast, aren
+hets    @, t, are, ast, aren
+hetens  @, t, are, ast, aren
+heters  @, t, are, ast, aren
+heterna @, t, are, ast, aren
+heternas @, t, are, ast, aren
+
+ares    are, ast, ~t 
+aste    are, ast, ~t
+astes   are, ast, ~t
+
+[^sxz]s @, tt, are, ~aren 
+a       @, tt, are, ~aren
+as      @, tt, are, ~aren
+e       @, tt, are, ~aren
+es      @, tt, are, ~aren
+ares    @, tt, are, ~aren
+ast     @, tt, are, ~aren
+aste    @, tt, are, ~aren
+astes   @, tt, are, ~aren
+tts     @, tt, are, ~aren
+het     @, tt, are, ~aren
+heten   @, tt, are, ~aren
+heter   @, tt, are, ~aren
+hets    @, tt, are, ~aren
+hetens  @, tt, are, ~aren
+heters  @, tt, are, ~aren
+heterna @, tt, are, ~aren
+heternas @, tt, are, ~aren
+
+ts      t, tare, ~taren 
+ta      t, tare, ~taren
+tas     t, tare, ~taren
+te      t, tare, ~taren
+tes     t, tare, ~taren
+tares   t, tare, ~taren
+tast    t, tare, ~taren
+taste   t, tare, ~taren
+tastes  t, tare, ~taren
+thet    t, tare, ~taren
+theten  t, tare, ~taren
+theter  t, tare, ~taren
+thets   t, tare, ~taren
+thetens t, tare, ~taren
+theters t, tare, ~taren
+theterna  t, tare, ~taren
+theternas t, tare, ~taren
+
+nns     nn, nt, nnare, ~nnaren  
+nna     nn, nt, nnare, ~nnaren
+nnas    nn, nt, nnare, ~nnaren
+nne     nn, nt, nnare, ~nnaren
+nnes    nn, nt, nnare, ~nnaren
+nnares  nn, nt, nnare, ~nnaren
+nnast   nn, nt, nnare, ~nnaren
+nnaste  nn, nt, nnare, ~nnaren
+nnastes nn, nt, nnare, ~nnaren
+nts     nn, nt, nnare, ~nnaren
+nnhet   nn, nt, nnare, ~nnaren
+nnheten nn, nt, nnare, ~nnaren
+nnheter nn, nt, nnare, ~nnaren
+nnhets  nn, nt, nnare, ~nnaren
+nnhetens        nn, nt, nnare, ~nnaren
+nnheters        nn, nt, nnare, ~nnaren
+nnheterna  nn, nt, nnare, ~nnaren
+nnheternas nn, nt, nnare, ~nnaren
+
+tas     ta, tare, ~taren, ~t 
+te      ta, tare, ~taren, ~t
+tes     ta, tare, ~taren, ~t
+tares   ta, tare, ~taren, ~t
+tast    ta, tare, ~taren, ~t
+taste   ta, tare, ~taren, ~t
+tastes  ta, tare, ~taren, ~t
+thet    ta, tare, ~taren, ~t
+theten  ta, tare, ~taren, ~t
+theter  ta, tare, ~taren, ~t
+thets   ta, tare, ~taren, ~t
+thetens ta, tare, ~taren, ~t
+theters ta, tare, ~taren, ~t
+theterna  ta, tare, ~taren, ~t
+theternas ta, tare, ~taren, ~t
+
+ds      d, tt, dare, ~daren 
+da      d, tt, dare, ~daren
+das     d, tt, dare, ~daren
+de      d, tt, dare, ~daren
+des     d, tt, dare, ~daren
+dares   d, tt, dare, ~daren
+dast    d, tt, dare, ~daren
+daste   d, tt, dare, ~daren
+dastes  d, tt, dare, ~daren
+tts     d, tt, dare, ~daren
+dhet    d, tt, dare, ~daren
+dheten  d, tt, dare, ~daren
+dheter  d, tt, dare, ~daren
+dhets   d, tt, dare, ~daren
+dhetens d, tt, dare, ~daren
+dheters d, tt, dare, ~daren
+dheterna  d, tt, dare, ~daren
+dheternas d, tt, dare, ~daren
+
+ds      d, t, dare, ~daren 
+da      d, t, dare, ~daren
+das     d, t, dare, ~daren
+de      d, t, dare, ~daren
+des     d, t, dare, ~daren
+dares   d, t, dare, ~daren
+dast    d, t, dare, ~daren
+daste   d, t, dare, ~daren
+dastes  d, t, dare, ~daren
+ts      d, t, dare, ~daren
+dhet    d, t, dare, ~daren
+dheten  d, t, dare, ~daren
+dheter  d, t, dare, ~daren
+dhets   d, t, dare, ~daren
+dhetens d, t, dare, ~daren
+dheters d, t, dare, ~daren
+dheterna  d, t, dare, ~daren
+dheternas d, t, dare, ~daren
+
+ms      m, mt, mma, mmare, ~mmaren      
+mmas    m, mt, mma, mmare, ~mmaren
+mme     m, mt, mma, mmare, ~mmaren
+mmes    m, mt, mma, mmare, ~mmaren
+mmares  m, mt, mma, mmare, ~mmaren
+mmast   m, mt, mma, mmare, ~mmaren
+mmaste  m, mt, mma, mmare, ~mmaren
+mmastes m, mt, mma, mmare, ~mmaren
+mts     m, mt, mma, mmare, ~mmaren
+mhet    m, mt, mma, mmare, ~mmaren
+mheten  m, mt, mma, mmare, ~mmaren
+mheter  m, mt, mma, mmare, ~mmaren
+mhets   m, mt, mma, mmare, ~mmaren
+mhetens m, mt, mma, mmare, ~mmaren
+mheters m, mt, mma, mmare, ~mmaren
+mheterna  m, mt, mma, mmare, ~mmaren
+mheternas m, mt, mma, mmare, ~mmaren
+
+mnare   mmen, mmet, mna 
+mmens           mmen, mmet, mna
+mnas            mmen, mmet, mna
+mne             mmen, mmet, mna
+mnes            mmen, mmet, mna
+mnares  mmen, mmet, mna
+mnast   mmen, mmet, mna
+mnaste  mmen, mmet, mna
+mnastes mmen, mmet, mna
+mmets   mmen, mmet, mna
+mmenhet mmen, mmet, mna
+mmenheten       mmen, mmet, mna
+mmenheter       mmen, mmet, mna
+mmenhets        mmen, mmet, mna
+mmenhetens      mmen, mmet, mna
+mmenheters      mmen, mmet, mna
+mmenheterna     mmen, mmet, mna
+mmenheternas    mmen, mmet, mna
+
+[^n]ens         en, et, na, nare, ~naren 
+[^n]nas         en, et, na, nare, ~naren
+[^n]ne          en, et, na, nare, ~naren
+[^n]nes         en, et, na, nare, ~naren
+[^n]nares       en, et, na, nare, ~naren
+[^n]nast        en, et, na, nare, ~naren
+[^n]naste       en, et, na, nare, ~naren
+[^n]nastes      en, et, na, nare, ~naren
+[^n]ets         en, et, na, nare, ~naren
+[^n]enhet       en, et, na, nare, ~naren
+[^n]enheten     en, et, na, nare, ~naren
+[^n]enheter     en, et, na, nare, ~naren
+[^n]enhets      en, et, na, nare, ~naren
+[^n]enhetens    en, et, na, nare, ~naren
+[^n]enheters    en, et, na, nare, ~naren
+[^n]enheterna   en, et, na, nare, ~naren
+[^n]enheternas  en, et, na, nare, ~naren
+
+ers     er, ert, ra, ~erna 
+erts    er, ert, ra, ~erna
+ras     er, ert, ra, ~erna
+re      er, ert, ra, ~erna
+res     er, ert, ra, ~erna
+rare    er, ert, ra, ~erna
+rares   er, ert, ra, ~erna
+rast    er, ert, ra, ~erna
+raste   er, ert, ra, ~erna
+rastes  er, ert, ra, ~erna
+erhet   er, ert, ra, ~erna
+erheten er, ert, ra, ~erna
+erheter er, ert, ra, ~erna
+erhets  er, ert, ra, ~erna
+erhetens        er, ert, ra, ~erna
+erheters        er, ert, ra, ~erna
+erheterna       er, ert, ra, ~erna
+erheternas er, ert, ra, ~erna
+
+ersta	erst 
+erstas	erst
+
+ts      t, thet 
+ta      t, thet
+tas     t, thet
+te      t, thet
+tes     t, thet
+tare    t, thet
+tares   t, thet
+tast    t, thet
+taste   t, thet
+tastes  t, thet
+theten  t, thet
+theter  t, thet
+thets   t, thet
+thetens t, thet
+theters t, thet
+theterna        t, thet
+theternas       t, thet
+
+ds      d, dhet  
+
+ts	d, dhet, t
+da      d, dhet
+das     d, dhet
+de      d, dhet
+des     d, dhet
+dare    d, dhet
+dares   d, dhet
+dast    d, dhet
+daste   d, dhet
+dastes  d, dhet
+dheten  d, dhet
+dheter  d, dhet
+dhets   d, dhet
+dhetens d, dhet
+dheters d, dhet
+dheterna        d, dhet
+dheternas       d, dhet
+
+tts	d, dhet, tt
+
+tt	dd, ddhet
+tts	dd, ddhet
+
+ads	ad, at, ade, ~a 
+ats	ad, at, ade, ~a
+ades	ad, at, ade, ~a 
+
+(el|er)[^mns]s	@, het, t  
+(el|er)[^mn]ts	@, het, t
+(el|er)[^mn]a	@, het, t
+(el|er)[^mn]as	@, het, t
+(el|er)[^mn]e	@, het, t
+(el|er)[^mn]es	@, het, t
+
+(el|er)[^mn]ares @, het, t, are
+(el|er)[^mn]ast	@, het, t, are
+(el|er)[^mn]aste @, het, t, are
+(el|er)[^mn]astes @, het, t, are
+
+heten     @, het, t 
+heter     @, het, t
+hets      @, het, t
+hetens    @, het, t
+heters    @, het, t
+heterna   @, het, t
+heternas  @, het, t
+
+enheten         en, enhet 
+enheter         en, enhet
+enhets         en, enhet
+enhetens        en, enhet
+enheters         en, enhet
+enheterna       en, enhet
+enheternas      en, enhet
+[^m]ens  en, enhet, ~enheten
+[^m]et  en, enhet, ~enheten
+[^m]ets  en, enhet, ~enheten
+[^m]na  en, enhet, ~enheten
+[^m]nas en, enhet, ~enheten
+[^m]ne  en, enhet, ~enheten
+[^m]nes en, enhet, ~enheten
+[^m]nare        en, enhet, ~enheten
+[^m]nares       en, enhet, ~enheten
+[^m]nast        en, enhet, ~enheten
+[^m]naste       en, enhet, ~enheten
+[^m]nastes      en, enhet, ~enheten
+
+els     el, elt, la 
+elts    el, elt, la
+las     el, elt, la
+le      el, elt, la
+les     el, elt, la
+lare    el, elt, la
+lares   el, elt, la
+last    el, elt, la
+laste   el, elt, la
+lastes  el, elt, la
+elhet   el, elt, la
+elheten el, elt, la
+elheter el, elt, la
+elhets  el, elt, la
+elhetens        el, elt, la
+elheters        el, elt, la
+elheterna       el, elt, la
+elheternas      el, elt, la
+
+bars    bar, bart 
+barts   bar, bart
+bara    bar, bart
+baras   bar, bart
+bare    bar, bart 
+bares   bar, bart
+barare  bar, bart
+barares bar, bart
+barast  bar, bart
+baraste bar, bart
+barastes        bar, bart
+barhet  bar, bart
+barheten        bar, bart
+barheter        bar, bart
+barhets bar, bart
+barhetens       bar, bart
+barheters       bar, bart
+barheterna      bar, bart
+barheternas     bar, bart
+
+ells    ell, ellt 
+ellts   ell, ellt
+ella    ell, ellt
+ellas   ell, ellt
+elle    ell, ellt
+elles   ell, ellt
+ellare  ell, ellt
+ellares ell, ellt
+ellast  ell, ellt
+ellaste ell, ellt
+ellastes        ell, ellt
+ellhet  ell, ellt
+ellheten        ell, ellt
+ellheter        ell, ellt
+ellhets ell, ellt
+ellhetens       ell, ellt
+ellheters       ell, ellt
+ellheterna      ell, ellt
+ellheternas     ell, ellt
+
+ivs     iv, ivt 
+ivts    iv, ivt
+iva     iv, ivt
+ivas    iv, ivt
+ive     iv, ivt
+ives    iv, ivt
+ivare   iv, ivt
+ivares  iv, ivt
+ivast   iv, ivt
+ivaste  iv, ivt
+ivastes iv, ivt
+ivhet   iv, ivt
+ivheten        iv, ivt
+ivheter        iv, ivt
+ivhets         iv, ivt
+ivhetens       iv, ivt
+ivheters       iv, ivt
+ivheterna      iv, ivt
+ivheternas     iv, ivt
+
+sks     sk, skt 
+skts    sk, skt
+ska     sk, skt
+skas    sk, skt
+ske     sk, skt
+skes    sk, skt
+skare   sk, skt
+skares  sk, skt
+skast   sk, skt
+skaste  sk, skt
+skastes sk, skt
+skhet   sk, skt
+skheten sk, skt
+skheter sk, skt
+skhets  sk, skt
+skhetens        sk, skt
+skheters        sk, skt
+skheterna       sk, skt
+skheternas      sk, skt
+
+ärs     är, ärt 
+ärts    är, ärt
+ära     är, ärt
+äras    är, ärt
+äre     är, ärt
+äres    är, ärt
+ärare   är, ärt
+ärares  är, ärt
+ärast   är, ärt
+äraste  är, ärt
+ärastes är, ärt
+ärhet   är, ärt
+ärheten är, ärt
+ärheter är, ärt
+ärhets  är, ärt
+ärhetens        är, ärt
+ärheters        är, ärt
+ärheterna       är, ärt
+ärheternas är, ärt
+
+östs    ös, öst 
+ösa     ös, öst
+ösas    ös, öst
+öse     ös, öst
+öses    ös, öst
+ösare   ös, öst
+ösares  ös, öst
+ösast   ös, öst
+ösaste  ös, öst
+ösastes ös, öst
+löshet  lös, löst 
+lösheten        lös, löst
+lösheter        lös, löst
+löshets lös, löst
+löshetens       lös, löst
+lösheters       lös, löst
+lösheterna      lös, löst
+lösheternas     lös, löst
+
+igs     ig, igt 
+igts    ig, igt
+igare   ig, igt
+igares  ig, igt
+igast   ig, igt
+igaste  ig, igt
+igastes ig, igt
+ige     ig, igt
+iges    ig, igt
+iga     ig, igt
+igas    ig, igt
+ighet   ig, igt
+igheten ig, igt
+igheter ig, igt
+ighets  ig, igt
+ighetens        ig, igt
+igheters        ig, igt
+igheterna       ig, igt
+igheternas      ig, igt
+
+ade     ad, at, ~ade, ~aden 
+ads     ad, at, ~ade, ~aden
+ades    ad, at, ~ade, ~aden 
+ats     ad, at, ~ade, ~aden
+
+sams    sam, ~samen 
+samt    sam, ~samen
+samts   sam, ~samen
+samma   sam, ~samen
+sammas  sam, ~samen
+samme   sam, ~samen
+sammes  sam, ~samen
+sammare sam, ~samen
+sammares        sam, ~samen
+sammast         sam, ~samen
+sammaste        sam, ~samen
+sammastes       sam, ~samen
+samhet          sam, ~samen
+samheten        sam, ~samen
+samheter        sam, ~samen
+samhets         sam, ~samen
+samhetens       sam, ~samen
+samheters       sam, ~samen
+samheterna      sam, ~samen
+samheternas     sam, ~samen
+
+ens             en, et, na, ~a 
+ets             en, et, na, ~a
+nas             en, et, na, ~a
+ne              a, it, en, na
+nes             a, it, en, na
+
+heter   het, heten 
+hets    het, heten
+hetens  het, heten
+heters  het, heten
+heterna het, heten
+heternas        het, heten
+
+(mm)als            al, alt, ~alet 
+(mm)ala            al, alt, ~alet
+(mm)alas           al, alt, ~alet
+(mm)alare          al, alt, ~alet
+(mm)alares         al, alt, ~alet
+(mm)alast          al, alt, ~alet
+(mm)alasts         al, alt, ~alet
+(mm)alaste         al, alt, ~alet
+(mm)alastes        al, alt, ~alet
+
+<B>gammals	       gammal, gamla 
+<B>gamlas	       gammal, gamla 
+<B>gamle	       gammal, gamla 
+<B>gamles	       gammal, gamla 
+<B>äldre	       gammal, gamla 
+<B>äldres	       gammal, gamla 
+<B>äldst	       gammal, gamla 
+<B>äldsts	       gammal, gamla 
+<B>äldsta	       gammal, gamla 
+<B>äldstas	       gammal, gamla 
+<B>äldste	       gammal, gamla 
+<B>äldstes	       gammal, gamla 
+
+<B>litens         liten, små 
+<B>lilla          liten, små 
+<B>lillas         liten, små 
+<B>lille          liten, små 
+<B>lilles         liten, små 
+<B>mindre         liten, små 
+<B>mindres        liten, små 
+<B>minst          liten, små 
+<B>minsts         liten, små 
+<B>minsta         liten, små 
+<B>minstas        liten, små 
+<B>minste         liten, små 
+<B>minstes        liten, små 
+
+erstas        erst, ersta 
+erste         erst, ersta 
+erstes        erst, ersta 
+
+istisk      ism, ~istisk, ~isk 
+istiskt     ism, ~istisk, ~isk 
+istiska     ism, ~istisk, ~isk 
+istiskhet   ism, ~istisk, ~isk
+istiskheten ism, ~istisk, ~isk
+istiskheter ism, ~istisk, ~isk 
+
+as      a, ade 
+ar      a, ade
+at      a, ade
+ats     a, ade
+ades    a, ade 
+ad      a, ade
+ads     a, ade
+ande    a, ade
+andes   a, ade
+andet   a, ade
+andets  a, ade
+anden    a, ade
+andens   a, ade
+andena   a, ade
+andenas  a, ade
+
+   as      a, de, ~ade 
+[~r]er     a, de, ~ade
+
+   es      a, de, ~ade
+   s       a, de, ~ade
+   des     a, de, ~ade
+[~d]t      a, de, ~ade
+[~d]ts     a, de, ~ade
+   ande    a, de, ~ade
+   andes   a, de, ~ade
+   andet   a, de, ~ade
+   andets  a, de, ~ade
+   d       a, de, ~ade
+   ds      a, de, ~ade
+   da      a, de, ~ade
+   das     a, de, ~ade
+   @       a, de, ~ade
+   anden   a, de, ~ade
+   andens  a, de, ~ade
+   andena  a, de, ~ade
+   andenas a, de, ~ade
+
+   as      a, de, t, ~den, ade 
+
+   es      a, de, t, ~den, ade
+   s       a, de, t, ~den, ade
+   des     a, de, t, ~den, ade
+[~d]ts     a, de, t, ~den, ade
+   ande    a, de, t, ~den, ade
+   andes   a, de, t, ~den, ade
+   andet   a, de, t, ~den, ade
+   andets  a, de, t, ~den, ade
+   d       a, de, t, ~den, ade
+   ds      a, de, t, ~den, ade
+   da      a, de, t, ~den, ade
+   das     a, de, t, ~den, ade
+   @       a, de, t, ~den, ade
+   anden   a, de, t, ~den, ade
+   andens  a, de, t, ~den, ade
+   andena  a, de, t, ~den, ade
+   andenas a, de, t, ~den, ade
+
+mmer    mma, mde 
+mmas    mma, mde
+mmes    mma, mde
+ms      mma, mde
+mdes    mma, mde
+mt      mma, mde 
+mts     mma, mde
+mmande  mma, mde
+mmandes mma, mde
+mmandet mma, mde
+mmandets        mma, mde
+md      mma, mde
+mds     mma, mde
+mda     mma, mde
+mdas    mma, mde
+mdare   mma, mde
+mdares  mma, mde
+mdast   mma, mde
+mdaste  mma, mde
+mdastes mma, mde
+m       mma, mde
+mmanden mma, mde
+mmandens        mma, mde
+mmandena        mma, mde
+mmandenas       mma, mde
+
+nner    nna, nde, ~nnas 
+nnas    nna, nde, ~nnas
+nnes    nna, nde, ~nnas
+nns     nna, nde, ~nnas
+ndes    nna, nde, ~nnas
+nt      nna, nde, ~nnas
+nts     nna, nde, ~nnas
+nnande  nna, nde, ~nnas
+nnandes nna, nde, ~nnas
+nnandet nna, nde, ~nnas
+nnandets        nna, nde, ~nnas
+nd      nna, nde, ~nnas
+nds     nna, nde, ~nnas 
+nda     nna, nde, ~nnas
+ndas    nna, nde, ~nnas
+nn      nna, nde, ~nnas
+nnanden nna, nde, ~nnas
+nnandens        nna, nde, ~nnas
+nnandena        nna, nde, ~nnas
+nnandenas       nna, nde, ~nnas
+
+[~aeiouyåäö]der     da, de, t, ~ig 
+[~aeiouyåäö]das     da, de, t, ~ig 
+[~aeiouyåäö]des     da, de, t, ~ig
+[~aeiouyåäö]ds      da, de, t, ~ig
+[~aeiouyåäö]ts      da, de, t, ~ig
+[~aeiouyåäö]dande   da, de, t, ~ig
+[~aeiouyåäö]dandes  da, de, t, ~ig
+[~aeiouyåäö]dandet  da, de, t, ~ig
+[~aeiouyåäö]dandets da, de, t, ~ig
+[~aeiouyåäö]danden   da, de, t, ~ig
+[~aeiouyåäö]dandens  da, de, t, ~ig
+[~aeiouyåäö]dandena  da, de, t, ~ig
+[~aeiouyåäö]dandenas da, de, t, ~ig
+[~aeiouyåäö]d       da, de, t, ~ig
+
+er      a, te, ~ade 
+as      a, te, ~ade
+es      a, te, ~ade
+[^sxz]s a, te, ~ade
+tes     a, te, ~ade
+t       a, te, ~ade 
+ts      a, te, ~ade 
+ande    a, te, ~ade
+andes   a, te, ~ade
+andet   a, te, ~ade
+andets  a, te, ~ade
+anden   a, te, ~ade
+andens  a, te, ~ade
+andena  a, te, ~ade
+andenas a, te, ~ade
+ta      a, te, ~ade
+tas     a, te, ~ade 
+@       a, te, ~ade
+
+tts     @, dde, tt 
+
+s       @, r, dde, tt
+
+dds     @, dde, tt, dd
+dda     @, dde, tt
+ddas    @, dde, tt
+ddes    @, dde, tt
+ende    @, dde, tt
+endes   @, dde, tt
+endet   @, dde, tt
+endets  @, dde, tt
+enden    @, dde, tt
+endens   @, dde, tt
+endena   @, dde, tt
+endenas  @, dde, tt
+
+enden   ende, endet 
+endens  ende, endet
+endena  ende, endet
+endenas ende, endet
+endets  ende, endet
+endes   ende, endet
+
+ddes    da, dde 
+dd      da, dde
+dds     da, dde
+tt      da, dde
+tts     da, dde
+[^aoå]das     da, dde 
+[^aoå]d       da, dde
+[^aoå]ds      da, dde
+[^aoå]des     da, dde
+[^aoå]der     da, dde
+
+sätter  sätta
+satte   sätta 
+satt    sätta 
+sätt    sätta
+sättas  sätta 
+sätts   sätta
+sättes  sätta
+sattes  sätta 
+satts   sätta 
+satta   sätta 
+sattas  sätta 
+sättande   sätta
+sättandes  sätta
+sättandet  sätta
+sättandets sätta
+sättanden  sätta
+sättandens sätta
+sättandena sätta
+sättandenas sätta
+
+<B>läggas    lägga, läggande 
+<B>lägger    lägga, läggande
+<B>lade      lägga, läggande 
+<B>la        lägga, läggande 
+<B>lagt      lägga, läggande 
+<B>lagd      lägga, läggande 
+<B>lagds     lägga, läggande 
+<B>lagda	  lägga, läggande 
+<B>lagdas	  lägga, läggande 
+<B>lagde	  lägga, läggande 
+<B>lagdes	  lägga, läggande 
+<B>lägg      lägga, läggande
+<B>läggs     lägga, läggande
+<B>lägges    lägga, läggande
+<B>lades     lägga, läggande 
+<B>las       lägga, läggande 
+<B>lagts     lägga, läggande 
+<B>läggandes    lägga, läggande
+<B>läggandet    lägga, läggande
+<B>läggandets   lägga, läggande
+<B>lägganden    lägga, läggande
+<B>läggandens   lägga, läggande
+<B>läggandena   lägga, läggande
+<B>läggandenas  lägga, läggande
+
+<B>ges	ge, gav 
+<B>giva	ge, gav 
+<B>givas	ge, gav 
+<B>gives	ge, gav 
+<B>ger	ge, gav 
+<B>giver	ge, gav 
+<B>gett	ge, gav 
+<B>givit	ge, gav 
+<B>givet	ge, gav 
+<B>givets	ge, gav 
+<B>given   ge, gav 
+<B>givens	ge, gav 
+<B>givna	  ge, gav 
+<B>givnas	  ge, gav 
+<B>givne	  ge, gav 
+<B>givnes	  ge, gav 
+<B>giv	ge, gav 
+<B>gavs	ge, gav 
+<B>getts	ge, gav 
+<B>givits	ge, gav 
+<B>givets	ge, gav 
+<B>givande     ge, gav
+<B>givandes    ge, gav
+<B>givandet    ge, gav
+<B>givandets   ge, gav
+<B>givanden    ge, gav
+<B>givandens   ge, gav
+<B>givandena   ge, gav
+<B>givandenas  ge, gav
+<B>givning     ge, gav 
+<B>givnings    ge, gav 
+<B>givningen   ge, gav 
+<B>givningens  ge, gav 
+<B>givningar   ge, gav 
+<B>givningars  ge, gav 
+<B>givningarna ge, gav 
+<B>givningarnas ge, gav 
+
+[fg]icks	å, ick 
+
+<B>öts	uta, öt, utit 
+
+<B>öts	yta, öt, utit 
+
+<B>ogs	og, agit 
+<B>agits	og, agit 
+<B>agen	og, agit 
+<B>agens	og, agit 
+<B>aget	og, agit 
+<B>agets	og, agit 
+<B>agna	og, agit 
+<B>agnas	og, agit 
+<B>agne	og, agit 
+<B>agnes	og, agit 
+<B>agnare	og, agit 
+<B>agnares	og, agit 
+<B>agnast	og, agit 
+<B>agnaste	og, agit 
+<B>agnastes	og, agit 
+
+<B>äts	åta, ät, åtit 
+<B>åts     åta, ät, åtit 
+<B>åtas     åta, ät, åtit 
+<B>åtits	åta, ät, åtit 
+<B>åten	åta, ät, åtit 
+<B>åtens	åta, ät, åtit 
+<B>åtet	åta, ät, åtit 
+<B>åtets	åta, ät, åtit 
+<B>åtna	åta, ät, åtit 
+<B>åtnas	åta, ät, åtit 
+<B>åtne	åta, ät, åtit 
+<B>åtnes	åta, ät, åtit 
+<B>åtnare	åta, ät, åtit 
+<B>åtnares	åta, ät, åtit 
+<B>åtnast	åta, ät, åtit 
+<B>åtnaste	åta, ät, åtit 
+<B>åtnastes	åta, ät, åtit 
+
+[a]s	git, @ 
+[a]r	git, @ 
+[a]ga	git, @ 
+[g]er	git, @ 
+[a]gas	git, @ 
+[a]ges	git, @ 
+[a]gande	git, @
+[a]gandes	git, @ 
+[a]gandet	git, @ 
+[a]gandets	git, @ 
+[a]ganden	git, @ 
+[a]gandens	git, @ 
+[a]gandena	git, @ 
+[a]gandenas	git, @ 
+
+<B>inn	inna, ann, unnit 
+<B>innas	inna, ann, unnit 
+<B>inner	inna, ann, unnit 
+<B>inns	inna, ann, unnit 
+<B>anns	inna, ann, unnit 
+<B>unnits	inna, ann, unnit 
+<B>unnet	inna, ann, unnit 
+<B>unnets	inna, ann, unnit 
+<B>unnen	inna, ann, unnit 
+<B>unnens	inna, ann, unnit 
+<B>unna	inna, ann, unnit 
+<B>unnas	inna, ann, unnit 
+<B>unne	inna, ann, unnit 
+<B>unnes	inna, ann, unnit 
+<B>innandes	inna, ann, unnit
+<B>innandet	inna, ann, unnit
+<B>innandets	inna, ann, unnit
+
+<B>[k]ommer  omma, om 
+<B>[k]ommit  omma, om 
+<B>[k]ommits omma, om 
+<B>[k]ommas  omma, om 
+<B>[k]oms    omma, om 
+<B>[k]ommen  omma, om 
+<B>[k]ommens omma, om 
+<B>[k]ommet  omma, om 
+<B>[k]ommets omma, om 
+<B>[k]omna   omma, om 
+<B>[k]omnas  omma, om 
+<B>[k]omne   omma, om 
+<B>[k]omnes  omma, om 
+<B>[k]ommande   omma, om
+<B>[k]ommandes  omma, om
+<B>[k]ommandet  omma, om
+<B>[k]ommandets omma, om
+<B>[k]ommanden  omma, om
+<B>[k]ommandens omma, om
+<B>[k]ommandena omma, om
+<B>[k]ommandenas omma, om
+
+ats     as, ades, ~agt 
+ande    as, ades, ~agt
+andes   as, ades, ~agt
+andet   as, ades, ~agt
+andets  as, ades, ~agt
+anden   as, ades, ~agt
+andens  as, ades, ~agt
+andena  as, ades, ~agt
+andenas as, ades, ~agt
+
+ts      as, des 
+ande    as, des
+andes   as, des
+andet   as, des
+andets  as, des
+anden   as, des
+andens  as, des
+andena  as, des
+andenas as, des
+
+[n]s	nas, des, ts 
+
+its     it, a, et, en, ~iter 
+ets     it, a, et, en, ~iter
+ens     it, a, et, en, ~iter
+(lug|lag)as      it, a, et, en, ~iter, ~ade
+[^mn]na     it, a, et, en, ~iter, ~ade
+[^mn]nas    it, a, et, en, ~iter, ~ade
+[^mn]ne     it, a, et, en, ~iter, ~ade
+[^mn]nes    it, a, et, en, ~iter, ~ade
+(lug|lag)[^mn]@      it, a, et, en, ~iter, ~ade 
+
+its             it, en, et, na 
+ens             it, en, et, na
+ets             it, en, et, na
+nas             it, en, et, na
+ne              it, en, et, na
+nes             it, en, et, na
+
+as              a, ande, ~ade 
+(dj|mm)@        a, ande, ~ade
+(mm|unn)[^s]s   a, ande, ~ade
+ms              mma, mmande, ~mmade
+es              a, ande, ~ade
+er              a, ande, ~ade, ~andet
+andet           a, ande, ~ade
+andets          a, ande, ~ade
+andes           a, ande, ~ade
+anden           a, ande, ~ade
+andens          a, ande, ~ade
+andena          a, ande, ~ade
+andenas         a, ande, ~ade
+
+as              a, ande, andets 
+@               a, ande, andets
+[^s]s           a, ande, andets
+es              a, ande, andets
+er              a, ande, andets
+andet           a, ande, andets
+andes           a, ande, andets
+anden           a, ande, andets
+andens          a, ande, andets
+andena          a, ande, andets
+andenas         a, ande, andets
+
+[eoåö]s          @, ende 
+[eoåö]r          @, ende
+[eoåö]endet      @, ende
+[eoåö]endets     @, ende
+[eoåö]enden      @, ende
+[eoåö]endens     @, ende
+[eoåö]endena     @, ende
+[eoåö]endenas    @, ende
+[eoåö]endes      @, ende
+
+[eoåö]tts        @, ende, tt
+
+<B>ytas            yta, öt, utit 
+<B>yts             yta, öt, utit 
+<B>öts             yta, öt, utit 
+
+<B>sågs            se, såg, sett 
+
+<B>gicks           gå, gick, gått 
+<B>gåtts	   gå, gick, gått
+<B>gången	   gå, gick, gått 
+<B>gångna	   gå, gick, gått 
+<B>gångens	   gå, gick, gått 
+<B>gånget	   gå, gick, gått 
+<B>gångets	   gå, gick, gått 
+<B>gångnas	   gå, gick, gått 
+<B>gångne	   gå, gick, gått 
+<B>gångnes	   gå, gick, gått 
+<B>gångnare	   gå, gick, gått 
+<B>gångnares	   gå, gick, gått 
+<B>gångnast	   gå, gick, gått 
+<B>gångnaste	   gå, gick, gått 
+<B>gångnastes	   gå, gick, gått 
+
+<B>bads            be, bad 
+<B>bed  	   be, bad 
+<B>beds  	   be, bad 
+<B>bes  	   be, bad 
+<B>bedes  	   be, bad 
+<B>ber  	   be, bad 
+<B>beder  	   be, bad 
+<B>bett 	   be, bad 
+<B>betts	   be, bad 
+<B>bedd 	   be, bad 
+<B>bedda	   be, bad 
+<B>bedds	   be, bad 
+<B>bett 	   be, bad 
+<B>betts	   be, bad 
+<B>beddas	   be, bad 
+<B>bedde	   be, bad 
+<B>beddes	   be, bad 
+
+<B>slås            slå, slog, slagit 
+<B>slår            slå, slog, slagit 
+<B>slogs           slå, slog, slagit 
+<B>slagits         slå, slog, slagit 
+
+<B>tas             ta, tog 
+<B>tar             ta, tog 
+<B>togs            ta, tog 
+<B>tagits          ta, tog 
+
+<B>dras            dra, drog, dragit 
+<B>drar            dra, drog, dragit 
+<B>drogs           dra, drog, dragit 
+<B>dragits         dra, drog, dragit 
+
+<B>bands           binda, band 
+
+<B>bets            bita, bet 
+
+<B>fölls           falla, föll 
+
+<B>hölls           hålla, höll 
+
+<B>höggs           hugga, högg 
+
+<B>greps           gripa, grep 
+
+<B>göts            gjuta, göt 
+
+<B>fors            fara, for 
+
+<B>bjöds           bjuda, bjöd 
+
+<B>brasts          brista, brast 
+
+<B>sjöngs          sjunga, sjöng 
+
+<B>sköts           skjuta, sköt 
+
+<B>söps            supa, söp 
+
+<B>sjöds           sjuda, sjöd 
+
+<B>sjönks          sjunka, skönk 
+
+<B>sprangs         springa, sprang 
+
+<B>dogs            dö, dog 
+
+<B>åts             äta, åt 
+
+<B>skrevs          skriva, skrev 
+
+<B>slets           slita, slet 
+
+<B>spanns          spinna, spann 
+
+<B>ryst            rysa, rös 
+
+<B>logs            le, log 
+
+<B>reds            rida, red 
+
+<B>nöps            nypa, nöp, nupit 
+
+<B>bragtes         bringa, bragt 
+<B>bragte          bringa, bragt 
+<B>bragts          bringa, bragt 
+<B>bragta          bringa, bragt 
+<B>bragtas         bringa, bragt 
+<B>bragtes         bringa, bragt 
+
+<B>tvangs          tvinga, tvang 
+
+<B>skin            skina, sken, skinit 
+
+<B>smältes         smälta, smälte, smält 
+
+<B>sprättes        sprätta, sprätte, sprätt 
+
+<B>ströks          stryka, strök, strukit 
+
+<B>vältes          välta, välte, vält 
+
+<B>veks            vika, vek, vikit 
+
+<B>kneps           knipa, knep, knipit 
+
+<B>lyftes          lyfta, lyfte, lyft 
+
+<B>revs            riva, rev, rivit 
+
+<B>skars           skära, skar, skurit 
+
+<B>stacks          sticka, stack, stuckit 
+
+<B>svors           svära, svor, svurit 
+
+<B>gneds           gnida, gned 
+
+<B>smögs           smyga, smög 
+
+<B>ögs             uga, ög 
+
+<B>stås            stå, stod 
+<B>står            stå, stod 
+<B>stods           stå, stod 
+<B>stått           stå, stod 
+<B>ståtts          stå, stod 
+
+<B>gjordes        göra, gjorde 
+<B>gjort          göra, gjorde 
+<B>gjorts         göra, gjorde 
+<B>gör            göra, gjorde 
+
+<B>bars       bära, bar 
+<B>bär        bära, bar 
+<B>burit      bära, bar 
+<B>burits     bära, bar 
+<B>buren      bära, bar 
+<B>burens     bära, bar 
+<B>buret      bära, bar 
+<B>burets     bära, bar 
+<B>burna      bära, bar 
+<B>burnas     bära, bar 
+
+<B>sades      säga, sade 
+<B>sas        säga, sade 
+<B>sagt       säga, sade 
+<B>sagts      säga, sade 
+
+nings           ning 
+ningen          ning
+ningens         ning
+ningar          ning
+ningars         ning
+ningarna        ning
+ningarnas       ning
+
+rings           ring 
+ringen          ring
+ringens         ring
+ringar          ring
+ringars         ring
+ringarna        ring
+ringarnas       ring
+
+lings           ling 
+lingen          ling
+lingens         ling
+lingar          ling
+lingars         ling
+lingarna        ling
+lingarnas       ling
+
+ering           era, erade 
+erings          era, erade
+eringen         era, erade 
+eringens        era, erade 
+eringar         era, erade 
+eringars        era, erade 
+eringarna       era, erade 
+eringarnas      era, erade 
+
+<B>mans            man, mannen, män
+<B>mannens         man, mannen, män
+<B>mäns            man, mannen, män 
+<B>männen          man, mannen, män 
+<B>männens         man, mannen, män 
+
+<B>stads             stad, staden, städer
+<B>stadens           stad, staden, städer
+<B>städers           stad, staden, städer
+<B>städerna          stad, staden, städer
+<B>städernas         stad, staden, städer
+
+<B>faders          fader, fadern, fäder
+<B>faderns         fader, fadern, fäder
+<B>fäders          fader, fadern, fäder
+<B>fäderna         fader, fadern, fäder
+<B>fädernas        fader, fadern, fäder
+
+<B>fars            far, fadern, fäder
+<B>faderns         far, fadern, fäder
+<B>fäders          far, fadern, fäder
+<B>fäderna         far, fadern, fäder
+<B>fädernas        far, fadern, fäder
+
+<B>moders               moder, mödrar 
+<B>modern               moder, mödrar
+<B>moderns              moder, mödrar
+<B>mödrars              moder, mödrar
+<B>mödrarna             moder, mödrar
+<B>mödrarnas            moder, mödrar
+<B>mor                  moder, mödrar 
+<B>mors                 moder, mödrar 
+morn                    moder, mödrar 
+morns                   moder, mödrar 
+
+<B>broders              broder 
+<B>brodern              broder
+<B>broderns             broder
+<B>bröder               broder 
+<B>bröders              broder
+<B>bröderna             broder
+<B>brödernas            broder
+<B>bror                 broder 
+<B>brors                broder 
+brorn                   broder 
+brorns                  broder 
+
+<B>sons       son, sonen, söner
+<B>sonens     son, sonen, söner
+<B>söners     son, sonen, söner
+<B>sönerna    son, sonen, söner
+<B>sönernas   son, sonen, söner
+
+<B>fötters        fot, fötter 
+<B>fötterna       fot, fötter
+<B>fötternas      fot, fötter
+
+<B>rötters        rot, rötter 
+<B>rötterna       rot, rötter
+<B>rötternas      rot, rötter
+
+<B>nötters        nöt, nötter 
+<B>nötterna       nöt, nötter
+<B>nötternas      nöt, nötter
+
+<B>historias      historia, historien
+<B>historiens     historia, historien
+<B>historier      historia, historien
+<B>historiers     historia, historien
+<B>historierna    historia, historien
+<B>historiernas   historia, historien
+
+<B>boks     bok, böcker 
+<B>böckers  bok, böcker
+<B>boken    bok, böcker
+<B>bokens   bok, böcker
+<B>böckerna  bok, böcker
+<B>böckernas bok, böcker
+
+<B>bottens    botten, bottnen 
+<B>bottnens   botten, bottnen
+<B>bottnar    botten, bottnen 
+<B>bottnars   botten, bottnen
+<B>bottnarna  botten, bottnen
+<B>bottnarnas botten, bottnen
+
+<B>vattens    vatten, vattnet 
+<B>vattnets   vatten, vattnet
+<B>vattnen    vatten, vattnet
+<B>vattnens   vatten, vattnet
+
+<B>ands       and, änder 
+<B>anden      and, änder
+<B>andens     and, änder
+<B>änders     and, änder
+<B>änderna    and, änder
+<B>ändernas   and, änder
+
+<B>ångs       ång, änger 
+<B>ängers     ång, änger
+<B>ången      ång, änger
+<B>ångens     ång, änger
+<B>ängerna    ång, änger
+<B>ängernas   ång, änger
+
+<B>bos     bo, boet 
+<B>boets   bo, boet
+<B>bon     bo, boet 
+<B>bons    bo, boet 
+<B>boen    bo, boet
+<B>boens   bo, boet
+<B>bona    bo, boet
+<B>bonas   bo, boet
+

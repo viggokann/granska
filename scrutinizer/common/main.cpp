@@ -8,7 +8,7 @@
 #include "scrutinizer.h"
 #include "matchingset.h"
 #include "ruleset.h"
-
+	
 bool xAnalyze = false;
 bool xReadTaggedText = false; // jonas, intended for use only for evaluation study 030120 - 030228
 

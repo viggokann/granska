@@ -11,7 +11,9 @@
 
 
 #ifndef NO_XML_SUPPORT
-#include <util/PlatformUtils.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+
+using namespace xercesc;
 
 class XML_handler
 {

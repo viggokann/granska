@@ -11,6 +11,8 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <streambuf>
+#include <stdio.h>
+#include <string.h>
 #include <netinet/in.h>
 
 enum SOCKET_STATUS {

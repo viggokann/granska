@@ -4,6 +4,24 @@
  * comments: MorfLexicon class
  */
 
+/******************************************************************************
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+******************************************************************************/
+
 #include "file.h"
 #include "message.h"
 #include "morflexicon.h"
@@ -110,13 +128,13 @@ void MorfLexicon::SetPointersFromIndices() {
   Message(MSG_STATUS, "setting morf pointers...");
   for (int i=0; i<CW; i++) {
     Word *w = &(*this)[i];
-    w->string = strings + (uint)w->string;
+    w->string = strings + (size_t)w->string;
     WordTag *wt;
     for (wt = w; wt; wt=wt->Next())
       if (wt->next == (WordTag*) -1)
 	wt->next = w;
       else
-	wt->next = &more[(int)wt->next];
+	wt->next = &more[(size_t)wt->next];
   }
 }
 
@@ -149,7 +167,7 @@ bool MorfLexicon::Save() {
   in.close();
   for (int i=0; i<CW; i++) {
     WordTag *wt, *next;
-    (*this)[i].string = (*this)[i].string - (uint)strings;
+    (*this)[i].string = (*this)[i].string - (size_t)strings;
     for (wt=&(*this)[i]; wt->Next(); wt=next) {
       next = wt->next;
       wt->next = (WordTag*) (wt->next - &more[0]); // i.e. index of wt->next in more

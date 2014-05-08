@@ -1,0 +1,71 @@
+skriva	vb.inf.akt	under		_
+$	_		_	pl
+
+se	vb.inf.akt	till		_
+$	_		_	pl
+
+känna	vb.inf.akt	till		_
+$	_		_	pl
+
+tänka	vb.inf.akt.mod	över		_
+$	_		_	pl
+
+minst	_		sagt		_
+_	ab.suv		_	jj.pos.neu.sin.ind.nom
+
+vare	_		sig		_
+_	kn		_	pn.utr/neu.sin/plu.def.obj
+
+på	_		nytt		_
+_	pp		_	ab.pos
+
+för	_		övrigt		_
+_	pp		_	ab.pos
+
+för	_		närvarande	_
+_	pp		_	pc.prs.utr/neu.sin/plu.ind/def.nom
+
+#så	_		kallade		_
+#_	ab		_	jj.pos.utr/neu.plu.ind/def.nom
+
+så	_		kallad		_
+_	ab		_	jj.pos.utr.sin.ind.nom
+
+så	_		kallat		_
+_	ab		_	jj.pos.neu.sin.ind.nom
+
+ta	vb.inf.akt	vara		_
+$	_		_	nn.neu.sin.ind.nom
+
+hur	_		pass		_
+$	_		_	ab
+
+ägt	_		rum		_
+hänt	_		_	nn.neu.sin.ind.nom
+
+#runt	_		om		_
+#runtom	_		_	pl
+
+även	_		om		_
+_	ab		om	sn
+
+-	_		_		_
+_	mid		_	_
+
+svenska	_		kredit		_
+_	jj.pos.utr/neu.sin.def.nom		kredit	nn.utr.sin.ind.nom
+
+till	_		exempel		_
+_	pp		_		nn.neu.sin.ind.nom
+
+inom	_		kort		_
+snart	pp		_		ab
+
+i	_		dag		_
+_	pp		_		nn.utr.sin.ind.nom
+
+i	_		morgon		_
+_	pp		_		nn.utr.sin.ind.nom
+
+till	_		synes		_
+_	pp		_		nn

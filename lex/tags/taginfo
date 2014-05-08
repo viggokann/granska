@@ -1,0 +1,197 @@
+- ab	ab
++ ab.kom	ab.kom
++ ab.pos	ab.pos
++ ab.suv	ab.suv
+- dt.mas.sin.ind/def	dt.utr.sin.ind/def
+- dt.neu.sin.def	dt.utr.sin.def
+- dt.neu.sin.ind	dt.utr.sin.ind
+- dt.neu.sin.ind/def	dt.utr.sin.ind/def
+- dt.utr/neu.plu.def	dt.utr.sin.def
+- dt.utr/neu.plu.ind	dt.utr.sin.ind
+- dt.utr/neu.plu.ind/def	dt.utr.sin.ind/def
+- dt.utr/neu.sin.ind/def	dt.utr.sin.ind/def
+- dt.utr/neu.sin/plu.ind	dt.utr.sin.ind
+- dt.utr.sin.def	dt.utr.sin.def
+- dt.utr.sin.ind	dt.utr.sin.ind
+- dt.utr.sin.ind/def	dt.utr.sin.ind/def
+- ha	ha
+- hd.neu.sin.ind	hd.utr.sin.ind
+- hd.utr/neu.plu.ind	hd.utr.sin.ind
+- hd.utr.sin.ind	hd.utr.sin.ind
+- hp	hp
+- hp.neu.sin.ind	hp.neu.sin.ind
+- hp.utr/neu.plu.ind	hp.utr/neu.plu.ind
+- hp.utr.sin.ind	hp.utr.sin.ind
+- hs.def	hs.def
+- ie	ie
++ in	in
++ jj.gen	jj.pos.utr.sin.ind.nom
++ jj.kom.utr/neu.sin/plu.ind/def.nom	jj.pos.utr.sin.ind.nom
++ jj.pos.mas.sin.def.nom	jj.pos.utr.sin.ind.nom
++ jj.pos.neu.sin.ind/def.nom	jj.pos.utr.sin.ind.nom
++ jj.pos.neu.sin.ind.nom	jj.pos.utr.sin.ind.nom
++ jj.pos.utr/neu.plu.ind/def.nom	jj.pos.utr.sin.ind.nom
++ jj.pos.utr/neu.plu.ind.nom	jj.pos.utr.sin.ind.nom
++ jj.pos.utr/neu.sin.def.nom	jj.pos.utr.sin.ind.nom
++ jj.pos.utr/neu.sin/plu.ind/def.nom	jj.pos.utr.sin.ind.nom
++ jj.pos.utr.sin.ind/def.nom	jj.pos.utr.sin.ind.nom
++ jj.pos.utr.sin.ind.nom	jj.pos.utr.sin.ind.nom
++ jj.suv.mas.sin.def.nom	jj.pos.utr.sin.ind.nom
++ jj.suv.utr/neu.plu.def.nom	jj.pos.utr.sin.ind.nom
++ jj.suv.utr/neu.sin/plu.def.nom	jj.pos.utr.sin.ind.nom
++ jj.suv.utr/neu.sin/plu.ind.nom	jj.pos.utr.sin.ind.nom
++ jj.pos.sms	jj.pos.utr.sin.ind.nom
+- jj.kom.sms	jj.pos.utr.sin.ind.nom
+- kn	kn
+- mad	mad	TOKEN_PERIOD	TOKEN_QUESTION_MARK	TOKEN_EXCLAMATION_MARK
+- mid	mid	TOKEN_PUNCTUATION
++ nn	nn	TOKEN_SILLY
++ nn.neu	nn.neu.sin.ind.nom	TOKEN_SILLY
++ nn.neu.plu.def.gen	nn.neu.sin.ind.nom
++ nn.neu.plu.def.nom	nn.neu.sin.ind.nom
++ nn.neu.plu.ind.gen	nn.neu.sin.ind.nom
++ nn.neu.plu.ind.nom	nn.neu.sin.ind.nom
++ nn.neu.sin.def.gen	nn.neu.sin.ind.nom
++ nn.neu.sin.def.nom	nn.neu.sin.ind.nom
++ nn.neu.sin.ind.gen	nn.neu.sin.ind.nom
++ nn.neu.sin.ind.nom	nn.neu.sin.ind.nom
++ nn.utr	nn.utr.sin.ind.nom	TOKEN_SILLY
++ nn.utr.plu.def.gen	nn.utr.sin.ind.nom
++ nn.utr.plu.def.nom	nn.utr.sin.ind.nom
++ nn.utr.plu.ind.gen	nn.utr.sin.ind.nom
++ nn.utr.plu.ind.nom	nn.utr.sin.ind.nom	nn.utr.plu.ind.nom
++ nn.utr.sin.def.gen	nn.utr.sin.ind.nom
++ nn.utr.sin.def.nom	nn.utr.sin.ind.nom
++ nn.utr.sin.ind.gen	nn.utr.sin.ind.nom
++ nn.utr.sin.ind.nom	nn.utr.sin.ind.nom
+- nn.neu.sin.def.nom.set	nn.neu.sin.ind.nom.set
+- nn.neu.sin.ind.nom.set	nn.neu.sin.ind.nom.set
+- nn.utr.sin.def.nom.set	nn.utr.sin.ind.nom.set
+- nn.utr.sin.ind.nom.set	nn.utr.sin.ind.nom.set
+- nn.utr.sin.ind.nom.dat	nn.utr.sin.ind.nom.dat
+- nn.utr.sin.def.nom.dat	nn.utr.sin.ind.nom.dat
++ nn.utr.sms	nn.utr.sin.ind.nom
++ nn.neu.sms	nn.neu.sin.ind.nom
+- nn.sms	nn.utr.sin.ind.nom
+- pad	pad	TOKEN_PARAGRAPH	TOKEN_CITATION	TOKEN_RIGHT_PAR	TOKEN_LEFT_PAR
++ pc.gen	pc.gen
++ pc.prf.mas.sin.def.nom	pc.prf.utr.sin.ind.nom
++ pc.prf.neu.sin.ind.nom	pc.prf.utr.sin.ind.nom
++ pc.prf.utr/neu.plu.ind/def.nom	pc.prf.utr.sin.ind.nom
++ pc.prf.utr/neu.sin.def.nom	pc.prf.utr.sin.ind.nom
++ pc.prf.utr.sin.ind.nom	pc.prf.utr.sin.ind.nom
++ pc.prf.utr/neu.sin/plu.ind/def.nom	jj.pos.utr.sin.ind.nom
++ pc.prs.utr/neu.sin/plu.ind/def.nom	pc.prs.utr/neu.sin/plu.ind/def.nom
+- pl	pl
++ pm.nom	pm.nom	TOKEN_PROPER_NOUN	TOKEN_URL	TOKEN_E_MAIL
++ pm.gen	pm.nom	TOKEN_PROPER_NOUN_GENITIVE
+- pm.sms	pm.nom
+- pn.mas.sin.def.sub/obj	pn.mas.sin.def.sub/obj
+- pn.neu.sin.def.sub/obj	pn.neu.sin.def.sub/obj
+- pn.neu.sin.ind.sub/obj	pn.neu.sin.ind.sub/obj
+- pn.utr/neu.plu.def.obj	pn.utr/neu.plu.def.sub
+- pn.utr/neu.plu.def.sub	pn.utr/neu.plu.def.sub
+- pn.utr/neu.plu.def.sub/obj	pn.utr/neu.plu.def.sub/obj
+- pn.utr/neu.plu.ind.sub/obj	pn.utr/neu.plu.def.sub/obj
+- pn.utr/neu.sin/plu.def.obj	pn.utr/neu.sin/plu.def.obj
+- pn.utr.plu.def.obj	pn.utr.plu.def.sub
+- pn.utr.plu.def.sub	pn.utr.plu.def.sub
+- pn.utr.sin.def.obj	pn.utr.sin.def.sub
+- pn.utr.sin.def.sub	pn.utr.sin.def.sub
+- pn.utr.sin.def.sub/obj	pn.utr.sin.def.sub/obj
+- pn.utr.sin.ind.sub	pn.utr.sin.ind.sub
+- pn.utr.sin.ind.sub/obj	pn.utr.sin.ind.sub/obj
+- pp	pp
+- ps.neu.sin.def	ps.utr.sin.def
+- ps.utr/neu.plu.def	ps.utr.sin.def
+- ps.utr/neu.sin/plu.def	ps.utr/neu.sin/plu.def
+- ps.utr.sin.def	ps.utr.sin.def
++ rg.nom	rg.nom	TOKEN_PERCENTAGE	TOKEN_MATH
++ rg.gen	rg.gen
+- ro.mas.sin	ro.mas.sin
+- ro.mas.sin.ind/def.nom	ro.mas.sin.ind/def.nom
+- rg.neu.sin.ind	rg.neu.sin.ind
+- rg.neu.sin.ind.nom	rg.neu.sin.ind.nom
+- rg.utr/neu.sin/plu.ind/def.nom	rg.utr/neu.sin/plu.ind/def.nom
+- rg.utr.sin.ind.nom	rg.utr.sin.ind.nom
++ rg.yea	rg.yea	TOKEN_YEAR	TOKEN_DATE	TOKEN_TIME
++ rg.utr/neu.plu.ind/def.nom	rg.utr/neu.plu.ind/def.nom	TOKEN_CARDINAL	TOKEN_BAD_CARDINAL
+- rg.sin	rg.sin	TOKEN_CARDINAL_SIN
+- rg.utr.sin.ind	rg.utr.sin.ind
+- ro	ro
++ ro.nom	ro.nom	TOKEN_ORDINAL
++ ro.gen	ro.gen
+- ro.sin	ro
+- sen.per	sen.per	TOKEN_DELIMITER_PERIOD
+- sen.que	sen.que	TOKEN_DELIMITER_QUESTION
+- sen.exc	sen.exc	TOKEN_DELIMITER_EXCLAMATION
+- sen.hea	sen.hea	TOKEN_DELIMITER_HEADING
+- sen.non	sen.non	TOKEN_DELIMITER_OTHER
+- sn	sn
+- uo	uo	TOKEN_SILLY
+- vb	vb.inf.akt
++ vb.imp	vb.inf.akt
+- vb.imp.akt.mod	vb.inf.akt.mod
+- vb.imp.akt.kop	vb.inf.akt.kop
+- vb.imp.akt.aux	vb.inf.akt.aux
++ vb.inf.akt	vb.inf.akt
+- vb.inf.akt.mod	vb.inf.akt.mod
+- vb.inf.akt.kop	vb.inf.akt.kop
+- vb.inf.akt.aux	vb.inf.akt.aux
++ vb.inf.sfo	vb.inf.akt	vb.inf.sfo
++ vb.kon.prs.akt	vb.inf.akt
++ vb.kon.prt	vb.inf.akt
++ vb.prs.akt	vb.inf.akt
+- vb.prs.akt.mod	vb.inf.akt.mod
+- vb.prs.akt.kop	vb.inf.akt.kop
+- vb.prs.akt.aux	vb.inf.akt.aux
++ vb.prs.sfo	vb.inf.akt	vb.inf.sfo
+- vb.prs.sfo.mod	vb.inf.akt.mod	vb.inf.sfo
+- vb.prs.sfo.kop	vb.inf.akt.mod	vb.inf.sfo
+- vb.prs.sfo.aux	vb.inf.akt.aux	vb.inf.sfo
++ vb.prt.akt	vb.inf.akt
+- vb.prt.akt.mod	vb.inf.akt.mod
+- vb.prt.akt.kop	vb.inf.akt.kop
+- vb.prt.akt.aux	vb.inf.akt.aux
++ vb.prt.sfo	vb.inf.akt	vb.inf.sfo
+- vb.prt.sfo.mod	vb.inf.akt	vb.inf.sfo
+- vb.prt.sfo.kop	vb.inf.akt	vb.inf.sfo
+- vb.prt.sfo.aux	vb.inf.akt	vb.inf.sfo
++ vb.sup.akt	vb.inf.akt
+- vb.sup.akt.mod	vb.inf.akt.mod
+- vb.sup.akt.kop	vb.inf.akt.kop
+- vb.sup.akt.aux	vb.inf.akt.aux
++ vb.sup.sfo	vb.inf.akt	vb.inf.sfo
++ pc.prf.utr/neu.sin.def.gen	pc.prf.utr.sin.ind.nom
++ vb.kon.prt.sfo	vb.inf.akt	vb.inf.sfo
++ pc.an	pc
++ jj.pos.mas.sin.def.gen	jj.pos.utr.sin.ind.nom
++ nn.an	nn
++ jj.kom.utr/neu.sin/plu.ind/def	jj.pos.utr.sin.ind.nom
++ jj.suv.utr/neu.plu.ind.nom	jj.pos.utr.sin.ind.nom
++ vb.an	vb.inf.akt
++ jj.an	jj.pos.utr.sin.ind.nom
+- dt.an	dt	
+- dt.utr/neu.sin.def	dt.utr/neu.sin.def
++ pc.prf.utr/neu.plu.ind/def.gen	pc.prf.utr.sin.ind.nom
++ jj.pos.utr/neu	jj.pos.utr.sin.ind.nom
++ jj.pos.utr.sin.ind.gen	jj.pos.utr.sin.ind.nom
++ pc.prs.utr/neu.sin/plu.ind/def.gen	pc.prs.utr/neu.sin/plu.ind/def.nom
++ jj.pos.utr/neu.sin.def.gen	jj.pos.utr.sin.ind.nom
++ jj.pos.utr/neu.sin/plu.ind.nom	jj.pos.utr.sin.ind.nom
+- kn.an	kn
+- dt.mas.sin.def	dt.utr.sin.def
++ jj.suv.mas.sin.def.gen	jj.pos.utr.sin.ind.nom
++ rg	rg
+- dt.utr/neu.sin.ind	dt.utr/neu.sin.ind
+- dt.mas.sin.ind	dt.utr/neu.sin/plu.ind
++ pc.prf.utr.sin.ind.gen	pc.prf.utr.sin.ind.nom
++ vb.imp.akt	vb.inf.akt
++ vb.kon.prt.akt	vb.inf.akt
+- pp.an	pp
++ jj.pos.utr/neu.plu.ind/def.gen	jj.pos.utr.sin.ind.nom
++ pc.prf.mas.sin.def.gen	pc.prf.utr.sin.ind.nom
++ jj.pos.utr	jj.pos.utr.sin.ind.nom
++ jj.kom.utr/neu.sin/plu.ind/def.gen	jj.pos.utr.sin.ind.nom
++ ab.an	ab
++ jj.pos.neu.sin.ind.gen	jj.pos.utr.sin.ind.nom

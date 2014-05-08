@@ -21,8 +21,10 @@ char ruletempfile[100];
 
 int wwwscrutinizer(char *text, char *filename, char *URLName, char *rulefile) {
   //  char *taggerlexdir = "/afs/nada.kth.se/misc/tcs/granska/lib/www/";
-  char *taggerlexdir = "/afs/nada.kth.se/misc/tcs/granska/lib/lexicons/suc/";
-  if (!rulefile || !*rulefile) rulefile = "/afs/nada.kth.se/misc/tcs/granska/lib/www/default-swedish-rules";
+ // char *taggerlexdir = "/afs/nada.kth.se/misc/tcs/granska/lib/lexicons/suc/";
+  char *taggerlexdir = "/home/wilhelm/Skola/Exjobb/lex";
+  //if (!rulefile || !*rulefile) rulefile = "/afs/nada.kth.se/misc/tcs/granska/lib/www/default-swedish-rules";
+  if (!rulefile || !*rulefile) rulefile = "/home/wilhelm/Skola/Exjobb/regler/";
   else xOptimizeMatchings = false; // inserted 2006-09-03 by Viggo
   xPrintWordInfo = false;
   xPrintGramErrors = true;

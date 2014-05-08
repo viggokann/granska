@@ -4,6 +4,24 @@
  * comments: WordLexicon class
  */
 
+/******************************************************************************
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+******************************************************************************/
+
 #include "file.h"
 #include "letter.h"
 #include "message.h"
@@ -681,44 +699,44 @@ void WordLexicon::SetPointersFromIndices() {
   for (i=0; i<CW; i++) {
     Word *w = &(*this)[i];
     //    Word *w = &words[i];
-    w->string = strings + (uint)w->string;
+    w->string = strings + (size_t)w->string;
     WordTag *wt;
     for (wt = w; wt; wt=wt->Next()) {
       if (wt->lemma == (WordTag*) -1)
 	wt->lemma = NULL;
-      else if (((int)wt->lemma) < CW)
-	wt->lemma = &(*this)[(int)wt->lemma];
+      else if (((size_t)wt->lemma) < CW)
+	wt->lemma = &(*this)[(size_t)wt->lemma];
       //	wt->lemma = &words[(int)wt->lemma];
       else
-	wt->lemma = &more[((int)wt->lemma) - CW];
+	wt->lemma = &more[((size_t)wt->lemma) - CW];
       if (wt->next == (WordTag*) -1)
 	wt->next = w;
       else
-	wt->next = &more[(int)wt->next];
+	wt->next = &more[(size_t)wt->next];
     }
-    wordsAlpha[i] = &(*this)[(int)wordsAlpha[i]];
+    wordsAlpha[i] = &(*this)[(size_t)wordsAlpha[i]];
     //    wordsAlpha[i] = &words[(int)wordsAlpha[i]];
   }
   for (i=0; i<nExtraLemmas; i++) {
     ExtraLemma &wtal = extraLemmas[i];
-    if (((int)wtal.wt) < CW)
-      wtal.wt = &(*this)[(int)wtal.wt];
+    if (((size_t)wtal.wt) < CW)
+      wtal.wt = &(*this)[(size_t)wtal.wt];
     //      wtal.wt = &words[(int)wtal.wt];
     else
-      wtal.wt = &more[((int)wtal.wt) - CW];
-    if (((int)wtal.lemma) < CW)
-      wtal.lemma = &(*this)[(int)wtal.lemma];
+      wtal.wt = &more[((size_t)wtal.wt) - CW];
+    if (((size_t)wtal.lemma) < CW)
+      wtal.lemma = &(*this)[(size_t)wtal.lemma];
     //      wtal.lemma = &words[(int)wtal.lemma];
     else
-      wtal.lemma = &more[((int)wtal.lemma) - CW];
+      wtal.lemma = &more[((size_t)wtal.lemma) - CW];
   }
   for (i=0; i<nExtraRules; i++) {
     ExtraRules &wtar = extraRules[i];
-    if (((int)wtar.wt) < CW)
-      wtar.wt = &(*this)[(int)wtar.wt];
+    if (((size_t)wtar.wt) < CW)
+      wtar.wt = &(*this)[(size_t)wtar.wt];
     //      wtar.wt = &words[(int)wtar.wt];
     else
-      wtar.wt = &more[((int)wtar.wt) - CW];
+      wtar.wt = &more[((size_t)wtar.wt) - CW];
   }
 }
 
@@ -768,7 +786,7 @@ bool WordLexicon::Save() {
   int i;
   for (i=0; i<CW; i++) {
     WordTag *wt, *next;
-    (*this)[i].string = (*this)[i].string - (uint)strings;
+    (*this)[i].string = (*this)[i].string - (size_t)strings;
     //    words[i].string = words[i].string - (uint)strings;
     for (wt=&(*this)[i]; wt; wt=next) {
       //    for (wt=&words[i]; wt; wt=next) {

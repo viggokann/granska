@@ -1,6 +1,7 @@
-module add gnu
-module add gcc
-module add gnu-make/1.5
-make depend
-make scrut/rules.tab.h
-make
+To build run the 'build.sh' script
+
+To run the programs you must first edit the script
+'setEnv.sh' so that the environment variables are set 
+to wherever the files are located on your local computer.
+Then run the script whith the command '. setEnv.sh' (not the
+space after the dot).

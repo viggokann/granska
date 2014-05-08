@@ -1,0 +1,102 @@
+*wordcl	ordklass
+nn	substantiv
+pm	egennamn
+jj	adjektiv
+rg	räkneord grundtal
+ro	räkneord ordningstal
+vb	verb
+ab	adverb
+in	interjektion
+ha	frågande/relativt adverb
+dt	determinerare (artikel)
+hd	frågande/relativ determinerare (artikel)
+ps	possessiv
+hs	frågande/relativ possessiv
+pn	pronomen
+hp	frågande/relativt pronomen
+sn	subjunktion
+kn	konjunktion
+pp	preposition
+ie	infinitivmärke
+dl	delimiter
+pc	particip
+pl	partikel
+uo	utländskt ord
+an	förkortning
+*deg	komparationsgrad
+pos	positiv
+kom	komparativ
+suv	superlativ
+*gender	genus
+utr	utrum
+neu	neutrum
+utr/neu	utrum/neutrum
+mas	maskulinum
+*num	numerus
+sin	singular
+plu	plural
+sin/plu	singular/plural
+*spec	species (bestämdhet)
+ind	indefinit (obestämd form)
+def	definit (bestämd form)
+ind/def	indefinit/definit (obestämd/bestämd)
+*case	kasus
+nom	nominativ
+gen	genitiv
+sms	sammansattningsled
+*nntype	substantivtyp
+set	måttapposition (mängdkvantifierare)
+dat	datumord
+div	massord
+*vbf	verbform
+prs	presens (nutid)
+prt	preteritum (dåtid)
+inf	infinitv (grundform)
+sup	supinum
+imp	imperativ
+*mood	modus
+kon	konjunktiv
+*pef	perfekt form
+prf	perfekt
+*voice	diates
+akt	aktiv
+sfo	s-form
+*pnf	pronomenform
+sub	subjektsform
+obj	objektsform
+sub/obj	subjekt/objektsform
+*vbt	verbtyp
+aux	hjälpverb
+kop	kopula
+mod	modalt
+*rgt	räknordstyp
+yea	årtal
+*cht	teckentyp
+mad	skiljetecken vid meningsslut
+mid	skiljetecken inom en mening
+pad	diverse tecken " ' [ ] ( )
+*sed	meningsavgränsare
+sen	meningsbörjanochslut
+*style	stil
+datm	dataterm
+frmo	främmande ord
+foal	formellt eller ålderdomligt
+fsms	felaktig sammansättning
+lgpp	lång preposition
+libb	ord med liten begynnelsebokstav
+lprs	lång presensform
+onfl	onödig förlängning
+pavb	sammansatt verb (partikelverb)
+psvb	passiva verb
+stbb	ord med stor begynnelsebokstav
+svba	svårbegripligt ord > 75%
+vard	vardagligt ord
+*phrase	frastyp
+npdef	nominalfras i bestämd form
+npindef	nominalfras i obestämd form
+*extra	extra
+per	period
+que	question
+exc	exclamation
+non	none	
+hea	heading

@@ -1,14 +1,33 @@
 /* hashtable.hh
  * author: Johan Carlberger
- * last change: 2000-05-15
+ * last change: 20051230, minor bug-fix, Oscar Täckström
  * comments: dynamic hashtable, WARNING some ensures commented
  */
+
+/******************************************************************************
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+******************************************************************************/
 
 #ifndef _hashtable_hh
 #define _hashtable_hh
 
 #include <string.h>
 #include <stdlib.h>
+#include <iostream>
 #include <iosfwd>
 #include "basics.h"
 #include "ensure.h"
@@ -71,6 +90,7 @@ public:
       ensure(links[j] == NO_LINK);
     }
   }
+  
   void PrintObjects(std::ostream& os = std::cout) const;
   const T* Insert(const T *t);
   T *Find(const T *t) const;
@@ -113,7 +133,7 @@ template <class T>
 void HashTable<T>::PrintObjects(std::ostream& os) const {
   ensure(this);
   for (int i=0; i<end; i++)
-    if (slots[i]) os << slots[i] << std::endl;
+      if (slots[i]) os << slots[i] << std::endl;
 }
 
 template <class T>
