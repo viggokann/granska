@@ -1,8 +1,11 @@
+Building requires the following packages to be installed on
+your machine:
+g++, makedepend, flex, bison and xerces-c-3.1.1
+
 To build run the 'build.sh' script
 
-To run the programs you must first edit the script
-'setEnv.sh' so that the environment variables needed are set
-correctly. Simply edit before '/granska/..' with the location of
-the directory 'granska' on your local computer.
+Before you run the programs you must first edit the script
+'setEnv.sh' so that the environment variables matches
+the path to 'granska' on your local computer.
 Then run the script whith the command '. setEnv.sh' (not the
-space after the dot).
+space after the dot). 

@@ -1,5 +1,21 @@
 % Granskas regler 
 
+(* ----- Willes regler ----- *)
+category exempelregler {
+info("exempelregel")
+link("http://www.nada.kth.se/kurser/kth/2D1418/laborationer00/granska/exempelregel.txt" "exempelregel")
+}
+
+exregel@exempelregler
+{
+X(text="ett"),
+Y(wordcl=nn & gender=utr)
+-->
+corr(X.form(gender:=Y.gender))
+mark(X Y)
+action(scrutinizing)
+}
+
 (* ----- KONSTIG-MENING-KONTROLL ----- *)
 
 category a {
