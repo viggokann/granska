@@ -4,10 +4,11 @@ g++, makedepend, flex, bison and xerces-c-3.1.1
 
 To build run the 'build.sh' script
 
-This will create two executables: scrutinizer and testlibrary.
-scrutinizer is the actual granska program and testlibrary is
-a small program that makes use of the library to see that
-it works.
+This will create two executables: scrutinizer and testlibrary;
+and a dynamic library in 'libgranska.so'.
+'scrutinizer' is the actual granska program and 'testlibrary' is
+a small program that makes use of the library 'libgranska.so'
+to see that it works.
 
 Before you run the programs you must first edit the script
 'setEnv.sh' so that the environment variables matches
