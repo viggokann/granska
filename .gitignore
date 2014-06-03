@@ -1,1 +1,6 @@
 lex/*/fast
+scrutinizer/test*.txt
+scrutinizer/ut*
+scrutinizer/skrutten*
+scrutinizer/demo*
+scrutinizer/Makefile.bak

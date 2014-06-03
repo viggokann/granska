@@ -1,20 +1,115 @@
 % Granskas regler 
 
 (* ----- Willes regler ----- *)
-category exempelregler {
-info("exempelregel")
-link("http://www.nada.kth.se/kurser/kth/2D1418/laborationer00/granska/exempelregel.txt" "exempelregel")
+category skiljetecken {
+info("Komma, frågetecken och utropstecken")
+link("" "")
 }
 
-exregel@exempelregler
+frågeordsfråga@skiljetecken
 {
-X(text="ett"),
-Y(wordcl=nn & gender=utr)
+X(sed=sen),
+Y(text="vem" | text="vad" | text="vart" | text="var" | text="varifrån" | text="vilka" | text="vilken" | text="vilket"  | text="hur" | text="varför"  ),
+X1()*, 
+X2(text="." | text="!"),
+X3(sed=sen) 
 -->
-corr(X.form(gender:=Y.gender))
-mark(X Y)
+mark(X2)
+corr(X2.replace("?"))
+info("Fråga?")
 action(scrutinizing)
 }
+
+närutanpronomen@skiljetecken
+{
+X(sed=sen),
+Y(text="när"),
+Z(wordcl!=pn),
+X1()*, 
+X2(text="." | text="!"),
+X3(sed=sen) 
+-->
+mark(X2)
+corr(X2.replace("?"))
+info("Fråga?")
+action(scrutinizing)
+}
+
+category storbokstav {
+info("Användning av stor bokstav")
+link("" "")
+}
+
+versalefterkolon@storbokstav
+{
+X(text=";"),
+Y(is_cap)
+-->
+mark(Y)
+corr(Y.replace(tolower(Y.real_text)))
+info("inga versaler efter kolon")
+action(scrutinizing)
+}
+
+
+versalvinymening@storbokstav
+{
+X(sed=sen & (text="$."|text="$?"|text="$!")),
+Y(!is_cap)
+-->
+mark(Y)
+corr(Y.replace(firsttoupper(Y.real_text)))
+info("Versaler vid ny mening")
+action(scrutinizing)
+}
+
+janejfråga@skiljetecken
+{
+X(sed=sen),
+Y(wordcl=vb & (vbf = prt | vbf = prs)),
+X1()*, 
+X2(text="." | text="!"),
+X3(sed=sen) 
+-->
+mark(X2)
+corr(X2.replace("?"))
+info("Fråga?")
+action(scrutinizing)
+}
+
+eller@skiljetecken
+{
+X(text="eller" | text="eller hur"),
+X2(text="." | text="!"),
+X3(sed=sen) 
+-->
+mark(X2)
+corr(X2.replace("?"))
+info("Fråga?")
+action(scrutinizing)
+}
+
+
+
+imperativsatser@skiljetecken
+{
+X(sed=sen),
+Y(wordcl=vb & vbf=imp),
+X1()*, 
+X2(text="." | text="?"),
+X3(sed=sen)
+-->
+mark(X2)
+corr(X2.replace("!"))
+info("Uppmaning?")
+action(scrutinizing)
+}
+
+category satser{
+info("huvud- och bisatser")
+link("" "")
+}
+
 
 (* ----- KONSTIG-MENING-KONTROLL ----- *)
 
@@ -82,6 +177,17 @@ info("Upprepad ordsekvens")
 action(scrutinizing)
 }
 
+upprepning@a
+{
+X(),
+Y(text=X.real_text)+
+-->
+corr(Y.delete())
+mark(Y)
+info("Upprepade ord")
+action(scrutinizing)
+}
+
 (* ----- STAVNING ----- *)
 
 category stavning {
@@ -107,9 +213,6 @@ jump(slut_stavning, 0)
 }
 
 
-
-
-(*
 stav2@stavning
 {
 X(token = TOKEN_SIMPLE_WORD & spell_compound_OK(real_text, token))
@@ -118,15 +221,13 @@ corr(X.spell_corr_compound(X.real_text, X.token))
 info("Eventuellt stavfel (" italics(X.real_text) "är en korrekt sammansättning)")
 action(scrutinizing)
 }
-*)
 
 slut_stavning:
 
 
 
 (* ----- VERSALER/GEMENER ----- *)
-
-(* eval ger många falska 
+(*
 meningsbörjan@versal {
 X1(sed=sen & extra!=hea & extra!=non),
 X2(cht=mid)*,
@@ -137,9 +238,6 @@ info("om ordet " italics(X3.real_text) " inleder meningen bör det ha stor begynn
 action(scrutinizing)
 }
 *)
-
-
-
 (*
 egennamn_gemen@versal {
 X(spellOK & length>2 & wordcl=pm & !is_cap & token!=TOKEN_E_MAIL & token!=TOKEN_URL
@@ -148,13 +246,6 @@ X(spellOK & length>2 & wordcl=pm & !is_cap & token!=TOKEN_E_MAIL & token!=TOKEN_
 corr(X.replace(firsttoupper(X.real_text)))
 info("om" italics(X.real_text) "är ett egennamn bör det ha stor begynnelsebokstav")
 action(scrutinizing)
-}
-*)
-
-(*
-category versal {
-info("versalkontroll")
-link("" "")
 }
 *)
 
@@ -171,8 +262,12 @@ info("om" italics(Y.real_text) "inte är ett egennamn bör det ha liten begynnelse
 action(scrutinizing)
 }
 *)
-
-
+(*
+category versal {
+info("versalkontroll")
+link("" "")
+}
+*)
 (* ----- BYRÅKRAT ----- *)
 
 biträde@byråkrat {
@@ -245,15 +340,13 @@ slut_stil:
 
 (* ----- FELAKTIG PRONOMENFORM ----- *) 
 
-
-
-
-
 (*	4. Subjektsform efter preposition
  *	behöver man ange alla särdrag för att generera en    
  *	ordform eller behövs endast de som är unika med 
  *  	lemmat?
  *)
+ 
+
 
 subj_efter_prep@pronomen
 {
@@ -283,12 +376,11 @@ info("Felaktig pronomenform, använd objektsform")
 action(scrutinizing)
 }
 
-category pronomen 
+category pronomen
 {
 info("felaktig pronomenform")
 link("" "")
 }
-
 
 (*
 subj_som_objekt@pronomen
@@ -7525,7 +7617,7 @@ info("även fast är en tautologi")
 action(scrutinizing)
 }
 
-(*
+
 fråga_utan_frågetecken@a {
 X(sed=sen),
 X1(wordcl=in)?,
@@ -7559,7 +7651,7 @@ action(scrutinizing)
 detect("Avfallet vad gör vi av det.")
 }
 
-*)
+
 
 (*
 en_av_flera@a {

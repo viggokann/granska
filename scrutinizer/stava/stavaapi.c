@@ -158,7 +158,7 @@ static void WriteCompound(const unsigned char *word, char *breaks)
   }
 }
 
-typedef unsigned long int ub4;   /* unsigned 4-byte quantities */
+typedef unsigned int ub4;   /* unsigned 4-byte quantities */ //Changed to int (from long int) by Wille (to support 64-bit)
 
 #define hashsize(n) ((ub4)1<<(n))
 #define hashmask(n) (hashsize(n)-1)

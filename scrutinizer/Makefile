@@ -29,11 +29,8 @@ TOD = token# tokenizer files directory
 CGID = cgigranska# cgigranska files directory
 #XERCES = /misc/tcs/language/granska/src/xerces-c-src1_6_0 //W
 XERCES = /usr/local/include/xercesc
-#INCL = -I$(XERCES)/include
-INCL = -I$(XERCES)
 FLAGS = $(CFLAGS) -I$(CD) -I$(TD) -I$(SD) -I$(PD) -I$(STD) \
-  -I$(TOD) -I.. $(INCL) 
-LIB_PATH = -L$(XERCES)
+  -I$(TOD) -I.. $(INCL)
 #LIB_PATH_RT = -R$(XERCES)/lib #set runtime-path at compile time
 
 STAVA_OBJ = $(STD)/stavaapi.o $(STD)/suffix.o $(STD)/rattstava.o
@@ -73,11 +70,13 @@ PROBCHECK_FLAGS = -DPROBCHECK -DNO_SENTENCE_DELIMITERS
 WEB_OBJ = $(SD)/web.o $(SD)/socket.o $(SD)/server_socket.o
 WEB_FLAGS = -DWEB_SCRUTINIZER
 #WEB_LIBS = -lsocket -lnsl //solaris specific?
-
+API_OBJ = granskaapi.o
 ALLWWW_OBJ = $(WWW_OBJ) $(SCRUT_OBJ) $(COMMON_OBJ) $(STAVA_OBJ) $(TOK_OBJ) $(TAGGER_OBJ) $(PROBCHECK_OBJ)
 ALL_OBJ = $(MAIN_OBJ) $(SCRUT_OBJ) $(COMMON_OBJ) $(STAVA_OBJ) $(TOK_OBJ)\
-  $(TAGGER_OBJ) $(PROBCHECK_OBJ) $(WEB_OBJ)
-ALL_FLAGS = $(FLAGS) $(COMMON_FLAGS) $(STAVA_FLAGS) $(TOK_FLAGS)\
+  $(TAGGER_OBJ) $(PROBCHECK_OBJ) $(WEB_OBJ) 
+API = $(SCRUT_OBJ) $(COMMON_OBJ) $(STAVA_OBJ) $(TOK_OBJ)\
+  $(TAGGER_OBJ) $(PROBCHECK_OBJ) $(API_OBJ)
+ALL_FLAGS = -fPIC $(FLAGS) $(COMMON_FLAGS) $(STAVA_FLAGS) $(TOK_FLAGS)\
   $(DEVELOPERS_TAGGER_FLAGS) $(TAGGER_FLAGS) $(SCRUT_FLAGS)\
   $(PROBCHECK_FLAGS) $(WEB_FLAGS) # comment this row when compiling wwwscrutinizer
 
@@ -91,24 +90,27 @@ DEVELOPERS_TAGGER_FLAGS=-DDEVELOPERS
 DEVELOPERS_HELPER_OBJ=$(DEVELOPERS_TAGGER_OBJ) $(TOK_OBJ) $(TAGGER_OBJ) $(CD)/file.o $(CD)/message.o $(CD)/timer.o
 DEVELOPERS_TAGG_OBJ = $(patsubst %.o, %.do, $(DEVELOPERS_HELPER_OBJ))
 
-TARGETS = scrutinizer wwwscrutinizer developers-tagg
+TARGETS = scrutinizer library
 LIBS = -lxerces-c $(WEB_LIBS)
 WWWLIBS = -lxerces-c
 
 all: $(TARGETS)
 
 developers-tagg: $(DEVELOPERS_TAGG_OBJ)
-	$(CPPC) $(FLAGS) -o $@ $^ $(LIB_PATH) $(LIBS) \
+	$(CPPC) $(FLAGS) -o $@ $^ $(LIBS) \
 
+library: $(API)
+	$(CPPC) -shared $(ALL_FLAGS) -o libgranska.so $(API) $(LIB_PATH) $(LIBS)
+	
 scrutinizer: $(ALL_OBJ)
-	$(CPPC) $(ALL_FLAGS) -o scrutinizer $(ALL_OBJ) $(LIB_PATH) $(LIBS)
+	$(CPPC) $(ALL_FLAGS) -o scrutinizer $(ALL_OBJ) $(LIBS)
 
 wwwscrutinizer: $(ALLWWW_OBJ)
 	$(CPPC) $(ALL_FLAGS) -Bstatic -o wwwscrutinizer $(ALLWWW_OBJ) $(WWWLIBS)
 	strip wwwscrutinizer
 
 tagg: $(TAGG_OBJ)
-	$(CPPC) $(FLAGS) -o $@ $^ $(LIB_PATH) $(LIBS)
+	$(CPPC) $(FLAGS) -o $@ $^ $(LIBS)
 
 %.o: %.cpp
 	$(CPPC) $(ALL_FLAGS) -Idevelopers-tagger -c $*.cpp -o $*.o
@@ -165,14 +167,15 @@ cgigranska/wwwmain.o: tagger/hasharray.h tagger/tagtrigram.h
 cgigranska/wwwmain.o: scrut/matchingset.h scrut/rules.h tagger/text.h
 cgigranska/wwwmain.o: tagger/hashtable.h /usr/include/stdlib.h
 cgigranska/wwwmain.o: /usr/include/alloca.h scrut/evaluatedvariable.h
-cgigranska/wwwmain.o: scrut/semantictype.h scrut/operation.h scrut/expr.h
-cgigranska/wwwmain.o: scrut/rulesettings.h scrut/gramerror.h tagger/tagger.h
-cgigranska/wwwmain.o: tagger/lexicon.h tagger/morflexicon.h
-cgigranska/wwwmain.o: tagger/styleword.h tagger/newwordlexicon.h
-cgigranska/wwwmain.o: tagger/newword.h tagger/wordlexicon.h
-cgigranska/wwwmain.o: tagger/inflectlexicon.h tagger/wordruleterms.h
-cgigranska/wwwmain.o: token/tokenizer.h common/FlexLexer.h
-cgigranska/wwwmain.o: tagger/trigramgadget.h scrut/ruleset.h
+cgigranska/wwwmain.o: scrut/semantictype.h scrut/operation.h
+cgigranska/wwwmain.o: scrut/rules.tab.h scrut/expr.h scrut/rulesettings.h
+cgigranska/wwwmain.o: scrut/gramerror.h tagger/tagger.h tagger/lexicon.h
+cgigranska/wwwmain.o: tagger/morflexicon.h tagger/styleword.h
+cgigranska/wwwmain.o: tagger/newwordlexicon.h tagger/newword.h
+cgigranska/wwwmain.o: tagger/wordlexicon.h tagger/inflectlexicon.h
+cgigranska/wwwmain.o: tagger/wordruleterms.h token/tokenizer.h
+cgigranska/wwwmain.o: common/FlexLexer.h tagger/trigramgadget.h
+cgigranska/wwwmain.o: scrut/ruleset.h
 common/file.o: /usr/include/ctype.h /usr/include/features.h
 common/file.o: /usr/include/endian.h /usr/include/xlocale.h
 common/file.o: /usr/include/string.h /usr/include/stdio.h
@@ -195,9 +198,9 @@ common/main.o: tagger/taglexicon.h tagger/hasharray.h tagger/tagtrigram.h
 common/main.o: scrut/matchingset.h scrut/rules.h tagger/text.h
 common/main.o: tagger/hashtable.h /usr/include/stdlib.h /usr/include/alloca.h
 common/main.o: scrut/evaluatedvariable.h scrut/semantictype.h
-common/main.o: scrut/operation.h scrut/expr.h scrut/rulesettings.h
-common/main.o: scrut/gramerror.h tagger/tagger.h tagger/lexicon.h
-common/main.o: tagger/morflexicon.h tagger/styleword.h
+common/main.o: scrut/operation.h scrut/rules.tab.h scrut/expr.h
+common/main.o: scrut/rulesettings.h scrut/gramerror.h tagger/tagger.h
+common/main.o: tagger/lexicon.h tagger/morflexicon.h tagger/styleword.h
 common/main.o: tagger/newwordlexicon.h tagger/newword.h tagger/wordlexicon.h
 common/main.o: tagger/inflectlexicon.h tagger/wordruleterms.h
 common/main.o: token/tokenizer.h common/FlexLexer.h tagger/trigramgadget.h
@@ -458,10 +461,10 @@ prob/probcheck.o: tagger/sentence.h tagger/taglexicon.h tagger/hasharray.h
 prob/probcheck.o: tagger/tagtrigram.h scrut/matchingset.h scrut/rules.h
 prob/probcheck.o: tagger/text.h tagger/hashtable.h /usr/include/stdlib.h
 prob/probcheck.o: /usr/include/alloca.h scrut/evaluatedvariable.h
-prob/probcheck.o: scrut/semantictype.h scrut/operation.h scrut/expr.h
-prob/probcheck.o: scrut/rulesettings.h scrut/gramerror.h tagger/tagger.h
-prob/probcheck.o: tagger/lexicon.h tagger/morflexicon.h tagger/styleword.h
-prob/probcheck.o: tagger/newwordlexicon.h tagger/newword.h
+prob/probcheck.o: scrut/semantictype.h scrut/operation.h scrut/rules.tab.h
+prob/probcheck.o: scrut/expr.h scrut/rulesettings.h scrut/gramerror.h
+prob/probcheck.o: tagger/tagger.h tagger/lexicon.h tagger/morflexicon.h
+prob/probcheck.o: tagger/styleword.h tagger/newwordlexicon.h tagger/newword.h
 prob/probcheck.o: tagger/wordlexicon.h tagger/inflectlexicon.h
 prob/probcheck.o: tagger/wordruleterms.h token/tokenizer.h common/FlexLexer.h
 prob/probcheck.o: tagger/trigramgadget.h prob/defines.h prob/config.h
@@ -487,10 +490,10 @@ prob/probinfo.o: tagger/sentence.h tagger/taglexicon.h tagger/hasharray.h
 prob/probinfo.o: tagger/tagtrigram.h scrut/matchingset.h scrut/rules.h
 prob/probinfo.o: tagger/text.h tagger/hashtable.h /usr/include/stdlib.h
 prob/probinfo.o: /usr/include/alloca.h scrut/evaluatedvariable.h
-prob/probinfo.o: scrut/semantictype.h scrut/operation.h scrut/expr.h
-prob/probinfo.o: scrut/rulesettings.h scrut/gramerror.h tagger/tagger.h
-prob/probinfo.o: tagger/lexicon.h tagger/morflexicon.h tagger/styleword.h
-prob/probinfo.o: tagger/newwordlexicon.h tagger/newword.h
+prob/probinfo.o: scrut/semantictype.h scrut/operation.h scrut/rules.tab.h
+prob/probinfo.o: scrut/expr.h scrut/rulesettings.h scrut/gramerror.h
+prob/probinfo.o: tagger/tagger.h tagger/lexicon.h tagger/morflexicon.h
+prob/probinfo.o: tagger/styleword.h tagger/newwordlexicon.h tagger/newword.h
 prob/probinfo.o: tagger/wordlexicon.h tagger/inflectlexicon.h
 prob/probinfo.o: tagger/wordruleterms.h token/tokenizer.h common/FlexLexer.h
 prob/probinfo.o: tagger/trigramgadget.h
@@ -522,14 +525,15 @@ prob/report.o: prob/output.h ../misc/xmloutput.h scrut/scrutinizer.h
 prob/report.o: scrut/matching.h scrut/matchingset.h scrut/rules.h
 prob/report.o: tagger/text.h tagger/hashtable.h /usr/include/stdlib.h
 prob/report.o: /usr/include/alloca.h scrut/evaluatedvariable.h
-prob/report.o: scrut/semantictype.h scrut/operation.h scrut/expr.h
-prob/report.o: scrut/rulesettings.h scrut/gramerror.h tagger/tagger.h
-prob/report.o: tagger/lexicon.h tagger/morflexicon.h tagger/styleword.h
-prob/report.o: tagger/newwordlexicon.h tagger/newword.h tagger/wordlexicon.h
-prob/report.o: tagger/inflectlexicon.h tagger/wordruleterms.h
-prob/report.o: token/tokenizer.h common/FlexLexer.h tagger/trigramgadget.h
-prob/report.o: scrut/ruleset.h prob/annot.h prob/probdevelop.h
-prob/report.o: prob/probadmin.h prob/prob.h prob/defines.h prob/config.h
+prob/report.o: scrut/semantictype.h scrut/operation.h scrut/rules.tab.h
+prob/report.o: scrut/expr.h scrut/rulesettings.h scrut/gramerror.h
+prob/report.o: tagger/tagger.h tagger/lexicon.h tagger/morflexicon.h
+prob/report.o: tagger/styleword.h tagger/newwordlexicon.h tagger/newword.h
+prob/report.o: tagger/wordlexicon.h tagger/inflectlexicon.h
+prob/report.o: tagger/wordruleterms.h token/tokenizer.h common/FlexLexer.h
+prob/report.o: tagger/trigramgadget.h scrut/ruleset.h prob/annot.h
+prob/report.o: prob/probdevelop.h prob/probadmin.h prob/prob.h prob/defines.h
+prob/report.o: prob/config.h
 prob/represent.o: prob/probadmin.h prob/prob.h prob/defines.h
 prob/represent.o: tagger/tagdefines.h prob/probdefines.h tagger/taglexicon.h
 prob/represent.o: tagger/bitmap.h common/basics.h /usr/include/stdio.h
@@ -560,8 +564,8 @@ scrut/element.o: tagger/tag.h tagger/bitmap.h common/file.h tagger/feature.h
 scrut/element.o: tagger/tagdefines.h tagger/wordtag.h scrut/element.h
 scrut/element.o: scrut/rule.h common/timer.h tagger/sentence.h
 scrut/element.o: tagger/taglexicon.h tagger/hasharray.h tagger/tagtrigram.h
-scrut/element.o: scrut/semantictype.h scrut/operation.h scrut/expr.h
-scrut/element.o: scrut/rulesettings.h scrut/ruleset.h
+scrut/element.o: scrut/semantictype.h scrut/operation.h scrut/rules.tab.h
+scrut/element.o: scrut/expr.h scrut/rulesettings.h scrut/ruleset.h
 scrut/expr.o: scrut/expr.h scrut/evaluatedvariable.h scrut/matching.h
 scrut/expr.o: tagger/wordtoken.h tagger/letter.h /usr/include/string.h
 scrut/expr.o: /usr/include/features.h /usr/include/xlocale.h
@@ -575,15 +579,15 @@ scrut/expr.o: tagger/tag.h tagger/bitmap.h common/file.h tagger/feature.h
 scrut/expr.o: tagger/tagdefines.h tagger/wordtag.h scrut/element.h
 scrut/expr.o: scrut/rule.h common/timer.h tagger/sentence.h
 scrut/expr.o: tagger/taglexicon.h tagger/hasharray.h tagger/tagtrigram.h
-scrut/expr.o: scrut/operation.h scrut/rulesettings.h scrut/semantictype.h
-scrut/expr.o: scrut/rules.h tagger/text.h tagger/hashtable.h
-scrut/expr.o: /usr/include/stdlib.h /usr/include/alloca.h scrut/scrutinizer.h
-scrut/expr.o: scrut/matchingset.h scrut/gramerror.h tagger/tagger.h
-scrut/expr.o: tagger/lexicon.h tagger/morflexicon.h tagger/styleword.h
-scrut/expr.o: tagger/newwordlexicon.h tagger/newword.h tagger/wordlexicon.h
-scrut/expr.o: tagger/inflectlexicon.h tagger/wordruleterms.h
-scrut/expr.o: token/tokenizer.h common/FlexLexer.h tagger/trigramgadget.h
-scrut/expr.o: prob/memhandler.h
+scrut/expr.o: scrut/operation.h scrut/rules.tab.h scrut/rulesettings.h
+scrut/expr.o: scrut/semantictype.h scrut/rules.h tagger/text.h
+scrut/expr.o: tagger/hashtable.h /usr/include/stdlib.h /usr/include/alloca.h
+scrut/expr.o: scrut/scrutinizer.h scrut/matchingset.h scrut/gramerror.h
+scrut/expr.o: tagger/tagger.h tagger/lexicon.h tagger/morflexicon.h
+scrut/expr.o: tagger/styleword.h tagger/newwordlexicon.h tagger/newword.h
+scrut/expr.o: tagger/wordlexicon.h tagger/inflectlexicon.h
+scrut/expr.o: tagger/wordruleterms.h token/tokenizer.h common/FlexLexer.h
+scrut/expr.o: tagger/trigramgadget.h prob/memhandler.h
 scrut/gramerror.o: scrut/expr.h scrut/evaluatedvariable.h scrut/matching.h
 scrut/gramerror.o: tagger/wordtoken.h tagger/letter.h /usr/include/string.h
 scrut/gramerror.o: /usr/include/features.h /usr/include/xlocale.h
@@ -598,17 +602,17 @@ scrut/gramerror.o: common/file.h tagger/feature.h tagger/tagdefines.h
 scrut/gramerror.o: tagger/wordtag.h scrut/element.h scrut/rule.h
 scrut/gramerror.o: common/timer.h tagger/sentence.h tagger/taglexicon.h
 scrut/gramerror.o: tagger/hasharray.h tagger/tagtrigram.h scrut/operation.h
-scrut/gramerror.o: scrut/rulesettings.h scrut/semantictype.h
-scrut/gramerror.o: scrut/gramerror.h scrut/scrutinizer.h scrut/matchingset.h
-scrut/gramerror.o: scrut/rules.h tagger/text.h tagger/hashtable.h
-scrut/gramerror.o: /usr/include/stdlib.h /usr/include/alloca.h
-scrut/gramerror.o: tagger/tagger.h tagger/lexicon.h tagger/morflexicon.h
-scrut/gramerror.o: tagger/styleword.h tagger/newwordlexicon.h
-scrut/gramerror.o: tagger/newword.h tagger/wordlexicon.h
-scrut/gramerror.o: tagger/inflectlexicon.h tagger/wordruleterms.h
-scrut/gramerror.o: token/tokenizer.h common/FlexLexer.h
-scrut/gramerror.o: tagger/trigramgadget.h prob/prob.h prob/output.h
-scrut/gramerror.o: ../misc/xmloutput.h
+scrut/gramerror.o: scrut/rules.tab.h scrut/rulesettings.h
+scrut/gramerror.o: scrut/semantictype.h scrut/gramerror.h scrut/scrutinizer.h
+scrut/gramerror.o: scrut/matchingset.h scrut/rules.h tagger/text.h
+scrut/gramerror.o: tagger/hashtable.h /usr/include/stdlib.h
+scrut/gramerror.o: /usr/include/alloca.h tagger/tagger.h tagger/lexicon.h
+scrut/gramerror.o: tagger/morflexicon.h tagger/styleword.h
+scrut/gramerror.o: tagger/newwordlexicon.h tagger/newword.h
+scrut/gramerror.o: tagger/wordlexicon.h tagger/inflectlexicon.h
+scrut/gramerror.o: tagger/wordruleterms.h token/tokenizer.h
+scrut/gramerror.o: common/FlexLexer.h tagger/trigramgadget.h prob/prob.h
+scrut/gramerror.o: prob/output.h ../misc/xmloutput.h
 scrut/identry.o: scrut/rules.h /usr/include/stdio.h /usr/include/features.h
 scrut/identry.o: /usr/include/libio.h /usr/include/_G_config.h
 scrut/identry.o: /usr/include/wchar.h common/stringbuf.h
@@ -624,8 +628,8 @@ scrut/identry.o: tagger/tag.h tagger/bitmap.h common/file.h tagger/feature.h
 scrut/identry.o: tagger/tagdefines.h tagger/wordtag.h scrut/element.h
 scrut/identry.o: scrut/rule.h common/timer.h tagger/sentence.h
 scrut/identry.o: tagger/taglexicon.h tagger/hasharray.h tagger/tagtrigram.h
-scrut/identry.o: scrut/semantictype.h scrut/operation.h scrut/expr.h
-scrut/identry.o: scrut/rulesettings.h prob/memhandler.h
+scrut/identry.o: scrut/semantictype.h scrut/operation.h scrut/rules.tab.h
+scrut/identry.o: scrut/expr.h scrut/rulesettings.h prob/memhandler.h
 scrut/matching.o: scrut/rule.h common/timer.h tagger/sentence.h
 scrut/matching.o: tagger/wordtoken.h tagger/letter.h /usr/include/string.h
 scrut/matching.o: /usr/include/features.h /usr/include/xlocale.h
@@ -642,7 +646,7 @@ scrut/matching.o: tagger/tagtrigram.h scrut/rules.h tagger/text.h
 scrut/matching.o: tagger/hashtable.h /usr/include/stdlib.h
 scrut/matching.o: /usr/include/alloca.h scrut/evaluatedvariable.h
 scrut/matching.o: scrut/matching.h scrut/semantictype.h scrut/operation.h
-scrut/matching.o: scrut/expr.h scrut/rulesettings.h
+scrut/matching.o: scrut/rules.tab.h scrut/expr.h scrut/rulesettings.h
 scrut/matchingset.o: scrut/matchingset.h scrut/matching.h tagger/wordtoken.h
 scrut/matchingset.o: tagger/letter.h /usr/include/string.h
 scrut/matchingset.o: /usr/include/features.h /usr/include/xlocale.h
@@ -673,7 +677,8 @@ scrut/operation.o: common/file.h tagger/feature.h tagger/tagdefines.h
 scrut/operation.o: tagger/wordtag.h scrut/element.h scrut/rule.h
 scrut/operation.o: common/timer.h tagger/sentence.h tagger/taglexicon.h
 scrut/operation.o: tagger/hasharray.h tagger/tagtrigram.h scrut/operation.h
-scrut/operation.o: scrut/rulesettings.h scrut/semantictype.h
+scrut/operation.o: scrut/rules.tab.h scrut/rulesettings.h
+scrut/operation.o: scrut/semantictype.h
 scrut/regexps.o: /usr/include/stdlib.h /usr/include/features.h
 scrut/regexps.o: /usr/include/alloca.h /usr/include/stdio.h
 scrut/regexps.o: /usr/include/libio.h /usr/include/_G_config.h
@@ -695,12 +700,40 @@ scrut/rule.o: tagger/taglexicon.h tagger/hasharray.h tagger/tagtrigram.h
 scrut/rule.o: scrut/matchingset.h scrut/rules.h tagger/text.h
 scrut/rule.o: tagger/hashtable.h /usr/include/stdlib.h /usr/include/alloca.h
 scrut/rule.o: scrut/evaluatedvariable.h scrut/semantictype.h
-scrut/rule.o: scrut/operation.h scrut/expr.h scrut/rulesettings.h
-scrut/rule.o: scrut/gramerror.h tagger/tagger.h tagger/lexicon.h
-scrut/rule.o: tagger/morflexicon.h tagger/styleword.h tagger/newwordlexicon.h
-scrut/rule.o: tagger/newword.h tagger/wordlexicon.h tagger/inflectlexicon.h
-scrut/rule.o: tagger/wordruleterms.h token/tokenizer.h common/FlexLexer.h
-scrut/rule.o: tagger/trigramgadget.h scrut/ruleset.h
+scrut/rule.o: scrut/operation.h scrut/rules.tab.h scrut/expr.h
+scrut/rule.o: scrut/rulesettings.h scrut/gramerror.h tagger/tagger.h
+scrut/rule.o: tagger/lexicon.h tagger/morflexicon.h tagger/styleword.h
+scrut/rule.o: tagger/newwordlexicon.h tagger/newword.h tagger/wordlexicon.h
+scrut/rule.o: tagger/inflectlexicon.h tagger/wordruleterms.h
+scrut/rule.o: token/tokenizer.h common/FlexLexer.h tagger/trigramgadget.h
+scrut/rule.o: scrut/ruleset.h
+scrut/rules.tab.o: /usr/include/stdio.h /usr/include/features.h
+scrut/rules.tab.o: /usr/include/libio.h /usr/include/_G_config.h
+scrut/rules.tab.o: /usr/include/wchar.h /usr/include/stdlib.h
+scrut/rules.tab.o: /usr/include/alloca.h /usr/include/string.h
+scrut/rules.tab.o: /usr/include/xlocale.h stava/stavaapi.h
+scrut/rules.tab.o: scrut/scrutinizer.h scrut/matching.h tagger/wordtoken.h
+scrut/rules.tab.o: tagger/letter.h /usr/include/ctype.h /usr/include/endian.h
+scrut/rules.tab.o: common/basics.h common/ensure.h /usr/include/assert.h
+scrut/rules.tab.o: tagger/settings.h /usr/include/limits.h common/stringbuf.h
+scrut/rules.tab.o: tagger/token.h tagger/word.h tagger/hashscatter.h
+scrut/rules.tab.o: tagger/inflectrule.h common/message.h tagger/tag.h
+scrut/rules.tab.o: tagger/bitmap.h common/file.h tagger/feature.h
+scrut/rules.tab.o: tagger/tagdefines.h tagger/wordtag.h scrut/element.h
+scrut/rules.tab.o: scrut/rule.h common/timer.h tagger/sentence.h
+scrut/rules.tab.o: tagger/taglexicon.h tagger/hasharray.h tagger/tagtrigram.h
+scrut/rules.tab.o: scrut/matchingset.h scrut/rules.h tagger/text.h
+scrut/rules.tab.o: tagger/hashtable.h scrut/evaluatedvariable.h
+scrut/rules.tab.o: scrut/semantictype.h scrut/operation.h scrut/rules.tab.h
+scrut/rules.tab.o: scrut/expr.h scrut/rulesettings.h scrut/gramerror.h
+scrut/rules.tab.o: tagger/tagger.h tagger/lexicon.h tagger/morflexicon.h
+scrut/rules.tab.o: tagger/styleword.h tagger/newwordlexicon.h
+scrut/rules.tab.o: tagger/newword.h tagger/wordlexicon.h
+scrut/rules.tab.o: tagger/inflectlexicon.h tagger/wordruleterms.h
+scrut/rules.tab.o: token/tokenizer.h common/FlexLexer.h
+scrut/rules.tab.o: tagger/trigramgadget.h scrut/ruleset.h scrut/lex.yy.c
+scrut/rules.tab.o: /usr/include/errno.h /usr/include/unistd.h
+scrut/rules.tab.o: /usr/include/getopt.h scrut/eval.cpp prob/prob.h
 scrut/ruleset.o: scrut/rules.h /usr/include/stdio.h /usr/include/features.h
 scrut/ruleset.o: /usr/include/libio.h /usr/include/_G_config.h
 scrut/ruleset.o: /usr/include/wchar.h common/stringbuf.h
@@ -716,8 +749,8 @@ scrut/ruleset.o: tagger/tag.h tagger/bitmap.h common/file.h tagger/feature.h
 scrut/ruleset.o: tagger/tagdefines.h tagger/wordtag.h scrut/element.h
 scrut/ruleset.o: scrut/rule.h common/timer.h tagger/sentence.h
 scrut/ruleset.o: tagger/taglexicon.h tagger/hasharray.h tagger/tagtrigram.h
-scrut/ruleset.o: scrut/semantictype.h scrut/operation.h scrut/expr.h
-scrut/ruleset.o: scrut/rulesettings.h scrut/ruleset.h
+scrut/ruleset.o: scrut/semantictype.h scrut/operation.h scrut/rules.tab.h
+scrut/ruleset.o: scrut/expr.h scrut/rulesettings.h scrut/ruleset.h
 scrut/rulesettings.o: scrut/rulesettings.h common/basics.h
 scrut/rulesettings.o: /usr/include/stdio.h /usr/include/features.h
 scrut/rulesettings.o: /usr/include/libio.h /usr/include/_G_config.h
@@ -741,17 +774,17 @@ scrut/scrutinizer.o: tagger/hasharray.h tagger/tagtrigram.h
 scrut/scrutinizer.o: scrut/matchingset.h scrut/rules.h tagger/text.h
 scrut/scrutinizer.o: tagger/hashtable.h /usr/include/stdlib.h
 scrut/scrutinizer.o: /usr/include/alloca.h scrut/evaluatedvariable.h
-scrut/scrutinizer.o: scrut/semantictype.h scrut/operation.h scrut/expr.h
-scrut/scrutinizer.o: scrut/rulesettings.h scrut/gramerror.h tagger/tagger.h
-scrut/scrutinizer.o: tagger/lexicon.h tagger/morflexicon.h tagger/styleword.h
-scrut/scrutinizer.o: tagger/newwordlexicon.h tagger/newword.h
-scrut/scrutinizer.o: tagger/wordlexicon.h tagger/inflectlexicon.h
-scrut/scrutinizer.o: tagger/wordruleterms.h token/tokenizer.h
-scrut/scrutinizer.o: common/FlexLexer.h tagger/trigramgadget.h
-scrut/scrutinizer.o: scrut/ruleset.h stava/stavaapi.h prob/prob.h
-scrut/scrutinizer.o: prob/output.h ../misc/xmloutput.h prob/defines.h
-scrut/scrutinizer.o: prob/report.h prob/probinfo.h prob/probmatch.h
-scrut/scrutinizer.o: prob/probdefines.h
+scrut/scrutinizer.o: scrut/semantictype.h scrut/operation.h scrut/rules.tab.h
+scrut/scrutinizer.o: scrut/expr.h scrut/rulesettings.h scrut/gramerror.h
+scrut/scrutinizer.o: tagger/tagger.h tagger/lexicon.h tagger/morflexicon.h
+scrut/scrutinizer.o: tagger/styleword.h tagger/newwordlexicon.h
+scrut/scrutinizer.o: tagger/newword.h tagger/wordlexicon.h
+scrut/scrutinizer.o: tagger/inflectlexicon.h tagger/wordruleterms.h
+scrut/scrutinizer.o: token/tokenizer.h common/FlexLexer.h
+scrut/scrutinizer.o: tagger/trigramgadget.h scrut/ruleset.h stava/stavaapi.h
+scrut/scrutinizer.o: prob/prob.h prob/output.h ../misc/xmloutput.h
+scrut/scrutinizer.o: prob/defines.h prob/report.h prob/probinfo.h
+scrut/scrutinizer.o: prob/probmatch.h prob/probdefines.h
 scrut/server_socket.o: /usr/include/arpa/inet.h /usr/include/features.h
 scrut/server_socket.o: /usr/include/netinet/in.h /usr/include/stdint.h
 scrut/server_socket.o: /usr/include/endian.h /usr/include/netdb.h
@@ -786,10 +819,10 @@ scrut/web.o: tagger/taglexicon.h tagger/hasharray.h tagger/tagtrigram.h
 scrut/web.o: scrut/matchingset.h scrut/rules.h tagger/text.h
 scrut/web.o: tagger/hashtable.h /usr/include/stdlib.h /usr/include/alloca.h
 scrut/web.o: scrut/evaluatedvariable.h scrut/semantictype.h scrut/operation.h
-scrut/web.o: scrut/expr.h scrut/rulesettings.h scrut/gramerror.h
-scrut/web.o: tagger/tagger.h tagger/lexicon.h tagger/morflexicon.h
-scrut/web.o: tagger/styleword.h tagger/newwordlexicon.h tagger/newword.h
-scrut/web.o: tagger/wordlexicon.h tagger/inflectlexicon.h
+scrut/web.o: scrut/rules.tab.h scrut/expr.h scrut/rulesettings.h
+scrut/web.o: scrut/gramerror.h tagger/tagger.h tagger/lexicon.h
+scrut/web.o: tagger/morflexicon.h tagger/styleword.h tagger/newwordlexicon.h
+scrut/web.o: tagger/newword.h tagger/wordlexicon.h tagger/inflectlexicon.h
 scrut/web.o: tagger/wordruleterms.h token/tokenizer.h common/FlexLexer.h
 scrut/web.o: tagger/trigramgadget.h prob/output.h ../misc/xmloutput.h
 scrut/web.o: prob/prob.h
@@ -1038,6 +1071,14 @@ cgigranska/wwwscrutinizer.o: /usr/include/xlocale.h /usr/include/time.h
 cgigranska/wwwscrutinizer.o: /usr/include/unistd.h /usr/include/getopt.h
 cgigranska/wwwscrutinizer.o: /usr/include/errno.h /usr/include/ctype.h
 cgigranska/wwwscrutinizer.o: /usr/include/endian.h
+scrut/lex.yy.o: /usr/include/stdio.h /usr/include/features.h
+scrut/lex.yy.o: /usr/include/libio.h /usr/include/_G_config.h
+scrut/lex.yy.o: /usr/include/wchar.h /usr/include/string.h
+scrut/lex.yy.o: /usr/include/xlocale.h /usr/include/errno.h
+scrut/lex.yy.o: /usr/include/stdlib.h /usr/include/alloca.h
+scrut/lex.yy.o: common/stringbuf.h common/basics.h common/ensure.h
+scrut/lex.yy.o: /usr/include/assert.h /usr/include/unistd.h
+scrut/lex.yy.o: /usr/include/getopt.h
 stava/rattstava.o: /usr/include/stdio.h /usr/include/features.h
 stava/rattstava.o: /usr/include/libio.h /usr/include/_G_config.h
 stava/rattstava.o: /usr/include/wchar.h /usr/include/stdlib.h

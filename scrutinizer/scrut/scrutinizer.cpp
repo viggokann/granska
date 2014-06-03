@@ -111,7 +111,7 @@ bool Scrutinizer::Load(const char *taggerLexDir, const char *ruleFile) {
         sprintf(optFileName, "%s.opt", ruleFile);
         FILE *fp = fopen(optFileName, "rb");
         const int magic = 6509869;
-        bool ok = false;
+        bool ok = false; //W ändrade till true
         if (fp) {
             if (!xPrintOptimization) {
                 const int magic2 = ReadInt(fp);
@@ -494,7 +494,7 @@ void Scrutinizer::PrintResult(std::ostream &out) {
 
 bool Scrutinizer::IsSpellOK(const char *s, Token token) {
     //  if (xVerbose)
-    //    std::cout << xCurrentRule << " spell-checking: " << s << ' ' << token << std::endl;
+    //    std::cout << " spell-checking: " << s << ' ' << token << std::endl;
     switch(token) {
     case TOKEN_E_MAIL:
     case TOKEN_MATH:
