@@ -8,14 +8,14 @@ link("" "")
 
 frågeordsfråga@skiljetecken
 {
-X(sed=sen),
-Y(text="vem" | text="vad" | text="vart" | text="var" | text="varifrån" | text="vilka" | text="vilken" | text="vilket"  | text="hur" | text="varför"  ),
-X1()*, 
-X2(text="." | text="!"),
-X3(sed=sen) 
+X1(sed=sen),
+X2(text="vem" | text="vad" | text="vart" | text="var" | text="varifrån" | text="vilka" | text="vilken" | text="vilket"  | text="hur" | text="varför"  ),
+X3()*, 
+X4(text="." | text="!"),
+X5(sed=sen) 
 -->
-mark(X2)
-corr(X2.replace("?"))
+mark(X4)
+corr(X4.replace("?"))
 info("Fråga?")
 action(scrutinizing)
 }

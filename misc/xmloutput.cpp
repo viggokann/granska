@@ -25,6 +25,7 @@ namespace Misc
         virtual void stream(std::ostream &) = 0;
         virtual void init() = 0;
         virtual void exit() = 0;
+        virtual const char* getCharP() = 0;
     };
 
     class Output_impl_normal : public Output_impl
@@ -45,17 +46,22 @@ namespace Misc
         std::stack<std::string> elem;
         std::ofstream out;
         std::ostream *s;
+        std::ostringstream os;
     public:
         Output_impl_normal()
             : pushed(false), inited(false), exited(false), s(0)
         {}
         ~Output_impl_normal() { exit(); }
-
+		const char* getCharP();
         void flush();
         void push(std::string name);
         void pop();
         void add(std::string name, std::string value);
         void attr(std::string name, std::string value);
+        std::ostringstream &ostr()
+        {
+			return os;
+        }
         std::ostream &str()
         {
             if(s)
@@ -98,19 +104,32 @@ namespace Misc
         {
             if(inited || exited)
                 return;
-
+			#ifdef LIB_GRANSKA
+            ostr() << "<?xml version=\"1.0\" "
+                  << "encoding=\"ISO-8859-1\" "
+                  << "standalone=\"yes\"?>"
+                  << std::endl
+                  << "<Root>";
+            #endif
+            #ifndef LIB_GRANSKA
             str() << "<?xml version=\"1.0\" "
                   << "encoding=\"ISO-8859-1\" "
                   << "standalone=\"yes\"?>"
                   << std::endl
                   << "<Root>";
+            #endif
             reset();
             inited = true;
         }
         void exit()
         {
             if(inited && !exited)
+                #ifdef LIB_GRANSKA
+                ostr() << "</Root>";
+                #endif
+                #ifndef LIB_GRANSKA
                 str() << "</Root>";
+                #endif
             if(!elem.empty())
                 std::cerr << "WARNING: XML will not be well-formed, "
                           << "XML stack was not empty on Output::exit()"
@@ -122,6 +141,7 @@ namespace Misc
 
     class Output_impl_silent : public Output_impl
     {
+		std::ostringstream ostring;
     public:
         Output_impl_silent()  {}
         ~Output_impl_silent() {}
@@ -136,17 +156,28 @@ namespace Misc
         void stream(std::ostream &) {};
         void init() {}
         void exit() {}
+        const char* getCharP() {return ostring.str().c_str();}
     };
 
+}
+
+const char* Misc::Output_impl_normal::getCharP(){
+	ostr() << "</Root>\n";
+	std::string ch1 = ostr().str();
+	const char* ch = ostr().str().c_str();
+	return ch;
 }
 
 void Misc::Output_impl_normal::flush()
 {
     if(exited)
         return;
-
+	#ifdef LIB_GRANSKA
+	std::ostringstream &o = ostr();
+	#endif
+	#ifndef LIB_GRANSKA
     std::ostream &o = str();
-
+	#endif
     if(node != "")
         {
             o << "<" << node;
@@ -184,7 +215,12 @@ void Misc::Output_impl_normal::push(std::string n)
 void Misc::Output_impl_normal::pop()
 {
     flush();
+    #ifdef LIB_GRANSKA
+    ostr() << "</" << elem.top() << ">" << std::endl;
+	#endif	
+    #ifndef LIB_GRANSKA
     str() << "</" << elem.top() << ">" << std::endl;
+    #endif
     //std::cout << std::endl << "pop: " << elem.top() << std::endl;
     elem.pop();
 }
@@ -199,7 +235,7 @@ void Misc::Output_impl_normal::add(std::string n, std::string val)
 void Misc::Output_impl_normal::attr(std::string n, std::string val)
 {
     attrib.push_back(Attr(n, val));
-}
+} 
 
 
 Misc::XMLoutput::XMLoutput(bool silent)
@@ -214,6 +250,8 @@ Misc::XMLoutput::~XMLoutput() { delete impl; }
 
 void Misc::XMLoutput::push(const char *node_name)       { impl->push(node_name); }
 void Misc::XMLoutput::pop()			        { impl->pop(); }
+
+const char* Misc::XMLoutput::getCharP(){ return impl->getCharP(); }
 void Misc::XMLoutput::add(std::string name, std::string text) { impl->add(name,text);}
 void Misc::XMLoutput::add(const char *n, const char *t) { impl->add(n, (t ? t : "")); }
 void Misc::XMLoutput::add(const char *n, int v)

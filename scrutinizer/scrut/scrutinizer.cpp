@@ -9,6 +9,7 @@
 #include "message.h"
 #include "ruleset.h"
 #include "timer.h"
+#include "misc/xmloutput.h"
 #include <sstream>
 
 extern "C" {
@@ -434,6 +435,100 @@ void Scrutinizer::PrintResult(std::ostream &out) {
 
 }
 
+// for use in granskaapi.
+const char* Scrutinizer::GetResult() {
+    xPrintAllWords = true;
+    xPrintOneWordPerLine = false;
+    
+#ifdef PROBCHECK
+    Prob::Output &o = Prob::output();
+    o.push("scrutinizer");
+    for(const Sentence *s=theText.FirstSentence(); s; s=s->Next())
+        {
+            const GramError *g = 0;
+
+            // jb: this is used to determine whether there is an actual
+            // error or just @recog rules. If error, we will print.
+            bool found = false;
+            for(g = s->GetGramError(); g; g = g->Next())
+                {
+                    g->Report();
+                    if(g->IsError())
+                        found = true;
+                }
+            // no error found, don't output sentence
+            if(!found && !xPrintAllSentences)
+                continue;
+
+            int offset = s->GetWordToken(0 + 2)->Offset();
+            o.push("s");
+            o.attr("ref", offset);
+#ifdef DEVELOPER_OUTPUT
+            if(s->GetGramError() || xPrintAllSentences)
+                {
+                    o.add("tokens", s->NTokens());
+
+                    //std::ostringstream ss;
+                    //ss << s;                    
+                    //o.add("text", ss.str().c_str());                    
+                    //std::string orgText = fixXML(s->getOriginalText());
+                    o.add("text", Misc::fixXML(s->getOriginalText())); //Oscar
+                    /*
+                    if(!s->IsHeading())
+                        o.add("heading");
+                    if(s->EndsParagraph())
+                        o.add("paragraph");*/
+                    o.push("contents");
+                    for(int i = 0; i < s->NTokens(); i++)
+                        {
+                            const WordToken *token = s->GetWordToken(i);
+                            const Tag *tag = token->SelectedTag();
+
+                            //std::string xmlOkWord = fixXML(token->RealString());
+                            //if(xmlOkWord.length()>0)
+                                o.add("w", Misc::fixXML(token->RealString()));
+                                //else
+                                //    o.add("w", token->RealString());
+
+                            o.attr("no", i);
+                            if(token->Offset())
+                                o.attr("ref", token->Offset() - offset);
+                            o.attr("tag", tag->String());
+                            
+                            //std::string xmlOkLemma = fixXML(token->LemmaString());
+                            //if(xmlOkLemma.length()>0)
+                            //    o.attr("lemma", xmlOkLemma);
+                            //else
+                                o.attr("lemma", Misc::fixXML(token->LemmaString()));
+                            //if(token->LemmaString()[0] != '"')
+                            //    o.attr("lemma", token->LemmaString());
+                            //else
+                            //    o.attr("lemma", "'");
+                        }
+                    o.pop();  // push("contents");
+                }
+#endif // DEVELOPER_OUTPUT
+            if(found)
+                {
+                    o.push("gramerrors");
+                    for(g = s->GetGramError(); g; g = g->Next())
+                        if(g->IsError())
+                            g->Output();
+                    o.pop();  // push("gramerrors");
+                }
+
+            o.pop();  // push("sentence");
+        }
+    o.pop();  // push("scrutinizer");
+    //std::ostringstream* os = o.getStream();
+    //o.pop(); //root
+   // const char *cstr = o.getStream().str().c_str();
+   const char* cstr = o.getCharP();
+   Prob::print(this);
+    
+#endif
+	return cstr;
+}
 // std::string Scrutinizer::fixXML(std::string word) {
 //     //Oscar, fix of bad XML output
 //     std::ostringstream xmlOkWord;

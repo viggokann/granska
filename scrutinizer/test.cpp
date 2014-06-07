@@ -4,6 +4,7 @@
 using namespace std;
 int main(int argc, char** argv){
 	loadGranska();
-	granska(argv[1]);
+	const char* o = granska((const char*) argv[1]	);
+	printf("%s", o);
 	return 0;
 }

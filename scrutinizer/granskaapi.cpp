@@ -1,5 +1,6 @@
 #include "scrutinizer.h"
 #include "prob.h"
+#include <iostream>
 bool xReadTaggedText = false;
 static Scrutinizer scrutinizer;
 
@@ -13,12 +14,13 @@ void loadGranska() {
 
 }
 
-void granska(char* textFile) {
+const char* granska(const char* textFile) {
   int n;
   xPrintAllSentences = true;
   xPrintOneWordPerLine = false;
   xPrintSelectedTag = xPrintWordInfo = false;
   scrutinizer.ReadTextFromFile(textFile);
   scrutinizer.Scrutinize(&n);
-  scrutinizer.PrintResult();
+  const char *cstr = scrutinizer.GetResult();
+  return cstr;
 }

@@ -325,7 +325,8 @@ namespace Prob
 #endif // TRY_PAROLE_TTT
 
     void load(const TagLexicon &l)
-    {
+ 
+   {
 #ifdef DEVELOPER_OUTPUT
 	for(int j = 0; j < config().model_c; j++)
 	{
@@ -527,7 +528,7 @@ namespace Prob
     }
 
     void print(const Scrutinizer *s)
-    {
+    {/*
     #ifdef DEVELOPER_OUTPUT
 	report_final();
       #if 0
@@ -535,7 +536,7 @@ namespace Prob
       #endif
     #endif // DEVELOPER_OUTPUT
 	output_tag_list(s);
-	output_granska_rules();
+	output_granska_rules();*/
 	reset();
     }
 

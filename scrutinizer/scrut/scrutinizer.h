@@ -21,13 +21,14 @@
 #include "rulesettings.h"
 #include "gramerror.h"
 #include "tagger.h"
+#include "prob.h"
 
 class RuleSet;
+class Output;
 
 class Scrutinizer : public Tagger {
 public:
   // methods for user interface:
-
   Scrutinizer(OutputMode = OUTPUT_MODE_XML);
   // see settings.hh and *.cc for OutputMode options
 
@@ -56,6 +57,7 @@ public:
   bool IsSpellOK(const char *s, Token token);        // used by rules
   char *SpellOK(const char *s, Token token);   // used by rules
   void PrintResult(std::ostream& = std::cout);
+  const char* GetResult();
   void Scrutinize(AbstractSentence*);
   void CheckAcceptAndDetect();
   MatchingSet &GetMatchingSet() const { return RuleTerm::GetMatchingSet(); }

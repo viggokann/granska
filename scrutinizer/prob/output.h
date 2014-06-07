@@ -9,7 +9,7 @@
 namespace Prob
 {
     typedef Misc::XMLoutput Output;
-
+	
     Output &output(const char *name = 0);
     Output &no_output(const char *name = 0);
     Output &output(std::ostream &);

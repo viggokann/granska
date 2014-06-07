@@ -2,12 +2,12 @@ Building requires the following packages to be installed on
 your machine:
 g++, makedepend, flex, bison and xerces-c-3.1.1
 
-To build run the 'build.sh' script
+To build run 'make'
 
 This will create two executables: scrutinizer and testlibrary;
-and a dynamic library in 'libgranska.so'.
+and a dynamic library: 'granska'.
 'scrutinizer' is the actual granska program and 'testlibrary' is
-a small program that makes use of the library 'libgranska.so'
+a small program that makes use of the library 'granska',
 to see that it works.
 
 Before you run the programs you must first edit the script
