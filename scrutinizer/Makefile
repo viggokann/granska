@@ -108,7 +108,7 @@ library: $(API)
 
 testlibrary:
 	gcc -g -c test.cpp
-	gcc test.o -lgranska  -o testlibrary
+	gcc test.o -lgranska -o testlibrary
 
 scrutinizer: $(ALL_OBJ)
 	$(CPPC) $(ALL_FLAGS) -o scrutinizer $(ALL_OBJ) $(LIBS)
