@@ -906,8 +906,8 @@ static void formFunc(MethodOrFunctionEntry*, EvaluatedVariable *p, const char *t
 	    ct->SetNext(res.corrThing);
 	res.corrThing = ct;
 	ChangeableTag tag(*tok->SelectedTag()); // hur gör vi när p==NULL undrar Viggo
-	int i = 0;
-	for (const Expr *argp = args; argp; argp = argp->c.op.Right(), i++) {
+	int k = 0;	// using k instead of i (Wille)
+	for (const Expr *argp = args; argp; argp = argp->c.op.Right(), k++) { // using k instead of i (Wille)
 	    const Expr *arg = argp->c.op.Left();
 	    if (arg->type != Expr::Operation || arg->c.op.Op() != ASSIGNSYM) {
 		Message(MSG_WARNING, "a parameter to form() is not an assignment");
@@ -923,7 +923,7 @@ static void formFunc(MethodOrFunctionEntry*, EvaluatedVariable *p, const char *t
 		    return;	  
 		} else if (attr->semtype == SemFeatureClass) {
 		    const int fClass = attr->GetFeatureClass();
-		    const int fValue = argval[i].feature;
+		    const int fValue = argval[k].feature; // using k instead of i (Wille)
 		    tag.SetFeature(fClass, fValue);
 		} else
 		    Message(MSG_WARNING, "non-feature assigned in form()");
