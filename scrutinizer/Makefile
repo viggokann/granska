@@ -93,7 +93,7 @@ DEVELOPERS_TAGG_OBJ = $(patsubst %.o, %.do, $(DEVELOPERS_HELPER_OBJ))
 LIBS = -lxerces-c 
 WWWLIBS = -lxerces-c $(WEB_LIBS)
 
-TARGETS = depend scrut/rules.tab.h scrutinizer library testlibrary
+TARGETS = scrut/rules.tab.h scrutinizer library testlibrary
 
 all: $(TARGETS)
 
@@ -108,7 +108,7 @@ library: $(API)
 
 testlibrary:
 	gcc -g -c test.cpp
-	gcc test.o -lgranska.so -o testlibrary
+	gcc test.o -lgranska  -o testlibrary
 
 scrutinizer: $(ALL_OBJ)
 	$(CPPC) $(ALL_FLAGS) -o scrutinizer $(ALL_OBJ) $(LIBS)
