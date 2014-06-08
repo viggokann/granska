@@ -139,7 +139,7 @@ bool Scrutinizer::Load(const char *taggerLexDir, const char *ruleFile) {
 }
 
 const Text *Scrutinizer::ReadTextFromString(char *text) {
-    if (xVerbose) std::cout << "ReadTextFromString(\"" << text << "\")" << std::endl;
+    //if (xVerbose) std::cout << "ReadTextFromString(\"" << text << "\")" << std::endl;
     std::istringstream in(text);
     return ReadTextFromStream(&in);
 }
@@ -446,7 +446,6 @@ const char* Scrutinizer::GetResult() {
     for(const Sentence *s=theText.FirstSentence(); s; s=s->Next())
         {
             const GramError *g = 0;
-
             // jb: this is used to determine whether there is an actual
             // error or just @recog rules. If error, we will print.
             bool found = false;
