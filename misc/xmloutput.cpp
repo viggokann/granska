@@ -123,13 +123,10 @@ namespace Misc
         }
         void exit()
         {
+			#ifndef LIB_GRANSKA
             if(inited && !exited)
-                #ifdef LIB_GRANSKA
-                ostr() << "</Root>";
-                #endif
-                #ifndef LIB_GRANSKA
                 str() << "</Root>";
-                #endif
+            #endif
             if(!elem.empty())
                 std::cerr << "WARNING: XML will not be well-formed, "
                           << "XML stack was not empty on Output::exit()"
@@ -165,6 +162,8 @@ const char* Misc::Output_impl_normal::getCharP(){
 	ostr() << "</Root>\n";
 	std::string ch1 = ostr().str();
 	const char* ch = ostr().str().c_str();
+	ostr().str(std::string());
+	inited = false;
 	return ch;
 }
 

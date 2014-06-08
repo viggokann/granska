@@ -76,7 +76,11 @@ ALL_OBJ = $(MAIN_OBJ) $(SCRUT_OBJ) $(COMMON_OBJ) $(STAVA_OBJ) $(TOK_OBJ)\
   $(TAGGER_OBJ) $(PROBCHECK_OBJ) $(WEB_OBJ) 
 API = $(SCRUT_OBJ) $(COMMON_OBJ) $(STAVA_OBJ) $(TOK_OBJ)\
   $(TAGGER_OBJ) $(PROBCHECK_OBJ) $(API_OBJ)
-ALL_FLAGS = -fPIC -DLIB_GRANSKA $(FLAGS) $(COMMON_FLAGS) $(STAVA_FLAGS) $(TOK_FLAGS)\
+API_FLAGS = -fPIC -DLIB_GRANSKA $(FLAGS) $(COMMON_FLAGS) $(STAVA_FLAGS) $(TOK_FLAGS)\
+  $(DEVELOPERS_TAGGER_FLAGS) $(TAGGER_FLAGS) $(SCRUT_FLAGS)\
+  $(PROBCHECK_FLAGS) $(WEB_FLAGS) # comment this row when compiling wwwscrutinizer
+  
+ALL_FLAGS = -fPIC $(FLAGS) $(COMMON_FLAGS) $(STAVA_FLAGS) $(TOK_FLAGS)\
   $(DEVELOPERS_TAGGER_FLAGS) $(TAGGER_FLAGS) $(SCRUT_FLAGS)\
   $(PROBCHECK_FLAGS) $(WEB_FLAGS) # comment this row when compiling wwwscrutinizer
 
@@ -101,7 +105,7 @@ developers-tagg: $(DEVELOPERS_TAGG_OBJ)
 	$(CPPC) $(FLAGS) -o $@ $^ $(LIBS) \
 
 library: $(API)
-	$(CPPC) -shared $(ALL_FLAGS) -o libgranska.so $(API) $(LIBS)
+	$(CPPC) -shared $(API_FLAGS) -o libgranska.so $(API) $(LIBS)
 	install granskaapi.h /usr/local/include/
 	install libgranska.so /usr/local/lib
 	ldconfig /usr/local/lib
@@ -444,14 +448,14 @@ prob/annot.o: /usr/include/xercesc/util/PlatformUtils.hpp
 prob/annot.o: /usr/include/xercesc/util/XercesDefs.hpp
 prob/annot.o: /usr/include/xercesc/util/Xerces_autoconf_config.hpp
 prob/annot.o: /usr/include/inttypes.h /usr/include/stdint.h
-prob/annot.o: /usr/include/bits/wchar.h /usr/include/sys/types.h
-prob/annot.o: /usr/include/time.h /usr/include/sys/select.h
-prob/annot.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
-prob/annot.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
-prob/annot.o: /usr/include/bits/pthreadtypes.h
+prob/annot.o: /usr/include/bits/wchar.h
 prob/annot.o: /usr/include/xercesc/util/XercesVersion.hpp
 prob/annot.o: /usr/include/xercesc/util/XMLException.hpp
 prob/annot.o: /usr/include/xercesc/util/XMemory.hpp /usr/include/stdlib.h
+prob/annot.o: /usr/include/sys/types.h /usr/include/time.h
+prob/annot.o: /usr/include/sys/select.h /usr/include/bits/select.h
+prob/annot.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+prob/annot.o: /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h
 prob/annot.o: /usr/include/alloca.h
 prob/annot.o: /usr/include/xercesc/util/XMLExceptMsgs.hpp
 prob/annot.o: /usr/include/xercesc/dom/DOMError.hpp
@@ -555,17 +559,17 @@ prob/output.o: /usr/include/inttypes.h /usr/include/features.h
 prob/output.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 prob/output.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
 prob/output.o: /usr/include/gnu/stubs-64.h /usr/include/stdint.h
-prob/output.o: /usr/include/bits/wchar.h /usr/include/sys/types.h
-prob/output.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
-prob/output.o: /usr/include/time.h /usr/include/endian.h
-prob/output.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
-prob/output.o: /usr/include/sys/select.h /usr/include/bits/select.h
-prob/output.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
-prob/output.o: /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h
+prob/output.o: /usr/include/bits/wchar.h
 prob/output.o: /usr/include/xercesc/util/XercesVersion.hpp
 prob/output.o: /usr/include/xercesc/util/XMLException.hpp
 prob/output.o: /usr/include/xercesc/util/XMemory.hpp /usr/include/stdlib.h
-prob/output.o: /usr/include/alloca.h
+prob/output.o: /usr/include/sys/types.h /usr/include/bits/types.h
+prob/output.o: /usr/include/bits/typesizes.h /usr/include/time.h
+prob/output.o: /usr/include/endian.h /usr/include/bits/endian.h
+prob/output.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
+prob/output.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+prob/output.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+prob/output.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
 prob/output.o: /usr/include/xercesc/util/XMLExceptMsgs.hpp
 prob/output.o: /usr/include/xercesc/dom/DOMError.hpp
 prob/output.o: /usr/include/xercesc/util/XMLUni.hpp

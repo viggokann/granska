@@ -140,7 +140,8 @@ bool Scrutinizer::Load(const char *taggerLexDir, const char *ruleFile) {
 
 const Text *Scrutinizer::ReadTextFromString(char *text) {
     //if (xVerbose) std::cout << "ReadTextFromString(\"" << text << "\")" << std::endl;
-    std::istringstream in(text);
+    std::string str(text);
+    std::istringstream in(str);
     return ReadTextFromStream(&in);
 }
 
@@ -524,7 +525,7 @@ const char* Scrutinizer::GetResult() {
    // const char *cstr = o.getStream().str().c_str();
    const char* cstr = o.getCharP();
    Prob::print(this);
-    
+   theOriginalText.str(std::string());
 #endif
 	return cstr;
 }
