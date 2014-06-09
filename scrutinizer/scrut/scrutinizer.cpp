@@ -437,7 +437,7 @@ void Scrutinizer::PrintResult(std::ostream &out) {
 }
 
 // for use in granskaapi.
-const char* Scrutinizer::GetResult() {
+char* Scrutinizer::GetResult() {
     xPrintAllWords = true;
     xPrintOneWordPerLine = false;
     
@@ -522,12 +522,13 @@ const char* Scrutinizer::GetResult() {
     o.pop();  // push("scrutinizer");
     //std::ostringstream* os = o.getStream();
     //o.pop(); //root
-   // const char *cstr = o.getStream().str().c_str();
-   const char* cstr = o.getCharP();
+   std::string str = o.getCharP();
    Prob::print(this);
    theOriginalText.str(std::string());
 #endif
-	return cstr;
+	char* ch = new char[str.size()+1];
+	strcpy(ch, str.c_str());
+	return ch;
 }
 // std::string Scrutinizer::fixXML(std::string word) {
 //     //Oscar, fix of bad XML output

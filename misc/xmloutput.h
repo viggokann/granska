@@ -27,7 +27,7 @@ namespace Misc
             void stream(std::ostream &);
             void init();
             void exit();
-            const char* getCharP();
+            std::string getCharP();
             std::string fixXML(std::string text); //Oscar
             std::string fixXML(const char*text); //Oscar
         private:

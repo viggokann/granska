@@ -29,6 +29,7 @@ DefObj(Text);
 
 // jonas, remove all sentences here, instead of using recursive delete
 void Text::delete_sentences() {
+  Message(MSG_STATUS, "deleting sentences...");
   Sentence *next, *cur = firstSentence;
   while(cur) {
     next = cur->next;

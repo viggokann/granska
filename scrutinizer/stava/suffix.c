@@ -172,8 +172,9 @@ void WriteSuffixList(void)
 static int ParseSufLine(unsigned char *line, int len)
 { suffixset *newsuf;
   suffixchecklist *p;
-  unsigned char *s, *start;
+  unsigned char *s, *start, *freeS;
     s = malloc(len + 1);
+    freeS = s;
     strcpy((char *)s, (char *)line);
     newsuf = malloc(sizeof(*newsuf));
     newsuf->allowedlastcharacters = newsuf->forbiddenlastcharacters = NULL;
@@ -270,6 +271,7 @@ static int ParseSufLine(unsigned char *line, int len)
 	start++;
       } else p->accept = 1;
       p->checksuffix = start;
+      
       while ((s = NextWord(s, &start)) != NULL) {
 	p->suffixlen = strlen((char *)p->checksuffix);
 	p->next = malloc(sizeof(*p->next));
@@ -283,6 +285,7 @@ static int ParseSufLine(unsigned char *line, int len)
       p->suffixlen = strlen((char *)p->checksuffix);
       p->next = NULL;
     }
+    free(freeS); //wille, pekar på s början av s som aldrig frigörs;
     return 1;
 }
 

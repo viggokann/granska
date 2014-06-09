@@ -57,7 +57,7 @@ public:
   bool IsSpellOK(const char *s, Token token);        // used by rules
   char *SpellOK(const char *s, Token token);   // used by rules
   void PrintResult(std::ostream& = std::cout);
-  const char* GetResult();
+  char* GetResult();
   void Scrutinize(AbstractSentence*);
   void CheckAcceptAndDetect();
   MatchingSet &GetMatchingSet() const { return RuleTerm::GetMatchingSet(); }

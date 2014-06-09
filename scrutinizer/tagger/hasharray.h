@@ -68,6 +68,7 @@ public:
     // jb: where is this memory freed when allocated in HashArray<Tag>?
     array = new T[size]; // assume bytes for T counted elsewhere
     ensure(array);
+    Message(MSG_STATUS, "initializing hash array", name);
     links = new int[size]; // new OK
     ensure(links);
     ExtByt(size *sizeof(int));
@@ -110,13 +111,14 @@ private:
 
 template <class T>
 HashArray<T>::~HashArray() {
-  Message(MSG_STATUS, "deleting", name, "hash array...");
+  
 // jb: purify claims mem leak
   if (size)
   { 
+	  Message(MSG_STATUS, "deleting", name, "hash array...");
       if (strcmp(name, "tags"))	    // jb: why is this?
 	  delete[] array; 
-      delete [] links;		    // jbfix: delete => delete []
+      delete[] links;		    // jbfix: delete => delete []
       ExtByt(-size*sizeof(int));
   }
   DelObj();

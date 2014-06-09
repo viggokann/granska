@@ -758,7 +758,7 @@ void Tagger::ReadText() {
  endText:    
     theTokens[nTokens].SetWord(specialWord[TOKEN_DELIMITER_PERIOD], "$.", TOKEN_END);
     theTokens[nTokens+1].SetWord(specialWord[TOKEN_DELIMITER_PERIOD], "$.", TOKEN_END);
-    //  for(int i = 0; i < nTokens; ++i)  std::cout<< theTokens[i] << std::endl;  // jonas, debug
+    // for(int i = 0; i < nTokens; ++i)  std::cout<< theTokens[i] << std::endl;  // jonas, debug
     if (xTakeTime) 
         tokenizeTime = timer.Restart();
     if(nTokens > 1) // jonas
@@ -777,7 +777,6 @@ enum AbbrCheck {
 
 void Tagger::BuildSentences(WordToken *tokens) {
     std::string theOriginalString = theOriginalText.str();
-    Message(MSG_STATUS, "building sentences...");
     int start = 1;
     int end = 0;
     int nCit = 0;
@@ -788,6 +787,8 @@ void Tagger::BuildSentences(WordToken *tokens) {
     bool punktLista = false;
     //  int nChecked = 0, nFound = 0;
     Token delToken = TOKEN_DELIMITER_OTHER;
+    if(theText.firstSentence!=NULL) theText.delete_sentences();
+    Message(MSG_STATUS, "building sentences...");
     theText.firstSentence = NULL;
     Sentence *s = NULL;
     char string[MAX_WORD_LENGTH], lookUpString[MAX_WORD_LENGTH];

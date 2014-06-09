@@ -25,7 +25,7 @@ namespace Misc
         virtual void stream(std::ostream &) = 0;
         virtual void init() = 0;
         virtual void exit() = 0;
-        virtual const char* getCharP() = 0;
+        virtual std::string getCharP() = 0;
     };
 
     class Output_impl_normal : public Output_impl
@@ -52,7 +52,7 @@ namespace Misc
             : pushed(false), inited(false), exited(false), s(0)
         {}
         ~Output_impl_normal() { exit(); }
-		const char* getCharP();
+		std::string getCharP();
         void flush();
         void push(std::string name);
         void pop();
@@ -153,18 +153,18 @@ namespace Misc
         void stream(std::ostream &) {};
         void init() {}
         void exit() {}
-        const char* getCharP() {return ostring.str().c_str();}
+        std::string getCharP() {return ostring.str().c_str();}
     };
 
 }
 
-const char* Misc::Output_impl_normal::getCharP(){
+std::string Misc::Output_impl_normal::getCharP(){
 	ostr() << "</Root>\n";
-	std::string ch1 = ostr().str();
-	const char* ch = ostr().str().c_str();
+	std::string str = ostr().str();
+	//const char* ch = ostr().str().c_str();
 	ostr().str(std::string());
 	inited = false;
-	return ch;
+	return str;
 }
 
 void Misc::Output_impl_normal::flush()
@@ -250,7 +250,7 @@ Misc::XMLoutput::~XMLoutput() { delete impl; }
 void Misc::XMLoutput::push(const char *node_name)       { impl->push(node_name); }
 void Misc::XMLoutput::pop()			        { impl->pop(); }
 
-const char* Misc::XMLoutput::getCharP(){ return impl->getCharP(); }
+std::string Misc::XMLoutput::getCharP(){ return impl->getCharP(); }
 void Misc::XMLoutput::add(std::string name, std::string text) { impl->add(name,text);}
 void Misc::XMLoutput::add(const char *n, const char *t) { impl->add(n, (t ? t : "")); }
 void Misc::XMLoutput::add(const char *n, int v)
