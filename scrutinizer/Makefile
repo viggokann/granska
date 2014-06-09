@@ -76,7 +76,7 @@ ALL_OBJ = $(MAIN_OBJ) $(SCRUT_OBJ) $(COMMON_OBJ) $(STAVA_OBJ) $(TOK_OBJ)\
   $(TAGGER_OBJ) $(PROBCHECK_OBJ) $(WEB_OBJ) 
 API = $(SCRUT_OBJ) $(COMMON_OBJ) $(STAVA_OBJ) $(TOK_OBJ)\
   $(TAGGER_OBJ) $(PROBCHECK_OBJ) $(API_OBJ)
-ALL_FLAGS = -fPIC -DLIB_GRANSKA  $(FLAGS) $(COMMON_FLAGS) $(STAVA_FLAGS) $(TOK_FLAGS)\
+ALL_FLAGS = -fPIC -DLIB_GRANSKA $(FLAGS) $(COMMON_FLAGS) $(STAVA_FLAGS) $(TOK_FLAGS)\
   $(DEVELOPERS_TAGGER_FLAGS) $(TAGGER_FLAGS) $(SCRUT_FLAGS)\
   $(PROBCHECK_FLAGS) $(WEB_FLAGS) # comment this row when compiling wwwscrutinizer
 
@@ -93,7 +93,7 @@ DEVELOPERS_TAGG_OBJ = $(patsubst %.o, %.do, $(DEVELOPERS_HELPER_OBJ))
 LIBS = -lxerces-c 
 WWWLIBS = -lxerces-c $(WEB_LIBS)
 
-TARGETS = depend scrut/rules.tab.h scrutinizer library testlibrary
+TARGETS = depend scrut/rules.tab.h library testlibrary
 
 all: $(TARGETS)
 
@@ -107,8 +107,8 @@ library: $(API)
 	ldconfig /usr/local/lib
 
 testlibrary: test.o
-	gcc -g -c test.cpp
-	gcc test.o -lgranska -o testlibrary
+	g++ -g -c test.cpp
+	g++ test.o -lgranska -o testlibrary
 
 scrutinizer: $(ALL_OBJ)
 	$(CPPC) $(ALL_FLAGS) -o scrutinizer $(ALL_OBJ) $(LIBS)

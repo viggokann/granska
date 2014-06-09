@@ -14,14 +14,14 @@ void loadGranska() {
 #endif
 }
 
-char* granska(char* text) {
+const char* granska(char* text) {
   int n;
   xPrintAllSentences = true;
   xPrintOneWordPerLine = false;
   xPrintSelectedTag = xPrintWordInfo = false;
   scrutinizer.ReadTextFromString(text);
   scrutinizer.Scrutinize(&n);
-  char *cstr = scrutinizer.GetResult();
+  const char *cstr = scrutinizer.GetResult();
   return cstr;
 }
 

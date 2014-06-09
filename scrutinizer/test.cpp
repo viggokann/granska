@@ -25,9 +25,22 @@ int main(int argc, char** argv){
 	char *input = new char[text.length()+1];
 	strcpy(input, text.c_str());
 	for(int i = 0; i < atoi(argv[2]); i++){
-		char* o = granska(input);
-		printf("%s", o);
-		delete[] o;
+		const char* o1 = granska(input);
+		const char* o2 = granska(input);
+		if(strcmp(o1,o2)==0) {
+			printf("\n--------------------------------------\n");
+			printf("\n           SUCCESS                    \n");
+			printf("\n--------------------------------------\n");
+		}
+		else{
+			printf("\n--------------------------------------\n");
+			printf("\n           FAIL                       \n");
+			printf("\n--------------------------------------\n");
+			return 0;
+		}
+		//printf("%s", o);
+		delete[] o1;
+		delete[] o2;
 	}
 	delete[] input;
 		
