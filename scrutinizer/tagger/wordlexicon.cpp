@@ -1189,7 +1189,9 @@ void WordLexicon::AnalyzeNewWord(NewWord *w, bool tryHard) const {
 }
 
 void WordLexicon::AnalyzeNewWords() const {
+  #ifdef VERBOSE
   Message(MSG_STATUS, "analyzing new words...");
+  #endif
   NewWord *w;
   for (int i=0; (w = (*newWords)[&i]); i++)
     if (!w->IsAnalyzed())

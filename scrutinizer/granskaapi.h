@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 void loadGranska();
-const char* granska(char*);
+char* granska(char*);
 #ifdef __cplusplus /* If this is a C++ compiler, end C linkage */
 }
 #endif

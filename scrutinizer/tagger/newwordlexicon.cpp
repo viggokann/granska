@@ -76,7 +76,9 @@ WordTag *NewWordLexicon::AddWordTagUnsafe(NewWord *w, const Tag *tag) {
 }
 
 void NewWordLexicon::Reset() {
+#ifdef VERBOSE
   Message(MSG_STATUS, "resetting newwordlexicon...");
+#endif VERBOSE
   DeleteAndClear();
   NewWord::ResetStrings();
 }

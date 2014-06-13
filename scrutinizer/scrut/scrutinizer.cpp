@@ -190,7 +190,9 @@ GramError **Scrutinizer::Scrutinize(int *n) {
         *n = nGramErrors;
         return gramErrors;
     }   
+    #ifdef VERBOSE
     Message(MSG_STATUS, "scrutinizing text...");
+    #endif
     if (ruleSet->NRules() <= 0) {
         Message(MSG_WARNING, "there are no rules");
         *n = 0;

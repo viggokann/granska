@@ -20,11 +20,11 @@ info("Fråga?")
 action(scrutinizing)
 }
 
-närutanpronomen@skiljetecken
+närföljtavverb@skiljetecken
 {
 X(sed=sen),
 Y(text="när"),
-Z(wordcl!=pn),
+Z(wordcl=vb & (vbf = prt | vbf = prs)),
 X1()*, 
 X2(text="." | text="!"),
 X3(sed=sen) 

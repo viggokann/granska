@@ -502,8 +502,9 @@ namespace Prob
 
     void reset()
     {
+	#ifdef VERBOSE
 	Message(MSG_STATUS, "resetting probchecker...");
-
+	#endif
 	for(unsigned int i = 0; i < type_count + 1; i++)
 	{
 	    if(i < type_count)

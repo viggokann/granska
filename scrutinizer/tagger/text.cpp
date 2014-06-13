@@ -29,7 +29,9 @@ DefObj(Text);
 
 // jonas, remove all sentences here, instead of using recursive delete
 void Text::delete_sentences() {
+#ifdef VERBOSE
   Message(MSG_STATUS, "deleting sentences...");
+#endif
   Sentence *next, *cur = firstSentence;
   while(cur) {
     next = cur->next;
@@ -79,7 +81,9 @@ const WordToken *Text::GetWordTokenInPos(int pos) const {
 }
 
 void Text::Reset() {
+#ifdef VERBOSE
   Message(MSG_STATUS, "resetting text...");
+#endif
   for (const Sentence *s = FirstSentence(); s; s=s->Next())
     for (int i=2; i<s->NTokens()-2; i++)
       s->GetWord(i)->Reset();

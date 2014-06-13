@@ -23,25 +23,32 @@ int main(int argc, char** argv){
 	}
 	infile.close();
 	char *input = new char[text.length()+1];
+	char* first = new char[text.length()+1];
+	char* last = new char[text.length()+1];
 	strcpy(input, text.c_str());
 	for(int i = 0; i < atoi(argv[2]); i++){
-		const char* o1 = granska(input);
-		const char* o2 = granska(input);
-		if(strcmp(o1,o2)==0) {
+		char* o1 = granska(input);
+		char* o2 = granska(input);
+		if(i==0){ first = o1; delete[] o2;}
+		else if(i==(atoi(argv[2])-1)){last = o2; delete[] o1;}
+		else{
+			delete[] o1;
+			delete[] o2;
+		}
+	}
+	if(strcmp(first,last)==0) {
 			printf("\n--------------------------------------\n");
 			printf("\n           SUCCESS                    \n");
 			printf("\n--------------------------------------\n");
-		}
-		else{
-			printf("\n--------------------------------------\n");
-			printf("\n           FAIL                       \n");
-			printf("\n--------------------------------------\n");
-			return 0;
-		}
-		//printf("%s", o);
-		delete[] o1;
-		delete[] o2;
 	}
+	else{
+		printf("\n--------------------------------------\n");
+		printf("\n           FAIL                       \n");
+		printf("\n--------------------------------------\n");
+		return 0;
+	}
+	delete[] first;
+	delete[] last;
 	delete[] input;
 		
 	return 0;

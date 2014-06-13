@@ -38,7 +38,9 @@
 static const int TOKEN_BUF_CHUNK = 13000;
 
 void Tagger::Reset() {
+    #ifdef VERBOSE
     Message(MSG_STATUS, "resetting tagger...");
+    #endif
     theText.Reset();
     WordToken::Reset();
     for (int i=0; i<nTokens; i++)
@@ -558,7 +560,9 @@ void Tagger::Rewind(AbstractSentence *s, int endPos) {
 }
 
 void Tagger::TagText() {
+	#ifdef VERBOSE
     if (!xOptimize) Message(MSG_STATUS, "tagging text...");
+    #endif
     Timer timer;
     if (xTakeTime) 
         timer.Start();
@@ -604,7 +608,9 @@ void Tagger::TagText() {
 
 void Tagger::ReadText() {
     Reset();
+    #ifdef VERBOSE
     Message(MSG_STATUS, "reading tokens...");
+    #endif
     Timer timer;
     if (xTakeTime) 
         timer.Start();
@@ -788,7 +794,9 @@ void Tagger::BuildSentences(WordToken *tokens) {
     //  int nChecked = 0, nFound = 0;
     Token delToken = TOKEN_DELIMITER_OTHER;
     if(theText.firstSentence!=NULL) theText.delete_sentences();
+    #ifdef VERBOSE
     Message(MSG_STATUS, "building sentences...");
+    #endif
     theText.firstSentence = NULL;
     Sentence *s = NULL;
     char string[MAX_WORD_LENGTH], lookUpString[MAX_WORD_LENGTH];
@@ -1139,7 +1147,9 @@ void Tagger::ReadTaggedTextQnD() {
     // now do the usual, but add tags... harder than one might think
 
     Reset();
+    #ifdef VERBOSE
     Message(MSG_STATUS, "reading tokens...");
+    #endif
     Timer timer;
     if (xTakeTime) 
         timer.Start();
