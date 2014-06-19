@@ -1,18 +1,34 @@
-/* Rättstavningsprogram. Version 2.61  2004-10-31
-   Copyright (C) 1990-2004
+/* Rättstavningsprogram. Version 2.64  2013-04-15
+   Copyright (C) 1990-2013
    Joachim Hollman och Viggo Kann
    joachim@algoritmica.se viggo@nada.kth.se
 */
-#define VERSION "Stava version 2.61"
+
+/******************************************************************************
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+******************************************************************************/
+
+#define VERSION "Stava version 2.64"
 /* #define DEBUG testversion med debugmöjligheter (väljaren -D) */
 /* #define MORFANALYS */ /* Morfologianalys med sammansättningsanalys */
-/* #define ENGELSKA */ /* Engelsk stavningskontroll */
 /* #define STATISTIK */ /* Skriv ut hashningsstatistik */
-/* #define TAGGSTAVA */ /* Ordklasstagga orden */
-/* #define NE */ /* NE-sökning */
+/* #define TAGGSTAVA */ /* Ordklasstagga orden (inte trådsäker!) */
 /* #define KOLLASAMMANSATT */ /* Ge statistik för (tvåleds)sammansättningar */
 
-#define SVENSKA /* Svensk stavningskontroll */
 #define RATTSTAVA /* Väljaren -r som ger rättstavningsförslag kan användas */
 #define CHOOSEBESTCOMPOUNDING
 
@@ -20,15 +36,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <locale.h>
 
 #define wwwstatic static
 
 #include "stava.h"
 #include "rattstava.h"
 #include "suffix.h"
-#include "stavaconstants.h"
 
-#include "stavaapi.h"
+#include "libstava.h"
+#include "stavaconstants.h"
 
 static float compfactor = 3.0; /* Skalfaktor vid sammansättningsanalys */
 
@@ -37,6 +54,7 @@ static unsigned char HUGEVAR ELtable[ELSIZE];
 static unsigned char HUGEVAR FLtable[FLSIZE];
 static unsigned char HUGEVAR ILtable[ILSIZE];
 static unsigned char HUGEVAR ULtable[ULSIZE];
+#define wordSeparator " "
 static unsigned char HUGEVAR XLtable[XLSIZE];
 static char XLfilename[FILENAMELENGTH];
 static char fyrgramfilename[FILENAMELENGTH];
@@ -55,7 +73,6 @@ unsigned char *lowerCaseLetters; /* alla små bokstäver */
 unsigned char *upperCaseLetters; /* alla stora bokstäver */
 unsigned char *delimiters; /* alla icke-bokstäver */
 int xHtml = 0;
-static int bindestreck;
 static FILE *ordf;
 static FILE *ELfp, *FLfp, *ILfp, *ULfp, *xELfp;
 int xAndelser = 1, xForkortningar = 0, xNamn = 0, xDatatermer = 0;
@@ -64,30 +81,158 @@ int xSammansatta = 1, xKort = 0;
 int xTillatSIFogar = 1; /* Tillåt s i vissa fogar, t ex FL FL s EL */
 int xTillatSIAllaFogar = 0; /* Tillåt t ex FL s FL EL */
 int xAcceptCapitalWords = 1; /* Tillåt ord med bara versaler */
-int xDebug = 0;
+int xxDebug = 0;
 int xPrintError = 1; /* Skriv ut felmeddelanden på stderr */
 char stavaerrorbuf[400]; /* buffer for last error message */
 
 #define MAXNOOFCOMPOUNDS 20
 
-int compoundSearch = 0; /* 1 under sökning efter sammansättningar */
+/* Data som används för sammansättningsanalys */
+struct compoundData {
+  char breakpossibilities[MAXNOOFCOMPOUNDS][LANGD];
+  int breakposparts[MAXNOOFCOMPOUNDS];
+  float breakposlen[MAXNOOFCOMPOUNDS];
+  int noofcompounds;
+  char gBreaks[LANGD + 3];
+  unsigned char *wordprefix;
+};
 
-static char breakpossibilities[MAXNOOFCOMPOUNDS][LANGD];
-static int breakposparts[MAXNOOFCOMPOUNDS];
-static float breakposlen[MAXNOOFCOMPOUNDS];
-static int noofcompounds = 0;
 int xIntePetig = 1;
 int xRattstavningsforslag = 0, xGenerateCompounds = 1, xMaxOneError = 1;
-static char *gBreaks;
 
+int utf8locale = 0; /* Anger om användarens locale innehåller utf-8 och ger då utmatning i utf-8 */
 static int angettTeckenkod = 0; /* Talar om ifall teckenkod explicit angetts */
-int x8bitar = ISOCODE; /* Anger teckenkod (ISOCODE, MACCODE, DOSCODE, 0) */
+#ifndef DEFAULTCODE
+#define DEFAULTCODE ISOCODE
+#endif
+int x8bitar = DEFAULTCODE; /* Anger teckenkod (ISOCODE, MACCODE, DOSCODE, UTF8CODE, 0) */
 static unsigned char *bokstavsTabell;    /* översättning kod -> intern */
 wwwstatic unsigned char *tillISOTabell;     /* översättning kod -> ISO Latin-1 */
 
-#define get(f) getc(f)
-#define unget(c,f) ungetc(c,f)
+static int ungotCharString = 0;
+
+INLINE int utf8GetFromString(unsigned char **s) {
+  int nb;
+  int ch = 0;
+  int src;
+  if (ungotCharString) {
+    int tmp = ungotCharString;
+    ungotCharString = 0;
+    return tmp;
+  }
+  src = *(*s)++;
+  nb = trailingBytesForUTF8[src];
+  switch (nb) {
+    /* these fall through deliberately */
+  case 3: ch += src; ch <<= 6; src = *(*s)++;
+  case 2: ch += src; ch <<= 6; src = *(*s)++;
+  case 1: ch += src; ch <<= 6; src = *(*s)++;
+  case 0: ch += src;
+  }
+  ch -= offsetsFromUTF8[nb];
+  return ch;
+}
+
+int utf8string2iso(char *dest, int destSize, unsigned char *src) {
+  int i;
+  for (i = 0; *src && i < destSize; i++) {
+    *dest++ = utf8GetFromString(&src);
+  }
+  if (i < destSize) *dest = '\0';
+  return i;
+}
+
+static int ungotChar = 0;
+
+INLINE int utf8get(FILE *f) {
+  int nb;
+  int ch = 0;
+  int src;
+  if (ungotChar) {
+    int tmp = ungotChar;
+    ungotChar = 0;
+    return tmp;
+  }
+  src = getc(f);
+  if (src <= 0) return src;
+  nb = trailingBytesForUTF8[src];
+  switch (nb) {
+    /* these fall through deliberately */
+  case 3: ch += src; ch <<= 6; src = getc(f);
+  case 2: ch += src; ch <<= 6; src = getc(f);
+  case 1: ch += src; ch <<= 6; src = getc(f);
+  case 0: ch += src;
+  }
+  ch -= offsetsFromUTF8[nb];
+  return ch;
+}
+
+#define get(f) (x8bitar == UTF8CODE ? utf8get(f) : getc(f))
+#define unget(c,f) (x8bitar == UTF8CODE ? (ungotChar = c) : ungetc(c,f))
 #define ENDOFFILE EOF
+
+/* srcsz = number of source characters, or -1 if 0-terminated
+   destsize = size of dest buffer in bytes
+
+   returns # characters converted
+   dest will only be '\0'-terminated if there is enough space. this is
+   for consistency; imagine there are 2 bytes of space left, but the next
+   character requires 3 bytes. in this case we could NUL-terminate, but in
+   general we can't when there's insufficient space. therefore this function
+   only NUL-terminates if all the characters fit, and there's space for
+   the NUL as well.
+   the destination string will never be bigger than the source string.
+*/
+int iso2utf8(char *dest, int destsize, const unsigned char *src, int srcsz) 
+{ int ch;
+  int i = 0;
+  char *dest_end = dest + destsize;
+    while (srcsz<0 ? src[i]!=0 : i < srcsz) {
+        ch = src[i];
+        if (ch < 0x80) {
+            if (dest >= dest_end)
+                return i;
+            *dest++ = (char)ch;
+        }
+        else if (ch < 0x800) {
+            if (dest >= dest_end-1)
+                return i;
+            *dest++ = (ch>>6) | 0xC0;
+            *dest++ = (ch & 0x3F) | 0x80;
+        }
+        else if (ch < 0x10000) {
+            if (dest >= dest_end-2)
+                return i;
+            *dest++ = (ch>>12) | 0xE0;
+            *dest++ = ((ch>>6) & 0x3F) | 0x80;
+            *dest++ = (ch & 0x3F) | 0x80;
+        }
+        else if (ch < 0x110000) {
+            if (dest >= dest_end-3)
+                return i;
+            *dest++ = (ch>>18) | 0xF0;
+            *dest++ = ((ch>>12) & 0x3F) | 0x80;
+            *dest++ = ((ch>>6) & 0x3F) | 0x80;
+            *dest++ = (ch & 0x3F) | 0x80;
+        }
+        i++;
+    }
+    if (dest < dest_end)
+        *dest = '\0';
+    return i;
+}
+
+/* PrintLocale skriver ut en sträng i Latin1 i aktuell locale */
+void PrintLocale(FILE *f, const char *s)
+{
+  if (utf8locale) {
+    char buf[1001];
+    buf[1000] = '\0';
+    iso2utf8(buf, 1000, (unsigned char *) s, -1);
+    fprintf(f, "%s", buf);
+  } else
+    fprintf(f, "%s", s);
+}
 
 /* PrintErrorWithText prints an error containing a text argument. format is a 
   formating string containing the string %s */
@@ -97,7 +242,7 @@ void PrintErrorWithText(const char *format, const char *text)
     if (strlen(format) >= 300) sprintf(stavaerrorbuf, "Ett fel har uppstått.\n");
     else sprintf(stavaerrorbuf, format, "<för långt>");
   } else sprintf(stavaerrorbuf, format, text);
-  if (xPrintError) fprintf(stderr, "%s", stavaerrorbuf);
+  if (xPrintError) PrintLocale(stderr, stavaerrorbuf);
 }
 
 /* WriteISO skriver ut en ASCII-textsträng översatt till ISO Latin-1 */
@@ -124,7 +269,7 @@ void sWriteISO(unsigned char *res, const unsigned char *s)
 static void StringWriteCompound(unsigned char *res, const unsigned char *word, 
 			  char *breaks)
 { 
-  while (*word) {
+  while (*word && *breaks) {
     if (*breaks == 's') { *res++ = '|'; *res++ = 's'; *res++ = '|'; }
     else {
       if (*breaks == '|' && word[-1] != '-') *res++ = '|';
@@ -136,6 +281,10 @@ static void StringWriteCompound(unsigned char *res, const unsigned char *word,
     }
     word++;
     breaks++;
+  }
+  while (*word) {
+    *res++ = intern_ISO[*word];
+    word++;
   }
   *res = '\0';
 }
@@ -158,7 +307,7 @@ static void WriteCompound(const unsigned char *word, char *breaks)
   }
 }
 
-typedef unsigned int ub4;   /* unsigned 4-byte quantities */ //Changed to int (from long int) by Wille (to support 64-bit)
+typedef unsigned int ub4;  /* unsigned 4-byte quantities */
 
 #define hashsize(n) ((ub4)1<<(n))
 #define hashmask(n) (hashsize(n)-1)
@@ -824,6 +973,7 @@ static void InitieraBokstavsTabeller(void)
     tillISOTabell = DOS_ISO;
     if (xTex) bokstavsTabell['\\'] = '/';
     break;
+   case UTF8CODE:
    case ISOCODE:
    default:
     bokstavsTabell = ISO_intern;
@@ -980,12 +1130,12 @@ static INLINE int CheckLatin1Entity(void)
    The word in Stava's internal format is stored in s.
    0 is returned if there is no more word (EOF), and 1 otherwise. */
 static
-int TagOrd(unsigned char *s, unsigned char *urord)
+int TagOrd(int *bindestreck, unsigned char *s, unsigned char *urord)
 { int t, u, i, nyrad;
  start:
   do {
     i = 0;
-    bindestreck = 0;
+    *bindestreck = 0;
     do {
       u = get(ordf);
       if (u == ENDOFFILE) return 0;
@@ -1051,7 +1201,7 @@ int TagOrd(unsigned char *s, unsigned char *urord)
 	    if (i > 0) { 
 	      s[i] = urord[i] = '-';
 	      i++;
-	      bindestreck++;
+	      (*bindestreck)++;
 	    }
 	    unget(u, ordf);
 	    goto ordSlut;
@@ -1069,7 +1219,7 @@ int TagOrd(unsigned char *s, unsigned char *urord)
 	      if (!SkippaRestenAvOrdet()) return 0;
 	      goto start;
 	    }
-	    bindestreck++;
+	    (*bindestreck)++;
 	  }
 	} else goto ordSlut;
       }
@@ -1102,12 +1252,12 @@ int TagOrd(unsigned char *s, unsigned char *urord)
 /* TagOrdStr reads the next word from the string str and stores it in urord.
    NULL is returned if there is no more word, and a pointer to the next
    unused character otherwise. */
-static unsigned char *TagOrdStr(unsigned char *str, unsigned char *urord)
+static unsigned char *TagOrdStr(int *bindestreck, unsigned char *str, unsigned char *urord)
 { int t, u, i, nyrad;
  start:
   do {
     i = 0;
-    bindestreck = 0;
+    *bindestreck = 0;
     do {
       u = *str++;
       if (u == '\0') return NULL;
@@ -1174,7 +1324,7 @@ static unsigned char *TagOrdStr(unsigned char *str, unsigned char *urord)
 	    if (i > 0) { 
 	      urord[i] = '-';
 	      i++;
-	      bindestreck++;
+	      (*bindestreck)++;
 	    }
 	    str--;
 	    goto ordSlut;
@@ -1192,7 +1342,7 @@ static unsigned char *TagOrdStr(unsigned char *str, unsigned char *urord)
 	      if (!SkippaRestenAvOrdet()) return NULL;
 	      goto start;
 	    }
-	    bindestreck++;
+	    (*bindestreck)++;
 	  }
 	} else goto ordSlut;
       }
@@ -1218,6 +1368,26 @@ static unsigned char *TagOrdStr(unsigned char *str, unsigned char *urord)
   return str;
 }
 
+/* StavaGetWord reads the next word from infile and stores it in word.
+   Word has to be allocated (of size at least LANGD+1 (51)) before calling.
+   0 is returned if there is no more word (EOF), and 1 otherwise. */
+int StavaGetWord(FILE *infile, unsigned char *word)
+{ unsigned char buf[LANGD+1];
+  int bindestreck;
+  ordf = infile;
+  return TagOrd(&bindestreck, buf, word);
+}
+
+/* StavaStringGetWord reads the next word from the string str and stores 
+   it in word.
+   Word has to be allocated (of size at least LANGD+1 (51)) before calling.
+   NULL is returned if there is no more word, and a pointer to the next
+   unused character in str otherwise. */
+unsigned char *StavaStringGetWord(unsigned char *str, unsigned char *word)
+{ int bindestreck;
+  return TagOrdStr(&bindestreck, str, word);
+}
+
 wwwstatic INLINE void SuddaBindestreck(const unsigned char *ordin, unsigned char *ordut)
 {
   if (xSammansatta) if (ordin[1] == '-')
@@ -1228,7 +1398,7 @@ wwwstatic INLINE void SuddaBindestreck(const unsigned char *ordin, unsigned char
   *ordut = '\0';
 }
 
-/* Initiera initierar diverse tabeller och returnerar 1 om  allt går bra
+/* Initiera initierar diverse tabeller och returnerar 1 om allt går bra
    och 0 annars. */
 static int Initiera(void)
 {
@@ -1271,52 +1441,52 @@ INLINE int InFLSuffix(const unsigned char *ord, int len)
 }
 
 
-static int AddCompound(const char *breaks, unsigned char *word)
+static int AddCompound(struct compoundData *cdata, unsigned char *word)
 { int noofbreaks = 0, i, j;
   float len, compval;
-  if (noofcompounds >= MAXNOOFCOMPOUNDS) return 0;
-  for (i = 0; breaks[i]; i++) if (breaks[i] != ' ') noofbreaks++;
+  if (cdata->noofcompounds >= MAXNOOFCOMPOUNDS) return 0;
+  for (i = 0; cdata->gBreaks[i]; i++) if (cdata->gBreaks[i] != ' ') noofbreaks++;
   len = i;
-  for (i--; i >= 0 && breaks[i] == ' '; i--);
+  for (i--; i >= 0 && cdata->gBreaks[i] == ' '; i--);
   len -= i;
-  if (i < 0 || breaks[i] == 's') { len--; i++; }
+  if (i < 0 || cdata->gBreaks[i] == 's') { len--; i++; }
 #ifdef MoveSToFirstPartIfPossible
   /* Prefer kvarts-ur to kvart-sur. This gains very little. */
   if (i > 1 &&word[i-1] == 's' && bindebokstav[word[i-2]] == 's')
     if (InEL(word+i-1, strlen((char *)word+i-1)) || 
-	  (xAndelser && CheckSuffix(word+i-1, 0))) {
+	(xAndelser && CheckSuffix(word+i-1, 0, 1))) {
       /*      printf("s-ord: %s %s\n", word, word+i-1); */
       len += 1.1;
     }
 #endif
   compval = len - compfactor * (noofbreaks + 1);
-  for (i = 0; i < noofcompounds; i++)
-    if (compval > breakposlen[i] - compfactor * breakposparts[i]) {
-      for (j = noofcompounds; j > i; j--) {
-	strcpy(breakpossibilities[j], breakpossibilities[j-1]);
-	breakposparts[j] = breakposparts[j-1];
-	breakposlen[j] = breakposlen[j-1];
+  for (i = 0; i < cdata->noofcompounds; i++)
+    if (compval > cdata->breakposlen[i] - compfactor * cdata->breakposparts[i]) {
+      for (j = cdata->noofcompounds; j > i; j--) {
+	strcpy(cdata->breakpossibilities[j], cdata->breakpossibilities[j-1]);
+	cdata->breakposparts[j] = cdata->breakposparts[j-1];
+	cdata->breakposlen[j] = cdata->breakposlen[j-1];
       }
       break;
     }
-  strcpy(breakpossibilities[i], breaks);
-  breakposparts[i] = noofbreaks + 1;
-  breakposlen[i] = (float) len;
-  noofcompounds++;
+  strcpy(cdata->breakpossibilities[i], cdata->gBreaks);
+  cdata->breakposparts[i] = noofbreaks + 1;
+  cdata->breakposlen[i] = (float) len;
+  cdata->noofcompounds++;
   return 1;
 }
 
 /* Kolla om word är sammansatt som FL* EL. Om xTillatSIFogar
    så tillåt 's' i alla fogar utom mellan 1:a och 2:a delen.
    Om xTillatSIAllaFogar så tillåt 's' i alla fogar. */
-static INLINE int IsCompoundHelp(unsigned char *word, int offset, int len)
+static INLINE int IsCompoundHelp(struct compoundData *cdata, unsigned char *word, int offset, int len)
 {
   int end, tmp, firstpos, lastpos;
   char oldval;
     
   if (offset > 0 && 
-      (InEL(word, len) || (xAndelser && CheckSuffix(word, 1)))) {
-    AddCompound(gBreaks, word - offset);
+      (InEL(word, len) || (xAndelser && CheckSuffix(word, 1, 1)))) {
+    AddCompound(cdata, word - offset);
   }
   lastpos = len - SLUTDELORDMIN;
   firstpos = (offset == 0 ? STARTDELORDMIN : DELORDMIN);
@@ -1328,30 +1498,30 @@ static INLINE int IsCompoundHelp(unsigned char *word, int offset, int len)
       /* Hantera tex toppolitiker som topp|politiker */
       if (word[end-1] == word[end-2]) {
         if (word[end-1] == tmp) continue;
-	oldval = gBreaks[offset+end-1];
-	gBreaks[offset+end-1] = '<';                  
-        if (IsCompoundHelp(word+end-1, offset+end-1, len-end+1)) {
+	oldval = cdata->gBreaks[offset+end-1];
+	cdata->gBreaks[offset+end-1] = '<';                  
+        if (IsCompoundHelp(cdata, word+end-1, offset+end-1, len-end+1)) {
           return 1;
         }
-	gBreaks[offset+end-1] = oldval;
+	cdata->gBreaks[offset+end-1] = oldval;
       }
-      oldval = gBreaks[offset+end];
-      gBreaks[offset+end] = '|';
-      if (IsCompoundHelp(word+end, offset+end, len-end)) {
+      oldval = cdata->gBreaks[offset+end];
+      cdata->gBreaks[offset+end] = '|';
+      if (IsCompoundHelp(cdata, word+end, offset+end, len-end)) {
 	return 1;
       }
-      gBreaks[offset+end] = oldval;
+      cdata->gBreaks[offset+end] = oldval;
 
       if (tmp == 's' &&
 	  ((xTillatSIFogar && offset) || xTillatSIAllaFogar) &&
           bindebokstav[(unsigned char)word[end-1]] == 's' &&
 	  end != lastpos) {
-	oldval = gBreaks[offset+end];
-	gBreaks[offset+end] = 's';
-        if (IsCompoundHelp(word+end+1, offset+end+1, len-end-1)) { 
+	oldval = cdata->gBreaks[offset+end];
+	cdata->gBreaks[offset+end] = 's';
+        if (IsCompoundHelp(cdata, word+end+1, offset+end+1, len-end-1)) { 
           return 1;
         }
-	gBreaks[offset+end] = oldval;
+	cdata->gBreaks[offset+end] = oldval;
       }
     }
     else word[end] = tmp;
@@ -1365,11 +1535,11 @@ static INLINE int IsCompoundHelp(unsigned char *word, int offset, int len)
 	/* Hantera tex herrum som herr|rum */
 	word[end] = tmp;
 	if (InEL(word+end-1, len-end+1) || 
-	    (xAndelser && CheckSuffix(word+end-1, 1))) {
-	  oldval = gBreaks[offset+end-1];
-	  gBreaks[offset+end-1] = '<';
-	  AddCompound(gBreaks, word-offset);
-	  gBreaks[offset+end-1] = oldval;
+	    (xAndelser && CheckSuffix(word+end-1, 1, 1))) {
+	  oldval = cdata->gBreaks[offset+end-1];
+	  cdata->gBreaks[offset+end-1] = '<';
+	  AddCompound(cdata, word-offset);
+	  cdata->gBreaks[offset+end-1] = oldval;
         }
       }
       else word[end] = tmp;
@@ -1380,10 +1550,9 @@ static INLINE int IsCompoundHelp(unsigned char *word, int offset, int len)
 }
 
 /* IsCompound avgör om ett ord är sammansatt (FL* EL) */
-static int IsCompound(const unsigned char *word, char *breaks, int len)
+static int IsCompound(const unsigned char *word, struct compoundData *cdata, int len)
 {
-  gBreaks = breaks;
-  return IsCompoundHelp((unsigned char *)word, 0, len);
+  return IsCompoundHelp(cdata, (unsigned char *)word, 0, len);
 }
 
 /* Kolla om word är sammansatt som FL* EL. 
@@ -1397,7 +1566,7 @@ static INLINE int SimpleIsCompoundHelp(unsigned char *word, int offset, int len)
   int end, tmp, firstpos, lastpos, res;
 
   if (offset > 0 && 
-      (InEL(word, len) || (xAndelser && CheckSuffix(word, 1)))) {
+      (InEL(word, len) || (xAndelser && CheckSuffix(word, 1, 1)))) {
     return 1;
   }
   lastpos = len - SLUTDELORDMIN;
@@ -1435,7 +1604,7 @@ static INLINE int SimpleIsCompoundHelp(unsigned char *word, int offset, int len)
 	/* Hantera tex herrum som herr|rum */
 	word[end] = tmp;
 	if (InEL(word+end-1, len-end+1) || 
-	    (xAndelser && CheckSuffix(word+end-1, 1))) {
+	    (xAndelser && CheckSuffix(word+end-1, 1, 1))) {
 	  return 1;
         }
       }
@@ -1455,7 +1624,6 @@ int SimpleIsCompound(const unsigned char *word, int len)
   return SimpleIsCompoundHelp((unsigned char *)word, 0, len);
 }
 
-
 /* checklevel = 1 (endast ord), 2 = (+ändelsekoll), 3 = (+sammansättningar) */
 int CheckWord(const unsigned char *word, int checkLevel)
 { int len = strlen((char *)word);
@@ -1465,7 +1633,7 @@ int CheckWord(const unsigned char *word, int checkLevel)
   case 1: return 1;
   }
   if (checkLevel == 1) return 0;
-  if (xAndelser && CheckSuffix(word, 1)) return 1;
+  if (xAndelser && CheckSuffix(word, 1, 0)) return 1;
   if (checkLevel == 2) return 0;
   if (xSammansatta && SimpleIsCompound(word, len)) return 1;
   return 0;
@@ -1476,17 +1644,17 @@ i så fall 1. Om ordet är med i undantagsordlista returneras -1,
 annars 0. */
 static INLINE int Finns(const unsigned char *word, int len)
 {
-  char breaks[LANGD];
   int i;
-  noofcompounds = 0;
-  for (i = 0; i < len; i++) breaks[i] = ' ';
-  breaks[len] = '\0';
+  struct compoundData cdatarec;
+  cdatarec.noofcompounds = 0;
+  for (i = 0; i < len; i++) cdatarec.gBreaks[i] = ' ';
+  cdatarec.gBreaks[len] = '\0';
   if (!xIntePetig) {
     int i = FyrKollaHela(word);
     if (i > 0) return 0;
   }
   if (InUL(word, len)) return -1;
-  if (xAndelser && CheckSuffix(word, 1)) return 1;
+  if (xAndelser && CheckSuffix(word, 1, 0)) return 1;
   switch (InILorELbutnotUL(word, len)) {
   case -1: return -1;
   case 0: break;
@@ -1494,14 +1662,12 @@ static INLINE int Finns(const unsigned char *word, int len)
     return 1;
   }
   if (xSammansatta) {
-    compoundSearch = 1;
-    IsCompound(word, breaks, len);
-    compoundSearch = 0;
-    if (noofcompounds > 0) {
-      if (xDebug) {
+    IsCompound(word, &cdatarec, len);
+    if (cdatarec.noofcompounds > 0) {
+      if (xxDebug) {
 	WriteISO(word);
 	printf(" sammansatt som ");
-	WriteCompound(word, breakpossibilities[0]);
+	WriteCompound(word, cdatarec.breakpossibilities[0]);
 	printf("\n");
       }
       return 1;
@@ -1710,7 +1876,7 @@ static char KollaOrdlistetyp(char otyp)
 /* KollaOrd kollar ordet som det är, med bara små bokstäver och, om det
    bara innehåller versaler, med stor begynnelsebokstav */
 wwwstatic INLINE int KollaOrd(const unsigned char *ordin)
-{ static unsigned char ord[LANGD + 3], Ord[LANGD + 3];
+{ unsigned char ord[LANGD + 3], Ord[LANGD + 3];
   int len = strlen((char *)ordin);
   switch (Finns(ordin, len)) {
   case -1: return 0;
@@ -1744,6 +1910,47 @@ wwwstatic INLINE int KollaDelar(const unsigned char *ordin, unsigned char *ord2)
   return 1;
 }
 
+static unsigned char *AllocateEmptyString()
+{ unsigned char *s = malloc(1);
+  *s = '\0';
+  return s;
+}
+
+unsigned char *StavaSkrivRattelser(struct correctionSet *cset) {
+  int i;
+  unsigned char *res;
+  if (cset->noOfCorrections == 0) res = AllocateEmptyString();
+  else {
+    int separatorLength = strlen((char *) wordSeparator);
+    int len = 1 + (cset->noOfCorrections - 1) * separatorLength;
+    unsigned char *s, *t;
+    for (i = 0; i < cset->noOfCorrections; i++)
+      len += strlen((char *) cset->corrections[i] + 1);
+    if (xxDebug)
+      len += cset->noOfCorrections * 5;
+    res = (unsigned char *) malloc(len);
+    s = res;
+    for (i = 0; i < cset->noOfCorrections; i++) {
+      if (i > 0) {
+	strcpy((char *) s, (char *) wordSeparator);
+	s += separatorLength;
+      }
+      if (xxDebug) {
+	char buf[100];
+	sprintf(buf, "(%d)", (int) cset->corrections[i][0]);
+	strcpy((char *) s, buf);
+	s += strlen(buf);
+      }
+      for (t = cset->corrections[i] + 1; *t; t++)
+	*s++ = intern_ISO[*t];
+      *s = '\0';
+      free(cset->corrections[i]);
+    }
+  }
+  free(cset->corrections);
+  return res;
+}
+
 
 /* StavaVersion returns a string that uniquely identifies the version. */
 const char *StavaVersion(void)
@@ -1762,7 +1969,7 @@ int StavaReadLexicon(const
 		     const unsigned char *separator) /* separator between corrections */
 {
   libpath = libPath;
-  x8bitar = ISOCODE;
+  x8bitar = ISOCODE; /* change to UTF8CODE if needed */
   angettTeckenkod = 1;
   xSammansatta = compound;
   xAndelser = suffix;
@@ -1845,51 +2052,6 @@ int StavaWord(
   return 0;
 }
 
-static unsigned char *corrections = NULL;
-static int maxCorrectionLength = 0, currentCorrectionLength = 0;
-
-/* StavaSkrivOrd anropas vid rättstavningen för utskrift av ett
-   rättstavningsförslag. */
-void StavaSkrivOrd(const unsigned char *s)
-{ long len = currentCorrectionLength + strlen((char *)s);
-  unsigned char *t;
-  if (len > maxCorrectionLength) {
-    if (maxCorrectionLength == 0) {
-      maxCorrectionLength = len + 30;
-      corrections = malloc(maxCorrectionLength + 1);
-    } else {
-      maxCorrectionLength = len + 30;
-      corrections = realloc(corrections, maxCorrectionLength + 1);
-    }
-  }
-  t = corrections + currentCorrectionLength;
-  while ((*t++ = intern_ISO[*s++]));
-  currentCorrectionLength = len;
-}
-
-/* StavaSkrivSeparator anropas vid rättstavningen för att skriva ut 
-   wordSeparator mellan två rättstavningsförslag. */
-void StavaSkrivSeparator(void)
-{ long len = currentCorrectionLength + strlen((char *)wordSeparator);
-  if (len > maxCorrectionLength) {
-    if (maxCorrectionLength == 0) {
-      maxCorrectionLength = len + 30;
-      corrections = malloc(maxCorrectionLength + 1);
-    } else {
-      maxCorrectionLength = len + 30;
-      corrections = realloc(corrections, maxCorrectionLength + 1);
-    }
-  }
-  strcpy((char *)corrections + currentCorrectionLength, (char *)wordSeparator);
-  currentCorrectionLength = len;
-}
-
-static unsigned char *AllocateEmptyString()
-{ unsigned char *s = malloc(1);
-  *s = '\0';
-  return s;
-}
-
 /* StavaCorrectWord checks if a word is correctly spelled and returns
    ordered proposals of replacements if not. The most likely word is
    presented first.
@@ -1902,6 +2064,7 @@ static unsigned char *AllocateEmptyString()
 unsigned char *StavaCorrectWord(
 	      const unsigned char *word)     /* word to be corrected */
 { unsigned char buf[LANGD + 3], ord2[LANGD + 3];
+  struct correctionSet cset;
   int i, bindestreck = 0;
   if (!xRattstavningsforslag) return NULL; /* not correctly initialized */
   for (i = 0; i < LANGD; i++) {
@@ -1916,9 +2079,8 @@ unsigned char *StavaCorrectWord(
     SuddaBindestreck(buf, ord2);
     if (KollaOrd(ord2)) return NULL;
   }
-  maxCorrectionLength = currentCorrectionLength = 0;
-  if (SkrivForslag(buf) == 0) return AllocateEmptyString();
-  return corrections;
+  GenerateCorrections(&cset, buf);
+  return StavaSkrivRattelser(&cset);
 }
 
 /* StavaCorrectCompound checks if a word is a correctly spelled compound
@@ -1933,8 +2095,10 @@ unsigned char *StavaCorrectWord(
 unsigned char *StavaCorrectCompound(
 	      const unsigned char *word)     /* word to be corrected */
 { unsigned char buf[LANGD + 3];
-  char breaks[LANGD];
+  struct correctionSet cset;
   int i;
+  struct compoundData cdatarec;
+  cdatarec.noofcompounds = 0;
   if (!xRattstavningsforslag) return NULL; /* not correctly initialized */
   for (i = 0; i < LANGD; i++) {
     if (!(buf[i] = bokstavsTabell[word[i]])) break;
@@ -1942,13 +2106,13 @@ unsigned char *StavaCorrectCompound(
   if (i == LANGD) return NULL; /* too long word */
   if (i < ORDMIN) return NULL; /* short words are always accepted */
   if (InILorELbutnotUL(buf, i) != 0) return NULL;
-  if (xAndelser && CheckSuffix(buf, 0)) return NULL;
-  if (!IsCompound(buf, breaks, i)) return NULL;
-  maxCorrectionLength = currentCorrectionLength = 0;
-  if (SimpleCorrections(buf) == 0) return AllocateEmptyString();
-  return corrections;
+  if (xAndelser && CheckSuffix(buf, 0, 0)) return NULL;
+  if (!IsCompound(buf, &cdatarec, i)) return NULL;
+  GenerateSimpleCorrections(&cset, buf);
+  return StavaSkrivRattelser(&cset);
 }
 
+#ifdef SPLITCOMPOUNDSCCNOTUSED
 /* StavaAnalyzeCompound analyzes a compund. 
    Before StavaAnalyzeCompound is called the first time StavaReadLexicon
    must have been called.
@@ -1959,36 +2123,35 @@ int StavaAnalyzeCompound(
 			 unsigned char *res, /* result will appear here */
 			 const unsigned char *word) /* word to be analyzed */
 { unsigned char buf[LANGD + 3], ord[LANGD + 3], Ord[LANGD + 3];
-  char breaks[LANGD + 3];
   int i, len, bindestreck = 0;
+  struct compoundData cdatarec;
+  cdatarec.noofcompounds = 0;
   strcpy((char *) res, (char *) word);
   for (i = 0; i < LANGD; i++) {
-    breaks[i] = ' ';
+    cdatarec.gBreaks[i] = ' ';
     if (!(buf[i] = bokstavsTabell[word[i]])) break;
     if (buf[i] == '-') bindestreck = 1;
   }
-  breaks[i] = '\0';
+  cdatarec.gBreaks[i] = '\0';
   if (i == LANGD) return 0; /* too long word */
   if (i < ORDMIN) return 0; /* short words are always accepted */
   len = i;
   if (InILorELbutnotUL(buf, len) != 0) return bindestreck;
-  if (xAndelser && CheckSuffix(buf, 0)) return bindestreck;
-  noofcompounds = 0;
-  compoundSearch = 1;
-  IsCompound(buf, breaks, len);
-  if (noofcompounds == 0) {
+  if (xAndelser && CheckSuffix(buf, 0, 1)) return bindestreck;
+  IsCompound(buf, &cdatarec, len);
+  if (cdatarec.noofcompounds == 0) {
     VersalerGemena(buf,ord,Ord);
-    if (*ord) IsCompound(ord, breaks, len);
-    if (*Ord && noofcompounds == 0) IsCompound(Ord, breaks, len);
+    if (*ord) IsCompound(ord, &cdatarec, len);
+    if (*Ord && cdatarec.noofcompounds == 0) IsCompound(Ord, &cdatarec, len);
   }
-  if (bindestreck && noofcompounds == 0 ) {
+  if (bindestreck && cdatarec.noofcompounds == 0 ) {
     unsigned char *ordin = buf, *t;
     char totbreaks[LANGD + 3], *b;
     int breakstartpos, ordlen;
     for (i = 0; i < LANGD; i++) totbreaks[i] = ' ';
     totbreaks[i] = '\0';
     do {
-      t = ord; b = breaks;
+      t = ord; b = cdatarec.gBreaks;
       breakstartpos = ordin - buf;
       while (*ordin && *ordin != '-') {
 	*t++ = *ordin++;
@@ -1998,47 +2161,113 @@ int StavaAnalyzeCompound(
       ordlen = strlen((char *) ord);
       if (ordlen >= ORDMIN &&
 	  !InILorELbutnotUL(ord, ordlen) &&
-	  (!xAndelser || !CheckSuffix(ord, 0))) {
-	noofcompounds = 0;
-	IsCompound(ord, breaks, ordlen);
-	if (noofcompounds > 0) {
-	  breakpossibilities[0][ordlen] = '\0';
+	  (!xAndelser || !CheckSuffix(ord, 0, 1))) {
+	cdatarec.noofcompounds = 0;
+	IsCompound(ord, &cdatarec, ordlen);
+	if (cdatarec.noofcompounds > 0) {
+	  cdatarec.breakpossibilities[0][ordlen] = '\0';
 	  strcpy(totbreaks + breakstartpos, 
-		 breakpossibilities[0]);
+		 cdatarec.breakpossibilities[0]);
 	  if (*ordin == '-') totbreaks[ordin - buf] = ' ';
 	}
       }
     } while (*ordin++);
-    noofcompounds = 1;
+    cdatarec.noofcompounds = 1;
     totbreaks[len] = '\0';
-    strcpy(breakpossibilities[0], totbreaks);
+    strcpy(cdatarec.breakpossibilities[0], totbreaks);
   }
-  compoundSearch = 0;
-  if (noofcompounds == 0) return 0;
+  if (cdatarec.noofcompounds == 0) return 0;
   *res = '\0';
-  StringWriteCompound(res, word, breakpossibilities[0]);
+  StringWriteCompound(res, word, cdatarec.breakpossibilities[0]);
+  return 1;
+}
+#endif
+
+/* StavaGetAllCompounds analyzes a compund. 
+   Before it is called the first time StavaReadLexicon
+   must have been called.
+
+   Find all possible compound interpretations of a word,
+   unless the word is found as a non-compound in the dictionary.
+*/
+int StavaGetAllCompounds(
+			 unsigned char *res, /* result will appear here, and it will be many '\0'-terminated strings, ended with two consecutive '\0' */
+			 const unsigned char *word) /* word to be analyzed */
+{ unsigned char buf[LANGD + 3], ord[LANGD + 3], Ord[LANGD + 3];
+  int i, len, bindestreck = 0;
+  unsigned char * start;
+  int wordlen = strlen((char *) word);
+  struct compoundData cdatarec;
+  cdatarec.noofcompounds = 0;
+  res[0] = 0;
+  res[1] = 0;
+
+  if(InILorELbutnotUL(word, wordlen))
+    return 0;
+
+  strcpy((char *) res, (char *) word);
+  res[wordlen+1] = 0;
+  for (i = 0; i < LANGD; i++) {
+    cdatarec.gBreaks[i] = ' ';
+    if (!(buf[i] = bokstavsTabell[word[i]])) break;
+    if (buf[i] == '-') bindestreck = 1;
+  }
+  cdatarec.gBreaks[i] = '\0';
+  if (i == LANGD) return 0; /* too long word */
+  if (i < ORDMIN) return 0; /* short words are always accepted */
+  len = i;
+  if (InILorELbutnotUL(buf, len) != 0) return 0;
+  if (xAndelser && CheckSuffix(buf, 0, 0)) return 0;
+  IsCompound(buf, &cdatarec, len);
+  if (cdatarec.noofcompounds == 0) {
+    VersalerGemena(buf,ord,Ord);
+    if (*ord) IsCompound(ord, &cdatarec, len);
+    if (*Ord && cdatarec.noofcompounds == 0) IsCompound(Ord, &cdatarec, len);
+  }
+  if (bindestreck && cdatarec.noofcompounds == 0 ) {
+    unsigned char *ordin = buf, *t;
+    char totbreaks[LANGD + 3], *b;
+    int breakstartpos, ordlen;
+    for (i = 0; i < LANGD; i++) totbreaks[i] = ' ';
+    totbreaks[i] = '\0';
+    do {
+      t = ord; b = cdatarec.gBreaks;
+      breakstartpos = ordin - buf;
+      while (*ordin && *ordin != '-') {
+	*t++ = *ordin++;
+	*b++ = ' ';
+      }
+      *t = *b = '\0';
+      ordlen = strlen((char *) ord);
+      if (ordlen >= ORDMIN &&
+	  !InILorELbutnotUL(ord, ordlen) &&
+	  (!xAndelser || !CheckSuffix(ord, 0, 1))) {
+	cdatarec.noofcompounds = 0;
+	IsCompound(ord, &cdatarec, ordlen);
+	if (cdatarec.noofcompounds > 0) {
+	  cdatarec.breakpossibilities[0][ordlen] = '\0';
+	  strcpy(totbreaks + breakstartpos, cdatarec.breakpossibilities[0]);
+	  if (*ordin == '-') totbreaks[ordin - buf] = ' ';
+	}
+      }
+    } while (*ordin++);
+    cdatarec.noofcompounds = 1;
+    totbreaks[len] = '\0';
+    strcpy(cdatarec.breakpossibilities[0], totbreaks);
+  }
+  if (cdatarec.noofcompounds == 0) return 0;
+
+  start = res;
+  for(i = 0; i < cdatarec.noofcompounds; i++) {
+    StringWriteCompound(start, word, cdatarec.breakpossibilities[i]);
+    len = strlen((char *) start);
+    start[len] = 0;
+    start[len+1] = 0;
+    start = start + len + 1;
+  }
   return 1;
 }
 
-
-/* StavaGetWord reads the next word from infile and stores it in word.
-   Word has to be allocated (of size at least LANGD+1 (51)) before calling.
-   0 is returned if there is no more word (EOF), and 1 otherwise. */
-int StavaGetWord(FILE *infile, unsigned char *word)
-{ unsigned char buf[LANGD+1];
-  ordf = infile;
-  return TagOrd(buf, word);
-}
-
-/* StavaStringGetWord reads the next word from the string str and stores 
-   it in word.
-   Word has to be allocated (of size at least LANGD+1 (51)) before calling.
-   NULL is returned if there is no more word, and a pointer to the next
-   unused character in str otherwise. */
-unsigned char *StavaStringGetWord(unsigned char *str, unsigned char *word)
-{
-  return TagOrdStr(str, word);
-}
 
 /* StavaLastErrorMessage returns a message describing the last error message
 that occurred. Returns empty string if no error message occurred since last
@@ -2050,5 +2279,4 @@ const char *StavaLastErrorMessage(void)
   *stavaerrorbuf = '\0';
   return lasterror;
 }
-
 

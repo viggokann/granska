@@ -110,7 +110,62 @@ info("huvud- och bisatser")
 link("" "")
 }
 
+bisats@
+{
+X0(wordcl=sn | wordcl=hp),
+(NP/X1)()?,
+X2(wordcl=ab)?,
+X3(wordcl=vb & (vbf = prt | vbf = prs | vbf = imp)),
+X4(wordcl=vb & (vbf = inf | vbf = sup))?,
+(NP/X5)()?,
+X6(wordcl=ab)?,
+X7(wordcl=jj)?,
+(bisats)()?
+-->
+action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
+}
 
+b1@satser
+{
+X1(sed=sen),
+(bisats/X2)(),
+X3(text="."),
+X4(sed=sen) 
+-->
+mark(X2)
+info("Bisats utan huvudsats")
+action(scrutinizing)
+}
+
+
+dedem@pronomen
+{
+X0(sed=sen & extra!=hea & extra!=non),
+X1(wordcl!=nn & wordcl!=jj & wordcl!=ps & wordcl!=pc & wordcl!=pn & wordcl!=pm)*,
+X2(wordcl=pn & pnf=obj),
+X3(wordcl!=nn & wordcl!=jj & wordcl!=ps & wordcl!=pc & wordcl!=pn & wordcl!=pm)*,
+X4(sed=sen & extra!=exc)
+-->
+mark(X2)
+corr(X2.replace("de"))
+info("Inget subjekt i meningen, använd subjektformen de istället för objektformen dem")
+action(scrutinizing)
+}
+
+dedem2@pronomen
+{
+X0(sed=sen & extra!=hea & extra!=non),
+(NP/X1)()?,
+(VP)()?,
+X2(wordcl=pn & pnf=sub),
+X3(wordcl!=nn & wordcl!=jj & wordcl!=ps & wordcl!=pc & wordcl!=pn & wordcl!=pm)*,
+X4(sed=sen & extra!=exc)
+-->
+mark(X2)
+corr(X2.replace("dem"))
+info("Det finns redan subjekt, används objektsformen 'dem'")
+action(scrutinizing)
+}
 (* ----- KONSTIG-MENING-KONTROLL ----- *)
 
 category a {
@@ -392,8 +447,8 @@ subj_som_objekt@pronomen
 info("Felaktig pronomenform, använd objektsform")
 action(scrutinizing)
 }
-*)
 
+*)
 
 (* ----- ADJEKTIV ----- *)
 

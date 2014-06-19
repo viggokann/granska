@@ -1,11 +1,29 @@
-/* Rättstavningsprogram. Version 2.60 2004-09-05
-   Copyright (C) 1990-2004
+/* Rättstavningsprogram. Version 2.63  2013-04-12
+   Copyright (C) 1990-2013
    Joachim Hollman och Viggo Kann
    joachim@algoritmica.se viggo@nada.kth.se
 
    Mikael Tillenius har utvecklat rangordningen 1995-1996, se
    exjobbsrapporten TRITA-NA-E9621
 */
+
+/******************************************************************************
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+******************************************************************************/
 
 /* rattstava.c - modul för rättstavningsfunktioner */
 
@@ -91,11 +109,17 @@ static signed char replp[128][128];
 
 static unsigned char fyrtabell[FGRAMSIZE];
 static FILE *fyrf;
-static unsigned char **fyrOrd;
-static int fyrAntalOrd = 0, fyrMaxAntalOrd = 0;
-static unsigned char **delOrd[2*MAXORDDELAR];
-static int delAntalOrd[2*MAXORDDELAR], delMaxAntalOrd[2*MAXORDDELAR];
-static int addedWord;
+
+/* Data som används vid rättstavning */
+struct corrData {
+  unsigned char **fyrOrd;
+  int fyrAntalOrd, fyrMaxAntalOrd;
+  unsigned char **delOrd[2*MAXORDDELAR];
+  int delAntalOrd[2*MAXORDDELAR], delMaxAntalOrd[2*MAXORDDELAR];
+  int addedWord;
+};
+
+
 /* wordSeparator är den sträng som skrivs ut mellan två rättelseförslag. */
 const unsigned char *wordSeparator = (unsigned char *) " ";
 
@@ -114,7 +138,7 @@ static INLINE void *xrealloc(void *p, size_t s)
 {
   p = realloc(p, s);
   if (!p) {
-    fprintf(stderr, "Out of memory\n");
+    fprintf(stderr, "Out of memory!\n");
     exit(1);
   }
   return p;
@@ -244,63 +268,57 @@ static INLINE int FyrKoll(unsigned char *ord, int plats, int extra)
   return 1;
 }
 
-static void AddSuggestion(uchar *ord, int point)
+static void AddSuggestion(struct corrData *cd, uchar *ord, int point)
 { int i, r;
   int len = strlen((char *)ord);
   if (len <= 1) return; /* Strunta i enbokstavsord */
   if (InUL(ord, len)) return; /* Föreslå aldrig förbjudna ord */
-  if (fyrMaxAntalOrd == 0) {
-    fyrMaxAntalOrd = 20;
-    fyrOrd = xmalloc(sizeof(char *) * fyrMaxAntalOrd);
+  if (cd->fyrMaxAntalOrd == 0) {
+    cd->fyrMaxAntalOrd = 20;
+    cd->fyrOrd = xmalloc(sizeof(char *) * cd->fyrMaxAntalOrd);
   }
     
-  for (i = 0; i < fyrAntalOrd; i++) {
-    if (!strcmp((char *) ord + 1, (char *) fyrOrd[i] + 2)) {
-      r = abs(*ord - *(fyrOrd[i]+1));
+  for (i = 0; i < cd->fyrAntalOrd; i++) {
+    if (!strcmp((char *) ord + 1, (char *) cd->fyrOrd[i] + 2)) {
+      r = abs(*ord - *(cd->fyrOrd[i]+1));
       if (r == 0
 	  || r == CAPITALDIFF
 	  ) {
-	if ((int) fyrOrd[i][0] > point)
+	if ((int) cd->fyrOrd[i][0] > point)
 	  goto overwrite;
 	else
 	  return;
       }
     }
   }
-  if (fyrAntalOrd >= fyrMaxAntalOrd) {
-    fyrMaxAntalOrd += 20;
-    fyrOrd = realloc(fyrOrd, sizeof(char *) * fyrMaxAntalOrd);
+  if (cd->fyrAntalOrd >= cd->fyrMaxAntalOrd) {
+    cd->fyrMaxAntalOrd += 20;
+    cd->fyrOrd = realloc(cd->fyrOrd, sizeof(char *) * cd->fyrMaxAntalOrd);
   }
-  fyrAntalOrd++;
-  fyrOrd[i] = xmalloc(len + 2);
+  cd->fyrAntalOrd++;
+  cd->fyrOrd[i] = xmalloc(len + 2);
 
 overwrite:
-  addedWord = 1;
-  fyrOrd[i][0] = (point >= 256 ? 255 : (unsigned char) point);
-  strcpy((char *) fyrOrd[i]+1, (char *) ord);
+  cd->addedWord = 1;
+  cd->fyrOrd[i][0] = (point >= 256 ? 255 : (unsigned char) point);
+  strcpy((char *) cd->fyrOrd[i]+1, (char *) ord);
 }
 
-static void ClearSuggestions(void)
-{ int i;
-  for (i = 0; i < fyrAntalOrd; i++) free(fyrOrd[i]);
-  fyrAntalOrd = 0;
-}
-
-static void Concat(uchar *to, uchar *word, int point, int part, int lastpart)
+static void Concat(struct corrData *cd, uchar *to, uchar *word, int point, int part, int lastpart)
 { int len, i;
 
   len = strlen((char *)to);
   if (part == lastpart) {
     if (len > 2 && *word == to[len-1] && to[len-2] == to[len-1]) word++;
     strcpy((char *)to + len, (char *)word);
-    AddSuggestion(to, point+WordFreq(to)+PARTCOST*lastpart);
+    AddSuggestion(cd, to, point+WordFreq(to)+PARTCOST*lastpart);
   } else {
-    for (i=0; i<delAntalOrd[part]; i++) {
-      if (len > 2 && delOrd[part][i][1] == to[len-1] &&
+    for (i=0; i<cd->delAntalOrd[part]; i++) {
+      if (len > 2 && cd->delOrd[part][i][1] == to[len-1] &&
 	  to[len-2] == to[len-1]) 
-	strcpy((char *) to + len, (char *) delOrd[part][i]+2);
-      else strcpy((char *) to + len, (char *) delOrd[part][i]+1);
-      Concat(to, word, point+delOrd[part][i][0], part+1, lastpart);
+	strcpy((char *) to + len, (char *) cd->delOrd[part][i]+2);
+      else strcpy((char *) to + len, (char *) cd->delOrd[part][i]+1);
+      Concat(cd, to, word, point+cd->delOrd[part][i][0], part+1, lastpart);
     }
     to[len] = 0;
   }
@@ -308,77 +326,77 @@ static void Concat(uchar *to, uchar *word, int point, int part, int lastpart)
 
 /* Sätt ihop de olika orddelarna i alla kombinationer och stoppa in i
    listan över ordförslag */
-static void ConcatParts(uchar *word, int point, int part)
+static void ConcatParts(struct corrData *cd, uchar *word, int point, int part)
 {
   uchar buf[LANGD];
 
   buf[0] = 0;
-  Concat(buf, word, point, 0, part);
+  Concat(cd, buf, word, point, 0, part);
 }
 
 /* Lägg till en ny orddel */
-static void AddPart(uchar *ord, int point, int part)
+static void AddPart(struct corrData *cd, uchar *ord, int point, int part)
 { int i, r;
 
-  if (delMaxAntalOrd[part] == 0) {
-    delMaxAntalOrd[part] = 20;
-    delOrd[part] = xmalloc(sizeof(char *) * delMaxAntalOrd[part]);
+  if (cd->delMaxAntalOrd[part] == 0) {
+    cd->delMaxAntalOrd[part] = 20;
+    cd->delOrd[part] = xmalloc(sizeof(char *) * cd->delMaxAntalOrd[part]);
   }
 
-  for (i = 0; i < delAntalOrd[part]; i++) {
-    if (!strcmp((char *)ord + 1, (char *)delOrd[part][i] + 2)) {
-      r = abs(*ord - *(delOrd[part][i]+1));
+  for (i = 0; i < cd->delAntalOrd[part]; i++) {
+    if (!strcmp((char *)ord + 1, (char *)cd->delOrd[part][i] + 2)) {
+      r = abs(*ord - *(cd->delOrd[part][i]+1));
       if (r == 0
 	  || r == CAPITALDIFF
 	  ) {
-        if ((int) delOrd[part][i][0] > point)
+        if ((int) cd->delOrd[part][i][0] > point)
           goto overwrite;
         else
           return;
       }
     }
   }
-  if (delAntalOrd[part] >= delMaxAntalOrd[part]) {
-    delMaxAntalOrd[part] += 20;
-    delOrd[part] = xrealloc(delOrd[part], sizeof(char *) * delMaxAntalOrd[part]);
+  if (cd->delAntalOrd[part] >= cd->delMaxAntalOrd[part]) {
+    cd->delMaxAntalOrd[part] += 20;
+    cd->delOrd[part] = xrealloc(cd->delOrd[part], sizeof(char *) * cd->delMaxAntalOrd[part]);
   }
-  delAntalOrd[part]++;
-  addedWord = 1;
-  delOrd[part][i] = xmalloc(strlen((char *)ord)+2);
+  cd->delAntalOrd[part]++;
+  cd->addedWord = 1;
+  cd->delOrd[part][i] = xmalloc(strlen((char *)ord)+2);
 
   overwrite:
-  delOrd[part][i][0] = (point >= 256 ? 255 : (unsigned char) point);
-  strcpy((char *)delOrd[part][i]+1, (char *)ord);
+  cd->delOrd[part][i][0] = (point >= 256 ? 255 : (unsigned char) point);
+  strcpy((char *)cd->delOrd[part][i]+1, (char *)ord);
 }
 
 /* rensa listan med orddelar */
-static void PartClear(int part)
+static void PartClear(struct corrData *cd, int part)
 {
   int i;
-  for (i = 0; i < delAntalOrd[part]; i++) free(delOrd[part][i]);
-  delAntalOrd[part] = 0;
+  for (i = 0; i < cd->delAntalOrd[part]; i++) free(cd->delOrd[part][i]);
+  cd->delAntalOrd[part] = 0;
 }
 
 /* Kolla om word finns i ordlistan. Parametern check styr vilka av
    ordlistorna EL, IL och FL som ska användas */
-INLINE void Check(uchar *word, int point, int part, int len, int check)
+INLINE void Check(struct corrData *cd, uchar *word, int point, int part, int len, int check)
 {
   if (check & CHECK_IL) {
     if (InUL(word, len)) return;
     if (InIL(word, len)) {
-      AddSuggestion(word, point+WordFreq(word));
+      AddSuggestion(cd, word, point+WordFreq(word));
       return;
     }
   }
   if (check & CHECK_EL) {
-    if (InEL(word, len) || (xAndelser && CheckSuffix(word, 0))) {
-      ConcatParts(word, point, part);
+    if (InEL(word, len) || (xAndelser && CheckSuffix(word, 0, 0))) {
+      ConcatParts(cd, word, point, part);
       return;
     }
   }
   if (check & CHECK_FL) {
     if (InFL(word, len)) {
-      AddPart(word, point+WordFreq(word), part);
+      AddPart(cd, word, point+WordFreq(word), part);
       return;
     }
   }
@@ -386,7 +404,7 @@ INLINE void Check(uchar *word, int point, int part, int len, int check)
 }
 
 
-static void GenereraLjudbyten(unsigned char *ord)
+static void GenereraLjudbyten(struct corrData *cd, unsigned char *ord)
 {
   int i, soundlen, noofparts;
   unsigned char *s, *sound, **newsound, word[LANGD + 4];
@@ -406,10 +424,10 @@ static void GenereraLjudbyten(unsigned char *ord)
 	  strcat((char *)word, (char *)s + soundlen);
 	  if (FyrKoll(word, s-ord, strlen((char *)*newsound)) > 0) {
 	    if (CheckWord(word, 2))
-	      AddSuggestion(word, REPPVAL-1 + WordFreq(word));
+	      AddSuggestion(cd, word, REPPVAL-1 + WordFreq(word));
 	    else if ((noofparts = SimpleIsCompound(word, 
 						   strlen((char *)word))))
-	      AddSuggestion(word, 
+	      AddSuggestion(cd, word, 
 			    REPPVAL-1 + WordFreq(word) + PARTCOST*(noofparts-1));
 	  }
 	}
@@ -418,7 +436,7 @@ static void GenereraLjudbyten(unsigned char *ord)
   }
 }
 
-static void Generera1(unsigned char *word, int from, int errors, int point, int part, 
+static void Generera1(struct corrData *cd, unsigned char *word, int from, int errors, int point, int part, 
 	       int len, int check)
 {
   int i, left, right, first, last, onlyswap;
@@ -472,7 +490,7 @@ static void Generera1(unsigned char *word, int from, int errors, int point, int 
   /*fprintf(stderr, "[%s %d %d %d %d]", word, first, last, left, right);*/
 
   if (last == -1)
-    Check(word, point, part, len, check);
+    Check(cd, word, point, part, len, check);
 
   if (errors == 0) {
     PrintErrorWithText("0 fel - borde inte inträffa. Ord: %s.\n", (const char *)word);
@@ -488,9 +506,9 @@ static void Generera1(unsigned char *word, int from, int errors, int point, int 
     word[i+1] = tmp1;
     if (errors == 1) {
       if (FyrKoll(word, i, 1))
-        Check(word, point+SWAP(word[i+1], word[i]), part, len, check);
+        Check(cd, word, point+SWAP(word[i+1], word[i]), part, len, check);
     } else {
-      Generera1(word, i+1, errors-1,
+      Generera1(cd, word, i+1, errors-1,
                 point+SWAP(word[i+1], word[i]), part, len, check);
     }
     tmp1 = word[i];
@@ -507,10 +525,10 @@ static void Generera1(unsigned char *word, int from, int errors, int point, int 
       strcpy((char *)word2+i, (char *)word+i+1);
       if (errors == 1) {
 	if (FyrKoll(word2, i, 0))
-	  Check(word2, point+DELP(word[i], word2[i])+((i==0)?FIRSTP:0),
+	  Check(cd, word2, point+DELP(word[i], word2[i])+((i==0)?FIRSTP:0),
 		part, len-1, check);
       } else {
-	Generera1(word2, i, errors-1,
+	Generera1(cd, word2, i, errors-1,
 		  point+DELP(word[i], word2[i])+((i==0)?FIRSTP:0), part,
 		  len-1, check);
       }
@@ -532,11 +550,11 @@ static void Generera1(unsigned char *word, int from, int errors, int point, int 
 	  word[i] = *lett;
 	  if (errors == 1) {
 	    if (FyrKoll(word, i, 0))
-	      Check(word, 
+	      Check(cd, word, 
 		    point+REPP(tmp1,*lett)+((*lett==UP)?0:firstpoint),
 		    part, len, check);
 	  } else {
-	    Generera1(word, i+1, errors-1,
+	    Generera1(cd, word, i+1, errors-1,
 		      point+REPP(tmp1,*lett)+((*lett==UP)?0:firstpoint),
 		      part, len, check);
 	  }
@@ -548,10 +566,10 @@ static void Generera1(unsigned char *word, int from, int errors, int point, int 
         word[i] = *lett;
         if (errors == 1) {
           if (FyrKoll(word, i, 0))
-            Check(word, point+REPP(tmp1,*lett)+((*lett==low)?0:firstpoint),
+            Check(cd, word, point+REPP(tmp1,*lett)+((*lett==low)?0:firstpoint),
                   part, len, check);
         } else {
-          Generera1(word, i+1, errors-1,
+          Generera1(cd, word, i+1, errors-1,
                     point+REPP(tmp1,*lett)+((*lett==low)?0:firstpoint),
 		    part, len, check);
         }
@@ -570,10 +588,10 @@ static void Generera1(unsigned char *word, int from, int errors, int point, int 
 	word2[i] = *lett;
 	if (errors == 1) {
 	  if (FyrKoll(word2, i, 0))
-	    Check(word2, INSP(word2[i], word2[i+1])+((i==0)?FIRSTP:0),
+	    Check(cd, word2, INSP(word2[i], word2[i+1])+((i==0)?FIRSTP:0),
 		  part, len+1, check);
 	} else {
-	  Generera1(word2, i+1, errors-1,
+	  Generera1(cd, word2, i+1, errors-1,
 		    INSP(word2[i], word2[i+1])+((i==0)?FIRSTP:0), part,
 		    len+1, check);
 	}
@@ -583,10 +601,10 @@ static void Generera1(unsigned char *word, int from, int errors, int point, int 
       word2[i] = *lett;
       if (errors == 1) {
         if (FyrKoll(word2, i, 0))
-          Check(word2, INSP(word2[i], word2[i+1])+((i==0)?FIRSTP:0),
+          Check(cd, word2, INSP(word2[i], word2[i+1])+((i==0)?FIRSTP:0),
                 part, len+1, check);
       } else {
-        Generera1(word2, i+1, errors-1,
+        Generera1(cd, word2, i+1, errors-1,
                   INSP(word2[i], word2[i+1])+((i==0)?FIRSTP:0), part,
                   len+1, check);
       }
@@ -597,11 +615,11 @@ static void Generera1(unsigned char *word, int from, int errors, int point, int 
 }
 
 /* Insert1 prövar att stoppa in exakt en bokstav i ordet */
-static int Insert1(unsigned char *word, int point, int part, int len, int check)
+static int Insert1(struct corrData *cd, unsigned char *word, int point, int part, int len, int check)
 { int i;
   unsigned char *lett;
   unsigned char word2[LANGD];
-  addedWord = 0;
+  cd->addedWord = 0;
   strcpy((char *)word2+1, (char *)word);
   for (i = 0; i < len+1; i++) {
     if ((i == 0 && part == 0) || 
@@ -609,25 +627,25 @@ static int Insert1(unsigned char *word, int point, int part, int len, int check)
       for (lett = upperCaseLetters; *lett; lett++) {
 	word2[i] = *lett;
 	if (FyrKoll(word2, i, 0))
-	  Check(word2, INSP(word2[i], word2[i+1])+((i==0)?FIRSTP:0),
+	  Check(cd, word2, INSP(word2[i], word2[i+1])+((i==0)?FIRSTP:0),
 		part, len+1, check);
       }
     }
     for (lett = lowerCaseLetters; *lett; lett++) {
       word2[i] = *lett;
       if (FyrKoll(word2, i, 0))
-	Check(word2, INSP(word2[i], word2[i+1])+((i==0)?FIRSTP:0),
+	Check(cd, word2, INSP(word2[i], word2[i+1])+((i==0)?FIRSTP:0),
 	      part, len+1, check);
     }
     word2[i] = word2[i+1];
   }
   /* word2[len] = '\0'; */
-  return (addedWord ? 1 : -1);
+  return (cd->addedWord ? 1 : -1);
 }
 
 
 /* InsertSpace tries to insert a space inside the word */
-void InsertSpace(unsigned char *wordin, int len)
+void InsertSpace(struct corrData *cd, unsigned char *wordin, int len)
 {
   unsigned char word[LANGD], buf[LANGD];
   int i, point;
@@ -638,7 +656,7 @@ void InsertSpace(unsigned char *wordin, int len)
       if (InILorELbutnotUL(word, i)) {
 	point = WordFreq(word);
 	sprintf((char *)buf, "%s %s", word, wordin + i);
-	AddSuggestion(buf, INSPVAL + 5 + PARTCOST*2 + point + WordFreq(wordin + i));
+	AddSuggestion(cd, buf, INSPVAL + 5 + PARTCOST*2 + point + WordFreq(wordin + i));
       }
       word[i] = wordin[i];
       if (i > 2) {
@@ -646,7 +664,7 @@ void InsertSpace(unsigned char *wordin, int len)
 	if (InILorELbutnotUL(word, i-1)) {
 	  point = WordFreq(word);
 	  sprintf((char *)buf, "%s %s", word, wordin + i);
-	  AddSuggestion(buf, DELPVAL + 5 + PARTCOST*2 + point + WordFreq(wordin + i));
+	  AddSuggestion(cd, buf, DELPVAL + 5 + PARTCOST*2 + point + WordFreq(wordin + i));
 	}
 	word[i-1] = wordin[i-1];
       }
@@ -655,7 +673,7 @@ void InsertSpace(unsigned char *wordin, int len)
 }
 
 /* Generera rättstavningsförslag för word. Högst errors fel får förekomma */
-static int Generera(unsigned char *word, int errors, int point, int part,
+static int Generera(struct corrData *cd, unsigned char *word, int errors, int point, int part,
 		    int len, int check)
 { int i;
 
@@ -665,13 +683,13 @@ static int Generera(unsigned char *word, int errors, int point, int part,
     if (len <= 6 || xMaxOneError || part || point) errors = 1;
     else if (errors > 2) errors = 2;
   }
-  addedWord = 0;
-  Check(word, 0, part, len, check);
-  if (addedWord && check == CHECK_FL) return 0; /* Viggo 1999-11-25, återinfört 2002-02-09 */
+  cd->addedWord = 0;
+  Check(cd, word, 0, part, len, check);
+  if (cd->addedWord && check == CHECK_FL) return 0; /* Viggo 1999-11-25, återinfört 2002-02-09 */
   for (i=1; i<=errors; i++) {
     /*fprintf(stderr, "{Gen %s %d %d}", word, i, errors);*/
-    Generera1(word, 0, i, point, part, len, check);
-    if (addedWord) return i;
+    Generera1(cd, word, 0, i, point, part, len, check);
+    if (cd->addedWord) return i;
   }
   return -1;
 }
@@ -680,41 +698,40 @@ static int Generera(unsigned char *word, int errors, int point, int part,
    så tillåt 's' i all fogar utom mellan 1:a och 2:a delen.
    Om xTillatSIAllaFogar så tillåt 's' i alla fogar. */
 /* offset är platsen i ordet där word börjar */
-static INLINE void CompoundEdit(uchar *word, int offset, int part, int errors,
+static INLINE void CompoundEdit(struct corrData *cd, uchar *word, int offset, int part, int errors,
 				int len)
-{ int end, tmp, before, res, startpos, finalpos;
+{ int end, tmp, res, startpos, finalpos;
 
   /* printf("CompoundEdit(%s,offset=%d,part=%d,errors=%d,len=%d\n", word, offset, part, errors, len); */
   if (errors == 0) {
-    addedWord = 0;
-    Check(word, 0, part, len, CHECK_EL);
-    if (addedWord) return; /* negation borttagen 2003-04-17 */
+    cd->addedWord = 0;
+    Check(cd, word, 0, part, len, CHECK_EL);
+    if (cd->addedWord) return; /* negation borttagen 2003-04-17 */
     if (!xGenerateCompounds || part+1 >= MAXORDDELAR) return;
     startpos = offset ? DELORDMIN : STARTDELORDMIN;
     finalpos = len - DELORDMIN;
     for (end=startpos; end<=finalpos; end++) {
       tmp = word[end];
       word[end] = 0;
-      before = fyrAntalOrd;
-      PartClear(part);
-      addedWord = 0;
-      Check(word, 0, part, end, CHECK_FL);
-      if (addedWord) {
+      PartClear(cd, part);
+      cd->addedWord = 0;
+      Check(cd, word, 0, part, end, CHECK_FL);
+      if (cd->addedWord) {
 	word[end] = tmp;
 	/* Hantera t ex toppolitiker som topp|politiker */
 	if (word[end-1] == word[end-2]) {
 	  if (word[end-1] == tmp) {
 	    continue;
 	  }
-	  CompoundEdit(word+end-1, offset+end-1, part+1, 0, len-end+1);
+	  CompoundEdit(cd, word+end-1, offset+end-1, part+1, 0, len-end+1);
 	}
-	CompoundEdit(word+end, offset+end, part+1, 0, len-end);
+	CompoundEdit(cd, word+end, offset+end, part+1, 0, len-end);
 	if (((xTillatSIFogar && offset) || xTillatSIAllaFogar) &&
 	    word[end] == 's' &&
 	    bindebokstav[(unsigned char)word[end-1]] == 's') {
-	  PartClear(part+1);
-	  AddPart((uchar *)"s", 0, part+1);
-	  CompoundEdit(word+end+1, offset+end+1, part+2, 0, len-end-1);
+	  PartClear(cd, part+1);
+	  AddPart(cd, (uchar *)"s", 0, part+1);
+	  CompoundEdit(cd, word+end+1, offset+end+1, part+2, 0, len-end-1);
 	}
       }
       else word[end] = tmp;
@@ -722,10 +739,10 @@ static INLINE void CompoundEdit(uchar *word, int offset, int part, int errors,
     return;
   } 
   if (offset == 0) {
-    res = Generera(word, errors, 0, part, len, CHECK_EL | CHECK_IL);
+    res = Generera(cd, word, errors, 0, part, len, CHECK_EL | CHECK_IL);
     if (res == 0 || res == 1) return;
   } else {
-    if (Generera(word, errors, 0, part, len, CHECK_EL) != -1) return;
+    if (Generera(cd, word, errors, 0, part, len, CHECK_EL) != -1) return;
   }
 
   if (!xGenerateCompounds || part+1 >= MAXORDDELAR) return;
@@ -735,11 +752,10 @@ static INLINE void CompoundEdit(uchar *word, int offset, int part, int errors,
   for (end=startpos; end<=finalpos; end++) {
     tmp = word[end];
     word[end] = 0;
-    before = fyrAntalOrd;
-    PartClear(part);
+    PartClear(cd, part);
     
-    if (end == startpos) res = Insert1(word, 0, part, end, CHECK_FL);
-    else res = Generera(word, errors, 0, part, end, CHECK_FL);
+    if (end == startpos) res = Insert1(cd, word, 0, part, end, CHECK_FL);
+    else res = Generera(cd, word, errors, 0, part, end, CHECK_FL);
 
     if (res != -1) {
       errors -= res;
@@ -750,16 +766,16 @@ static INLINE void CompoundEdit(uchar *word, int offset, int part, int errors,
 	  errors += res;
 	  continue;
 	}
-        CompoundEdit(word+end-1, offset+end-1, part+1, errors, len-end+1);
+        CompoundEdit(cd, word+end-1, offset+end-1, part+1, errors, len-end+1);
       }
-      CompoundEdit(word+end, offset+end, part+1, errors, len-end);
+      CompoundEdit(cd, word+end, offset+end, part+1, errors, len-end);
 
       if (((xTillatSIFogar && offset) || xTillatSIAllaFogar) &&
           word[end] == 's' &&
           bindebokstav[(unsigned char)word[end-1]] == 's') {
-        PartClear(part+1);
-        AddPart((uchar *)"s", 0, part+1);
-        CompoundEdit(word+end+1, offset+end+1, part+2, errors, len-end-1);
+        PartClear(cd, part+1);
+        AddPart(cd, (uchar *)"s", 0, part+1);
+        CompoundEdit(cd, word+end+1, offset+end+1, part+2, errors, len-end-1);
       }
       errors += res;
     }
@@ -767,15 +783,15 @@ static INLINE void CompoundEdit(uchar *word, int offset, int part, int errors,
   }
 }
 
-static void GenereraAlternativaOrd(uchar *wordin)
+static void GenereraAlternativaOrd(struct corrData *cd, uchar *wordin)
 { int len = strlen((char *)wordin);
   if (len < 2)
     return;
   if (len < 7 || xMaxOneError)
-    CompoundEdit(wordin, 0, 0, 1, len);
+    CompoundEdit(cd, wordin, 0, 0, 1, len);
   else
-    CompoundEdit(wordin, 0, 0, 2, len);
-  if (len >= 4) InsertSpace(wordin, len);
+    CompoundEdit(cd, wordin, 0, 0, 2, len);
+  if (len >= 4) InsertSpace(cd, wordin, len);
 }
 
 /* InitRattstava öppnar fyrgramsfilen och initierar hjälpstrukturer.
@@ -880,47 +896,37 @@ int InitRattstava(const char *fyrgramfilename, const unsigned char *separator)
   AddSoundClass(tjeljud);
   return 1;
 }
+
+
             
-/* SkrivGenereradeOrd sorterar dom genererade orden efter trolighetsvärdet och
-skriver ut dom med StavaSkrivOrd */
-static int SkrivGenereradeOrd(int Capitalized)
-{  int i, swapped, truncSuggestions;
+/* SorteraGenereradeOrd sorterar dom genererade orden efter trolighetsvärdet och
+lägger dom i cset. Eventuella icke-presenterade ord frigörs. */
+static int SorteraGenereradeOrd(struct correctionSet *cset, struct corrData *cd, int Capitalized)
+{  int i, j, truncSuggestions;
   unsigned char *tmp;
-  int printed = 0;
 
-  if (fyrAntalOrd > 0) {
-    /* bubblesort the list */
-    do {
-      swapped = 0;
-      for (i=0; i<fyrAntalOrd-1; i++) {
-        if (fyrOrd[i][0] > fyrOrd[i+1][0]) {
-          tmp = fyrOrd[i];
-          fyrOrd[i] = fyrOrd[i+1];
-          fyrOrd[i+1] = tmp;
-          swapped = 1;
-        }
-      }
-    } while (swapped);
+  cset->corrections = NULL;
+  cset->noOfCorrections = 0;
 
-    truncSuggestions = fyrOrd[0][0] + truncSuggestionsOffset;
-    /* display the list */
-    for (i = 0; i < fyrAntalOrd; i++) {
-      /*printf("%d ", fyrOrd[i][0]);*/
-      if (fyrOrd[i][0] > truncSuggestions - 2 * i)
-	if (!xDebug)
-	  break;
-      if (Capitalized && isLowerCase[fyrOrd[i][1]]) 
-	fyrOrd[i][1] = toUpperCase[fyrOrd[i][1]];
-      if (printed++) StavaSkrivSeparator();
-      StavaSkrivOrd(fyrOrd[i]+1);
-      if (xDebug) {
-	if (fyrOrd[i][0] > truncSuggestions - 2 * i)
-	  printf("((%d))", (int) fyrOrd[i][0]);
-	else printf("(%d)", (int) fyrOrd[i][0]);
-      }
-      if (i > MAXSUGGESTIONS)
-        break;
+  if (cd->fyrAntalOrd > 0) {
+    /* Sortera fyrOrd med insättningssortering */
+    for (i = 1; i < cd->fyrAntalOrd; i++) {
+      tmp = cd->fyrOrd[i];
+      for (j = i; j > 0 && cd->fyrOrd[j-1][0] > tmp[0]; j--)
+	cd->fyrOrd[j] = cd->fyrOrd[j-1];
+      cd->fyrOrd[j] = tmp;
     }
+
+    truncSuggestions = cd->fyrOrd[0][0] + truncSuggestionsOffset;
+
+    for (i = 0; i < cd->fyrAntalOrd && i < MAXSUGGESTIONS && 
+	   cd->fyrOrd[i][0] <= truncSuggestions - 2 * i; i++) {
+      if (Capitalized && isLowerCase[cd->fyrOrd[i][1]]) 
+	cd->fyrOrd[i][1] = toUpperCase[cd->fyrOrd[i][1]];
+    }
+    cset->noOfCorrections = i;
+    cset->corrections = cd->fyrOrd;
+    for (; i < cd->fyrAntalOrd; i++) free(cd->fyrOrd[i]);
     return 1;
   } else return 0;
 }
@@ -933,34 +939,46 @@ static int IsCapitalized(unsigned char *ordin)
   return 1;
 }
 
-/* SimpleCorrections genererar rättelser på avstånd 1 i EL och IL från 
-   ett potentiellt riktigt stavat ord. Returnerar 0 om inget förslag kunde
-   genereras och 1 annars. */
-int SimpleCorrections(unsigned char *word)
+static INLINE void FreeCorrData(struct corrData *cd)
 {
-  ClearSuggestions();
-  Generera1(word, 0, 1, 0, 0, strlen((char *)word), CHECK_EL | CHECK_IL);
-  return SkrivGenereradeOrd(IsCapitalized(word));
-}
-
-/* SkrivForslag genererar rättstavningsförslag för ett ord och skriver 
-   ut dom med StavaSkrivOrd(). Returnerar 0 om inget förslag kunde
-   genereras och 1 annars. */
-int SkrivForslag(unsigned char *ordin)
-{ unsigned char ord2[LANGD + 3], Ord[LANGD + 3];
-  int Capitalized = IsCapitalized(ordin);
-
-  ClearSuggestions();
-  GenereraAlternativaOrd(ordin);
-  GenereraLjudbyten(ordin);
-
-  if (fyrAntalOrd == 0) {
-    VersalerGemena(ordin, ord2, Ord);
-    if (*ord2) GenereraAlternativaOrd(ord2);
-  } else if (Capitalized) {
-    ordin[0] = toLowerCase[ordin[0]];
-    GenereraAlternativaOrd(ordin);
+  int i;
+  for (i = 0; i < 2*MAXORDDELAR && cd->delMaxAntalOrd[i] > 0; i++) {
+    PartClear(cd, i);
+    free(cd->delOrd[i]);
   }
-  return SkrivGenereradeOrd(Capitalized);
 }
 
+/* GenerateSimpleCorrections genererar rangordnade rättelseförslag på avstånd 1 i EL och IL från 
+   ett potentiellt riktigt stavat ord word. Rättelseförslagen läggs i cset.
+   Returnerar 0 om inget förslag kunde genereras och 1 annars. */
+int GenerateSimpleCorrections(struct correctionSet *cset, unsigned char *word)
+{
+  struct corrData cd;
+  memset(&cd, 0, sizeof(cd));
+  Generera1(&cd, word, 0, 1, 0, 0, strlen((char *)word), CHECK_EL | CHECK_IL);
+  FreeCorrData(&cd);
+  return SorteraGenereradeOrd(cset, &cd, IsCapitalized(word));
+}
+
+/* GenerateCorrections genererar rangordnade rättelseförslag till word.
+   Rättelseförslagen läggs i cset.
+   Returnerar 0 om inget förslag kunde genereras och 1 annars. */
+int GenerateCorrections(struct correctionSet *cset, unsigned char *word)
+{ unsigned char ord2[LANGD + 3], Ord[LANGD + 3];
+  int Capitalized = IsCapitalized(word);
+  struct corrData cd;
+  memset(&cd, 0, sizeof(cd));
+
+  GenereraAlternativaOrd(&cd, word);
+  GenereraLjudbyten(&cd, word);
+
+  if (cd.fyrAntalOrd == 0) {
+    VersalerGemena(word, ord2, Ord);
+    if (*ord2) GenereraAlternativaOrd(&cd, ord2);
+  } else if (Capitalized) {
+    word[0] = toLowerCase[word[0]];
+    GenereraAlternativaOrd(&cd, word);
+  }
+  FreeCorrData(&cd);
+  return SorteraGenereradeOrd(cset, &cd, Capitalized);
+}

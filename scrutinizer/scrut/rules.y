@@ -14,7 +14,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "stavaapi.h"
+#include "libstava.h"
 }
 #include "scrutinizer.h"
 #include "rules.h"

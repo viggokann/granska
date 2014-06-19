@@ -4,16 +4,17 @@
  * to be scrutnized.
  */
 
-#include <granskaapi.h>
+#include "granskaapi.h"
 #include <fstream>
+#include <iostream>
 #include <cstring>
-#include <cstdlib>
+#include <stdlib.h>
 
 using namespace std;
 
 int main(int argc, char** argv){
 	loadGranska();
-	ifstream infile(argv[1]);
+	ifstream infile("presentation.txt");
 	string line;
 	string text;
 	while (getline(infile, line))
@@ -25,12 +26,14 @@ int main(int argc, char** argv){
 	char *input = new char[text.length()+1];
 	char* first = new char[text.length()+1];
 	char* last = new char[text.length()+1];
+	int size;
+	size = 10;
 	strcpy(input, text.c_str());
-	for(int i = 0; i < atoi(argv[2]); i++){
+	for(int i = 0; i < size; i++){
 		char* o1 = granska(input);
 		char* o2 = granska(input);
 		if(i==0){ first = o1; delete[] o2;}
-		else if(i==(atoi(argv[2])-1)){last = o2; delete[] o1;}
+		else if(i==(size-1)){last = o2; delete[] o1;}
 		else{
 			delete[] o1;
 			delete[] o2;

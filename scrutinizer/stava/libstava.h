@@ -1,8 +1,37 @@
-/* Rättstavningsprogram. Version 2.60  2004-09-05
-   Copyright (C) 1990-2004
+/* Rättstavningsprogram. Version 2.63  2013-04-12
+   Copyright (C) 1990-2013
    Joachim Hollman och Viggo Kann
    joachim@algoritmica.se viggo@nada.kth.se
 */
+
+/******************************************************************************
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+******************************************************************************/
+
+#ifndef __STAVAAPI_H__
+#define __STAVAAPI_H__
+
+#include <stdio.h>
+
+#if defined (__cplusplus)
+extern "C" {
+#endif
+
+/* All methods except StavaReadLexicon and StavaLastErrorMessage are thread safe. */
 
 /* StavaVersion returns a string that uniquely identifies the version. */
 const char *StavaVersion(void);
@@ -81,6 +110,12 @@ extern int StavaAnalyzeCompound(
 			 unsigned char *res, /* result will appear here */
 			 const unsigned char *word); /* word to be analyzed */
 
+extern int StavaGetAllCompounds(
+			 unsigned char *res, /* result will appear here, 
+						and it will be many '\0'-terminated strings, 
+						ended with two consecutive '\0' */
+			 const unsigned char *word); /* word to be analyzed */
+
 /* StavaStringGetWord reads the next word from the string str and stores 
    it in word.
    Word has to be allocated (of size at least LANGD+1 (51)) before calling.
@@ -89,6 +124,19 @@ extern int StavaAnalyzeCompound(
 unsigned char *StavaStringGetWord(
 		 unsigned char *str,   /* input string */
 		 unsigned char *word); /* where read word will be stored */
+
+  extern int utf8locale; /* decides whether PrintLocale should translate to utf-8 */
+
+/* PrintLocale prints a string in the locale defined by utf8locale */
+void PrintLocale(
+                 FILE *f,        /* file to print on */
+		 const char *s); /* string to print */
+
+/* utf8string2iso converts an UTF-8 string to ISO-8859-1 */
+int utf8string2iso(
+		   char *dest, /* output string */
+		   int destSize, /* max output size */
+		   unsigned char *src); /* input string */
 
 /* StavaLastErrorMessage returns a message describing the last error message
 that occurred. Returns empty string if no error message occurred since last
@@ -103,3 +151,9 @@ extern int xTillatSIFogar, xTillatSIAllaFogar;
 extern int xIntePetig;
 extern int xMaxOneError;
 extern int xPrintError;
+
+#if defined (__cplusplus)
+}
+#endif
+#endif
+

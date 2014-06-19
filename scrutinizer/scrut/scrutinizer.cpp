@@ -13,7 +13,7 @@
 #include <sstream>
 
 extern "C" {
-#include "stavaapi.h"
+#include "libstava.h"
 }
 
 #ifdef PROBCHECK

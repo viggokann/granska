@@ -1,11 +1,27 @@
-/* Rättstavningsprogram. Version 2.61  2004-10-31
-   Copyright (C) 1990-2004
+/* Rättstavningsprogram. Version 2.63  2013-03-15
+   Copyright (C) 1990-2013
    Joachim Hollman och Viggo Kann
    joachim@nada.kth.se viggo@nada.kth.se
 */
 
-/* #define ENGELSKA */ /* Engelsk stavningskontroll */
-#define SVENSKA /* Svensk stavningskontroll */
+/******************************************************************************
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+******************************************************************************/
+
 
 #include "suffix.h"
 #include "stava.h"
@@ -19,6 +35,13 @@ typedef struct suffixchecklist {
   struct suffixchecklist *next;
   int accept;
 } suffixchecklist;
+
+struct ELcache {
+  int noOfCheckedWords;
+  unsigned char checkedWord[MAXSUFFIXMEMSIZE][LANGD];
+  int checkedWlen[MAXSUFFIXMEMSIZE];
+  int checkedWres[MAXSUFFIXMEMSIZE];
+};
 
 #ifndef MAXNOOFFORBIDDENENDINGS
 #define MAXNOOFFORBIDDENENDINGS 6
@@ -47,7 +70,13 @@ typedef struct suffixset {
 static suffixset *root = NULL;
 static suffixset **set;
 static int SuffixStart[257];
-static int noOfElements, setIndex, setIndexLeft, setIndexRight, charNumber;
+static int noOfSuffixes;
+
+struct setIndex {
+  int left;
+  int right;
+  int charNumber;
+};
 
 /* Reverse skapar ett nytt ord som är word läst baklänges. */
 static unsigned char *Reverse(unsigned char *word)
@@ -62,7 +91,7 @@ static unsigned char *Reverse(unsigned char *word)
 static void InsertSuffix(suffixset *suf)
 { suffixset *p = root;
   int comp;
-  noOfElements++;
+  noOfSuffixes++;
   if (p == NULL) {
     root = suf;
     return;
@@ -110,11 +139,11 @@ static unsigned char *NextWord(unsigned char *s, unsigned char **start)
   return s + 1;
 }
 
-static void TreeToArray(suffixset *suf)
+static void TreeToArray(suffixset *suf, int *setIndexp)
 {
-  if (suf->left) TreeToArray(suf->left);
-  set[setIndex++] = suf;
-  if (suf->right) TreeToArray(suf->right);
+  if (suf->left) TreeToArray(suf->left, setIndexp);
+  set[(*setIndexp)++] = suf;
+  if (suf->right) TreeToArray(suf->right, setIndexp);
 }
 
 static void WriteSuffix(suffixset *suf)
@@ -172,9 +201,8 @@ void WriteSuffixList(void)
 static int ParseSufLine(unsigned char *line, int len)
 { suffixset *newsuf;
   suffixchecklist *p;
-  unsigned char *s, *start, *freeS;
+  unsigned char *s, *start;
     s = malloc(len + 1);
-    freeS = s;
     strcpy((char *)s, (char *)line);
     newsuf = malloc(sizeof(*newsuf));
     newsuf->allowedlastcharacters = newsuf->forbiddenlastcharacters = NULL;
@@ -271,7 +299,6 @@ static int ParseSufLine(unsigned char *line, int len)
 	start++;
       } else p->accept = 1;
       p->checksuffix = start;
-      
       while ((s = NextWord(s, &start)) != NULL) {
 	p->suffixlen = strlen((char *)p->checksuffix);
 	p->next = malloc(sizeof(*p->next));
@@ -285,7 +312,6 @@ static int ParseSufLine(unsigned char *line, int len)
       p->suffixlen = strlen((char *)p->checksuffix);
       p->next = NULL;
     }
-    free(freeS); //wille, pekar på s början av s som aldrig frigörs;
     return 1;
 }
 
@@ -294,6 +320,7 @@ int InitSuf(const char *SLfilename)
 { FILE *fp;
   unsigned char line[200];
   int len, i, j;
+  int setIndex;
   fp = fopen(SLfilename, "r");
   if (!fp) return 1;
   while (fgets((char *)line, 200, fp)) {
@@ -303,20 +330,20 @@ int InitSuf(const char *SLfilename)
     ParseSufLine(line, len);
   }
   fclose(fp);
-  set = malloc(sizeof(*set) * (noOfElements + 1));
+  set = malloc(sizeof(*set) * (noOfSuffixes + 1));
   setIndex = 0;
-  TreeToArray(root);
-  set[noOfElements] = NULL;
-  if (setIndex != noOfElements) {
+  TreeToArray(root, &setIndex);
+  set[noOfSuffixes] = NULL;
+  if (setIndex != noOfSuffixes) {
     sprintf(stavaerrorbuf, "InitSuf: antalet suffix stämmer inte.\n");
     if (xPrintError) fprintf(stderr, "%s", stavaerrorbuf);
   }
   for (i = 0; i < 256; i++) SuffixStart[i] = -1;
-  for (j = 0; j < noOfElements; j++) {
+  for (j = 0; j < noOfSuffixes; j++) {
     i = set[j]->reversesuffix[0];
     if (SuffixStart[i] == -1) SuffixStart[i] = j;
   }
-  SuffixStart[256] = noOfElements;
+  SuffixStart[256] = noOfSuffixes;
   for (i = 256; i > 0; i--)
     if (SuffixStart[i - 1] == -1) SuffixStart[i - 1] = SuffixStart[i];
   return 0;
@@ -335,90 +362,90 @@ static INLINE int ReverseCompare(unsigned char *s, int len, unsigned char *rev)
   return -1;
 }
 
-static INLINE int BinarySearch(unsigned char c)
-{ int mid, left, right = setIndexRight;
-  while (setIndexLeft < right) {
-    mid = (setIndexLeft + right) / 2;
-    if (set[mid]->len <= charNumber ||
-	set[mid]->reversesuffix[charNumber] < c) setIndexLeft = mid + 1;
+static INLINE int BinarySearch(unsigned char c, struct setIndex *setindex)
+{ int mid, left, right = setindex->right;
+  while (setindex->left < right) {
+    mid = (setindex->left + right) / 2;
+    if (set[mid]->len <= setindex->charNumber ||
+	set[mid]->reversesuffix[setindex->charNumber] < c) setindex->left = mid + 1;
     else right = mid;
   }
-  if (set[right]->len > charNumber &&
-      set[right]->reversesuffix[charNumber] == c) {
+  if (set[right]->len > setindex->charNumber &&
+      set[right]->reversesuffix[setindex->charNumber] == c) {
     /* Räkna ut var det tänkbara intervallet slutar */
     left = right;
-    while (left < setIndexRight) {
-      mid = (left + setIndexRight + 1) / 2;
-      if (set[mid]->len <= charNumber ||
-	  set[mid]->reversesuffix[charNumber] <= c) left = mid;
-      else setIndexRight = mid - 1;
+    while (left < setindex->right) {
+      mid = (left + setindex->right + 1) / 2;
+      if (set[mid]->len <= setindex->charNumber ||
+	  set[mid]->reversesuffix[setindex->charNumber] <= c) left = mid;
+      else setindex->right = mid - 1;
     }
     return 1;
   }
   return 0;
 }
 
-/* FindNextSuffix letar rätt på nästa förekomst (efter set[setIndexLeft]) i
+/* FindNextSuffix letar rätt på nästa förekomst (efter set[setindex->left]) i
 suffixlistan av ett suffix som matchar slutet av word.
 Stammen (dvs delen före suffixet) kopieras till stem. */
 static suffixset *FindNextSuffix(const unsigned char *word, int len, 
 				 int firstvowel, unsigned char *stem,
-				 int *outstemlen)
+				 int *outstemlen, struct setIndex *setindex)
 { int stemlen, i, ending;
   int maxsuffixlen = len - PREFIXMIN;
   unsigned char **p;
  beginFindNextSuffix:
-  if (++setIndexLeft <= setIndexRight) {
-    if (strcmp((char *)set[setIndexLeft - 1]->suffix, 
-	       (char *)set[setIndexLeft]->suffix) == 0) {
-      stemlen = len - set[setIndexLeft]->len;
-      if (stemlen < firstvowel && !set[setIndexLeft]->stopsearchatbeginning)
+  if (++setindex->left <= setindex->right) {
+    if (strcmp((char *)set[setindex->left - 1]->suffix, 
+	       (char *)set[setindex->left]->suffix) == 0) {
+      stemlen = len - set[setindex->left]->len;
+      if (stemlen < firstvowel && !set[setindex->left]->stopsearchatbeginning)
 	goto beginFindNextSuffix;
-      for (p = set[setIndexLeft]->forbiddenending, ending = 0; *p; 
+      for (p = set[setindex->left]->forbiddenending, ending = 0; *p; 
 	   p++, ending++) {
-	i = set[setIndexLeft]->forbiddenendinglength[ending];
+	i = set[setindex->left]->forbiddenendinglength[ending];
 	if (strncmp((char *)word + stemlen - i, (char *)*p, i) == 0)
 	  goto beginFindNextSuffix;
       }
-      if (set[setIndexLeft]->forbiddenlastcharacters) {
-	if (strchr((char *)set[setIndexLeft]->forbiddenlastcharacters,
+      if (set[setindex->left]->forbiddenlastcharacters) {
+	if (strchr((char *)set[setindex->left]->forbiddenlastcharacters,
 		   word[stemlen - 1]) != NULL)
 	  goto beginFindNextSuffix;
-      } else if (set[setIndexLeft]->allowedlastcharacters) {
-	if (strchr((char *)set[setIndexLeft]->allowedlastcharacters, 
+      } else if (set[setindex->left]->allowedlastcharacters) {
+	if (strchr((char *)set[setindex->left]->allowedlastcharacters, 
 		   word[stemlen - 1]) == NULL)
 	  goto beginFindNextSuffix;
       }
       strcpy((char *)stem, (char *)word);
       stem[stemlen] = '\0';
       *outstemlen = stemlen;
-      return set[setIndexLeft];
+      return set[setindex->left];
     }
-    for (charNumber++; charNumber < maxsuffixlen; charNumber++) {
-      if (!BinarySearch(word[len - charNumber - 1])) return NULL;
-      if (set[setIndexLeft]->len == charNumber + 1) {
-	stemlen = len - set[setIndexLeft]->len;
-	if (stemlen < firstvowel && !set[setIndexLeft]->stopsearchatbeginning)
+    for (setindex->charNumber++; setindex->charNumber < maxsuffixlen; setindex->charNumber++) {
+      if (!BinarySearch(word[len - setindex->charNumber - 1], setindex)) return NULL;
+      if (set[setindex->left]->len == setindex->charNumber + 1) {
+	stemlen = len - set[setindex->left]->len;
+	if (stemlen < firstvowel && !set[setindex->left]->stopsearchatbeginning)
 	  goto beginFindNextSuffix;
-	for (p = set[setIndexLeft]->forbiddenending, ending = 0; *p; 
+	for (p = set[setindex->left]->forbiddenending, ending = 0; *p; 
 	     p++, ending++) {
-	  i = set[setIndexLeft]->forbiddenendinglength[ending];
+	  i = set[setindex->left]->forbiddenendinglength[ending];
 	  if (strncmp((char *)word + stemlen - i, (char *)*p, i) == 0)
 	    goto beginFindNextSuffix;
 	}
-	if (set[setIndexLeft]->forbiddenlastcharacters) {
-	  if (strchr((char *)set[setIndexLeft]->forbiddenlastcharacters, 
+	if (set[setindex->left]->forbiddenlastcharacters) {
+	  if (strchr((char *)set[setindex->left]->forbiddenlastcharacters, 
 		     word[stemlen - 1]) != NULL)
 	    goto beginFindNextSuffix;
-	} else if (set[setIndexLeft]->allowedlastcharacters) {
-	  if (strchr((char *)set[setIndexLeft]->allowedlastcharacters, 
+	} else if (set[setindex->left]->allowedlastcharacters) {
+	  if (strchr((char *)set[setindex->left]->allowedlastcharacters, 
 		     word[stemlen - 1]) == NULL)
 	    goto beginFindNextSuffix;
 	}
 	strcpy((char *)stem, (char *)word);
 	stem[stemlen] = '\0';
         *outstemlen = stemlen;
-	return set[setIndexLeft];
+	return set[setindex->left];
       }
     }
   }
@@ -430,61 +457,61 @@ som matchar slutet av word.
 Stammen (dvs delen före suffixet) kopieras till stem. */
 static suffixset *FindSuffix(const unsigned char *word, int len, 
 			     int firstvowel, unsigned char *stem,
-			     int *outstemlen)
+			     int *outstemlen, struct setIndex *setindex)
 { int stemlen, i, ending;
   int maxsuffixlen = len - PREFIXMIN;
   unsigned char **p;
-  setIndexLeft = SuffixStart[word[len - 1]];
-  setIndexRight = SuffixStart[word[len - 1] + 1] - 1;
-  if (setIndexLeft > setIndexRight) return NULL;
-  charNumber = 0;
-  if (set[setIndexLeft]->len == 1) {
+  setindex->left = SuffixStart[word[len - 1]];
+  setindex->right = SuffixStart[word[len - 1] + 1] - 1;
+  if (setindex->left > setindex->right) return NULL;
+  setindex->charNumber = 0;
+  if (set[setindex->left]->len == 1) {
     stemlen = len - 1;
-    for (p = set[setIndexLeft]->forbiddenending, ending = 0; *p; 
+    for (p = set[setindex->left]->forbiddenending, ending = 0; *p; 
 	 p++, ending++) {
-      i = set[setIndexLeft]->forbiddenendinglength[ending];
+      i = set[setindex->left]->forbiddenendinglength[ending];
       if (strncmp((char *)word + stemlen - i, (char *)*p, i) == 0)
-	return FindNextSuffix(word, len, firstvowel, stem, outstemlen);
+	return FindNextSuffix(word, len, firstvowel, stem, outstemlen, setindex);
     }
-    if (set[setIndexLeft]->forbiddenlastcharacters) {
-      if (strchr((char *)set[setIndexLeft]->forbiddenlastcharacters, 
+    if (set[setindex->left]->forbiddenlastcharacters) {
+      if (strchr((char *)set[setindex->left]->forbiddenlastcharacters, 
 		 word[stemlen - 1]) != NULL)
-	return FindNextSuffix(word, len, firstvowel, stem, outstemlen);
-    } else if (set[setIndexLeft]->allowedlastcharacters) {
-      if (strchr((char *)set[setIndexLeft]->allowedlastcharacters, 
+	return FindNextSuffix(word, len, firstvowel, stem, outstemlen, setindex);
+    } else if (set[setindex->left]->allowedlastcharacters) {
+      if (strchr((char *)set[setindex->left]->allowedlastcharacters, 
 		 word[stemlen - 1]) == NULL)
-	return FindNextSuffix(word, len, firstvowel, stem, outstemlen);
+	return FindNextSuffix(word, len, firstvowel, stem, outstemlen, setindex);
     }
     strcpy((char *)stem, (char *)word);
     stem[stemlen] = '\0';
     *outstemlen = stemlen;
-    return set[setIndexLeft];
+    return set[setindex->left];
   }
-  for (charNumber = 1; charNumber < maxsuffixlen; charNumber++) {
-    if (!BinarySearch(word[len - charNumber - 1])) return NULL;
-    if (set[setIndexLeft]->len == charNumber + 1) {
-      stemlen = len - set[setIndexLeft]->len;
-      if (stemlen < firstvowel && !set[setIndexLeft]->stopsearchatbeginning)
-	return FindNextSuffix(word, len, firstvowel, stem, outstemlen);
-      for (p = set[setIndexLeft]->forbiddenending, ending = 0; *p; 
+  for (setindex->charNumber = 1; setindex->charNumber < maxsuffixlen; setindex->charNumber++) {
+    if (!BinarySearch(word[len - setindex->charNumber - 1], setindex)) return NULL;
+    if (set[setindex->left]->len == setindex->charNumber + 1) {
+      stemlen = len - set[setindex->left]->len;
+      if (stemlen < firstvowel && !set[setindex->left]->stopsearchatbeginning)
+	return FindNextSuffix(word, len, firstvowel, stem, outstemlen, setindex);
+      for (p = set[setindex->left]->forbiddenending, ending = 0; *p; 
 	   p++, ending++) {
-	i = set[setIndexLeft]->forbiddenendinglength[ending];
+	i = set[setindex->left]->forbiddenendinglength[ending];
 	if (strncmp((char *)word + stemlen - i, (char *)*p, i) == 0)
-	  return FindNextSuffix(word, len, firstvowel, stem, outstemlen);
+	  return FindNextSuffix(word, len, firstvowel, stem, outstemlen, setindex);
       }
-      if (set[setIndexLeft]->forbiddenlastcharacters) {
-	if (strchr((char *)set[setIndexLeft]->forbiddenlastcharacters, 
+      if (set[setindex->left]->forbiddenlastcharacters) {
+	if (strchr((char *)set[setindex->left]->forbiddenlastcharacters, 
 		   word[stemlen - 1]) != NULL)
-	  return FindNextSuffix(word, len, firstvowel, stem, outstemlen);
-      } else if (set[setIndexLeft]->allowedlastcharacters) {
-	if (strchr((char *)set[setIndexLeft]->allowedlastcharacters, 
+	  return FindNextSuffix(word, len, firstvowel, stem, outstemlen, setindex);
+      } else if (set[setindex->left]->allowedlastcharacters) {
+	if (strchr((char *)set[setindex->left]->allowedlastcharacters, 
 		   word[stemlen - 1]) == NULL)
-	  return FindNextSuffix(word, len, firstvowel, stem, outstemlen);
+	  return FindNextSuffix(word, len, firstvowel, stem, outstemlen, setindex);
       }
       strcpy((char *)stem, (char *)word);
       stem[stemlen] = '\0';
       *outstemlen = stemlen;
-      return set[setIndexLeft];
+      return set[setindex->left];
     }
   }
   return NULL;
@@ -514,27 +541,23 @@ static int CheckEmptySuffix(suffixset *suf, const unsigned char *word, int len)
 }
 
 /* CacheCheckWord kollar ord i InEL med cacheminne */
-static INLINE int CacheCheckWord(unsigned char *word, int len)
+static INLINE int CacheCheckWord(struct ELcache *cache, unsigned char *word, int len)
 { int i, j;
-  static int noOfCheckedWords;
-  static unsigned char checkedWord[MAXSUFFIXMEMSIZE][LANGD];
-  static int checkedWlen[MAXSUFFIXMEMSIZE];
-  static int checkedWres[MAXSUFFIXMEMSIZE];
   if (word == NULL) {
-    noOfCheckedWords = 0; /* initiera */
+    cache->noOfCheckedWords = 0; /* initiera */
     return -1;
   }
-  for (i = 0; i < noOfCheckedWords; i++)
-    if (len == checkedWlen[i]) {
+  for (i = 0; i < cache->noOfCheckedWords; i++)
+    if (len == cache->checkedWlen[i]) {
       for (j = len - 1; j >= 0; j--) /* jämför orden bakifrån */
-	if (word[j] != checkedWord[i][j]) break;
-      if (j < 0) return checkedWres[i];
+	if (word[j] != cache->checkedWord[i][j]) break;
+      if (j < 0) return cache->checkedWres[i];
     }
   i = (InEL(word, len) != 0);
-  if (noOfCheckedWords < MAXSUFFIXMEMSIZE) {
-    strcpy((char *)checkedWord[noOfCheckedWords], (char *)word);
-    checkedWlen[noOfCheckedWords] = len;
-    checkedWres[noOfCheckedWords++] = i;
+  if (cache->noOfCheckedWords < MAXSUFFIXMEMSIZE) {
+    strcpy((char *)cache->checkedWord[cache->noOfCheckedWords], (char *)word);
+    cache->checkedWlen[cache->noOfCheckedWords] = len;
+    cache->checkedWres[cache->noOfCheckedWords++] = i;
   }
   return i;
 }
@@ -545,31 +568,35 @@ om suffixet byts ut mot alla kollsuffix i så fall returneras 1. Annars
 returneras 0. 
 Om tryallrules=1 (och TRYALLRULES är definierat) så gås alla regler som
 matchar igenom och matchningarna lagras i arrayerna lemma och tag. Antalet
-olika matchiningar lagras i nooftags. */
-int CheckSuffix(const unsigned char *word, int tryallrules)
+olika matchiningar lagras i nooftags.
+compoundSearch ska vara 1 om CheckSuffix anropas under sammansättningsanalys.
+ */
+int CheckSuffix(const unsigned char *word, int tryallrules, int compoundSearch)
 { unsigned char word2[LANGD], *word2end;
   int len = strlen((char *)word), minprefixlen = 0, firstvowel, word2len;
   int i;
   suffixset *suf;
   suffixchecklist *p;
+  struct setIndex setindexrec;
+  struct ELcache cache;
   if (len < PREFIXMIN) return 0;
   for (; isConsonant[word[minprefixlen]]; minprefixlen++);
   minprefixlen++;
   if (minprefixlen < PREFIXMIN) firstvowel = PREFIXMIN; else 
     firstvowel = minprefixlen;
-  CacheCheckWord(NULL, 0);
+  CacheCheckWord(&cache, NULL, 0);
   if (len > PREFIXMIN) {
     for (suf = FindSuffix(word, len, firstvowel, word2,
-			&word2len);
+			&word2len, &setindexrec);
 	 suf; 
-	 suf = FindNextSuffix(word, len, firstvowel, word2, &word2len)) {
+	 suf = FindNextSuffix(word, len, firstvowel, word2, &word2len, &setindexrec)) {
       word2end = word2 + word2len;
       for (p = suf->check; p; p = p->next) {
 	strcpy((char *)word2end, (char *)p->checksuffix);
-	if (CacheCheckWord(word2, word2len + p->suffixlen) != p->accept) 
+	if (CacheCheckWord(&cache, word2, word2len + p->suffixlen) != p->accept) 
 	  goto nextSuffix;
       }
-      if (xDebug) {
+      if (xxDebug) {
 	WriteISO(word);
 	printf(" matchar suffixregeln ");
 	*word2end = '\0';
@@ -588,10 +615,10 @@ int CheckSuffix(const unsigned char *word, int tryallrules)
       word2end = word2 + len;
       for (p = suf->check; p; p = p->next) {
 	strcpy((char *)word2end, (char *)p->checksuffix);
-        if (CacheCheckWord(word2, len + p->suffixlen) != p->accept) 
+        if (CacheCheckWord(&cache, word2, len + p->suffixlen) != p->accept) 
 	  goto nextSuffix2;
       }
-      if (xDebug) {
+      if (xxDebug) {
 	WriteISO(word);
 	printf(" matchar suffixregeln ");
 	WriteISO(word);

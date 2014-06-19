@@ -4,6 +4,24 @@
    joachim@algoritmica.se viggo@nada.kth.se
 */
 
+/******************************************************************************
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+******************************************************************************/
+
 #define HUGEVAR
 #ifdef __GNUC__
 #define INLINE inline
@@ -60,8 +78,8 @@
 #define DELIMGRAM 31         /* Nr som används för ordbörjan/slut och skiljetecken i fyrgram */
 #define DELIMP 1             /* Nr som används för ordbörjan/slut och skiljetecken i p-tabeller */
 #define FGRAMSIZE 131072L    /* Antal 8-bitselement i fyrgramsbitvektorn */
-#define LANGD 50             /* Längsta tillåtna ord */
-#define FILENAMELENGTH 100   /* Längsta tillåtna filnamn+1 */
+#define LANGD 4096           /* Längsta tillåtna ord */
+#define FILENAMELENGTH 1000  /* Längsta tillåtna filnamn+1 */
 #define DELORDMIN 3          /* Minsta tillåta ordlängd i sammansättningar */
 #define STARTDELORDMIN 2     /* Minsta tillåta ordlängd på första ordet i sammansättningar */
 #define SLUTDELORDMIN 3      /* Minsta tillåta ordlängd på sista ordet i sammansättningar */
@@ -80,6 +98,7 @@
 #define ISOCODE 1            /* värde på variabeln x8bitar för ISO 8859-1 */
 #define MACCODE 2            /* värde på variabeln x8bitar för Mackodning */
 #define DOSCODE 3            /* värde på variabeln x8bitar för Doskodning */
+#define UTF8CODE 4           /* värde på variabeln x8bitar för UTF-8      */
 
 extern char isLowerCase[256]; /* är x en liten bokstav? */
 extern char isUpperCase[256]; /* är x en stor bokstav? */
@@ -123,7 +142,7 @@ extern int x8bitar;
 extern int xAndelser, xForkortningar, xNamn, xDatatermer;
 extern int xTex;
 extern int xSammansatta, xKort;
-extern int xDebug;
+extern int xxDebug;
 extern int xTillatSIFogar, xTillatSIAllaFogar;
 extern int xGenerateCompounds, xIntePetig;
 extern int xHtml, xEndastEtt, xRattstavningsforslag, xMaxOneError;
