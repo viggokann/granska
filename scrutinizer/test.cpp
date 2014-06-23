@@ -14,7 +14,7 @@ using namespace std;
 
 int main(int argc, char** argv){
 	loadGranska();
-	ifstream infile("presentation.txt");
+	ifstream infile(argv[1]);
 	string line;
 	string text;
 	while (getline(infile, line))
@@ -26,8 +26,7 @@ int main(int argc, char** argv){
 	char *input = new char[text.length()+1];
 	char* first = new char[text.length()+1];
 	char* last = new char[text.length()+1];
-	int size;
-	size = 10;
+	int size = atoi(argv[2]);
 	strcpy(input, text.c_str());
 	for(int i = 0; i < size; i++){
 		char* o1 = granska(input);
@@ -39,6 +38,7 @@ int main(int argc, char** argv){
 			delete[] o2;
 		}
 	}
+	printf("%s", last);
 	if(strcmp(first,last)==0) {
 			printf("\n--------------------------------------\n");
 			printf("\n           SUCCESS                    \n");

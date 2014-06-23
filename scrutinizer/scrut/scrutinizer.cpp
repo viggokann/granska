@@ -445,6 +445,7 @@ char* Scrutinizer::GetResult() {
     
 #ifdef PROBCHECK
     Prob::Output &o = Prob::output();
+    o.isLib();
     o.push("scrutinizer");
     for(const Sentence *s=theText.FirstSentence(); s; s=s->Next())
         {

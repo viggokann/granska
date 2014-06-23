@@ -26,6 +26,7 @@ namespace Misc
         virtual void init() = 0;
         virtual void exit() = 0;
         virtual std::string getCharP() = 0;
+        virtual void isLib() = 0;
     };
 
     class Output_impl_normal : public Output_impl
@@ -42,16 +43,19 @@ namespace Misc
         bool pushed;
         bool inited;
         bool exited;
-
+		bool lib;
+		
         std::stack<std::string> elem;
         std::ofstream out;
         std::ostream *s;
         std::ostringstream os;
+        
     public:
         Output_impl_normal()
-            : pushed(false), inited(false), exited(false), s(0)
+            : pushed(false), inited(false), exited(false), s(0), lib(false)
         {}
         ~Output_impl_normal() { exit(); }
+        void isLib();
 		std::string getCharP();
         void flush();
         void push(std::string name);
@@ -104,29 +108,29 @@ namespace Misc
         {
             if(inited || exited)
                 return;
-			#ifdef LIB_GRANSKA
-            ostr() << "<?xml version=\"1.0\" "
-                  << "encoding=\"ISO-8859-1\" "
-                  << "standalone=\"yes\"?>"
-                  << std::endl
-                  << "<Root>";
-            #endif
-            #ifndef LIB_GRANSKA
-            str() << "<?xml version=\"1.0\" "
-                  << "encoding=\"ISO-8859-1\" "
-                  << "standalone=\"yes\"?>"
-                  << std::endl
-                  << "<Root>";
-            #endif
+			if(lib==true){
+				ostr() << "<?xml version=\"1.0\" "
+					  << "encoding=\"ISO-8859-1\" "
+					  << "standalone=\"yes\"?>"
+					  << std::endl
+					  << "<Root>";
+			}
+            else{
+				str() << "<?xml version=\"1.0\" "
+					  << "encoding=\"ISO-8859-1\" "
+					  << "standalone=\"yes\"?>"
+					  << std::endl
+					  << "<Root>";
+			}
             reset();
             inited = true;
         }
         void exit()
         {
-			#ifndef LIB_GRANSKA
-            if(inited && !exited)
-                str() << "</Root>";
-            #endif
+			if(lib==false){
+				if(inited && !exited)
+					str() << "</Root>";
+            }
             if(!elem.empty())
                 std::cerr << "WARNING: XML will not be well-formed, "
                           << "XML stack was not empty on Output::exit()"
@@ -154,8 +158,13 @@ namespace Misc
         void init() {}
         void exit() {}
         std::string getCharP() {return ostring.str().c_str();}
+        void isLib() {}
     };
 
+}
+
+void Misc::Output_impl_normal::isLib(){
+	lib = true;
 }
 
 std::string Misc::Output_impl_normal::getCharP(){
@@ -171,28 +180,39 @@ void Misc::Output_impl_normal::flush()
 {
     if(exited)
         return;
-	#ifdef LIB_GRANSKA
-	std::ostringstream &o = ostr();
-	#endif
-	#ifndef LIB_GRANSKA
-    std::ostream &o = str();
-	#endif
-    if(node != "")
-        {
-            o << "<" << node;
-            for(unsigned int i = 0; i < attrib.size(); i++)
-                o << " " << attrib[i].name << "=\""
-                  << attrib[i].value << "\"";
-            if(!pushed)
-                {
-                    if(value == "")
-                        o << "/>" << std::endl;
-                    else
-                        o << ">" << value << "</" << node << ">" << std::endl;
-                }
-            else
-                o << ">";
-        }
+	if(lib==true && node != "")
+	{
+		ostr() << "<" << node;
+		for(unsigned int i = 0; i < attrib.size(); i++)
+			ostr() << " " << attrib[i].name << "=\""
+			  << attrib[i].value << "\"";
+		if(!pushed)
+			{
+				if(value == "")
+					ostr() << "/>" << std::endl;
+				else
+					ostr() << ">" << value << "</" << node << ">" << std::endl;
+			}
+		else
+			ostr() << ">";
+
+	}
+	else if(lib!=true && node != "")
+	{
+		str() << "<" << node;
+		for(unsigned int i = 0; i < attrib.size(); i++)
+			str() << " " << attrib[i].name << "=\""
+			  << attrib[i].value << "\"";
+		if(!pushed)
+			{
+				if(value == "")
+					str() << "/>" << std::endl;
+				else
+					str() << ">" << value << "</" << node << ">" << std::endl;
+			}
+		else
+			str() << ">";
+	}
     else if(!inited)	// first node
         init();
 
@@ -214,12 +234,8 @@ void Misc::Output_impl_normal::push(std::string n)
 void Misc::Output_impl_normal::pop()
 {
     flush();
-    #ifdef LIB_GRANSKA
-    ostr() << "</" << elem.top() << ">" << std::endl;
-	#endif	
-    #ifndef LIB_GRANSKA
-    str() << "</" << elem.top() << ">" << std::endl;
-    #endif
+    if(lib==true) ostr() << "</" << elem.top() << ">" << std::endl;
+	else str() << "</" << elem.top() << ">" << std::endl;
     //std::cout << std::endl << "pop: " << elem.top() << std::endl;
     elem.pop();
 }
@@ -249,6 +265,7 @@ Misc::XMLoutput::~XMLoutput() { delete impl; }
 
 void Misc::XMLoutput::push(const char *node_name)       { impl->push(node_name); }
 void Misc::XMLoutput::pop()			        { impl->pop(); }
+void Misc::XMLoutput::isLib()			        { impl->isLib(); }
 
 std::string Misc::XMLoutput::getCharP(){ return impl->getCharP(); }
 void Misc::XMLoutput::add(std::string name, std::string text) { impl->add(name,text);}
