@@ -5,40 +5,35 @@
  */
 
 #include "granskaapi.h"
-#include <fstream>
-#include <iostream>
-#include <cstring>
+#include <stdio.h>
 #include <stdlib.h>
-
-using namespace std;
+#include <string.h>
 
 int main(int argc, char** argv){
 	loadGranska();
-	ifstream infile(argv[1]);
-	string line;
-	string text;
-	while (getline(infile, line))
-	{
-		text.append(line);
-		
-	}
-	infile.close();
-	char *input = new char[text.length()+1];
-	char* first = new char[text.length()+1];
-	char* last = new char[text.length()+1];
-	int size = atoi(argv[2]);
-	strcpy(input, text.c_str());
-	for(int i = 0; i < size; i++){
-		char* o1 = granska(input);
-		char* o2 = granska(input);
-		if(i==0){ first = o1; delete[] o2;}
-		else if(i==(size-1)){last = o2; delete[] o1;}
-		else{
-			delete[] o1;
-			delete[] o2;
+	FILE* fp;
+	char str [100000];
+	fp = fopen(argv[1], "r");
+	char c;
+	int i = 0;
+	while((c = (char)getc(fp)) !=EOF){ 
+		if(i < 100000){
+			str[i] = c; 
+			i++;
 		}
+		else{
+			printf("File too big\n");
+			return -1;
+		} 
+	}   
+	fclose(fp);
+	char* first, *last, *ret;
+	for(int i = 0; i < atoi(argv[2]); i++){
+		ret = granska(str);
+		if(i==0) first = ret; 
+		else if(i==(atoi(argv[2])-1)) last = ret; 
 	}
-	printf("%s", last);
+	//printf("%s", last);
 	if(strcmp(first,last)==0) {
 			printf("\n--------------------------------------\n");
 			printf("\n           SUCCESS                    \n");
@@ -50,9 +45,7 @@ int main(int argc, char** argv){
 		printf("\n--------------------------------------\n");
 		return 0;
 	}
-	delete[] first;
-	delete[] last;
-	delete[] input;
+	delete[] ret;
 		
 	return 0;
 }

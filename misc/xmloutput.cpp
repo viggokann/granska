@@ -55,13 +55,16 @@ namespace Misc
             : pushed(false), inited(false), exited(false), s(0), lib(false)
         {}
         ~Output_impl_normal() { exit(); }
-        void isLib();
 		std::string getCharP();
         void flush();
         void push(std::string name);
         void pop();
         void add(std::string name, std::string value);
         void attr(std::string name, std::string value);
+
+		void isLib(){
+		lib = true;
+		}
         std::ostringstream &ostr()
         {
 			return os;
@@ -108,12 +111,12 @@ namespace Misc
         {
             if(inited || exited)
                 return;
-			if(lib==true){
+			if(lib){
 				ostr() << "<?xml version=\"1.0\" "
 					  << "encoding=\"ISO-8859-1\" "
 					  << "standalone=\"yes\"?>"
 					  << std::endl
-					  << "<Root>";
+					  << "<granska>";
 			}
             else{
 				str() << "<?xml version=\"1.0\" "
@@ -127,7 +130,7 @@ namespace Misc
         }
         void exit()
         {
-			if(lib==false){
+			if(!lib){
 				if(inited && !exited)
 					str() << "</Root>";
             }
@@ -163,12 +166,9 @@ namespace Misc
 
 }
 
-void Misc::Output_impl_normal::isLib(){
-	lib = true;
-}
 
 std::string Misc::Output_impl_normal::getCharP(){
-	ostr() << "</Root>\n";
+	ostr() << "</granska>\n";
 	std::string str = ostr().str();
 	//const char* ch = ostr().str().c_str();
 	ostr().str(std::string());
@@ -180,7 +180,7 @@ void Misc::Output_impl_normal::flush()
 {
     if(exited)
         return;
-	if(lib==true && node != "")
+	if(lib && node != "")
 	{
 		ostr() << "<" << node;
 		for(unsigned int i = 0; i < attrib.size(); i++)
@@ -197,7 +197,7 @@ void Misc::Output_impl_normal::flush()
 			ostr() << ">";
 
 	}
-	else if(lib!=true && node != "")
+	else if(!lib && node != "")
 	{
 		str() << "<" << node;
 		for(unsigned int i = 0; i < attrib.size(); i++)
@@ -234,7 +234,7 @@ void Misc::Output_impl_normal::push(std::string n)
 void Misc::Output_impl_normal::pop()
 {
     flush();
-    if(lib==true) ostr() << "</" << elem.top() << ">" << std::endl;
+    if(lib) ostr() << "</" << elem.top() << ">" << std::endl;
 	else str() << "</" << elem.top() << ">" << std::endl;
     //std::cout << std::endl << "pop: " << elem.top() << std::endl;
     elem.pop();

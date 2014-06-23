@@ -442,14 +442,13 @@ void Scrutinizer::PrintResult(std::ostream &out) {
 char* Scrutinizer::GetResult() {
     xPrintAllWords = true;
     xPrintOneWordPerLine = false;
-    
 #ifdef PROBCHECK
     Prob::Output &o = Prob::output();
     o.isLib();
     o.push("scrutinizer");
     for(const Sentence *s=theText.FirstSentence(); s; s=s->Next())
         {
-            const GramError *g = 0;
+			const GramError *g = 0;
             // jb: this is used to determine whether there is an actual
             // error or just @recog rules. If error, we will print.
             bool found = false;
