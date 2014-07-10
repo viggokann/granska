@@ -7,15 +7,11 @@ To build run 'make' and install the library with 'sudo make install'.
 This will create two executables: scrutinizer and testlibrary;
 and a dynamic library: 'granska'.
 'scrutinizer' is the actual granska program and 'testlibrary' is
-a small program that makes use of the library 'granska',
-to see that it works. 
-Testlibrary takes two arguments:
-1: A textfile to be scrutinized.
-2: A number which represents to number of times to scrutinize the text.
+a small program that makes use of the library 'granska'.
+To run a test to see that testlibrary works, run
+'make test'
 
-Before you run the programs you must run the script
-'setEnv.sh'. It takes as argument the path to the
-'granska' directory on your local computer.
-Example:
-. setEnv.sh argument 
-(not the space after the dot). 
+Before you run the programs you must run the script 'setEnv.sh'. 
+run it as: . setEnv.sh 
+Note the space after the dot. If not used, the variables will only
+be set within the sript setEnv.sh. 

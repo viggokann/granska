@@ -12,26 +12,27 @@
 int main(int argc, char** argv){
 	loadGranska();
 	FILE* fp;
-	char str [100000];
+	char str [1000000];
 	fp = fopen(argv[1], "r");
 	char c;
 	int i = 0;
 	while((c = (char)getc(fp)) !=EOF){ 
-		if(i < 100000){
+		if(i < 1000000){
 			str[i] = c; 
 			i++;
 		}
 		else{
-			printf("File too big\n");
+			printf("File too big (For this test), change the test.cpp file for bigger files\n");
 			return -1;
 		} 
 	}   
 	fclose(fp);
+	int size = atoi(argv[2]);
 	char* first, *last, *ret;
-	for(int i = 0; i < atoi(argv[2]); i++){
+	for(int i = 0; i < size; i++){
 		ret = granska(str);
 		if(i==0) first = ret; 
-		else if(i==(atoi(argv[2])-1)) last = ret; 
+		else if(i==(size-1)) last = ret; 
 	}
 	//printf("%s", last);
 	if(strcmp(first,last)==0) {

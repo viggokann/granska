@@ -726,7 +726,7 @@ void RuleTerm::FindMatchingsOptimized(AbstractSentence *s) {
     const int n = matchingCheckN[tags[i]][tags[i+1]];
     for (j = 0; j < n; j++) {
       RuleTerm *r = matchingCheck[tags[i]][tags[i+1]][j];
-      // std::cout << r->GetRule() << std::endl;
+      scrutinizer->ruleCount[r->GetRule()->Name()] += 1;
       if (r->anchorTokens < 0) {
 	const int rulenumber = r->GetRule()->Number();
 	if (r->IsHelp()) {

@@ -8,7 +8,7 @@ link("" "")
 
 frågeordsfråga@skiljetecken
 {
-X1(sed=sen),
+X1(sed=sen | cht=mid),
 X2(text="vem" | text="vad" | text="vart" | text="var" | text="varifrån" | text="vilka" | text="vilken" | text="vilket"  | text="hur" | text="varför"  ),
 X3()*, 
 X4(text="." | text="!"),
@@ -16,6 +16,32 @@ X5(sed=sen)
 -->
 mark(X4)
 corr(X4.replace("?"))
+info("Fråga?")
+action(scrutinizing)
+}
+
+janejfråga@skiljetecken
+{
+X(sed=sen | (cht=mid & text!="'")),
+Y(wordcl=vb & (vbf = prt | vbf = prs)),
+X1(cht!=mid)*, 
+X2(text="." | text="!"),
+X3(sed=sen) 
+-->
+mark(X Y X1 X2)
+corr(X2.replace("?"))
+info("Fråga?")
+action(scrutinizing)
+}
+
+eller@skiljetecken
+{
+X(text="eller" | text="eller hur"),
+X2(text="." | text="!"),
+X3(sed=sen) 
+-->
+mark(X2)
+corr(X2.replace("?"))
 info("Fråga?")
 action(scrutinizing)
 }
@@ -63,34 +89,6 @@ info("Versaler vid ny mening")
 action(scrutinizing)
 }
 
-janejfråga@skiljetecken
-{
-X(sed=sen),
-Y(wordcl=vb & (vbf = prt | vbf = prs)),
-X1()*, 
-X2(text="." | text="!"),
-X3(sed=sen) 
--->
-mark(X2)
-corr(X2.replace("?"))
-info("Fråga?")
-action(scrutinizing)
-}
-
-eller@skiljetecken
-{
-X(text="eller" | text="eller hur"),
-X2(text="." | text="!"),
-X3(sed=sen) 
--->
-mark(X2)
-corr(X2.replace("?"))
-info("Fråga?")
-action(scrutinizing)
-}
-
-
-
 imperativsatser@skiljetecken
 {
 X(sed=sen),
@@ -112,28 +110,74 @@ link("" "")
 
 bisats@
 {
-X0(wordcl=sn | wordcl=hp),
-(NP/X1)()?,
+X0(wordcl=sn | wordcl=hp | wordcl=ha | wordcl=ie),
+(NP/X1)(),
 X2(wordcl=ab)?,
 X3(wordcl=vb & (vbf = prt | vbf = prs | vbf = imp)),
 X4(wordcl=vb & (vbf = inf | vbf = sup))?,
-(NP/X5)()?,
-X6(wordcl=ab)?,
+X5(wordcl=pp)?,
+X6(wordcl=ps)?,
 X7(wordcl=jj)?,
-(bisats)()?
+X8(wordcl=pm | wordcl=nn | wordcl=pn)?,
+X9(wordcl=ab)?,
+X10(cht=mad | cht=mid | wordcl=kn)
 -->
 action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
 }
 
-b1@satser
+bisats1@satser
 {
-X1(sed=sen),
-(bisats/X2)(),
-X3(text="."),
-X4(sed=sen) 
+Y(sed=sen | cht=mid),
+(bisats/X)()
 -->
-mark(X2)
-info("Bisats utan huvudsats")
+mark(X)
+info("Bisats")
+action(scrutinizing)
+}
+
+bisats2@satser
+{
+Y(sed!=sen & cht!=mid),
+(bisats/X)()
+-->
+mark(X)
+info("Bisats bör inledas med satsdelare")
+action(scrutinizing)
+}
+
+attbisats@
+{
+X0(text="Att" | text="att"),
+X1(wordcl=vb & (vbf = inf | vbf = sup)),
+X2(wordcl=pp)?,
+X3(wordcl=ps)?,
+X4(wordcl=jj)?,
+X5(wordcl=pm | wordcl=nn | wordcl=pn | wordcl=pl),
+X6(wordcl=ab)?,
+X10(cht=mad | cht=mid | wordcl=kn | wordcl=vb)
+-->
+action(help, gender:=X5.gender, num:=X5.num, spec:=X5.spec)
+}
+
+
+bisats3@satser
+{
+Y(wordcl=pp),
+(attbisats/X)()
+-->
+mark(Y X)
+info("att-bisats")
+action(scrutinizing)
+}
+
+
+bisats4@satser
+{
+C(wordcl!=pp),
+(attbisats/X)()
+-->
+mark(X)
+info("att-bisats")
 action(scrutinizing)
 }
 
@@ -142,7 +186,7 @@ dedem@pronomen
 {
 X0(sed=sen & extra!=hea & extra!=non),
 X1(wordcl!=nn & wordcl!=jj & wordcl!=ps & wordcl!=pc & wordcl!=pn & wordcl!=pm)*,
-X2(wordcl=pn & pnf=obj),
+X2(wordcl=pn & pnf=obj &text= "dem"),
 X3(wordcl!=nn & wordcl!=jj & wordcl!=ps & wordcl!=pc & wordcl!=pn & wordcl!=pm)*,
 X4(sed=sen & extra!=exc)
 -->
@@ -157,7 +201,7 @@ dedem2@pronomen
 X0(sed=sen & extra!=hea & extra!=non),
 (NP/X1)()?,
 (VP)()?,
-X2(wordcl=pn & pnf=sub),
+X2(wordcl=pn & pnf=sub & text="de"),
 X3(wordcl!=nn & wordcl!=jj & wordcl!=ps & wordcl!=pc & wordcl!=pn & wordcl!=pm)*,
 X4(sed=sen & extra!=exc)
 -->
@@ -166,6 +210,41 @@ corr(X2.replace("dem"))
 info("Det finns redan subjekt, används objektsformen 'dem'")
 action(scrutinizing)
 }
+
+komparation@adjektiv
+{
+X1(wordcl=vb),
+X2(wordcl=jj & deg!= kom),
+X3(text="än")
+-->
+mark(X2 X3)
+corr(X2.replace("längre"))
+info("använd den komparativa formen av adjektivet")
+action(scrutinizing)
+}
+
+mermest@adjektiv
+{
+X1(wordcl=vb),
+X2(substr(length-5,length)="adare"),
+X3(text="än")
+-->
+mark(X2 X3)
+info("Sätt in ordet mer före "italics(X2.real_text)" och ta bort ändelsen are från "italics(X2.real_text))
+action(scrutinizing)
+}
+
+mermest2@adjektiv
+{
+X1(wordcl=vb),
+X2(substr(length-6,length)="iskare"),
+X3(text="än")
+-->
+mark(X2 X3)
+info("Sätt in ordet mer före "italics(X2.real_text)" och ta bort ändelsen are från "italics(X2.real_text))
+action(scrutinizing)
+}
+
 (* ----- KONSTIG-MENING-KONTROLL ----- *)
 
 category a {

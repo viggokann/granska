@@ -23,6 +23,7 @@ class Expr;
 
 #include "sentence.h"
 #include "taglexicon.h"
+#include <map>
 
 #define MAXNOOFELEMENTS 15 /* max allowed number of elements in a rule */
 

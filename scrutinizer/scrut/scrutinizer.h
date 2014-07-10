@@ -50,7 +50,10 @@ public:
 
   GramError **Scrutinize(int *n);
   // scrutinizes the current text and returns an array of n GramErrors
-
+  
+  std::map<std::string, int> ruleCount;
+  //stores occurences of rules used.
+  
   // methods not for user interface:
   void Analyze();
   RuleSet *GetRuleSet() const { return ruleSet; }

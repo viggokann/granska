@@ -11,6 +11,7 @@
 #include "timer.h"
 #include "misc/xmloutput.h"
 #include <sstream>
+#include <stdlib.h>
 
 extern "C" {
 #include "libstava.h"
@@ -442,9 +443,22 @@ void Scrutinizer::PrintResult(std::ostream &out) {
 char* Scrutinizer::GetResult() {
     xPrintAllWords = true;
     xPrintOneWordPerLine = false;
+    
 #ifdef PROBCHECK
     Prob::Output &o = Prob::output();
     o.isLib();
+    o.push("rules");
+    //std::ostringstream out;
+	std::map<std::string, int>::iterator iter;
+	for(iter = ruleCount.begin(); iter != ruleCount.end(); iter++){
+	  o.push("rule");
+	  o.add("name", iter->first);
+	  o.add("triggered", iter->second);
+	  o.pop();
+	  //out << iter->first << "	" << iter->second << "\n";
+	}
+	o.pop(); //rules
+	//o.add("rules", out.str());
     o.push("scrutinizer");
     for(const Sentence *s=theText.FirstSentence(); s; s=s->Next())
         {
@@ -527,6 +541,7 @@ char* Scrutinizer::GetResult() {
    std::string str = o.getCharP();
    Prob::print(this);
    theOriginalText.str(std::string());
+   ruleCount.clear();
 #endif
 	char* ch = new char[str.size()+1];
 	strcpy(ch, str.c_str());

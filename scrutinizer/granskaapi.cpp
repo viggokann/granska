@@ -1,7 +1,10 @@
 #include "scrutinizer.h"
 #include "prob.h"
 #include "granskaapi.h"
+#include <string.h>
 #include <iostream>
+#include <stdlib.h>
+
 bool xReadTaggedText = false;
 static Scrutinizer scrutinizer;
 
@@ -24,4 +27,5 @@ char* granska(char* text) {
   char *cstr = scrutinizer.GetResult();
   return cstr;
 }
+
 
