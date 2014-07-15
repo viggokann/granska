@@ -32,6 +32,7 @@ DBX-
 DFS-
 DNF-
 DTL-
+DTL-
 EBCDIC-
 EGA-
 ENEA-
@@ -47,6 +48,7 @@ Fortran
 GNU-
 Gcd-
 Gnu
+Google
 HTML-
 Hercules
 IBM-
@@ -55,13 +57,13 @@ IP-
 ISO-
 IT-
 Intel
-Internet
 Java
 KTH-
 LaTeX
 Latex
 Lex
 Lint
+Linux
 Lisp
 MB-
 MIMD-
@@ -97,6 +99,7 @@ PG-
 Pascal
 Pentium
 Postscript
+Python
 QR-
 Reduce
 Rlisp
@@ -104,6 +107,7 @@ SGML-
 SIS-
 SPARC-
 Scheme
+Scratch
 Simula
 Smalltalk
 Solaris
@@ -116,6 +120,7 @@ Tex
 Troff
 URL-
 UUCP-
+Ubuntu
 Unix
 Usenet
 VLSI-
@@ -207,6 +212,8 @@ heap
 hermite
 hex
 homomorfi
+http-
+https-
 hubb
 hyper
 hårdvaru
@@ -220,15 +227,19 @@ infix
 info
 inloggnings
 inmatnings
+internet
 interoperabilitets
 interpretator
 interpreterings
+ipad
+ipod
 isomorfi
 iterativitets
 kancellations
 kbyte
 kofaktor
 kommando
+kompilator
 kompilator
 kompilerbarhets
 kompilerings
@@ -308,6 +319,7 @@ sinus
 skalär
 skanner
 skiv
+skript
 smart
 sprid
 stirling

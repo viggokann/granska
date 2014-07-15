@@ -54,7 +54,6 @@ static unsigned char HUGEVAR ELtable[ELSIZE];
 static unsigned char HUGEVAR FLtable[FLSIZE];
 static unsigned char HUGEVAR ILtable[ILSIZE];
 static unsigned char HUGEVAR ULtable[ULSIZE];
-#define wordSeparator " "
 static unsigned char HUGEVAR XLtable[XLSIZE];
 static char XLfilename[FILENAMELENGTH];
 static char fyrgramfilename[FILENAMELENGTH];

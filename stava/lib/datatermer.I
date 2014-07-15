@@ -53,6 +53,8 @@ Cs
 DBX
 DNF
 DTL
+DTL
+DTLs
 DTLs
 Dbx
 EBCDIC
@@ -120,6 +122,7 @@ Lints
 Lisp
 Lisps
 MB
+MB
 MIMD
 MIMDs
 MPW
@@ -174,6 +177,8 @@ Pascal
 Pascals
 Pentium
 Pentiums
+Python
+Pythons
 QR
 QRs
 RAM
@@ -191,6 +196,8 @@ SISs
 SPARC
 Scheme
 Schemes
+Scratch
+Scratchs
 Simula
 Simulas
 Smalltalk
