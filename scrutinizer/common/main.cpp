@@ -110,7 +110,7 @@ static void PrintUsage(char *progName) {
     
     std::cerr
       << "usage:" << std::endl
-      << progName << tab << "[-d|i|h|m|e|p|r|t|x] [-agjnopqsuvyW]" << std::endl
+      << progName << tab << "[-d|i|h|m|e|p|r|R|t|x] [-agjnopqsuvyW]" << std::endl
       << tab << tab << "[-r ruleFile] [textFile]" << std::endl
       << tab << tab << "OR [-w args]" << std::endl
       <<"mutually exclusive running modes:" << std::endl
@@ -121,6 +121,7 @@ static void PrintUsage(char *progName) {
       <<tab<<"h:"<<" print usage"<<std::endl
       <<tab<<"m:"<<dont(xPrintMatchings)<<"print matchings"<<std::endl
       <<tab<<"p:"<<dont(xPrintRulesOnly)<<"print rules"<<std::endl
+      <<tab<<"R:"<<" print rules triggered during scrutinization"<<std::endl
       <<tab<<"q:"<<dont(xPrintRuleHeadersOnly)<<"print rule headers only"<<std::endl
       <<tab<<"w: run web mode"<<std::endl //johan020226 
 #ifdef TIMER
@@ -267,6 +268,7 @@ int main(int argc, char **argv) {
 	    case 'Q': neg(xReadTaggedText); neg(xNoCollocations); break;// jonas, intended for use only for evaluation study 030120 - 030228
 	    case 'q': neg(xPrintRuleHeadersOnly); break;
 	    case 'r': ruleFile = argv[++c]; goto plupp;
+	    case 'R': neg(xPrintRuleCount); break; 
 	    case 's': neg(xPrintAllSentences); break;
   #ifdef TIMER
 	    case 't': neg(xTakeTime); break;

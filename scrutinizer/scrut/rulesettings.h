@@ -34,6 +34,7 @@ extern bool xAcceptNonImprovingCorrections;
 extern bool xAcceptRepeatedSuggestions;
 extern bool xSuggestionSameAsOriginalMeansFalseAlarm;
 extern int xMaxSpellSuggestions;
+extern bool xPrintRuleCount;
 
 extern int xCase[20];
 

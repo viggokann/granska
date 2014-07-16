@@ -64,6 +64,7 @@ public:
   void Scrutinize(AbstractSentence*);
   void CheckAcceptAndDetect();
   MatchingSet &GetMatchingSet() const { return RuleTerm::GetMatchingSet(); }
+  
 private:
   void Scrutinize(char*);
   //std::string fixXML(const char*); //Oscar
