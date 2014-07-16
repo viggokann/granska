@@ -22,6 +22,7 @@ bool xAcceptAllWordsInCompounds = false;
 bool xAcceptNonImprovingCorrections = false;
 bool xAcceptRepeatedSuggestions = false;
 bool xSuggestionSameAsOriginalMeansFalseAlarm = true;
+bool xPrintRuleCount = false;
 int xMaxSpellSuggestions = 4;
 
 int xCase[20];

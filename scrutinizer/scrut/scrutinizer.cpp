@@ -29,7 +29,6 @@ extern "C" {
 
 std::ofstream messageStream("messages");
 
-
 static const int GE_BUF_SIZE = 200;
 
 static Timer timer;
@@ -320,7 +319,19 @@ void Scrutinizer::PrintResult(std::ostream &out) {
     }
 
 #ifdef PROBCHECK
+	
     Prob::Output &o = Prob::output();
+    if(xPrintRuleCount){
+		o.push("rules");
+		std::map<std::string, int>::iterator iter;
+		for(iter = ruleCount.begin(); iter != ruleCount.end(); iter++){
+		  o.push("rule");
+		  o.add("name", iter->first);
+		  o.add("triggered", iter->second);
+		  o.pop();
+		}
+		o.pop(); //rules
+	}
     o.push("scrutinizer");
     for(const Sentence *s=theText.FirstSentence(); s; s=s->Next())
         {
