@@ -462,7 +462,7 @@ char* Scrutinizer::GetResult() {
     //std::ostringstream out;
 	std::map<std::string, int>::iterator iter;
 	for(iter = ruleCount.begin(); iter != ruleCount.end(); iter++){
-	  o.push("rule");
+	  o.push("triggeredrule");
 	  o.add("name", iter->first);
 	  o.add("triggered", iter->second);
 	  o.pop();

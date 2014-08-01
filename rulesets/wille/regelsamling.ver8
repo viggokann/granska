@@ -245,6 +245,24 @@ info("Sätt in ordet mer före "italics(X2.real_text)" och ta bort ändelsen are fr
 action(scrutinizing)
 }
 
+VBT@
+{
+X1(wordcl=vb & (vbf!=inf & vbf!=sup)),
+X2(wordcl!=vb)+,
+x3(wordcl=vb & (vbf!=X1.vbf & (vbf!=inf & vbf!=sup)))
+-->
+action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
+}
+
+tempus@verb
+{
+(VBT/X1)()
+-->
+mark(X1)
+info("Olika tempus i satsen")
+action(scrutinizing)
+}
+
 (* ----- KONSTIG-MENING-KONTROLL ----- *)
 
 category a {
