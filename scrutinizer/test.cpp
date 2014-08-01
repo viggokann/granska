@@ -34,7 +34,7 @@ int main(int argc, char** argv){
 		if(i==0) first = ret; 
 		else if(i==(size-1)) last = ret; 
 	}
-	printf("%s", last);
+	//printf("%s", last);
 	if(strcmp(first,last)==0) {
 			printf("\n--------------------------------------\n");
 			printf("\n           SUCCESS                    \n");
