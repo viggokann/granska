@@ -6,10 +6,17 @@ C-proceduren
 C-procedurer
 C-program
 C-programmet
+Google
+Linux
+Mac
+Macintosh
 PDF
 PDFs
 Postscript
 Postscripts
+Ubuntu
+Unix
+Windows
 abelsk
 abelskt
 abskissa
@@ -173,6 +180,10 @@ fraktaler
 funktion
 fylogenetisk
 fylogenetiskt
+googla
+googlade
+googling
+googlingsbar
 handskakning
 hanterare
 hanteraren
@@ -184,6 +195,8 @@ hexadecimalt
 homomorfi
 homomorfien
 homomorfin
+http
+https
 hubb
 hubbar
 hubben
@@ -252,6 +265,8 @@ integratörer
 interaktiv
 interaktiva
 interaktivt
+internet
+internetet
 interoperabilitet
 interoperabiliteten
 interoperabiliteter
@@ -263,6 +278,8 @@ interpreterade
 invertibel
 invertibelt
 invertibla
+ipad
+ipod
 irreducibel
 irreducibelt
 irreducibla
@@ -280,6 +297,7 @@ klustring
 kofaktor
 kofaktorer
 kofaktorn
+kompilator
 kompilator
 kompilatorer
 kompilatorn
@@ -396,10 +414,14 @@ obiologisk
 obiologiskare
 obiologiskt
 oformaterad
+oformaterad
 oformaterade
 oformaterat
+oformaterat
+ogooglingsbar
 oindexerad
 oindexerat
+oinitierad
 oinitierad
 oinitierade
 oinitierat
@@ -454,6 +476,7 @@ parallelliserbar
 parallelliserbart
 parametrisera
 parametriserade
+parentetisera
 parentetisera
 parentetiserade
 parsning
@@ -541,6 +564,8 @@ servrar
 signerare
 signeraren
 skivkvadd
+skript
+skriptet
 skrivarkö
 spline
 subrutin
