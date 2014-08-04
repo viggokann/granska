@@ -28,7 +28,7 @@ X1(cht!=mid)*,
 X2(text="." | text="!"),
 X3(sed=sen) 
 -->
-mark(X Y X1 X2)
+mark(X1 X2)
 corr(X2.replace("?"))
 info("Fråga?")
 action(scrutinizing)
