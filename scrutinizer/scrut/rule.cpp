@@ -726,7 +726,7 @@ void RuleTerm::FindMatchingsOptimized(AbstractSentence *s) {
     const int n = matchingCheckN[tags[i]][tags[i+1]];
     for (j = 0; j < n; j++) {
       RuleTerm *r = matchingCheck[tags[i]][tags[i+1]][j];
-      scrutinizer->ruleCount[r->GetRule()->Name()] += 1;
+      if(!r->IsHelp()) scrutinizer->ruleCount[r->GetRule()->Name()] += 1;
       if (r->anchorTokens < 0) {
 	const int rulenumber = r->GetRule()->Number();
 	if (r->IsHelp()) {
@@ -805,6 +805,7 @@ void RuleTerm::FindMatchingsOptimized(AbstractSentence *s) {
     for (const RuleTermList *wrt = scrutinizer->FindWordRuleTerms(w); 
 	 wrt; wrt = wrt->Next()) {
       RuleTerm *r = (RuleTerm *) wrt->GetRuleTerm();
+      if(!r->IsHelp()) scrutinizer->ruleCount[r->GetRule()->Name()] += 1;
       if (r->anchorTokens < 0) {
 	const int rulenumber = r->GetRule()->Number();
 	if (r->IsHelp()) {
@@ -885,7 +886,6 @@ void RuleTerm::FindMatchingsOptimized(AbstractSentence *s) {
     if (n > 0) { // Kolla också om regeln är aktiv
       for (i = 0; i < n; i++) {
 	RuleTerm *r = ruleTermsToCheck[ruleno][i];
-	
 	const int idx = ruleTermsToCheckIdx[ruleno][i];
 	r->TryMatching(s, idx, slen - idx + 1);
 	if (xTakeTime) r->GetRule()->evaluationTime += timer.Restart();

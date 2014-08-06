@@ -1,6 +1,7 @@
 % Granskas regler 
 
 (* ----- Willes regler ----- *)
+
 category skiljetecken {
 info("Komma, frågetecken och utropstecken")
 link("" "")
@@ -305,7 +306,7 @@ action(accepting)
 jump(endlabel, 1+Y.no_of_tokens)
 }
 
-godkänn_parentes@a
+godkänn_parentes@ordföljd
 {
 X(text="("),
 Y(is_foreign)+,
@@ -315,7 +316,7 @@ action(accepting)
 jump(endlabel, 1+Y.no_of_tokens)
 }
 
-upprepade_ord@a
+upprepade_ord@ordföljd
 {
 X(sed=sen & contains_repeated_words()),
 Y(!is_repeated)*,
@@ -329,7 +330,7 @@ info("Upprepad ordsekvens")
 action(scrutinizing)
 }
 
-upprepning@a
+upprepning@ordföljd
 {
 X(),
 Y(text=X.real_text)+
@@ -2633,7 +2634,7 @@ action(accepting)
 }
 *)
 
-kongacc01any@a
+kongacc01any@kong %ändrad till kategori kong av wille
 {
 X1((wordcl=dt | (wordcl=pn & (text="den" | text="det"))) & spec=def),
 X10(wordcl=ab | (wordcl=rg & num!=sin & X1.num=plu))*,
@@ -2646,7 +2647,7 @@ jump(slut_kong, X10.no_of_tokens + 3)
 action(accepting)
 }
 
-kongacc01bny@a
+kongacc01bny@kong %ändrad till kategori kong av wille
 {
 X1((wordcl=dt | (wordcl=pn & (text="den" | text="det"))) & spec=def),
 X10(wordcl=ab | (wordcl=rg & num!=sin & X1.num=plu))*,
@@ -2660,7 +2661,7 @@ action(accepting)
 
 
 (* substr(length-1, 1)="a") *)
-kongacc01cny@a
+kongacc01cny@kong %ändrad till kategori kong av wille
 {
 X1(wordcl=dt & spec=def),
 X10(wordcl=ab | (wordcl=rg & num!=sin & X1.num=plu))*,
@@ -2677,7 +2678,7 @@ action(accepting)
 
 
 (* behövs en till utan determinerare *)
-kongacc01dny@a
+kongacc01dny@kong %ändrad till kategori kong av wille
 {
 X1(wordcl=dt & spec=def),
 X10(wordcl=ab | (wordcl=rg & num!=sin & X1.num=plu))*,
@@ -2690,7 +2691,7 @@ jump(slut_kong, X10.no_of_tokens + X2.no_of_tokens+ X22.no_of_tokens+2)
 action(accepting)
 }
 
-kongacc01eny@a
+kongacc01eny@kong %ändrad till kategori kong av wille
 {
 X1(wordcl!=dt & wordcl!=ps & wordcl!=jj),
 X2(wordcl=jj & (deg=kom | deg=suv))+,
@@ -2701,7 +2702,7 @@ jump(slut_kong, X2.no_of_tokens + X22.no_of_tokens + 1)
 action(accepting)
 }
 
-kongacc01fny@a
+kongacc01fny@kong %ändrad till kategori kong av wille
 {
 X1(wordcl!=dt & wordcl!=ps),
 X11(wordcl!=dt & wordcl!=ps & wordcl!=jj),
@@ -2719,7 +2720,7 @@ action(accepting)
 (* de vackraste glada hundar 
  § 44 SAG Nominalfraser *)
 
-kongacc01gny@a
+kongacc01gny@kong %ändrad till kategori kong av wille
 {
 X((wordcl=dt & spec=def & num=plu) | wordcl=ps | case=gen),
 Y(deg=suv), % wordcl=jj, ja men det finns ju adverb som ser likadana ut!
@@ -2732,7 +2733,7 @@ action(accepting)
 
 (* ett tre veckors uppehåll, en två veckors intensiv fjällvandring *)
 
-kongacc01iny@a
+kongacc01iny@kong %ändrad till kategori kong av wille
 {
 X1(wordcl=dt & num=sin & spec=ind),
 X2(wordcl=rg & num!=sin),
@@ -2756,7 +2757,7 @@ action(accepting)
 
 (* Blir de statsråd under tiden? taggproblem 
    Blir d
-kongacctaggprob1@a
+kongacctaggprob1@a %ändrad till kategori kong av wille
 {
 X2(wordcl=vb & (vbf=prs | vbf=prt)),
 X3(wordcl=dt & (text="den" | text="det" | text="de")),
@@ -2769,7 +2770,7 @@ action(accepting)
 *)
 
 (* bör byggas ut med PP, man skär bort för mycket med dessa regler *)
-kongacctaggprob2@a
+kongacctaggprob2@kong
 {
 (Clause_del)(),
 X1(wordcl=ab | wordcl=rg)*,
@@ -2784,7 +2785,7 @@ jump(slut_kong, Clause_del.no_of_tokens+2+X1.no_of_tokens)
 action(accepting)
 }
 
-kongacctaggprob2b@a
+kongacctaggprob2b@kong %ändrad till kategori kong av wille
 {
 (Clause_del)(),
 X(wordcl=kn)?,
@@ -2801,7 +2802,7 @@ action(accepting)
 }
 
 
-kongacctaggprob3@a
+kongacctaggprob3@kong
 {
 (Clause_del)(),
 (PP)(),
@@ -7770,7 +7771,7 @@ action(scrutinizing)
 }
 
 
-fråga_utan_frågetecken@a {
+fråga_utan_frågetecken@skiljetecken {
 X(sed=sen),
 X1(wordcl=in)?,
 X2(cht=mid)?,
@@ -7787,7 +7788,7 @@ detect("Ja, vad gör vi av det.")
 }
 
 
-fråga_utan_frågetecken2@a {
+fråga_utan_frågetecken2@skiljetecken {
 X(sed=sen),
 (NP)(),
 X2(cht=mid)?,
