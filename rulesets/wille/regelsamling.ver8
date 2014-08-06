@@ -15,7 +15,7 @@ X3()*,
 X4(text="." | text="!"),
 X5(sed=sen) 
 -->
-mark(X4)
+mark( X2 X3 X4)
 corr(X4.replace("?"))
 info("Fråga?")
 action(scrutinizing)
@@ -65,6 +65,17 @@ action(scrutinizing)
 category storbokstav {
 info("Användning av stor bokstav")
 link("" "")
+}
+
+konstigversal@storbokstav
+{
+X(sed!=sen),
+Y(is_cap & wordcl!=pm)
+-->
+mark(Y)
+corr(Y.replace(tolower(Y.real_text)))
+info("Inget egennamn")
+action(scrutinizing)
 }
 
 versalefterkolon@storbokstav
@@ -390,8 +401,7 @@ corr(X3.replace(firsttoupper(X3.real_text)))
 info("om ordet " italics(X3.real_text) " inleder meningen bör det ha stor begynnelsebokstav")
 action(scrutinizing)
 }
-*)
-(*
+
 egennamn_gemen@versal {
 X(spellOK & length>2 & wordcl=pm & !is_cap & token!=TOKEN_E_MAIL & token!=TOKEN_URL
 	& text!="von" & text!="af" & text!="der" & text!="and" & text!="of") % bör vara !is_unknown istf spellOK
@@ -402,8 +412,8 @@ action(scrutinizing)
 }
 *)
 
-
-(* massor av falska alarm 
+(* massor av falska alarm *)
+(*
 ej_egennamn_versal@versal {
 X(sed=sen & extra!=hea & extra!=non),
 X1(cht=mid | cht=pad)*,
@@ -414,8 +424,7 @@ corr(Y.replace(tolower(Y.real_text)))
 info("om" italics(Y.real_text) "inte är ett egennamn bör det ha liten begynnelsebokstav")
 action(scrutinizing)
 }
-*)
-(*
+
 category versal {
 info("versalkontroll")
 link("" "")
