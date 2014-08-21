@@ -11,6 +11,7 @@
 #include "timer.h"
 #include "misc/xmloutput.h"
 #include <sstream>
+#include <fstream>
 #include <stdlib.h>
 
 extern "C" {
@@ -47,7 +48,7 @@ Scrutinizer::Scrutinizer(OutputMode mode) : ruleSet(NULL) {
     gramErrorBufSize = 0;
     gramErrors = NULL;
     nGramErrors = 0;
-    xAmbiguousNewWords = true; // för demon
+    xAmbiguousNewWords = true; // fï¿½r demon
     NewObj();
 }
 
@@ -88,7 +89,7 @@ bool Scrutinizer::Load(const char *taggerLexDir, const char *ruleFile) {
     char *stavaDir = getenv("STAVA_LEXICON");
     if (!stavaDir)
         stavaDir = "/afs/nada.kth.se/misc/tcs/language/lib/";
-    // Specialinställningar till Stava:
+    // Specialinstï¿½llningar till Stava:
     xGenerateCompounds = 1;
     xAcceptCapitalWords = xAcceptSpellCapitalWords;
     if (!StavaReadLexicon(stavaDir,1,1,1,1,1,1,(uchar*)"\t")) {
@@ -112,7 +113,7 @@ bool Scrutinizer::Load(const char *taggerLexDir, const char *ruleFile) {
         sprintf(optFileName, "%s.opt", ruleFile);
         FILE *fp = fopen(optFileName, "rb");
         const int magic = 6509869;
-        bool ok = false; //W ändrade till true
+        bool ok = false; //W ï¿½ndrade till true
         if (fp) {
             if (!xPrintOptimization) {
                 const int magic2 = ReadInt(fp);
@@ -295,26 +296,26 @@ void Scrutinizer::PrintResult(std::ostream &out) {
         return;
     }
     if (xPrintHTML) {
-        out << "<H4>Förklaringar till markeringarna</H4>"
-            << "<LI>Misstänkta områden i texten markeras med "
-            << xRed << "rött" << xNoColor << "</LI>" << xEndl
-            << "<LI>Ersättningsförslagen presenteras därefter och ändringar markeras med "
-            << xGreen << "grönt" << xNoColor << "</LI>" << xEndl
-            << "<LI>En kortfattad" << xBlue << " blå " << xNoColor
-            << "kommentar skrivs efter varje förslag</LI>" << xEndl
-            << "<LI>En länk till utförligare information om feltypen"
+        out << "<H4>Fï¿½rklaringar till markeringarna</H4>"
+            << "<LI>Misstï¿½nkta omrï¿½den i texten markeras med "
+            << xRed << "rï¿½tt" << xNoColor << "</LI>" << xEndl
+            << "<LI>Ersï¿½ttningsfï¿½rslagen presenteras dï¿½refter och ï¿½ndringar markeras med "
+            << xGreen << "grï¿½nt" << xNoColor << "</LI>" << xEndl
+            << "<LI>En kortfattad" << xBlue << " blï¿½ " << xNoColor
+            << "kommentar skrivs efter varje fï¿½rslag</LI>" << xEndl
+            << "<LI>En lï¿½nk till utfï¿½rligare information om feltypen"
             << " finns efter vissa kommentarer</LI>" << xEndl;
         if (!xSuggestionSameAsOriginalMeansFalseAlarm) 
             out << "<LI>Ett " << xRed << 'F' << xNoColor
-                << " efter förslaget betyder att inga ändringar gjorts, "
-                << "vilket indikerar ett möjligt falskt alarm</LI>" << xEndl;
+                << " efter fï¿½rslaget betyder att inga ï¿½ndringar gjorts, "
+                << "vilket indikerar ett mï¿½jligt falskt alarm</LI>" << xEndl;
         if (xAcceptNonImprovingCorrections)
             out << "<LI>Ett " << xRed << 'E' << xNoColor
-                << " efter förslaget betyder att rättelsen kan ge ett annat fel</LI>" << xEndl;
-        out << "<LI>Om en mening innehåller flera misstänkta"
-            << " felområden presenteras samma mening flera gånger</LI>"
+                << " efter fï¿½rslaget betyder att rï¿½ttelsen kan ge ett annat fel</LI>" << xEndl;
+        out << "<LI>Om en mening innehï¿½ller flera misstï¿½nkta"
+            << " felomrï¿½den presenteras samma mening flera gï¿½nger</LI>"
             << xEndl << xEndl
-            << "Skicka gärna synpukter till <A HREF=\"mailto:knutsson@nada.kth.se\">&lt;knutsson@nada.kth.se&gt;</A>"
+            << "Skicka gï¿½rna synpukter till <A HREF=\"mailto:knutsson@nada.kth.se\">&lt;knutsson@nada.kth.se&gt;</A>"
             << "<HR WIDTH=\"100%\"></H1>";
     }
 
@@ -629,10 +630,10 @@ bool Scrutinizer::IsSpellOK(const char *s, Token token) {
         // such as "Tabell 1.1"
         return true; // return false;
     case TOKEN_PARAGRAPH:
-        if (*s++ != '§') {
+        if (*s++ != 'ï¿½') {
             while(*s && !IsSpace(*s)) s++;
             if (!IsSpace(*s)) return false;
-            if (*++s != '§') return false;
+            if (*++s != 'ï¿½') return false;
             if (!*++s) return true;
             return false;
         }
@@ -727,7 +728,7 @@ char *Scrutinizer::SpellOK(const char *s, Token token) {
     static char string[MAX_WORD_LENGTH * MAX_SUGGESTIONS];
     switch(token) {
     case TOKEN_PARAGRAPH:
-        return "§ 7";
+        return "ï¿½ 7";
     case TOKEN_SPLIT_WORD: {
         for (int p = strlen(s)-2; p>0; p--)
             if (IsSpace(s[p])) {

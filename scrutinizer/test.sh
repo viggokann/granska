@@ -1,4 +1,4 @@
 #! /bin/bash
 
 . setEnv.sh
-./testlibrary presentation.txt 5
+./testlibrary ../rulesets/wille/regelsamling.ver8.testfil

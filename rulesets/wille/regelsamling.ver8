@@ -29,9 +29,9 @@ X1(cht!=mid)*,
 X2(text="." | text="!"),
 X3(sed=sen) 
 -->
-mark(X1 X2)
+mark(Y X1 X2)
 corr(X2.replace("?"))
-info("Fråga?")
+info("Se över ordet: "italics(Y.real_text)", ord i presens/preterium på denna plats brukar ofta innebära att meningen är en fråga.")
 action(scrutinizing)
 }
 
@@ -78,6 +78,17 @@ info("Inget egennamn")
 action(scrutinizing)
 }
 
+egennamn@storbokstav
+{
+Y(!is_cap & wordcl=pm)
+-->
+mark(Y)
+corr(Y.replace(firsttoupper(Y.real_text)))
+info("Egennamn")
+action(scrutinizing)
+}
+
+(* överflödig
 versalefterkolon@storbokstav
 {
 X(text=";"),
@@ -88,7 +99,7 @@ corr(Y.replace(tolower(Y.real_text)))
 info("inga versaler efter kolon")
 action(scrutinizing)
 }
-
+*)
 
 versalvinymening@storbokstav
 {
@@ -109,7 +120,7 @@ X1()*,
 X2(text="." | text="?"),
 X3(sed=sen)
 -->
-mark(X2)
+mark(Y X2)
 corr(X2.replace("!"))
 info("Uppmaning?")
 action(scrutinizing)
@@ -136,7 +147,7 @@ X10(cht=mad | cht=mid | wordcl=kn)
 -->
 action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
 }
-
+(*
 bisats1@satser
 {
 Y(sed=sen | cht=mid),
@@ -156,7 +167,7 @@ mark(X)
 info("Bisats bör inledas med satsdelare")
 action(scrutinizing)
 }
-
+*)
 attbisats@
 {
 X0(text="Att" | text="att"),
@@ -171,7 +182,7 @@ X10(cht=mad | cht=mid | wordcl=kn | wordcl=vb)
 action(help, gender:=X5.gender, num:=X5.num, spec:=X5.spec)
 }
 
-
+(*
 bisats3@satser
 {
 Y(wordcl=pp),
@@ -192,7 +203,7 @@ mark(X)
 info("att-bisats")
 action(scrutinizing)
 }
-
+*)
 
 dedem@pronomen
 {
@@ -223,7 +234,57 @@ info("Det finns redan subjekt, används objektsformen 'dem'")
 action(scrutinizing)
 }
 
-komparation@adjektiv
+dedem3@pronomen
+{
+X1(text="dem"),
+X2(wordcl=vb)
+-->
+mark(X1 X2)
+corr(X1.replace("de"))
+info("Ovanligt med med objekt direkt innan verb")
+action(scrutinizing)
+}
+
+dedem4@pronomen
+{
+X1(text="dem"),
+X2(wordcl=hp)
+-->
+mark(X1 X2)
+corr(X1.replace("de"))
+info("Ovanligt med med objekt direkt innan bisatsinledaren "italics(X2.real_text))
+action(scrutinizing)
+}
+
+dedem5@pronomen
+{
+X1(text="dem"),
+(NP/X2)()
+-->
+mark(X1 X2)
+corr(X1.replace("de"))
+info("Ovanligt med med objekt direkt innan nominalphras")
+action(scrutinizing)
+}
+
+personskifte@pronomen
+{
+X1(wordcl=pn & gender=utr & num=sin & pnf=sub),
+X2()*,
+X3(wordcl=pn & gender=utr & num=sin & spec!=X1.spec & pnf=sub)
+-->
+mark(X1 X3)
+info("Byte mellan första och tredje person i samma mening.")
+action(scrutinizing)
+}
+
+category komparation{
+info("Komparation av adjektiv")
+link("" "")
+}
+
+
+komparation1@komparation
 {
 X1(wordcl=vb),
 X2(wordcl=jj & deg!= kom),
@@ -235,7 +296,7 @@ info("använd den komparativa formen av adjektivet")
 action(scrutinizing)
 }
 
-mermest@adjektiv
+mermest@komparation
 {
 X1(wordcl=vb),
 X2(substr(length-5,length)="adare"),
@@ -246,7 +307,7 @@ info("Sätt in ordet mer före "italics(X2.real_text)" och ta bort ändelsen are fr
 action(scrutinizing)
 }
 
-mermest2@adjektiv
+mermest2@komparation
 {
 X1(wordcl=vb),
 X2(substr(length-6,length)="iskare"),
@@ -259,9 +320,9 @@ action(scrutinizing)
 
 VBT@
 {
-X1(wordcl=vb & (vbf!=inf & vbf!=sup)),
+X1(wordcl=vb & (vbf!=inf & vbf!=sup & vbf != imp)),
 X2(wordcl!=vb)+,
-x3(wordcl=vb & (vbf!=X1.vbf & (vbf!=inf & vbf!=sup)))
+x3(wordcl=vb & (vbf!=X1.vbf & (vbf!=inf & vbf!=sup & vbf != imp)))
 -->
 action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
 }
@@ -271,7 +332,7 @@ tempus@verb
 (VBT/X1)()
 -->
 mark(X1)
-info("Olika tempus i satsen")
+info("Skifte mellan presens och preterium i satsen (nu och dåtid)")
 action(scrutinizing)
 }
 
@@ -7779,7 +7840,7 @@ info("även fast är en tautologi")
 action(scrutinizing)
 }
 
-
+(*
 fråga_utan_frågetecken@skiljetecken {
 X(sed=sen),
 X1(wordcl=in)?,
@@ -7795,7 +7856,7 @@ info("Är denna mening en fråga bör den avslutas med frågetecken.")
 action(scrutinizing)
 detect("Ja, vad gör vi av det.")
 }
-
+*)
 
 fråga_utan_frågetecken2@skiljetecken {
 X(sed=sen),
