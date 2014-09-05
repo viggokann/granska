@@ -92,7 +92,8 @@ bool Scrutinizer::Load(const char *taggerLexDir, const char *ruleFile) {
     // Specialinst�llningar till Stava:
     xGenerateCompounds = 1;
     xAcceptCapitalWords = xAcceptSpellCapitalWords;
-    if (!StavaReadLexicon(stavaDir,1,1,1,1,1,1,(uchar*)"\t")) {
+    //if (!StavaReadLexicon(stavaDir,1,1,1,1,1,1,(uchar*)"\t")) {
+    if (!StavaReadLexicon(stavaDir,1,1,1,1,1,1,(const unsigned char *) ",")) {
         Message(MSG_WARNING, "cannot load Stava lexicons from", stavaDir);
         return false;
     }
@@ -113,7 +114,7 @@ bool Scrutinizer::Load(const char *taggerLexDir, const char *ruleFile) {
         sprintf(optFileName, "%s.opt", ruleFile);
         FILE *fp = fopen(optFileName, "rb");
         const int magic = 6509869;
-        bool ok = false; //W �ndrade till true
+        bool ok = false;
         if (fp) {
             if (!xPrintOptimization) {
                 const int magic2 = ReadInt(fp);

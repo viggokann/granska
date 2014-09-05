@@ -16,7 +16,7 @@ DEBUG_FLAGS = -g -DENSURE
 RELEASE_FLAGS = -O3 #$(WARN_PERFORMANCE)
 
 #CFLAGS = $(RELEASE_FLAGS) $(WARN)# general settings
-CFLAGS = $(DEBUG_FLAGS) $(WARN)# general settings
+CFLAGS = -DDEFAULTCODE=UTF8CODE $(DEBUG_FLAGS) $(WARN)# general settings
 
 #
 #  Directories and paths
@@ -449,14 +449,14 @@ prob/annot.o: /usr/include/xercesc/util/PlatformUtils.hpp
 prob/annot.o: /usr/include/xercesc/util/XercesDefs.hpp
 prob/annot.o: /usr/include/xercesc/util/Xerces_autoconf_config.hpp
 prob/annot.o: /usr/include/inttypes.h /usr/include/stdint.h
-prob/annot.o: /usr/include/bits/wchar.h /usr/include/sys/types.h
-prob/annot.o: /usr/include/time.h /usr/include/sys/select.h
-prob/annot.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
-prob/annot.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
-prob/annot.o: /usr/include/bits/pthreadtypes.h
+prob/annot.o: /usr/include/bits/wchar.h
 prob/annot.o: /usr/include/xercesc/util/XercesVersion.hpp
 prob/annot.o: /usr/include/xercesc/util/XMLException.hpp
 prob/annot.o: /usr/include/xercesc/util/XMemory.hpp /usr/include/stdlib.h
+prob/annot.o: /usr/include/sys/types.h /usr/include/time.h
+prob/annot.o: /usr/include/sys/select.h /usr/include/bits/select.h
+prob/annot.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+prob/annot.o: /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h
 prob/annot.o: /usr/include/alloca.h
 prob/annot.o: /usr/include/xercesc/util/XMLExceptMsgs.hpp
 prob/annot.o: /usr/include/xercesc/dom/DOMError.hpp
@@ -560,17 +560,17 @@ prob/output.o: /usr/include/inttypes.h /usr/include/features.h
 prob/output.o: /usr/include/bits/predefs.h /usr/include/sys/cdefs.h
 prob/output.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
 prob/output.o: /usr/include/gnu/stubs-64.h /usr/include/stdint.h
-prob/output.o: /usr/include/bits/wchar.h /usr/include/sys/types.h
-prob/output.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
-prob/output.o: /usr/include/time.h /usr/include/endian.h
-prob/output.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
-prob/output.o: /usr/include/sys/select.h /usr/include/bits/select.h
-prob/output.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
-prob/output.o: /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h
+prob/output.o: /usr/include/bits/wchar.h
 prob/output.o: /usr/include/xercesc/util/XercesVersion.hpp
 prob/output.o: /usr/include/xercesc/util/XMLException.hpp
 prob/output.o: /usr/include/xercesc/util/XMemory.hpp /usr/include/stdlib.h
-prob/output.o: /usr/include/alloca.h
+prob/output.o: /usr/include/sys/types.h /usr/include/bits/types.h
+prob/output.o: /usr/include/bits/typesizes.h /usr/include/time.h
+prob/output.o: /usr/include/endian.h /usr/include/bits/endian.h
+prob/output.o: /usr/include/bits/byteswap.h /usr/include/sys/select.h
+prob/output.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+prob/output.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+prob/output.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
 prob/output.o: /usr/include/xercesc/util/XMLExceptMsgs.hpp
 prob/output.o: /usr/include/xercesc/dom/DOMError.hpp
 prob/output.o: /usr/include/xercesc/util/XMLUni.hpp

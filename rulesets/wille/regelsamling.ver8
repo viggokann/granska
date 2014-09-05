@@ -7,6 +7,7 @@ info("Komma, frågetecken och utropstecken")
 link("" "")
 }
 
+
 frågeordsfråga@skiljetecken
 {
 X1(sed=sen | cht=mid),
@@ -88,20 +89,7 @@ info("Egennamn")
 action(scrutinizing)
 }
 
-(* överflödig
-versalefterkolon@storbokstav
-{
-X(text=";"),
-Y(is_cap)
--->
-mark(Y)
-corr(Y.replace(tolower(Y.real_text)))
-info("inga versaler efter kolon")
-action(scrutinizing)
-}
-*)
-
-versalvinymening@storbokstav
+versalvidnymening@storbokstav
 {
 X(sed=sen & (text="$."|text="$?"|text="$!")),
 Y(!is_cap)
@@ -338,6 +326,7 @@ action(scrutinizing)
 
 (* ----- KONSTIG-MENING-KONTROLL ----- *)
 
+
 category a {
 info("diverse")
 link("" "")
@@ -353,8 +342,6 @@ info("Den här meningen verkar inte vara svensk")
 action(scrutinizing)
 jump(endlabel, 1+Y.no_of_tokens)
 }
-*)
-
 
 godkänn_konstig@a
 {
@@ -388,6 +375,7 @@ action(accepting)
 jump(endlabel, 1+Y.no_of_tokens)
 }
 
+*)
 upprepade_ord@ordföljd
 {
 X(sed=sen & contains_repeated_words()),
@@ -450,7 +438,6 @@ action(scrutinizing)
 slut_stavning:
 
 
-
 (* ----- VERSALER/GEMENER ----- *)
 (*
 meningsbörjan@versal {
@@ -491,6 +478,7 @@ info("versalkontroll")
 link("" "")
 }
 *)
+
 (* ----- BYRÅKRAT ----- *)
 
 biträde@byråkrat {
@@ -7789,6 +7777,7 @@ action(scrutinizing)
 slut_glänta:
 
 *)
+
 
 (* ----- DIVERSE REGLER UNDER UTVECKLING ----- *)
 
