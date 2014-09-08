@@ -121,7 +121,7 @@ library: $(API)
 
 testlibrary: test.o XMLHandler.o library
 	g++ -g -c test.cpp XMLHandler.cpp
-	g++ test.o XMLHandler.o -L. -lgranska -o testlibrary
+	g++ test.o XMLHandler.o -L. -lgranska $(LIBS) -o testlibrary
 
 scrutinizer: $(ALL_OBJ)
 	$(CPPC) $(ALL_FLAGS) -o scrutinizer $(ALL_OBJ) $(LIBS)
