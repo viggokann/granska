@@ -70,7 +70,7 @@ PROBCHECK_FLAGS = -DPROBCHECK -DNO_SENTENCE_DELIMITERS
 
 WEB_OBJ = $(SD)/web.o $(SD)/socket.o $(SD)/server_socket.o
 WEB_FLAGS = -DWEB_SCRUTINIZER
-#WEB_LIBS = -lsocket -lnsl //solaris specific?
+
 API_OBJ = granskaapi.o
 ALLWWW_OBJ = $(WWW_OBJ) $(SCRUT_OBJ) $(COMMON_OBJ) $(STAVA_OBJ) $(TOK_OBJ) $(TAGGER_OBJ) $(PROBCHECK_OBJ)
 ALL_OBJ = $(MAIN_OBJ) $(SCRUT_OBJ) $(COMMON_OBJ) $(STAVA_OBJ) $(TOK_OBJ)\
@@ -91,10 +91,25 @@ DEVELOPERS_TAGGER_FLAGS=-DDEVELOPERS
 DEVELOPERS_HELPER_OBJ=$(DEVELOPERS_TAGGER_OBJ) $(TOK_OBJ) $(TAGGER_OBJ) $(CD)/file.o $(CD)/message.o $(CD)/timer.o
 DEVELOPERS_TAGG_OBJ = $(patsubst %.o, %.do, $(DEVELOPERS_HELPER_OBJ))
 
-LIBS = -lxerces-c 
-WWWLIBS = -lxerces-c $(WEB_LIBS)
+#platform specific:
+UNAME := $(shell uname)
 
-TARGETS = depend scrut/rules.tab.h scrutinizer library testlibrary
+ifeq ($(UNAME), SunOS)
+LIBS = -L/usr/local/lib -R/usr/local/lib -lxerces-c-3.1 -lsocket -lnsl
+WWWLIBS = -L/usr/local/lib -R/usr/local/lib -lxerces-c-3.1
+INSTALL_ARG1 = -f /usr/local/include/ granskaapi.h
+INSTALL_ARG2 = -f /usr/local/lib libgranska.so
+LDCONF = crle -l /usr/local/lib -u
+endif
+ifeq ($(UNAME), $(filter $(UNAME), Linux Darwin))
+LIBS = -lxerces-c
+WWWLIBS = -lxerces-c
+INSTALL_ARG1 = granskaapi.h /usr/local/include/
+INSTALL_ARG2 = libgranska.so /usr/local/lib 
+LDCONF =  ldconfig /usr/local/lib
+endif
+
+TARGETS = depend scrut/rules.tab.h scrutinizer wwwscrutinizer library testlibrary
 
 all: $(TARGETS)
 
@@ -140,9 +155,9 @@ $(SD)/lex.yy.c: $(SD)/rules.l
 	mv lex.yy.c $(SD)
 
 install:
-	sudo install granskaapi.h /usr/local/include/
-	sudo install libgranska.so /usr/local/lib
-	sudo ldconfig /usr/local/lib
+	sudo install $(INSTALL_ARG1)
+	sudo install $(INSTALL_ARG2)
+	sudo $(LDCONF)
 
 test:
 	./test.sh
@@ -154,7 +169,7 @@ clean:
 	rm -f $(SD)/*.yy.c $(SD)/*.output
 	rm -f ../misc/xmloutput.o
 	rm -f core messages
-	rm scrutinizer testlibrary
+	rm scrutinizer testlibrary wwwscrutinizer libgranska.so
 
 realclean: clean 	
 	rm -f $(TARGETS)
