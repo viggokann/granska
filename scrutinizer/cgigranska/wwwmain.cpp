@@ -10,6 +10,7 @@
 #include "wwwscrutinizer.h"
 #include "scrutinizer.h"
 #include "ruleset.h"
+#include <unistd.h>
 
 bool xReadTaggedText = false; // jonas, intended for use only for evaluation study 030120 - 030228
 
@@ -22,9 +23,9 @@ char ruletempfile[100];
 int wwwscrutinizer(char *text, char *filename, char *URLName, char *rulefile) {
   //  char *taggerlexdir = "/afs/nada.kth.se/misc/tcs/granska/lib/www/";
  // char *taggerlexdir = "/afs/nada.kth.se/misc/tcs/granska/lib/lexicons/suc/";
-  char *taggerlexdir = "/home/wilhelm/Skola/Exjobb/lex";
+  char *taggerlexdir = getenv("TAGGER_LEXICON");
   //if (!rulefile || !*rulefile) rulefile = "/afs/nada.kth.se/misc/tcs/granska/lib/www/default-swedish-rules";
-  if (!rulefile || !*rulefile) rulefile = "/home/wilhelm/Skola/Exjobb/regler/";
+  if (!rulefile || !*rulefile) rulefile = getenv("SCRUTINIZER_RULE_FILE");
   else xOptimizeMatchings = false; // inserted 2006-09-03 by Viggo
   xPrintWordInfo = false;
   xPrintGramErrors = true;
