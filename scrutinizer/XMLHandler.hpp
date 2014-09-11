@@ -30,5 +30,5 @@ public:
     
 private:
 		bool found;
-		int ordfoljd;
+		int ordfoljd, skiljetecken, storbokstav;
 };

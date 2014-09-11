@@ -2,13 +2,12 @@
 
 (* ----- Willes regler ----- *)
 
-category skiljetecken {
-info("Komma, frågetecken och utropstecken")
+category frågetecken {
+info("Användning av frågetecken")
 link("" "")
 }
 
-
-frågeordsfråga@skiljetecken
+frågeordsfråga@frågetecken
 {
 X1(sed=sen | cht=mid),
 X2(text="vem" | text="vad" | text="vart" | text="var" | text="varifrån" | text="vilka" | text="vilken" | text="vilket"  | text="hur" | text="varför"  ),
@@ -22,7 +21,7 @@ info("Fråga?")
 action(scrutinizing)
 }
 
-janejfråga@skiljetecken
+janejfråga@frågetecken
 {
 X(sed=sen | (cht=mid & text!="'")),
 Y(wordcl=vb & (vbf = prt | vbf = prs)),
@@ -36,7 +35,7 @@ info("Se över ordet: "italics(Y.real_text)", ord i presens/preterium på denna pl
 action(scrutinizing)
 }
 
-eller@skiljetecken
+eller@frågetecken
 {
 X(text="eller" | text="eller hur"),
 X2(text="." | text="!"),
@@ -48,7 +47,7 @@ info("Fråga?")
 action(scrutinizing)
 }
 
-närföljtavverb@skiljetecken
+närföljtavverb@frågetecken
 {
 X(sed=sen),
 Y(text="när"),
@@ -63,23 +62,14 @@ info("Fråga?")
 action(scrutinizing)
 }
 
-category storbokstav {
-info("Användning av stor bokstav")
+(* -------------------------------------------------*)
+
+category egennamn {
+info("Användning av versaler.")
 link("" "")
 }
 
-konstigversal@storbokstav
-{
-X(sed!=sen),
-Y(is_cap & wordcl!=pm)
--->
-mark(Y)
-corr(Y.replace(tolower(Y.real_text)))
-info("Inget egennamn")
-action(scrutinizing)
-}
-
-egennamn@storbokstav
+felgemen@egennamn
 {
 Y(!is_cap & wordcl=pm)
 -->
@@ -89,7 +79,14 @@ info("Egennamn")
 action(scrutinizing)
 }
 
-versalvidnymening@storbokstav
+(* -------------------------------------------------*)
+
+category nymening {
+info("Användning av versaler.")
+link("" "")
+}
+
+versalvidnymening@nymening
 {
 X(sed=sen & (text="$."|text="$?"|text="$!")),
 Y(!is_cap)
@@ -100,7 +97,32 @@ info("Versaler vid ny mening")
 action(scrutinizing)
 }
 
-imperativsatser@skiljetecken
+(* -------------------------------------------------*)
+
+category gemen {
+info("Användning av gemener.")
+link("" "")
+}
+
+felversal@gemen
+{
+X(sed!=sen),
+Y(is_cap & wordcl!=pm)
+-->
+mark(Y)
+corr(Y.replace(tolower(Y.real_text)))
+info("Inget egennamn")
+action(scrutinizing)
+}
+
+(* -------------------------------------------------*)
+
+category utropstecken {
+info("Användning av utropstecken")
+link("" "")
+}
+
+imperativsatser@utropstecken
 {
 X(sed=sen),
 Y(wordcl=vb & vbf=imp),
@@ -113,6 +135,9 @@ corr(X2.replace("!"))
 info("Uppmaning?")
 action(scrutinizing)
 }
+
+(* -------------------------------------------------*)
+(* Fungerar tyvärr inte så väl *)
 
 category satser{
 info("huvud- och bisatser")
@@ -135,6 +160,7 @@ X10(cht=mad | cht=mid | wordcl=kn)
 -->
 action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
 }
+
 (*
 bisats1@satser
 {
@@ -193,13 +219,46 @@ action(scrutinizing)
 }
 *)
 
-dedem@pronomen
+(* -------------------------------------------------*)
+
+category dom{
+info("Användning av pronomen de-dem")
+link("" "")
+}
+(* ****Redundant kanske
+dedemOK@dom
 {
-X0(sed=sen & extra!=hea & extra!=non),
-X1(wordcl!=nn & wordcl!=jj & wordcl!=ps & wordcl!=pc & wordcl!=pn & wordcl!=pm)*,
-X2(wordcl=pn & pnf=obj &text= "dem"),
-X3(wordcl!=nn & wordcl!=jj & wordcl!=ps & wordcl!=pc & wordcl!=pn & wordcl!=pm)*,
-X4(sed=sen & extra!=exc)
+X0(sed=sen | cht=mid),
+(NP)(),
+C(cht!=mid),
+X2(wordcl=pn & pnf=obj & (text= "dem" | text="dom")),
+X3(pnf!=sub | wordcl=pm)*,
+X4(sed=sen | cht=mid)
+-->
+action(accepting)
+jump(de_nasta)
+}
+
+dedemOK2@dom
+{
+X0(sed=sen | cht=mid),
+X3(pnf!=sub | wordcl=pm)*,
+C(cht!=mid),
+X2(wordcl=pn & pnf=obj & (text= "dem" | text="dom")),
+(NP)(),
+X4(sed=sen | cht=mid)
+-->
+action(accepting)
+jump(de_nasta)
+}
+
+dedem@dom
+{
+X0(sed=sen | cht=mid),
+X1(pnf!=sub & wordcl!=pm)*,
+X2(wordcl=pn & pnf=obj & (text= "dem" | text="dom")),
+X3(pnf!=sub | wordcl=pm)*,
+X4(sed=sen | cht=mid)
 -->
 mark(X2)
 corr(X2.replace("de"))
@@ -207,24 +266,25 @@ info("Inget subjekt i meningen, använd subjektformen de istället för objektforme
 action(scrutinizing)
 }
 
-dedem2@pronomen
+de_nasta:
+
+******** *)
+
+dedem2@dom
 {
-X0(sed=sen & extra!=hea & extra!=non),
-(NP/X1)()?,
-(VP)()?,
-X2(wordcl=pn & pnf=sub & text="de"),
-X3(wordcl!=nn & wordcl!=jj & wordcl!=ps & wordcl!=pc & wordcl!=pn & wordcl!=pm)*,
-X4(sed=sen & extra!=exc)
+(NP/X)(),
+(VP/Y)(),
+X2(wordcl=pn & pnf=sub & (text="de" | text="dom"))
 -->
-mark(X2)
+mark(X Y X2)
 corr(X2.replace("dem"))
-info("Det finns redan subjekt, används objektsformen 'dem'")
+info("Verbfras följt av subjekt är ovanligt.")
 action(scrutinizing)
 }
 
-dedem3@pronomen
+deverb@dom
 {
-X1(text="dem"),
+X1(text="dem"|text="dom"),
 X2(wordcl=vb)
 -->
 mark(X1 X2)
@@ -233,9 +293,20 @@ info("Ovanligt med med objekt direkt innan verb")
 action(scrutinizing)
 }
 
-dedem4@pronomen
+demsom@dom
 {
-X1(text="dem"),
+X1(text="de"|text="dom"),
+X2(wordcl=hp),
+(NP/X3)()
+-->
+mark(X1 X2 X3)
+corr(X2.replace("dem"))
+action(scrutinizing)
+}
+
+desom@dom
+{
+X1(text="dem"|text="dom"),
 X2(wordcl=hp)
 -->
 mark(X1 X2)
@@ -244,67 +315,105 @@ info("Ovanligt med med objekt direkt innan bisatsinledaren "italics(X2.real_text
 action(scrutinizing)
 }
 
-dedem5@pronomen
+denominal@dom
 {
-X1(text="dem"),
+X1(text="dem"|text="dom"),
 (NP/X2)()
 -->
 mark(X1 X2)
 corr(X1.replace("de"))
-info("Ovanligt med med objekt direkt innan nominalphras")
+info("Ovanligt med med objekt direkt innan nominalphras eftersom 'de' då fungerar som en artikel")
 action(scrutinizing)
 }
 
+(* -------------------------------------------------*)
+(*
 personskifte@pronomen
 {
-X1(wordcl=pn & gender=utr & num=sin & pnf=sub),
+X1(wordcl=pn),
 X2()*,
-X3(wordcl=pn & gender=utr & num=sin & spec!=X1.spec & pnf=sub)
+X3(wordcl=pn & gender=X1.gender & num!=X1.num & spec=X1.spec & pnf=X1.pnf)
 -->
 mark(X1 X3)
-info("Byte mellan första och tredje person i samma mening.")
+info("Byte mellan indefinit och definit person i samma mening.")
 action(scrutinizing)
 }
+*)
 
-category komparation{
+(* -------------------------------------------------*)
+
+category kompsuffix{
+info("Komparation av adjektiv")
+link("" "")
+}
+
+category kompperi{
 info("Komparation av adjektiv")
 link("" "")
 }
 
 
-komparation1@komparation
+kompsuffix@kompsuffix
 {
 X1(wordcl=vb),
-X2(wordcl=jj & deg!= kom),
+C(wordcl=ab)?,
+Z(text="mer" | text="mest" | text="mera")?,
+X2(wordcl=jj & deg!= kom & substr(length-2,length)!="ad" & substr(length-3,length)!="isk"),
 X3(text="än")
 -->
-mark(X2 X3)
-corr(X2.replace("längre"))
-info("använd den komparativa formen av adjektivet")
+mark(X1 C Z X2 X3)
+corr(if Z.text="mer" | Z.text="mest" then Z.delete() X2.form(deg:=kom) else Z.donothing() X2.form(deg:=kom) end)
+info("använd den komparativa formen av adjektivet (suffixkomparation)")
 action(scrutinizing)
 }
 
-mermest@komparation
+långa@kompperi
 {
 X1(wordcl=vb),
-X2(substr(length-5,length)="adare"),
-X3(text="än")
+C(wordcl=ab)?,
+X2(wordcl=jj & (substr(length-5,length)="adare" | substr(length-6,length)="iskare") |
+substr(length-5,length)="ndare")
 -->
-mark(X2 X3)
-info("Sätt in ordet mer före "italics(X2.real_text)" och ta bort ändelsen are från "italics(X2.real_text))
+mark(X1 C X2)
+corr(if X2.substr(X2.length-5,X2.length)="ndare" then X2.insert("mera") X2.replace(concat(X2.substr(0, X2.length-3), "e ."))
+else X2.insert("mera") X2.replace(concat(X2.substr(0, X2.length-3), "")) end) 
+info("Långa adjektiv böjs med 'mera' (perfifrastiskt komparation)")
+detect("Han är förvånadare än mig.")
 action(scrutinizing)
 }
 
-mermest2@komparation
+lik@kompperi
 {
 X1(wordcl=vb),
-X2(substr(length-6,length)="iskare"),
-X3(text="än")
+C(wordcl=ab)?,
+X2(text="likare")
 -->
-mark(X2 X3)
-info("Sätt in ordet mer före "italics(X2.real_text)" och ta bort ändelsen are från "italics(X2.real_text))
+mark(X1 C X2)
+corr(X2.insert("mera") X2.replace("lik")) 
+info("'lik' böjs med 'mera' (perfifrastiskt komparation)")
 action(scrutinizing)
 }
+
+värd@kompperi
+{
+X1(wordcl=vb),
+C(wordcl=ab)?,
+X2(text="värdare")
+-->
+mark(X1 C X2)
+corr(X2.insert("mera") X2.replace("värd")) 
+info("'värd' böjs med 'mera' (perfifrastiskt komparation)")
+action(scrutinizing)
+}
+
+
+(* -------------------------------------------------*)
+
+category tempus {
+info("Regler med tempusfel")
+link("" "")
+}
+
 
 VBT@
 {
@@ -315,7 +424,7 @@ x3(wordcl=vb & (vbf!=X1.vbf & (vbf!=inf & vbf!=sup & vbf != imp)))
 action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
 }
 
-tempus@verb
+byte@tempus
 {
 (VBT/X1)()
 -->
@@ -390,14 +499,19 @@ info("Upprepad ordsekvens")
 action(scrutinizing)
 }
 
-upprepning@ordföljd
+
+category upprepning {
+info("Upprepade ord")
+link("" "")
+}
+
+upprepning@upprepning
 {
 X(),
 Y(text=X.real_text)+
 -->
-corr(Y.delete())
 mark(Y)
-info("Upprepade ord")
+corr(Y.delete())
 action(scrutinizing)
 }
 
@@ -573,11 +687,11 @@ action(scrutinizing)
 detect("Jag gav boll till han")
 }
 
-subj_efter_prep2@pronomen
+subj_efter_prep2@dom %ändrat till kategori 'dom' av Wille
 {
 X0(),
 X1(wordcl=pp),
-X2(text="de" & (X1.text!="för" | X0.text!=",")),
+X2((text="de"|text="dom") & (X1.text!="för" | X0.text!=",")),
 X3(wordcl!=jj & wordcl!=pc & wordcl!=nn & wordcl!=ro & wordcl!=rg &
 wordcl!=ab & wordcl!=ps & wordcl!=pp & text!="\"")
 -->
@@ -735,6 +849,16 @@ jump(pred_slut, X1.no_of_tokens)
 action(accepting)
 }
 
+
+sär_skriver@sär {
+X(text="sär"),
+Y(text="skriver" | text="skriva")
+-->
+corr(X.join(Y.real_text))
+detect("Jag sär skriver ibland.")
+jump(sär_slut, 1)
+action(scrutinizing)
+}
 
 näst_följande@sär {
 X(text="näst"),
@@ -6029,7 +6153,7 @@ här regeln
     den magiska miljongränsen. *)
 	(* 2 bygg ut med att de inte får inleda mening
 %text="alldeles"*)
-of1@ordföljd
+of1@ordbi %Wille ändrade kategori
 {
 X0(sed!=sen),
 X1(wordcl=sn | text="att"  | text="eftersom"), 
@@ -6059,6 +6183,11 @@ action(scrutinizing)
 
 category ordföljd {
 info("underlig ordföljd")
+link("" "")
+}
+
+category ordbi {
+info("underlig ordföljd i bisats")
 link("" "")
 }
 
@@ -6093,7 +6222,7 @@ accept("Vid en avkastning som i princip är lika hög som inflationen blir således
 
 
 (* 3 bygg ut med att de inte får inleda mening *)
-of2@ordföljd
+of2@ordbi %Wille ändrade kategori
 {
 X0(sed!=sen),
 X1(wordcl=sn | text="att"),
@@ -6116,7 +6245,7 @@ action(scrutinizing)
     skada.
 *)
 (* är den verkligen fel, kolla upp! *)
-of3@ordföljd
+of3@ordbi %Wille ändrade kategori
 {
 X1(wordcl=sn | text="att"), 
 (NP/X2)(),
@@ -6138,47 +6267,53 @@ action(scrutinizing)
     Note: This is a check for the order between subject and finite verb in
     subordinate clauses introduced by an interrogative word (e.g. vad). *)
 
-of4@ordföljd
+category ordind {
+info("underlig ordföljd i indirekt frågesats")
+link("" "")
+}
+
+of4@ordind
+{
+X0(sed=sen),
+X00()*,
+X01(lemma="undra" | lemma="veta" | lemma="fråga" | lemma="fundera"),
+X02()*,
+X1((wordcl=hp | wordcl=ha) & text!="som"), % frågeord
+X2(wordcl=vb & (vbf=prt | vbf=prs)),
+(NP/X3)(),
+X4(wordcl=dt)?, 
+(NP/X5)(),
+X6()*,
+X7(extra=per | extra=exc)
+-->
+mark(X01 X1 X2 X3 X5 X7)
+info("Ordföljdsfel, felaktig ledföljd i indirekt frågesats:" italics(X3.real_text) " bör komma innan " italics(X2.real_text))
+action(scrutinizing)
+detect("Hon frågade varför sparkade han bollen")
+}
+
+(*
+of4b@ordföljd
 {
 X0(sed=sen),
 X00()*,
 X01(lemma="undra" | lemma="veta" | lemma="fråga"),
 X02()*,
 X1((wordcl=hp | wordcl=ha) & text!="som"), % frågeord
-
 X2(wordcl=vb & (vbf=prt | vbf=prs)),
-X3(wordcl=pn & text!="få"), % bygg ut med NP
+(NP/X3)(),
 X4(wordcl=dt)?, 
 (NP/X5)(),
 X6()*,
 X7(extra=per | extra=exc)
 -->
-corr(X0 X00 X01 X02 X1 X3 X2 X4 X5 X6 X7)
+mark(X01)
+%corr(X2.insert(X3.real_text) X3.replace(X5.real_text) X5.delete())
 info("Ordföljdsfel, felaktig ledföljd i indirekt frågesats")
 action(scrutinizing)
 detect("Hon frågade varför sparkade han bollen")
 }
-
-of4b@ordföljd
-{
-X0(sed=sen),
-X00()*,
-X01(lemma="undra" | lemma="veta"),
-X02()*,
-X1((wordcl=hp | wordcl=ha) & text!="som"), % frågeord
-
-X2(wordcl=vb & (vbf=prt | vbf=prs)),
-(NP/X3)(wordcl!=pn),
-X4(wordcl=dt)?, 
-(NP/X5)(),
-X6()*,
-X7(extra=per | extra=exc)
--->
-corr(X0 X00 X01 X02 X1 X3 X2 X4 X5 X6 X7)
-info("Ordföljdsfel, felaktig ledföljd i indirekt frågesats")
-action(scrutinizing)
-detect("Hon frågade varför sparkade han bollen")
-}
+*)
 
 (* Lenas regel *)
 (* ger för många falska alarm 
@@ -6212,7 +6347,7 @@ X1(wordcl=ab & (text="då" | text="hemma" | text="borta" | text="där")),
 X3(wordcl=vb & (vbf=prs | vbf=prt))
 -->
 mark(X1 X2 X3)
-corr(X0 X1 X3 X2)
+corr(X2.insert(X3.real_text) X3.delete())
 info("Ordföljdsfel, felaktig ordföljd vid adverbial i fundamentet" "Regel under konstruktion")
 action(scrutinizing)
 detect("Hemma det finns folk från olika förorter")
@@ -7830,7 +7965,7 @@ action(scrutinizing)
 }
 
 (*
-fråga_utan_frågetecken@skiljetecken {
+fråga_utan_frågetecken@frågetecken {
 X(sed=sen),
 X1(wordcl=in)?,
 X2(cht=mid)?,
@@ -7847,7 +7982,7 @@ detect("Ja, vad gör vi av det.")
 }
 *)
 
-fråga_utan_frågetecken2@skiljetecken {
+fråga_utan_frågetecken2@frågetecken {
 X(sed=sen),
 (NP)(),
 X2(cht=mid)?,

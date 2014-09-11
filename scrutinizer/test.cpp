@@ -57,7 +57,7 @@ int main(int argc, char** argv){
 		printf("\nReproducing test: FAILED \n");
 		return 0;
 	}
-	//printf("%s", ret);
+	if(argc==3 && strcmp(argv[2],"-p")==0) printf("%s", ret);
 	
 	//Write an xml file
 	FILE* fp2;
