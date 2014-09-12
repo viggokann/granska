@@ -15,7 +15,7 @@ X3()*,
 X4(text="." | text="!"),
 X5(sed=sen) 
 -->
-mark( X2 X3 X4)
+mark( X1 X2 X4)
 corr(X4.replace("?"))
 info("Fråga?")
 action(scrutinizing)
@@ -29,7 +29,7 @@ X1(cht!=mid)*,
 X2(text="." | text="!"),
 X3(sed=sen) 
 -->
-mark(Y X1 X2)
+mark(X Y X2)
 corr(X2.replace("?"))
 info("Se över ordet: "italics(Y.real_text)", ord i presens/preterium på denna plats brukar ofta innebära att meningen är en fråga.")
 action(scrutinizing)
@@ -41,7 +41,7 @@ X(text="eller" | text="eller hur"),
 X2(text="." | text="!"),
 X3(sed=sen) 
 -->
-mark(X2)
+mark(X X2)
 corr(X2.replace("?"))
 info("Fråga?")
 action(scrutinizing)
@@ -56,7 +56,7 @@ X1()*,
 X2(text="." | text="!"),
 X3(sed=sen) 
 -->
-mark(X2)
+mark(Y Z X2)
 corr(X2.replace("?"))
 info("Fråga?")
 action(scrutinizing)
@@ -91,7 +91,7 @@ versalvidnymening@nymening
 X(sed=sen & (text="$."|text="$?"|text="$!")),
 Y(!is_cap)
 -->
-mark(Y)
+mark(X Y)
 corr(Y.replace(firsttoupper(Y.real_text)))
 info("Versaler vid ny mening")
 action(scrutinizing)
@@ -109,7 +109,7 @@ felversal@gemen
 X(sed!=sen),
 Y(is_cap & wordcl!=pm)
 -->
-mark(Y)
+mark(X Y)
 corr(Y.replace(tolower(Y.real_text)))
 info("Inget egennamn")
 action(scrutinizing)

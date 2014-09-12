@@ -51,7 +51,7 @@ int main(int argc, char** argv){
 	}
 	if(strcmp(first,last)==0) {
 			printf("--------------------------------\n");
-			printf("\nReproducing test: OK \n");
+			printf("\nReproducing test:\t\t\t OK \n");
 	}
 	else{
 		printf("\nReproducing test: FAILED \n");

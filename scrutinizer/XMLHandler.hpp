@@ -30,5 +30,7 @@ public:
     
 private:
 		bool found;
-		int ordfoljd, skiljetecken, storbokstav;
+		int sar, stavning, dom, pronomen, kong, verb, 
+		tempus, fragetecken, utropstecken, egennamn,
+		nymening, gemen , ordbi, ordind, kompsuffix, kompperi;
 };
