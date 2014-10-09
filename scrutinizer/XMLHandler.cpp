@@ -61,37 +61,37 @@ void XMLHandler::endElement(const   XMLCh* const    uri,
 void XMLHandler::endDocument()
 {
 	if(sar==55) cout << "Category Särskrivning:\t\t\t OK" << endl;
-	else cout << "Category Särskrivning:\t\t\t FAILED" << endl;
+	else cout << "Category Särskrivning:\t\t\t FAILED: "<<sar<<"/55"<< endl;
 	if(stavning==19) cout << "Category Stavning:\t\t\t OK" << endl;
-	else cout << "Category Stavning:\t\t\t FAILED" << endl;
+	else cout << "Category Stavning:\t\t\t FAILED: "<<stavning<<"/19" << endl;
 	if(dom==7) cout << "Category De/Dem:\t\t\t OK" << endl;
-	else cout << "Category De/Dem:\t\t\t FAILED" << endl;
+	else cout << "Category De/Dem:\t\t\t FAILED: "<<dom<<"/7" << endl;
 	if(pronomen==1) cout << "Category Pronomen:\t\t\t OK" << endl;
-	else cout << "Category Pronomen:\t\t\t FAILED" << endl;
+	else cout << "Category Pronomen:\t\t\t FAILED: "<<pronomen<<"/1" << endl;
 	if(kong==35) cout << "Category Kongruens:\t\t\t OK" << endl;
-	else cout << "Category Kongruens:\t\t\t FAILED" << endl;
+	else cout << "Category Kongruens:\t\t\t FAILED: "<<kong<<"/35" << endl;
 	if(verb==17) cout << "Category Verb:\t\t\t\t OK" << endl;
-	else cout << "Category Verb:\t\t\t\t FAILED" << endl;
+	else cout << "Category Verb:\t\t\t\t FAILED: "<<verb<<"/17" << endl;
 	if(tempus==11) cout << "Category Tempus:\t\t\t OK" << endl;
-	else cout << "Category Tempus:\t\t\t FAILED" << endl;
+	else cout << "Category Tempus:\t\t\t FAILED: "<<tempus<<"/11" << endl;
 	if(fragetecken==12) cout << "Category Frågetecken:\t\t\t OK" << endl;
-	else cout << "Category Frågetecken:\t\t\t FAILED" << endl;
+	else cout << "Category Frågetecken:\t\t\t FAILED: "<<fragetecken<<"/12" << endl;
 	if(utropstecken==2) cout << "Category Utropstecken:\t\t\t OK" << endl;
-	else cout << "Category Utropstecken:\t\t\t FAILED" << endl;
+	else cout << "Category Utropstecken:\t\t\t FAILED: "<<utropstecken<<"/2" << endl;
 	if(egennamn==16) cout << "Category Egennamn:\t\t\t OK" << endl;
-	else cout << "Category Egennamn:\t\t\t FAILED" << endl;
+	else cout << "Category Egennamn:\t\t\t FAILED: "<<egennamn<<"/16" << endl;
 	if(nymening==5) cout << "Category Nymening:\t\t\t OK" << endl;
-	else cout << "Category Nymening:\t\t\t FAILED" << endl;
+	else cout << "Category Nymening:\t\t\t FAILED: "<<nymening<<"/5" << endl;
 	if(gemen==3) cout << "Category Gemener:\t\t\t OK" << endl;
-	else cout << "Category Gemener:\t\t\t FAILED" << endl;
+	else cout << "Category Gemener:\t\t\t FAILED: "<<gemen<<"/3" << endl;
 	if(ordbi==3) cout << "Category Ordföljd i bisats:\t\t OK" << endl;
-	else cout << "Category Ordföljd i bisats:\t\t FAILED" << endl;
+	else cout << "Category Ordföljd i bisats:\t\t FAILED: "<<ordbi<<"/3" << endl;
 	if(ordind==2) cout << "Category Ordföljd i indirekt frågesats:\t OK" << endl;
-	else cout << "Category Ordföljd i indirekt frågesats:\t FAILED" << endl;
+	else cout << "Category Ordföljd i indirekt frågesats:\t FAILED: "<<ordind<<"/2" << endl;
 	if(kompsuffix==2) cout << "Category Suffixkomparation:\t\t OK" << endl;
-	else cout << "Category Suffixkomparation:\t\t FAILED" << endl;
+	else cout << "Category Suffixkomparation:\t\t FAILED: "<<kompsuffix<<"/2" << endl;
 	if(kompperi==7) cout << "Category Perifrasktisk komparation:\t OK" << endl;
-	else cout << "Category Perifrasktisk komparation:\t FAILED" << endl;
+	else cout << "Category Perifrasktisk komparation:\t FAILED: "<<kompperi<<"/7" << endl;
 }
 
 void XMLHandler::fatalError(const SAXParseException& exception)

@@ -10,12 +10,13 @@ link("" "")
 frågeordsfråga@frågetecken
 {
 X1(sed=sen | cht=mid),
-X2(text="vem" | text="vad" | text="vart" | text="var" | text="varifrån" | text="vilka" | text="vilken" | text="vilket"  | text="hur" | text="varför"  ),
+X2(text="vem" | text="vad" | text="vart" | text="var" | text="varifrån" | text="vilka" | text="vilken"  | text="hur" | text="varför"  ),
+X(wordcl!=pn | text!="som"),
 X3()*, 
 X4(text="." | text="!"),
 X5(sed=sen) 
 -->
-mark( X1 X2 X4)
+mark( X1 X2 X X4)
 corr(X4.replace("?"))
 info("Fråga?")
 action(scrutinizing)
@@ -97,6 +98,7 @@ info("Versaler vid ny mening")
 action(scrutinizing)
 }
 
+
 (* -------------------------------------------------*)
 
 category gemen {
@@ -106,10 +108,10 @@ link("" "")
 
 felversal@gemen
 {
-X(sed!=sen),
+X(sed!=sen & text!="\"" & text!="'"),
 Y(is_cap & wordcl!=pm)
 -->
-mark(X Y)
+mark(Y)
 corr(Y.replace(tolower(Y.real_text)))
 info("Inget egennamn")
 action(scrutinizing)
@@ -414,7 +416,18 @@ info("Regler med tempusfel")
 link("" "")
 }
 
+byte@tempus
+{
+X1(wordcl=vb & (vbf!=inf & vbf!=sup & vbf != imp)),
+X2(wordcl!=vb)+,
+X3(wordcl=vb & (vbf!=X1.vbf & (vbf!=inf & vbf!=sup & vbf != imp)))
+-->
+mark(X1 X3)
+info("Skifte mellan presens och preterium i satsen (nu och dåtid)")
+action(scrutinizing)
+}
 
+(*
 VBT@
 {
 X1(wordcl=vb & (vbf!=inf & vbf!=sup & vbf != imp)),
@@ -432,6 +445,7 @@ mark(X1)
 info("Skifte mellan presens och preterium i satsen (nu och dåtid)")
 action(scrutinizing)
 }
+*)
 
 (* ----- KONSTIG-MENING-KONTROLL ----- *)
 
@@ -762,7 +776,7 @@ action(scrutinizing)
 
 *)
 
-möjligast1@adjektiv
+möjligast1@kompsuffix %Ändrade till kategori kompsuffix av Wille
 {
 X(text="möjligast"),
 Y(wordcl=jj & deg=suv)     (* ev. deg=pos *)
@@ -773,7 +787,7 @@ detect("Han körde med möjligast största snabbhet.")
 action(scrutinizing)
 }
 
-möjligast2@adjektiv
+möjligast2@kompsuffix %Ändrade till kategori kompsuffix av Wille
 {
 X(text="möjligast"),
 Y(wordcl=jj & deg=pos),     (* ev. deg=pos *)
@@ -2928,7 +2942,7 @@ action(accepting)
 }
 
 (* SAG Pron § 179 *)
-kongacc01hny@a
+kongacc01hny@kong %Ändrade till kategori kong av Wille
 {
 X(text="något"),
 Y(wordcl=jj & deg=kom)
@@ -3346,7 +3360,7 @@ action(accepting)
 
 (* 991118 *)
 
-okokok@a
+okokok@kong %Ändrade från category a till kong av Wille
 {
 X(wordcl=jj)+,
 Y(wordcl=nn & gender=neu & gender=X.gender & num!=X.num & E(lex.num=X.num) & spec=X.spec)
@@ -7506,7 +7520,7 @@ action(scrutinizing)
 *)
 
 
-nrule36@a
+nrule36@ordföljd %Ändrade till kategori ordföljd av Wille
 {
 X(wordcl=pp),
 Y(wordcl=pp),
@@ -7554,7 +7568,7 @@ category lexin_verb {
 info("underlig verbkonstruktion")
 link("" "")
 }
-
+(*
 villOK@lexin_verb
 {
 X2(vbf=inf),
@@ -7565,7 +7579,7 @@ X1(wordcl=vb & text="vill")
 jump(slut_vill, NP.no_of_tokens + PP.no_of_tokens + 2)
 action(accepting)
 }
-
+*)
 (*
 vill@lexin_verb
 {
