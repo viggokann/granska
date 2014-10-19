@@ -11,28 +11,28 @@ frågeordsfråga@frågetecken
 {
 X1(sed=sen | cht=mid),
 X2(text="vem" | text="vad" | text="vart" | text="var" | text="varifrån" | text="vilka" | text="vilken"  | text="hur" | text="varför"  ),
-X(wordcl!=pn | text!="som"),
+X(wordcl!=pn & text!="som"),
 X3()*, 
 X4(text="." | text="!"),
 X5(sed=sen) 
 -->
 mark( X1 X2 X X4)
 corr(X4.replace("?"))
-info("Fråga?")
+info("När ordet "italics(X2.real_text)" inleder en sats kan meningen uppfattas som en fråga.")
 action(scrutinizing)
 }
 
 janejfråga@frågetecken
 {
 X(sed=sen | (cht=mid & text!="'")),
-Y(wordcl=vb & (vbf = prt | vbf = prs)),
+Y(wordcl=vb & (vbf = prt | vbf = prs) & voice!=sfo),
 X1(cht!=mid)*, 
 X2(text="." | text="!"),
 X3(sed=sen) 
 -->
 mark(X Y X2)
 corr(X2.replace("?"))
-info("Se över ordet: "italics(Y.real_text)", ord i presens/preterium på denna plats brukar ofta innebära att meningen är en fråga.")
+info("Ord i presens/preterium som inleder en sats brukar ofta innebära att meningen är en fråga.")
 action(scrutinizing)
 }
 
@@ -545,7 +545,7 @@ X(spellOK) --> action(accepting) jump(slut_stavning, 0)
 
 stav1@stavning
 {
-X(wordcl!=pm & !spell_OK(real_text, token))
+X(wordcl!=pm & !spell_OK(real_text, token) & !spell_OK_sound(real_text, token))
 -->
 corr(X.spell_corr(X.real_text, X.token))
 info(spell_info(X.token))
@@ -553,6 +553,15 @@ action(scrutinizing)
 jump(slut_stavning, 0)
 }
 
+ljud@stavning
+{
+X(wordcl!=pm & !spell_OK(real_text, token) & spell_OK_sound(real_text, token))
+-->
+corr(X.spell_corr(X.real_text, X.token))
+info("Möjligt fel med: ng-, sje-, tje-, e/ä-, eller o/å- ljud.")
+action(scrutinizing)
+jump(slut_stavning, 0)
+}
 
 stav2@stavning
 {

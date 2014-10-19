@@ -68,8 +68,41 @@ static unsigned char *sjeljud[] = {
 /* Motsvarande för tje-ljudet: */
 static unsigned char *tjeljud[] = {
   (unsigned char *) "tj",
+  (unsigned char *) "ch",
   (unsigned char *)  "k",
   (unsigned char *)  ""};
+  
+/* Motsvarande för ng-ljudet: */
+static unsigned char *ngljud[] = {
+  (unsigned char *) "ng",
+  (unsigned char *) "gn",
+  (unsigned char *) "ngn",
+  (unsigned char *) "ngk",
+  (unsigned char *) "nk",
+  (unsigned char *)  ""};
+  
+  /* Motsvarande för e/ä-ljud: */
+static unsigned char *eljud[] = {
+  (unsigned char *) "e",
+  (unsigned char *) "ä",
+  (unsigned char *)  ""};
+  
+  /* Motsvarande för o/å-ljud: */
+static unsigned char *oljud[] = {
+  (unsigned char *) "o",
+  (unsigned char *) "å",
+  (unsigned char *)  ""};
+  
+  /* Motsvarande för o/å-ljud: */
+static unsigned char *jljud[] = {
+  (unsigned char *) "j",
+  (unsigned char *) "g",
+  (unsigned char *) "lj",
+  (unsigned char *) "dj",
+  (unsigned char *) "hj",
+  (unsigned char *) "gj",
+  (unsigned char *)  ""};
+ 
 
 typedef unsigned char uchar;
 
@@ -412,6 +445,39 @@ static void GenereraLjudbyten(struct corrData *cd, unsigned char *ord)
   for (s = ord; *s; s++) {
     for (p = LJUDPOST(toLowerCase[*s], s[1]); p; p = p->next) {
       for (i = 1; p->ljud[i]; i++) 
+		if (p->ljud[i] != s[i]) goto notsame;
+		  /* ljud hittat, byt det mot varje annat ljud i klassen */
+		  sound = p->ljud;
+		  soundlen = strlen((char *)sound);
+		  for (newsound = p->ljudklass; **newsound; newsound++) 
+			if (*newsound != sound) {
+			  strcpy((char *)word, (char *)ord);
+			  strcpy((char *)word + (s-ord), (char *)*newsound);
+			  if (isUpperCase[*s]) word[s-ord] = toUpperCase[**newsound];
+				strcat((char *)word, (char *)s + soundlen);
+			  if (FyrKoll(word, s-ord, strlen((char *)*newsound)) > 0) {
+				if (CheckWord(word, 2)){
+				  AddSuggestion(cd, word, REPPVAL-1 + WordFreq(word));
+				}
+				else if ((noofparts = SimpleIsCompound(word, 
+								   strlen((char *)word))))
+				  AddSuggestion(cd, word, 
+						REPPVAL-1 + WordFreq(word) + PARTCOST*(noofparts-1));
+			  }
+			}
+			notsame: continue;
+    }
+  }
+}
+
+int KollaLjudbyten(unsigned char *ord)
+{	
+  int i, soundlen, noofparts;
+  unsigned char *s, *sound, **newsound, word[LANGD + 4];
+  struct ljudpost *p;
+  for (s = ord; *s; s++) {
+    for (p = LJUDPOST(toLowerCase[*s], s[1]); p; p = p->next) {
+      for (i = 1; p->ljud[i]; i++) 
 	if (p->ljud[i] != s[i]) goto notsame;
       /* ljud hittat, byt det mot varje annat ljud i klassen */
       sound = p->ljud;
@@ -423,17 +489,18 @@ static void GenereraLjudbyten(struct corrData *cd, unsigned char *ord)
 	  if (isUpperCase[*s]) word[s-ord] = toUpperCase[**newsound];
 	  strcat((char *)word, (char *)s + soundlen);
 	  if (FyrKoll(word, s-ord, strlen((char *)*newsound)) > 0) {
-	    if (CheckWord(word, 2))
-	      AddSuggestion(cd, word, REPPVAL-1 + WordFreq(word));
+	    if (CheckWord(word, 2)){
+			return 1;
+	  }
 	    else if ((noofparts = SimpleIsCompound(word, 
 						   strlen((char *)word))))
-	      AddSuggestion(cd, word, 
-			    REPPVAL-1 + WordFreq(word) + PARTCOST*(noofparts-1));
+	      return 1;
 	  }
 	}
     notsame: continue;
     }
   }
+  return 0;
 }
 
 static void Generera1(struct corrData *cd, unsigned char *word, int from, int errors, int point, int part, 
@@ -891,9 +958,17 @@ int InitRattstava(const char *fyrgramfilename, const unsigned char *separator)
 
   i = CountSoundClass(sjeljud);
   i += CountSoundClass(tjeljud);
+  i += CountSoundClass(ngljud);
+  i += CountSoundClass(eljud);
+  i += CountSoundClass(oljud);
+  i += CountSoundClass(jljud);
   ljudpostbuf = malloc(sizeof(*ljudpostbuf) * i);
   AddSoundClass(sjeljud);
   AddSoundClass(tjeljud);
+  AddSoundClass(ngljud);
+  AddSoundClass(eljud);
+  AddSoundClass(oljud);
+  AddSoundClass(jljud);
   return 1;
 }
 

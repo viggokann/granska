@@ -617,6 +617,11 @@ char* Scrutinizer::GetResult() {
 //         xmlOkWord.write(word+prevOffset+1,offset-prevOffset);
 //     return xmlOkWord.str();        
 // }
+bool Scrutinizer::IsSoundSpellOK(const char *s, Token token) {
+	bool b = (SoundWord((unsigned char *) s)) ? true : false;
+	if (b) return true;
+	return false;
+}
 
 bool Scrutinizer::IsSpellOK(const char *s, Token token) {
     //  if (xVerbose)

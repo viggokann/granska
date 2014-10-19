@@ -69,6 +69,9 @@ int StavaAddWord( const
 int StavaWord(
 	      const unsigned char *word);    /* word to be checked */
 
+int SoundWord(
+	      const unsigned char *word);    /* word to be checked for sound */
+
 /* StavaCorrectWord checks if a word is correctly spelled and returns
    ordered proposals of replacements if not. The most likely word is
    presented first.
@@ -80,6 +83,7 @@ int StavaWord(
    found the empty string is returned. */
 unsigned char *StavaCorrectWord(
 	      const unsigned char *word);    /* word to be corrected */
+	      
 
 /* StavaCorrectCompound checks if a word is a correctly spelled compound
    and then returns ordered proposals of replacements. The most likely word is

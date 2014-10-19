@@ -2051,6 +2051,32 @@ int StavaWord(
   return 0;
 }
 
+int SoundWord(const unsigned char *word)     /* word to be checked */
+{ 
+	unsigned char buf[LANGD + 3], ord2[LANGD + 3];
+  int i, bindestreck = 0;
+  for (i = 0; i < LANGD; i++) {
+    if (!(buf[i] = bokstavsTabell[word[i]])) break;
+    if (buf[i] == '-') bindestreck++;
+  }
+  if (i == LANGD) return 0; /* too long word */
+  if (i < ORDMIN) return 0; /* too short word */
+  if (KollaLjudbyten(buf)) return 1;
+ /* if (bindestreck) {
+    if (buf[i - 1] == '-') {
+      i--;
+      buf[i] = '\0';
+      if (InFLSuffix(buf, i)) return 1;
+      SuddaBindestreck(buf, ord2);
+      return InFLSuffix(ord2, strlen((char *)ord2));
+    }
+    if (xSammansatta) if (KollaDelar(buf, ord2)) return 1;
+    SuddaBindestreck(buf, ord2);
+    if (KollaLjudbyten(ord2)) return 1;
+  }*/
+  return 0;
+}
+
 /* StavaCorrectWord checks if a word is correctly spelled and returns
    ordered proposals of replacements if not. The most likely word is
    presented first.

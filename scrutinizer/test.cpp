@@ -20,8 +20,7 @@ using namespace std;
 
 int main(int argc, char** argv){
 	//load granska
-	loadGranska();
-	
+	loadGranska();	
 	//testfile to read from
 	FILE* fp;
 	char str [1000000];
@@ -40,17 +39,17 @@ int main(int argc, char** argv){
 	}   
 	fclose(fp);
 	
-	
 	int size = 10;
 	char* first, *last, *ret;
 	for(int i = 0; i < size; i++){
 		//call granska and store XML in ret
 		ret = granska(str);
 		if(i==0) first = ret; 
-		else if(i==(size-1)) last = ret; 
+		else if(i==(size-1)) last = ret;
 	}
+	printf("\n--------------------------------\n");
+	printf("\nRunning tests on ../rulesets/wille/regelsamling.ver8.testfil:\n\n");
 	if(strcmp(first,last)==0) {
-			printf("--------------------------------\n");
 			printf("\nReproducing test:\t\t\t OK \n");
 	}
 	else{
@@ -66,6 +65,7 @@ int main(int argc, char** argv){
 	fclose(fp2);
 	
 	//Assert that granska output is OK.
+
 	try {
 		XMLPlatformUtils::Initialize();
 	}

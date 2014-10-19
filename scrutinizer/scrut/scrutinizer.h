@@ -59,6 +59,7 @@ public:
   RuleSet *GetRuleSet() const { return ruleSet; }
   bool IsSpellOK(const char *s, Token token);        // used by rules
   char *SpellOK(const char *s, Token token);   // used by rules
+  bool IsSoundSpellOK(const char *s, Token token); // used by rules
   void PrintResult(std::ostream& = std::cout);
   char* GetResult();
   void Scrutinize(AbstractSentence*);

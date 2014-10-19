@@ -35,7 +35,7 @@
 #include "stringbuf.h"
 
 // this should be in Word:
-const uint MAX_WORD_LENGTH = 80;      // can be set arbitrarily
+const uint MAX_WORD_LENGTH = 150;      // can be set arbitrarily
 const int MAX_LEMMAS_PER_WORDTAG = 2;
 const int MAX_INFLECTION_CHARS_ON_NORMAL_WORD = 5;
 const int MIN_PREFIX_CHARS_ON_NORMAL_WORD = 3;

@@ -62,7 +62,7 @@ void XMLHandler::endDocument()
 {
 	if(sar==55) cout << "Category Särskrivning:\t\t\t OK" << endl;
 	else cout << "Category Särskrivning:\t\t\t FAILED: "<<sar<<"/55"<< endl;
-	if(stavning==19) cout << "Category Stavning:\t\t\t OK" << endl;
+	if(stavning==21) cout << "Category Stavning:\t\t\t OK" << endl;
 	else cout << "Category Stavning:\t\t\t FAILED: "<<stavning<<"/19" << endl;
 	if(dom==7) cout << "Category De/Dem:\t\t\t OK" << endl;
 	else cout << "Category De/Dem:\t\t\t FAILED: "<<dom<<"/7" << endl;
@@ -74,7 +74,7 @@ void XMLHandler::endDocument()
 	else cout << "Category Verb:\t\t\t\t FAILED: "<<verb<<"/17" << endl;
 	if(tempus==11) cout << "Category Tempus:\t\t\t OK" << endl;
 	else cout << "Category Tempus:\t\t\t FAILED: "<<tempus<<"/11" << endl;
-	if(fragetecken==12) cout << "Category Frågetecken:\t\t\t OK" << endl;
+	if(fragetecken==10) cout << "Category Frågetecken:\t\t\t OK" << endl;
 	else cout << "Category Frågetecken:\t\t\t FAILED: "<<fragetecken<<"/12" << endl;
 	if(utropstecken==2) cout << "Category Utropstecken:\t\t\t OK" << endl;
 	else cout << "Category Utropstecken:\t\t\t FAILED: "<<utropstecken<<"/2" << endl;
@@ -88,7 +88,7 @@ void XMLHandler::endDocument()
 	else cout << "Category Ordföljd i bisats:\t\t FAILED: "<<ordbi<<"/3" << endl;
 	if(ordind==2) cout << "Category Ordföljd i indirekt frågesats:\t OK" << endl;
 	else cout << "Category Ordföljd i indirekt frågesats:\t FAILED: "<<ordind<<"/2" << endl;
-	if(kompsuffix==2) cout << "Category Suffixkomparation:\t\t OK" << endl;
+	if(kompsuffix==3) cout << "Category Suffixkomparation:\t\t OK" << endl;
 	else cout << "Category Suffixkomparation:\t\t FAILED: "<<kompsuffix<<"/2" << endl;
 	if(kompperi==7) cout << "Category Perifrasktisk komparation:\t OK" << endl;
 	else cout << "Category Perifrasktisk komparation:\t FAILED: "<<kompperi<<"/7" << endl;

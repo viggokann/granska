@@ -1055,6 +1055,12 @@ static void spellCorrectFunc(MethodOrFunctionEntry*, EvaluatedVariable *ev, cons
   return;
 }
 
+static void correctlyspelledsoundfunc(MethodOrFunctionEntry*, const Expr*,
+				 union value argval[], union value &res) {
+  res.boolean = scrutinizer->IsSoundSpellOK(argval[0].string, (Token)argval[1].integer);
+  return;
+}
+
 static void spellcompoundcheckfunc(MethodOrFunctionEntry*, EvaluatedVariable*, const char*, 
 				   const Expr*, union value argval[], union value &res) {
   //  if (xVerbose)
@@ -1354,6 +1360,10 @@ void DefinePredefined(void) {
   pm->argtypes[1] = Integer;
   pm = new MethodOrFunctionEntry("spell_corr", IdEntry::MethodId, CorrT, 2);
   pm->func.method = &spellCorrectFunc;
+  pm->argtypes[0] = String;
+  pm->argtypes[1] = Integer;
+  pm = new MethodOrFunctionEntry("spell_OK_sound", IdEntry::FunctionId, Boolean, 2);
+  pm->func.function = &correctlyspelledsoundfunc;
   pm->argtypes[0] = String;
   pm->argtypes[1] = Integer;
   pm = new MethodOrFunctionEntry("spell_corr_compound", IdEntry::MethodId, CorrT, 2);

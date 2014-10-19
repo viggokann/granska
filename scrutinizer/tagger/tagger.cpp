@@ -722,6 +722,9 @@ void Tagger::ReadText() {
                 continue;
             }
         case TOKEN_BEGIN_PARAGRAPH:
+			//printf("PARAGRAF\n");
+			//theTokens[nTokens+1].SetWord(specialWord[TOKEN_PARAGRAPH], "$P", TOKEN_END);
+			theTokens[nTokens].SetSelectedTag(Tags().SpecialTag(TOKEN_QUESTION_MARK), false);
         case TOKEN_BEGIN_HEADING:
         case TOKEN_END_HEADING:
         case TOKEN_BEGIN_TITLE:

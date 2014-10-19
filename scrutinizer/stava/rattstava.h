@@ -48,3 +48,7 @@ extern int GenerateSimpleCorrections(struct correctionSet *cset, unsigned char *
    Rättelseförslagen läggs i cset.
    Returnerar 0 om inget förslag kunde genereras och 1 annars. */
 extern int GenerateCorrections(struct correctionSet *cset, unsigned char *word);
+
+extern int KollaLjudbyten(unsigned char *ord);
+
+
