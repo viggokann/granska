@@ -9,7 +9,7 @@ using namespace std;
 
 XMLHandler::XMLHandler() : found(false), sar(0), stavning(0), dom(0), pronomen(0), kong(0), verb(0), 
 		tempus(0), fragetecken(0), utropstecken(0), egennamn(0),
-		nymening(0), gemen(0) , ordbi(0), ordind(0), kompsuffix(0), kompperi(0)
+		nymening(0), gemen(0) , ordbi(0), ordind(0), kompsuffix(0), kompperi(0), ljud(0)
 {
 }
 
@@ -32,6 +32,7 @@ void XMLHandler::characters(const   XMLCh* const		chars, const XMLSize_t length)
     char* message = XMLString::transcode(chars);
     if(found==true && strcmp(message,"sär")==0) sar++;
     if(found==true && strcmp(message,"stavning")==0) stavning++;
+    if(found==true && strcmp(message,"ljud")==0) ljud++;
     if(found==true && strcmp(message,"dom")==0) dom++;
     if(found==true && strcmp(message,"pronomen")==0) pronomen++;
     if(found==true && strcmp(message,"kong")==0) kong++;
@@ -63,7 +64,9 @@ void XMLHandler::endDocument()
 	if(sar==55) cout << "Category Särskrivning:\t\t\t OK" << endl;
 	else cout << "Category Särskrivning:\t\t\t FAILED: "<<sar<<"/55"<< endl;
 	if(stavning==21) cout << "Category Stavning:\t\t\t OK" << endl;
-	else cout << "Category Stavning:\t\t\t FAILED: "<<stavning<<"/19" << endl;
+	else cout << "Category Stavning:\t\t\t FAILED: "<<stavning<<"/21" << endl;
+	if(ljud==10) cout << "Category ljudposter:\t\t\t OK" << endl;
+	else cout << "Category ljudposter:\t\t\t FAILED: "<<ljud<<"/10" << endl;
 	if(dom==7) cout << "Category De/Dem:\t\t\t OK" << endl;
 	else cout << "Category De/Dem:\t\t\t FAILED: "<<dom<<"/7" << endl;
 	if(pronomen==1) cout << "Category Pronomen:\t\t\t OK" << endl;

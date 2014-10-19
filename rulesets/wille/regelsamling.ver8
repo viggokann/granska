@@ -553,7 +553,12 @@ action(scrutinizing)
 jump(slut_stavning, 0)
 }
 
-ljud@stavning
+category ljud {
+info("")
+link("http://www.nada.kth.se/~viggo/stava/manual.html" "Stava")
+}
+
+stavning@ljud
 {
 X(wordcl!=pm & !spell_OK(real_text, token) & spell_OK_sound(real_text, token))
 -->

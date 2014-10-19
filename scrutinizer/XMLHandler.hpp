@@ -32,5 +32,5 @@ private:
 		bool found;
 		int sar, stavning, dom, pronomen, kong, verb, 
 		tempus, fragetecken, utropstecken, egennamn,
-		nymening, gemen , ordbi, ordind, kompsuffix, kompperi;
+		nymening, gemen , ordbi, ordind, kompsuffix, kompperi, ljud;
 };
