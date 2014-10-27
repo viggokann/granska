@@ -77,8 +77,8 @@ void XMLHandler::endDocument()
 	else cout << "Category Verb:\t\t\t\t FAILED: "<<verb<<"/17" << endl;
 	if(tempus==11) cout << "Category Tempus:\t\t\t OK" << endl;
 	else cout << "Category Tempus:\t\t\t FAILED: "<<tempus<<"/11" << endl;
-	if(fragetecken==10) cout << "Category Frågetecken:\t\t\t OK" << endl;
-	else cout << "Category Frågetecken:\t\t\t FAILED: "<<fragetecken<<"/12" << endl;
+	if(fragetecken==5) cout << "Category Frågetecken:\t\t\t OK" << endl;
+	else cout << "Category Frågetecken:\t\t\t FAILED: "<<fragetecken<<"/5" << endl;
 	if(utropstecken==2) cout << "Category Utropstecken:\t\t\t OK" << endl;
 	else cout << "Category Utropstecken:\t\t\t FAILED: "<<utropstecken<<"/2" << endl;
 	if(egennamn==16) cout << "Category Egennamn:\t\t\t OK" << endl;

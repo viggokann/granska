@@ -18,7 +18,7 @@ X5(sed=sen)
 -->
 mark( X1 X2 X X4)
 corr(X4.replace("?"))
-info("När ordet "italics(X2.real_text)" inleder en sats kan meningen uppfattas som en fråga.")
+info("När frågeord så som "italics(X2.real_text)" inleder en sats kan meningen uppfattas som en fråga.")
 action(scrutinizing)
 }
 
@@ -26,13 +26,14 @@ janejfråga@frågetecken
 {
 X(sed=sen | (cht=mid & text!="'")),
 Y(wordcl=vb & (vbf = prt | vbf = prs) & voice!=sfo),
-X1(cht!=mid)*, 
+Y2(wordcl!=pn & text!="som"),
+X1(cht!=mid)+, 
 X2(text="." | text="!"),
 X3(sed=sen) 
 -->
 mark(X Y X2)
 corr(X2.replace("?"))
-info("Ord i presens/preterium som inleder en sats brukar ofta innebära att meningen är en fråga.")
+info("Ord i presens/preterium ("italics(X2.real_text)") som inleder en sats brukar ofta innebära att meningen är en fråga.")
 action(scrutinizing)
 }
 
@@ -134,7 +135,7 @@ X3(sed=sen)
 -->
 mark(Y X2)
 corr(X2.replace("!"))
-info("Uppmaning?")
+info("Om meningen är en uppmaning så bör den avslutas med utropstecken.")
 action(scrutinizing)
 }
 
