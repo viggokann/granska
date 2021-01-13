@@ -1,0 +1,5 @@
+This folder has a set of files for the Granska tagger, created by
+training the tagger on the Stockholm-Umeå Corpus (SUC).
+
+There is another set of lexicon files in the folder ../lex which are
+based on training on a larger corpus.

@@ -1,0 +1,7640 @@
+% Granskas regler 
+
+(* ----- KONSTIG-MENING-KONTROLL ----- *)
+
+category a {
+info("diverse")
+link("" "")
+}
+
+category prob {
+info("Statistisk grammatikgranskning")
+link("" "")
+}
+
+
+varna_konstig@a {
+X(sed=sen & strange_sentence()),
+Y()*,
+Z(sed=sen)
+-->
+info("Den här meningen innehåller många fel eller så är den skriven på något annat språk än svenska")
+action(scrutinizing)
+%jump(prob_regler, 1+Y.no_of_tokens)
+}
+
+
+
+(* godkänn_konstig@a
+{
+X(sed=sen & strange_sentence()),
+Y()*,
+Z(sed=sen)
+-->
+%info("konstig mening")
+action(accepting)
+%action(scrutinizing)
+jump(prob_regler, 1+Y.no_of_tokens)
+}
+*)
+
+godkänn_citat@a
+{
+X(text="\""),
+Y(is_foreign)+,
+Z(text="\"")
+-->
+action(accepting)
+jump(prob_regler, 1+Y.no_of_tokens)
+}
+
+godkänn_parentes@a
+{
+X(text="("),
+Y(is_foreign)+,
+Z(text=")")
+-->
+action(accepting)
+jump(prob_regler, 1+Y.no_of_tokens)
+}
+
+upprepade_ord@a
+{
+X(sed=sen & contains_repeated_words()),
+Y(!is_repeated)*,
+R(is_repeated)+,
+Y2(!is_repeated)*,
+Z(sed=sen)
+-->
+corr(R.delete())
+mark(R)
+info("Upprepad ordsekvens")
+action(scrutinizing)
+}
+
+(* ----- STAVNING ----- *)
+
+category stavning {
+info("stavning")
+link("http://www.nada.kth.se/~viggo/stava/manual.html" "Stava")
+}
+
+
+stavOK@stavning
+{
+X(spellOK) --> action(accepting) jump(slut_stavning, 0)
+}
+
+
+stav1@stavning
+{
+X(wordcl!=pm & !spell_OK(real_text, token))
+-->
+corr(X.spell_corr(X.real_text, X.token))
+info("Misstänkt stavfel")
+%info(spell_info(X.token)) ändrat 13/10 2003
+action(scrutinizing)
+jump(slut_stavning, 0)
+}
+
+
+
+
+(*
+stav2@stavning
+{
+X(token = TOKEN_SIMPLE_WORD & spell_compound_OK(real_text, token))
+-->
+corr(X.spell_corr_compound(X.real_text, X.token))
+info("Eventuellt stavfel (" italics(X.real_text) "är en korrekt sammansättning)")
+action(scrutinizing)
+}
+*)
+
+slut_stavning:
+
+
+
+(* ----- VERSALER/GEMENER ----- *)
+
+(* eval ger många falska 
+meningsbörjan@versal {
+X1(sed=sen & extra!=hea & extra!=non),
+X2(cht=mid)*,
+X3(wordcl!=rg & !is_cap)
+-->
+corr(X3.replace(firsttoupper(X3.real_text)))
+info("om ordet " italics(X3.real_text) " inleder meningen bör det ha stor begynnelsebokstav")
+action(scrutinizing)
+}
+*)
+
+
+
+(*
+egennamn_gemen@versal {
+X(spellOK & length>2 & wordcl=pm & !is_cap & token!=TOKEN_E_MAIL & token!=TOKEN_URL
+	& text!="von" & text!="af" & text!="der" & text!="and" & text!="of") % bör vara !is_unknown istf spellOK
+-->
+corr(X.replace(firsttoupper(X.real_text)))
+info("om" italics(X.real_text) "är ett egennamn bör det ha stor begynnelsebokstav")
+action(scrutinizing)
+}
+*)
+
+(*
+category versal {
+info("versalkontroll")
+link("" "")
+}
+*)
+
+
+(* massor av falska alarm 
+ej_egennamn_versal@versal {
+X(sed=sen & extra!=hea & extra!=non),
+X1(cht=mid | cht=pad)*,
+X2(cht!=mid & cht!=pad),
+Y(is_cap & spellOK & wordcl!=pm)
+-->
+corr(Y.replace(tolower(Y.real_text)))
+info("om" italics(Y.real_text) "inte är ett egennamn bör det ha liten begynnelsebokstav")
+action(scrutinizing)
+}
+*)
+
+
+(* ----- BYRÅKRAT ----- *)
+
+biträde@byråkrat {
+X(text="det"),
+Y(text="biträde")
+-->
+corr(X.replace("den") Y.replace("hjälp"))
+info("Formellt uttryckssätt")
+link("" "") %Svarta listan. Statsrådsberedningen, 1988.")
+action(scrutinizing)
+}
+
+
+category stil {
+info("stilkontroll")
+link("" "")
+}
+
+
+
+(* ----- FELAKTIGA SAMMANSÄTTNINGAR ----- *)
+
+(*
+stilOK@stil
+{
+X(sed=sen & !contains_style_word()),
+Y()*,
+Z(sed=sen)
+-->
+action(accepting)
+jump(slut_stil, Y.no_of_tokens+1)
+}
+*)
+
+(*
+stilord1@stil
+{
+X1(E(lex.style=fsms) | E(lex.style=foal))
+-->
+%corr(X1.get_replacement)
+info("Felaktig sammansättning")
+link("" "Svenska skrivregler § ")
+action(scrutinizing)
+}
+*)
+
+(*
+stilord2@stil
+{
+X1(E(lex.style=foal))
+-->
+%corr(X1.get_replacement)
+info("Formellt eller ålderdomligt ord")
+action(scrutinizing)
+}
+*)
+
+
+category byråkrat {
+info("formellt uttryck")
+link("" "")
+}
+
+
+slut_stil:
+
+
+
+
+
+(* ----- FELAKTIG PRONOMENFORM ----- *) 
+
+
+
+
+
+(*	4. Subjektsform efter preposition
+ *	behöver man ange alla särdrag för att generera en    
+ *	ordform eller behövs endast de som är unika med 
+ *  	lemmat?
+ *)
+
+subj_efter_prep@pronomen
+{
+X0(),
+X1(wordcl=pp),
+X2((wordcl=pn & pnf=sub & pnf!=obj & text!="de" & (X1.text!="för" | X0.text!=",")) |
+   (X1.text!="i" & text="hon"))
+-->
+mark(X1 X2)
+corr(if X2.text="hon" then X2.replace("henne") else X2.form(pnf:=obj) end)
+info("Felaktig pronomenform, använd objektsform")
+action(scrutinizing)
+detect("Jag gav boll till han")
+}
+
+subj_efter_prep2@pronomen
+{
+X0(),
+X1(wordcl=pp),
+X2(text="de" & (X1.text!="för" | X0.text!=",")),
+X3(wordcl!=jj & wordcl!=pc & wordcl!=nn & wordcl!=ro & wordcl!=rg &
+wordcl!=ab & wordcl!=ps & wordcl!=pp & text!="\"" & text!="som") % 031203
+-->
+mark(X1 X2)
+corr(X2.replace("dem"))
+info("Felaktig pronomenform, använd objektsform")
+action(scrutinizing)
+}
+
+category pronomen 
+{
+info("felaktig pronomenform")
+link("" "")
+}
+
+
+(*
+subj_som_objekt@pronomen
+{
+(NP/Np1)(),
+(VP)(),
+(NP/Np2)(pnf!=obj)
+-->
+info("Felaktig pronomenform, använd objektsform")
+action(scrutinizing)
+}
+*)
+
+
+(* ----- ADJEKTIV ----- *)
+
+(*    120. Konstruktionen "möjligast" + adjektiv *)
+
+category adjektiv {
+info("felaktig adjektivfras")
+link("" "")
+}
+
+(* eval
+möjligt@adjektiv
+{
+X(deg=suv),
+Y(wordcl=kn),
+Z(text="möjligt")
+-->
+corr(X.form(deg:=pos))
+info("Felaktig adjektivfras")
+detect("Kom hit så snabbast som möjligt")
+action(scrutinizing)
+}
+
+
+som_möjligt@adjektiv
+{
+X1(sed=sen),
+X2(text!="så")*,
+X3(wordcl=jj)+,
+X4(wordcl=nn)*,
+X5(text="som"),
+X6(wordcl=ab)*,
+X7(text="möjligt")
+-->
+mark(X3 X5 X7)
+corr(X3.insert("så"))
+info("Bortglömt ord" italics("så") "?")
+detect("Kom hit snabbt som bara möjligt")
+action(scrutinizing)
+}
+
+*)
+
+möjligast1@adjektiv
+{
+X(text="möjligast"),
+Y(wordcl=jj & deg=suv)     (* ev. deg=pos *)
+-->
+corr(Y.delete() X.replace("möjliga") X.insert(Y.real_text))
+info("Felaktig adjektivfras")
+detect("Han körde med möjligast största snabbhet.")
+action(scrutinizing)
+}
+
+möjligast2@adjektiv
+{
+X(text="möjligast"),
+Y(wordcl=jj & deg=pos),     (* ev. deg=pos *)
+Z()
+-->
+corr(Y.form(deg:=suv) X.delete() Z.insert("möjliga"))
+corr(X.delete() Y.form(deg:=suv))
+info("Felaktig adjektivfras")
+detect("Han körde med möjligast stora snabbhet.")
+action(scrutinizing)
+}
+
+
+(*
+superlativ@adjektiv {
+X(text="mest"),
+Y(wordcl=jj & deg=pos), % & has_form(spec:=def, deg:=suv)),
+Z(wordcl=nn & spec=def)
+-->
+corr(Y.form(spec:=def, deg:=suv))
+info("Superlativformen är kanske att föredra")
+action(scrutinizing)
+}	
+*)
+
+(*
+komparativ@adjektiv {
+X(text="mer"),
+Y(wordcl=jj & deg=pos),
+Z((wordcl=nn & spec=def) | wordcl != nn)
+-->
+corr(Y.form(spec:=def, deg:=kom))
+info("Komparativformen är kanske att föredra")
+action(scrutinizing)
+}	
+*)
+
+
+(* ----- SAMMANBLANDNING AV UTTRYCK ----- *)
+
+category sammanblandning {
+info("sammanblandning av uttryck")
+link("" "")
+}
+
+tills_dess@sammanblandning {
+X1(text="tills"),
+X2(text="dess")
+-->
+corr(X1.replace("till")) corr(X2.delete())
+info("Uttrycken" italics("till dess") "och" italics("tills") "är sammanblandade. Välj ett av dem eller formulera om.")
+% link("Svenska skrivregler § 54") % vilken källa gäller egentligen, fel i Plita?
+action(scrutinizing) 
+detect("Tills dess tänker jag inte skriva några nya låtar.")
+}
+
+
+
+(* ----- FASTA SÄRSKRIVNINGAR ----- *)
+
+category sär {
+info("Misstänkt särskrivning")
+link("" "") %Svenska skrivregler § 100")
+}
+
+rubrik@sär
+{
+X0(sed=sen & extra=hea),
+X1()*,
+X2(sed=sen)
+-->
+jump(pred_slut, X1.no_of_tokens)
+action(accepting)
+}
+
+
+näst_följande@sär {
+X(text="näst"),
+Y(text="följande")
+-->
+corr(X.join(Y.real_text))
+detect("Näst följande dag var jag på bio.")
+jump(sär_slut, 1)
+action(scrutinizing)
+}
+
+var_annan@sär {
+X(text="var"),
+Y(text="annan" | text="annat" | text="andra")
+-->
+corr(X.join(Y.real_text))
+jump(sär_slut, 1)
+detect("Var annat fel upptäcks")
+action(scrutinizing)
+}
+
+härom@sär {
+X(text="härom"),
+Y(text="kvällen" | text="dagen" | text="aftonen" | text="dan"
+	| text="natten" | text="sistens" | text="veckan" | text="året")
+-->
+corr(X.join(Y.real_text))
+jump(sär_slut, 1)
+detect("Härom kvällen var jag på bio.")
+action(scrutinizing)
+}
+
+allt_i_allo@sär
+{
+X1(text="allt"),
+X2(text="i"),
+X3(text="allo")
+-->
+corr(X1.replace("alltiallo") X2.delete() X3.delete())
+jump(sär_slut, 2)
+detect("Han jobbar som allt i allo på OK.")
+action(scrutinizing)
+}
+
+nån_dera@sär {
+X1(text="nån" | text="någon"),
+X2(text="dera")
+-->
+corr(X1.replace("någondera") X2.delete())
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Jag tror att nån dera dan vinner jag på tipset.") 
+}
+
+nåt_dera@sär {
+X1(text="nåt" | text="något"),
+X2(text="dera")
+-->
+corr(X1.replace("någotdera") X2.delete())
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Jag tror inte jag gör något dera.")
+}
+
+var_dera@sär {
+X(text="var" | text="vart"),
+Y(text="dera")
+-->
+corr(X.join(Y.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Vi fick 5 kronor var dera för jobbet.")
+}
+
+därvid_lag@sär {
+X(text="därvid"),
+Y(text="lag")
+-->
+corr(X.join(Y.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Därvid lag upptäckte jag flera problem.")
+}
+
+över_ens@sär {
+X(text="över"),
+Y(text="ens")
+-->
+corr(X.join(Y.real_text))
+jump(sär_slut, 1)
+detect("Vi var inte över ens om priset.")
+action(scrutinizing)
+}
+
+i_fall@sär {
+X1(text="i"),
+X2(text="fall"),
+X3(wordcl!=ha)
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+accept("Detta är bra i fall då svar uteblir")
+detect("I fall att du gillar sylt kan du få hjortron av mig")
+action(scrutinizing)
+}
+
+dess_förinnan@sär {
+X1(text="dess"),
+X2(text="förinnan")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+detect("Dess förinnan kände vi inte varandra.")
+action(scrutinizing)
+}
+
+dess_förutan@sär {
+X1(text="dess"),
+X2(text="förutan")
+-->
+corr(X1.join(X2.real_text))
+detect("Vind är bra; man kan inte segla dess förutan.") 
+jump(sär_slut, 1)
+action(scrutinizing)
+}
+
+gent_emot@sär {
+X1(text="gent"),
+X2(text="emot")
+-->
+corr(X1.join(X2.real_text))
+detect("Det är inte snällt gent emot andra.")
+jump(sär_slut, 1)
+action(scrutinizing)
+}
+
+i_hjäl@sär {
+X1(text="i"),
+X2(text="hjäl")
+-->
+corr(X1.join(X2.real_text))
+detect("Välkommen till hotell frys i hjäl sa han med is i rösten.")
+jump(sär_slut, 1)
+action(scrutinizing)
+}
+
+i_hop@sär {
+X1(text="i"),
+X2(text="hop")
+-->
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+jump(sär_slut, 1)
+detect("Vi var inte längre i hop sa Sven-Örjan.")
+}
+
+härför_leden@sär {
+X1(text="härför"),
+X2(text="leden")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Härför leden träffade jag på Stenmark i pisten.")
+}
+
+här_för_leden@sär {
+X1(text="här"),
+X2(text="för"),
+X3(text="leden")
+-->
+corr(X1.replace("härförleden") X2.delete() X3.delete())
+jump(sär_slut, 2)
+action(scrutinizing)
+detect("Här för leden träffade jag på Stig Strand i pisten.")
+}
+
+härvid_lag@sär {
+X1(text="härvid"),
+X2(text="lag")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing) % Rättningen korrekt?
+detect("Härvid lag har du faktiskt rätt.")
+}
+
+inget_dera@sär {
+X1(text="ingen" | text="inget"),
+X2(text="dera")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Inget dera är roligt tyckte Berra.")
+}
+
+allt_nog@sär {
+X1(text="allt"),
+X2(text="nog")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Allt nog nu kommer vädret.")
+}
+
+å_nyo@sär {
+X1(text="å"),
+X2(text="nyo")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Vi fick å nyo bevittna stordåd av Stenis.")
+}
+
+om_sider@sär {
+X1(text="om"),
+X2(text="sider")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Sent om sider kom han fram till stugan.")
+}
+
+sins_emellan@sär {
+X1(text="sins"),
+X2(text="emellan")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Sins emellan rådde det ingen tävlingsmentalitet.")
+}
+
+någon_stans@sär {
+X1(text="någon" | text="ingen" | text="var"),
+X2(text="stans")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Jag tror att vi tappade bort honom någon stans på vägen.")
+}
+
+nån_stans@sär {
+X1(text="nån"),
+X2(text="stans")
+-->
+corr(X1.replace("någonstans") X2.delete())
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Jag tror att vi tappade bort honom nån stans på vägen.")
+}
+
+all_den_stund@sär {
+X1(text="all"),
+X2(text="den"),
+X3(text="stund")
+-->
+corr(X1.replace("alldenstund") X2.delete() X3.delete())
+jump(sär_slut, 2)
+action(scrutinizing)
+detect("All den stund du är snäll får du kom in i himlen.")
+}
+
+under_stundom@sär {
+X1(text="under"),
+X2(text="stundom")
+-->
+corr(X1.join(X2.real_text))
+corr(X1.replace("ibland") X2.delete())
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Under stundom är regelskrivandet riktigt trevligt.")
+}
+
+i_tu@sär {
+X1(text="i"),
+X2(text="tu")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Ett fjäll gick i tu med en farlig smäll.")
+}
+
+för_utan@sär {
+X1(text="för"),
+X2(text="utan")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Vem kan segla för utan vind?")
+}
+
+dess_utom@sär {
+X1(text="dess"),
+X2(text="utom")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Dess utom är det kallt ute.")
+}
+
+sär_någon_vart@sär {
+X1(text="någon" | text="ingen"),
+X2(text="vart")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Vi kommer inte någon vart.")
+}
+
+sär_nån_vart@sär {
+X1(text="nån"),
+X2(text="vart")
+-->
+corr(X1.replace("någonvart") X2.delete())
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Vi kommer inte nån vart.")
+}
+
+sär_för_visso@sär {
+X1(text="för"),
+X2(text="visso")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Språket är för visso konstigt men några fel borde vi väl hitta.")
+}
+
+sär_åter_igen@sär {
+X1(text="åter"),
+X2(text="igen")
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Det var åter igen samling vid starten.")
+}
+
+
+jjj@sär {
+X1(text="jätte"),
+X2(wordcl=jj)
+-->
+corr(X1.join(X2.real_text))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Det var jätte roligt på lägret.")
+}
+
+
+akro1@sär	{
+X1(text="WAP" | text="ICQ"),
+X2(wordcl=nn)
+-->
+corr(X1.join(smart_concat("-",X2.real_text)))
+jump(sär_slut, 1)
+action(scrutinizing)
+detect("Vi har lösningar för WAP telefoni")
+}
+
+
+
+(*	79. Fungerar det med data i samma regel eller är den           
+ *	 ett specialfall. Nej data får bli en egen regel, se nedan.
+ *	X2.spec=ind står det i de gamla reglerna är det 
+ *	något 
+ *	att ha?
+ *	sammansättningar? It-centra osv.
+ *	Vid vägen låg ett nytt centra.
+ *)
+
+stil36@stil
+{
+X1(wordcl=dt & num=sin),
+X2(wordcl=jj & gender=neu & num=sin & spec=ind)*,
+X3(text="centra" | text="media" | text="fora" | text="prestanda" | 
+	text="stimulantia" | text="fakta" | text="spektra" | text="ultimata")
+-->
+corr(X3.form(num:=sin))
+info("Latinska pluralformer kan inte användas i singular")
+%"Det heter alltså inte »ett centra» utan »ett centrum»."
+link("" "Svenska skrivregler 60 Märk 1.")
+action(scrutinizing)
+}
+
+data@stil {
+X1(wordcl=dt & num=sin),
+X2(wordcl=jj & gender=neu & num=sin & spec=ind)*,
+X3(text="data")
+-->
+corr(X1.delete() X2.form(num:=plu))
+info("Böjning av främmande ord. Latinska pluralformer kan inte användas i singular")
+action(scrutinizing)
+detect("Det var ett märkligt data du har där!")
+}
+
+
+(* temp. regel tills = funkar in korr-fältet *)
+
+dator@stil
+{
+X1(wordcl=dt & num=sin),
+X2(wordcl=jj & num=sin & spec=ind)*,
+X3(text="data")
+-->
+corr(X1.form(gender:=utr) X2.form(gender:=utr)
+     X3.replace(if X1.spec=ind then "dator" else "datorn" end))
+action(scrutinizing)
+}
+
+
+% X3.get_replacement
+(* specialregel för personal och redaktion *)
+
+(*	80. Ny regel. se sid 6 i Värdering av stilorden i 
+ *	Granska
+ *	Ny kommentar behövs. ungefär: Museum i
+ *	plural är 
+ *	vardagligt ordval
+ * 	museer är en bättre pluralform" Svenska 
+ * 	skrivregler 61 Märk 3.
+ *
+ *	Vi gick på några museum i staden.
+ *)
+
+
+museum@stil {
+X1(wordcl=dt & num=plu),
+X15(wordcl=jj & num=plu)*,
+X2(text="museum")
+-->
+mark(X2)
+corr(X2.replace("museer"))
+info("Böjningsformsfel")
+action(scrutinizing)
+}
+
+till_baka@sär {
+X1(text="till"),
+X2(text="baka")
+-->
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+detect("Nej, nu måste jag till baka.")
+}
+
+allt_för@sär {
+X1(text="allt"),
+X2(text="för"),
+X3(wordcl=jj | wordcl=ab) % bra va?
+-->
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+detect("Hon är allt för snäll.")
+}
+
+för_utom@sär {
+X1(text="för"),
+X2(text="utom")
+-->
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+detect("Alla för utom jag är med på startlistan.")
+}
+
+i_bland@sär {
+X1(text="i"),
+X2(text="bland")
+% X3(text!="annat") behövs ej eftersom bland annat blir en token
+-->
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+detect("I bland är vädret fint härute.")
+}
+
+i_håg@sär {
+X1(text="i"),
+X2(text="håg")
+-->
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+detect("Kommer du i håg mig eller?")
+}
+
+i_sär@sär {
+X1(text="i"),
+X2(text="sär")
+-->
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+detect("Det gäller att hålla i sär begreppen.")
+}
+
+så_väl@sär {
+X(text="så"),
+Y(text="väl"),
+Z(wordcl!=kn & text!="att")
+-->
+corr(X.join(Y.real_text))
+detect("Jag känner så väl igen det där") % är det verkligen fel undrar johan. typ såväl bra som dålig
+accept("Detta ska ni kunna så väl att ni aldrig gör fel")
+action(scrutinizing)
+}
+
+dess_emellan@sär {
+X1(text="dess"),
+X2(text="emellan")
+-->
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+detect("Dess emellan har vi inte setts.")
+}
+
+till_städes@sär {
+X1(text="till"),
+X2(text="städes")
+-->
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+detect("Kom du till städes?")
+}
+
+
+
+(* ----- SÄRSKRIVNINGAR DYNAMISKA ----- *)
+
+(* dessa två borde inte behövas tycker johan*)
+
+särOK1@sär {
+X1(text="t ex" | text="bl a" | text="s k")
+-->
+jump(prob_regler)
+action(accepting)
+}
+
+särOK3@sär {
+X1(text="till exempel")
+-->
+jump(prob_regler,1)
+action(accepting)
+}
+
+särOKeval1@sär
+{
+X(text="fall" | text="fast" | text="års"),
+Y(wordcl=nn | wordcl=jj)
+-->
+jump(prob_regler)
+action(accepting)
+}
+
+särOKeval2@sär
+{
+X(text="fars" | text="farfars" | text="morfars"),
+Y(wordcl=nn)
+-->
+jump(prob_regler)
+action(accepting)
+}
+
+särOKeval3@sär
+{
+X(text="företag" | text="herr" | text="betydelse" | text="af" | 
+text="typ" | text="låt" | text="mängd" | text="mån" | text="roll" | 
+text="sked" | text="stycke" | text="tid" | text="klass" | text="minst"),
+Y(wordcl=nn)
+-->
+jump(prob_regler)
+action(accepting)
+}
+
+särOKeval4@sär
+{
+X(text="come"),
+Y(text="back")
+-->
+jump(prob_regler)
+action(accepting)
+}
+
+särOKeval5@sär
+{
+X(text="värd"),
+Y(text="namnet")
+-->
+jump(prob_regler)
+action(accepting)
+}
+
+
+(* --------------------Särskrivna substantiv -------------------- *)
+(* 2. 
+ Jag såg hus bilen 
+ Jag såg mannens bilen
+
+*)
+
+verksam_het@sär
+{
+X(text!="en"),
+Y((text="het" | text="heten") & spell_OK(concat(X.real_text, real_text), token))
+-->
+corr(X.join(Y.real_text))
+action(scrutinizing)
+}
+
+kongaccspecialgenitiv1@sär {
+X(wordcl=dt),
+Y(wordcl=nn & case=gen), % & spec=def),
+Y2(wordcl=jj & gender=X.gender & num=X.num & spec=X.spec)*,
+Z((wordcl=nn & gender=X.gender & num=X.num & spec=X.spec & case=nom) | wordcl=pm)
+-->
+jump(slut_kong, 2+Y2.no_of_tokens)
+action(accepting)
+}
+
+kongaccspecialgenitiv2@sär {
+X(wordcl=ps | (wordcl=dt & (text="dessa" | text="denna" | text="detta" | text="denne")) | text="alla" | text="båda" | text="bägge"),
+Y(wordcl=nn & case=gen), % & spec=def),
+Y2(wordcl=jj & gender=X.gender & num=X.num & spec=X.spec)*,
+Z((wordcl=nn & gender=X.gender & num=X.num & spec=ind & case=nom) | wordcl=pm)
+-->
+jump(slut_kong, 2+ Y2.no_of_tokens)
+action(accepting)
+}
+
+
+(* ett tre dagars officiellt besök. 
+  en tredje klassens medborgare
+*)
+
+
+kongaccgenattr@sär
+{
+X1(wordcl=dt & (text="ett" | text="en")),
+X2(wordcl=rg | wordcl=ro),
+X3(wordcl=nn & case=gen & (gender!=X1.gender | num!=X1.num | spec!=X1.spec)),
+X4(wordcl=ab)?,
+X5(wordcl=jj)*, % & spec=ind)*,
+X6(wordcl=nn & gender=X1.gender & (num=X1.num | E(lex.num=X1.num)) & spec=X1.spec)
+-->
+jump(slut_kong_extra, 3 + X4.no_of_tokens+ X5.no_of_tokens)
+action(accepting)
+}
+
+
+sär1nn_nn@sär
+{
+X00(),
+X0(text!="ger" & text!="gav" & text!="givit" & text!="ge"),
+X1((wordcl=pm | (wordcl=nn & spec=ind & nntype!=dat)) & case=gen & token=TOKEN_SIMPLE_WORD & text!="slags" & text!="sorts" & 
+text!="måndags" & text!="tisdags" & text!="onsdags" & text!="torsdags" &
+text!="fredags" & text!="lördags" & text!="söndags"), % spec=ind ny 991006
+X2(wordcl=nn & spec=def & !is_cap & token=TOKEN_SIMPLE_WORD)% & cap=nocapped & 
+
+-->
+mark(X1 X2)
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+sär1bnn_nn@sär
+{
+X0(sed=sen),
+X1((wordcl=pm | (wordcl=nn & spec=ind)) & case=gen & token=TOKEN_SIMPLE_WORD), % spec=ind ny 991006
+X2(wordcl=nn & spec=def & token=TOKEN_SIMPLE_WORD & spell_OK(smart_concat(X1.real_text, real_text), X1.token)) % & cap=nocapped & 
+-->
+mark(X1 X2)
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+(* skär bort för många goda alarm 
+   måste bli bättre!
+*)
+särOKgen@sär
+{
+(Clause_del)(),
+X0()*,
+X1(wordcl=vb),
+X11()*,
+%(NPkong)
+X2((wordcl=nn | wordcl=pm) & case=gen),
+X22((wordcl=jj | wordcl=pc | wordcl=ro) & spec=def)*,
+X3(wordcl=nn & spec=ind),
+X4(wordcl=nn)
+-->
+jump(sär_slut, 2+X22.no_of_tokens)
+action(accepting)
+}
+
+
+(* hur omfattande NP vågar man ta här? 
+
+*)
+
+
+särOKpp2@sär
+{
+(Clause_del)(),
+X00()*,
+X01(wordcl=vb),
+X02()*,
+X0(wordcl!=pp),
+X1(wordcl=nn),
+X2(wordcl=pp),
+(NP)((spec=ind | wordcl=pm) & wordcl!=pn),
+X4(wordcl=nn & (NP.no_of_tokens > 1 | NP.wordcl=pm | NP.num=plu))
+-->
+jump(sär_slut, 3+NP.no_of_tokens)
+action(accepting)
+}
+
+   (* 3. en accepterande regel *)
+särOK4@sär
+{
+X0(wordcl=dt),	
+X01(wordcl=jj | wordcl=pc | wordcl=ro)+, 
+X1(wordcl=nn & case=nom),	
+X2(wordcl=nn & spec=def & X0.num!=undef & num!=X0.num)
+-->
+jump(regel_3)
+action(accepting)
+}
+
+(* ett antal en grupp etc. *)
+särOK5@sär
+{
+X(wordcl=dt | text="1" | text="en" | text="ett" | text="det" | text="den" | wordcl=rg),
+X2(wordcl=jj | wordcl=jj)*,
+Y((wordcl=nn & nntype=set) | text="ton" | text="par" | text="liter" | text="glas" | text="flaska" | text="bit" | text="burk" | text="antal"),
+Y2(wordcl=jj | wordcl=pc)*,
+Z(wordcl=nn & spec=ind) % massorden ställer till det & num=plu) % | (num=sin & E(lex.num=plu))))
+-->
+jump(slut_kong, 3+Y2.no_of_tokens+X2.no_of_tokens)
+action(accepting)
+}
+
+särOK5b@sär
+{
+T2(sed=sen),
+X(text="1" | text="en" | text="ett" | text="det" | text="den" | wordcl=rg),
+X2(wordcl=jj)*,
+Y((wordcl=nn & nntype=set) | text="ton" | text="par" | text="liter" | text="glas" | text="flaska" | text="bit" | text="burk" | text="antal"),
+Y2(wordcl=jj | wordcl=pc | wordcl=ro)*,
+Z(wordcl=nn & spec=ind) 
+% massorden ställer till det & num=plu | (num=sin & E(lex.num=plu))) 
+-->
+jump(sär_slut, 2+Y2.no_of_tokens)
+action(accepting)
+}
+
+särOK5c@sär
+{
+X(text="1" | text="en" | text="ett" | text="det" | text="den" | wordcl=rg),
+X2(wordcl=jj | wordcl=ro)+,
+X22(text="eller"),
+X23(wordcl=jj | wordcl=ro)+,
+Y((wordcl=nn & nntype=set) | text="ton" | text="par" | text="liter" | text="glas" | text="flaska" | text="bit" | text="burk" | text="antal"),
+Y2(wordcl=jj | wordcl=pc)*,
+Z(wordcl=nn & spec=ind) % massorden ställer till det & num=plu) % | (num=sin & E(lex.num=plu))))
+-->
+jump(sär_slut, 4+Y2.no_of_tokens+X2.no_of_tokens+X22.no_of_tokens+X23.no_of_tokens)
+action(accepting)
+}
+
+särOK6@sär
+{
+X(text="1" | text="en" | text="ett" | text="det" | text="den" | wordcl=rg), % en 
+X2(text="hel"| wordcl=jj | wordcl=pc),	% stor
+Y((wordcl=nn & nntype=set) | text="ton" | text="par" | text="liter" | text="glas" | text="flaska" | text="bit" | text="burk" | text="antal"),	% grupp
+Y2(wordcl=jj | wordcl=pc | wordcl=ro)*,
+Z(wordcl=nn & spec=ind)  % massorden ställer till det num=plu) 	% | (num=sin & E(lex.num=plu))) 
+-->
+jump(sär_slut, 2+Y2.no_of_tokens)
+action(accepting)
+}
+
+särOK6b@sär
+{
+T2(sed=sen),
+X(text="1" | text="en" | text="ett" | text="det" | text="den" | wordcl=rg),
+X2(text="hel"| wordcl=jj | wordcl=pc | wordcl=ro),
+Y((wordcl=nn & nntype=set) | text="ton" | text="par" | text="liter" | text="glas" | text="flaska" | text="bit" | text="burk" | text="antal"),
+Y2(wordcl=jj | wordcl=pc | wordcl=ro)*,
+Z(wordcl=nn & spec=ind)	% massorden "en massa sten" "en massa fisk" ställer till det num=plu) 	% | (num=sin & E(lex.num=plu)))
+-->
+jump(sär_slut, 3+Y2.no_of_tokens)
+action(accepting)
+}
+
+särOK7a@sär
+{
+X1(wordcl=dt | wordcl=hd | wordcl=rg),
+X2(wordcl=jj)*,
+X3(wordcl=nn & (gender=X1.gender | (X1.wordcl=rg & num!=sin)) & 
+(num=X1.num | (X1.wordcl=rg & X1.num!=sin & num=plu))),
+%(X2.no_of_tokens=0 | (gender=X2.gender & num=X2.num))) 
+X4(wordcl=nn & ((gender!=undef & X1.gender!=undef & gender!=X1.gender) | 
+(num!=undef & X1.num!=undef & num!=X1.num) | (X1.wordcl=rg & X1.num!=sin & num=sin)
+| (spec!=undef & X1.spec!=undef & spec!=X1.spec)))
+-->
+jump(sär_slut_stava, 2+X2.no_of_tokens)
+action(accepting)
+}
+
+särOK7b@sär
+{
+X1(wordcl=ps | wordcl=hs),
+X2(wordcl=jj)*,
+X3(wordcl=nn & gender=X1.gender & num=X1.num),
+%(X2.no_of_tokens=0 | (gender=X2.gender & num=X2.num))) 
+X4(wordcl=nn & (gender!=X1.gender | num!=X1.num | spec=def))
+-->
+jump(sär_slut_stava, 2+X2.no_of_tokens)
+action(accepting)
+}
+
+
+särOK7c@sär
+{
+K3(case!=gen & wordcl!=ps & wordcl!=hs),
+X2(wordcl=jj)+,
+X3(wordcl=nn & gender=X2.gender & num=X2.num),
+X4(wordcl=nn & (gender!=X2.gender | num!=X2.num | spec!=X2.spec))
+-->
+jump(sär_slut, 2+X2.no_of_tokens)
+action(accepting)
+}
+
+
+särOK8@sär
+{
+X((wordcl=nn & num=sin & spec=ind & case=nom) | (wordcl=pm & case=nom)),
+Y(wordcl=nn & spec=def | (text="hösten" | text="våren" | text="vintern" | text="sommaren")),
+Z(text="den")?,
+Z2(wordcl=rg | wordcl=ro | text="därpå") % borde vara fler tidsadverbial
+-->
+jump(sär_slut, 3)
+action(accepting)
+}
+
+
+särOK9@sär
+{
+X1(case=gen | wordcl=ps | wordcl=hs),
+X11(wordcl=ab | wordcl=rg)?,
+X2((wordcl=jj & spec=def) | wordcl=ro)*,
+X3(wordcl=nn & num=sin & spec=ind),
+X4(wordcl=nn & spec=def) % 000614
+-->
+jump(sär_slut_stava, 2+X11.no_of_tokens+X2.no_of_tokens)
+action(accepting)
+}
+
+särförkortning1@sär
+{
+X(text="pp")
+-->
+jump(slut_kong)
+action(accepting)
+}
+
+
+särförkortning2@sär
+{
+X(text="bl"),
+Y(text="a")
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+
+(* det behövs en tand rot fylld här *)
+särnnistfjj@sär
+{
+V1(),
+V2(),
+V3(),
+X(wordcl=dt),
+X2(wordcl=jj)*,
+Y(wordcl=nn & spec=ind & case=nom), % & substr(Y.length, 1)="a"), %E(lex.wordcl=jj)),
+Z(wordcl=nn & token=TOKEN_SIMPLE_WORD & gender=X.gender & num=X.num & spec=X.spec),
+Z2(wordcl=jj & token=TOKEN_SIMPLE_WORD & spell_OK(smart_concat(X.real_text, real_text), X.token))
+-->
+corr(Z.join(Z2.text))
+jump(sär_slut, 5+X2.no_of_tokens)
+action(scrutinizing)
+}
+
+
+
+
+
+(*
+särnn_nn_nn@sär
+{
+X(wordcl=nn & spec=ind & case=nom),
+Y(wordcl=nn & case=nom),
+Z(wordcl=nn) % & (spell_OK(smart_concat(X.real_text, Y.real_text), X.token) |
+%spell_OK(smart_concat(Y.real_text, real_text), Y.token)))
+-->
+mark(X Y Z)
+corr(X.join(Y.real_text))
+%corr(Y.join(Z.real_text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+*)
+
+     (* 4. Regel 2 (dt-jj)-nn-nn
+ skall den täcka fler fall?
+
+Jag såg de stora sten bumlingarna.
+
+ *)
+sär2nn_nnA@sär
+{
+
+X0(text!="ger" & text!="gav" & text!="givit" & text!="ge"),
+X1((wordcl=dt | wordcl=hd) &  text!="denna" & text!="detta" & text!="dessa" & text!="denne"),	% här borde det finnas fler alternativ!!!!!!!FIXA!!!
+X10(wordcl=ab)*,        % ab tillagd 990125
+
+X2(wordcl=jj | wordcl=pc)*, % pc tillagd 990121
+
+X3(wordcl=nn & spec=ind & token=TOKEN_SIMPLE_WORD & (gender!=X1.gender | num!=X1.num) & text!="slags" & text!="sorts"), %| spec!=X1.spec991103
+X4(wordcl=nn & gender=X1.gender & num=X1.num & spec=X1.spec & 
+token=TOKEN_SIMPLE_WORD & 
+  spell_OK(smart_concat(X3.real_text, real_text), X3.token))  % & cap=nocapped/
+%X5(!(wordcl=vb & (vbf=prs | vbf=prt)))
+-->
+mark(X3 X4)
+corr(X3.join(X4.real_text))
+action(scrutinizing)
+jump(sär_slut, 3)
+}
+
+sär2bnn_nn@sär
+{
+X0(text!="ger" & text!="gav" & text!="givit" & text!="ge"),
+X1((wordcl=dt | wordcl=hd) & text!="denna" & text!="detta" & text!="dessa" & text!="denne"),	% här borde det finnas fler alternativ!!!!!!!FIXA!!!
+X10(wordcl=ab)*,        % ab tillagd 990125
+
+X2(wordcl=jj | wordcl=pc)*, % pc tillagd 990121
+
+X3(wordcl=nn & spec=ind & token=TOKEN_SIMPLE_WORD & spec!=X1.spec & text!="slags" & text!="sorts"), %| spec!=X1.spec991103
+X4(wordcl=nn & gender=X1.gender & num=X1.num & spec=X1.spec & 
+token=TOKEN_SIMPLE_WORD & 
+  spell_OK(smart_concat(X3.real_text, real_text), X3.token))  % & cap=nocapped/
+%X5(!(wordcl=vb & (vbf=prs | vbf=prt)))
+-->
+mark(X3 X4)
+corr(X3.join(X4.text))
+action(scrutinizing)
+jump(sär_slut, 3)
+}
+
+(*  *)
+sär5nn_nn@sär
+{
+X1(wordcl=ps | text="denna" | text="detta" | text="dessa" | text="denne"),
+X2((wordcl=jj | wordcl=pc) & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X3(wordcl=nn & token=TOKEN_SIMPLE_WORD & (gender!=X1.gender  | num!=X1.num) 
+& (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & spec=ind & token=TOKEN_SIMPLE_WORD),
+X4(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind & !is_cap & endOK &
+spell_OK(smart_concat(X3.real_text, real_text), X3.token))
+-->
+mark(X3 X4)
+corr(X3.join(X4.text))
+action(scrutinizing)
+jump(sär_slut, 3)
+}
+
+sär6nn_nn@sär
+{
+X1(wordcl=dt & spec=def & text!="denna" & text!="detta" & text!="dessa" & text!="denne"),
+X2(wordcl=nn & token=TOKEN_SIMPLE_WORD & spec=ind),
+X3(wordcl=nn & token=TOKEN_SIMPLE_WORD & spec=def & spell_OK(smart_concat(X2.text, text), X2.token))
+-->
+mark(X2 X3)
+corr(X2.join(X3.text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+
+
+     regel_3:(* 5. använd yea-taggen för "år 1940"
+(fotogen kök) <-- Rule #6 no name, term #0
+tog bort num=sin 990211
+
+Han har precis köpt ett nytt fotogen kök.
+
+
+Falskt: och hans mor drottning Margareta
+
+*)
+
+(*
+sär3ann_nnA@sär
+{
+X00(sed=sen), % borde egentligen vara från satsgräns, meningsggräns infört 000229
+X0(text!="ger" & text!="gett" & text!="gav" & text!="givit" & text!="ge")*,
+X01(!(wordcl=dt & spec=def) & case!=gen), 
+X1(wordcl=nn & token=TOKEN_SIMPLE_WORD & (num=sin & spec=ind & case=nom & beginOK & 
+nntype!=dat & !(text="hand" & X0.wordcl=ro)),
+X2(wordcl=nn & token=TOKEN_SIMPLE_WORD & spec=ind & !is_cap & nntype!=dat & endOK & spell_OK(smart_concat(X1.real_text, real_text), X1.token)), 
+X3(!((X2.text="år" | X2.text="åren")& rgt=yea))
+-->
+mark(X1 X2)
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+jump(sär_slut, 3)
+accept("Att ge varje individ möjlighet att själv sluta jobba")
+detect("Fotogen kök är bra tycker Göran Kropp")
+}
+*)
+
+(* *)
+sär3ann_nnA@sär
+{
+(Clause_del)(), % borde egentligen vara från satsgräns, meningsggräns infört 000229
+X0(lemma!="ge" & lemma!="erbjuda")*,
+X01(!(wordcl=dt & spec=def) & case!=gen & lemma!="ge")?, %borde göra acc-regel 
+X1(wordcl=nn & token=TOKEN_SIMPLE_WORD & spec=ind & %(num=sin | (gender=neu & num=plu & E(lex.num=sin))) & 
+!is_cap & case=nom & text!="rätt" & beginOK & 
+nntype!=dat & !(text="hand" & X0.wordcl=ro)),
+X2(wordcl=nn & token=TOKEN_SIMPLE_WORD & spec=ind & !is_cap & text!="skull" & nntype!=dat & endOK & 
+spell_OK(smart_concat(X1.real_text, real_text), X1.token)), 
+X3(!((X2.text="år" | X2.text="åren") & rgt=yea))
+-->
+mark(X1 X2)
+corr(X1.join(X2.text))
+action(scrutinizing)
+jump(sär_slut, 3+X0.no_of_tokens)
+accept("Att ge varje individ möjlighet att själv sluta jobba")
+detect("Fotogen kök är bra tycker Göran Kropp")
+}
+
+
+
+sär3bnn_nn@sär
+{
+X01(sed=sen),
+X1(wordcl=nn & spec=ind & case=nom %& nntype!=set 000104
+ & nntype!=dat & token=TOKEN_SIMPLE_WORD),
+X2(wordcl=nn & spec=ind & !is_cap & token=TOKEN_SIMPLE_WORD & spell_OK(smart_concat(X1.real_text, real_text), X1.token)), 
+X3(!(X2.text="år" & rgt=yea))
+-->
+mark(X1 X2)
+corr(X1.join(X2.text))
+action(scrutinizing)
+jump(sär_slut, 2)
+accept("Att ge varje individ möjlighet att själv sluta jobba")
+detect("Fotogen kök är bra tycker Göran Kropp")
+}
+
+
+
+
+  (* 6
+(sitt djävuls leende) <-- Rule #8 no name
+
+Hon log sitt djävulvs leende så naturligt.
+exemplet måste vara fel?
+*)
+sär4nn_nn@sär
+{
+X0(wordcl!=rg & wordcl!=dt & wordcl!=jj & wordcl!=ro & wordcl!=ps & wordcl!=ps & !(wordcl=nn & case=gen)),
+X1(wordcl=nn & beginOK & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & 
+spec=ind & case=gen & %nntype!=set & 000104
+  nntype!=dat & text!="slags" & text!="sorts" & token=TOKEN_SIMPLE_WORD & (X0.sed=sen | !is_cap)),
+X2(wordcl=nn & spec=ind & text!="skull" & token=TOKEN_SIMPLE_WORD &
+  spell_OK(smart_concat(X1.real_text, real_text), X1.token))% & cap=nocapped & 
+
+-->
+mark(X1 X2)
+corr(X1.join(X2.text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+
+särOKpm@sär
+{
+X0(sed=sen),
+X1(wordcl=ab),
+X2(wordcl=vb & (vbf=prt | vbf=prs | vbf=imp)),
+X3(wordcl=pm & case=nom & !is_all_cap),
+X4(wordcl=nn)
+-->
+jump(sär_slut, 4)
+action(accepting)
+}
+
+
+särOKpm2@sär
+{
+X0(sed=sen),
+X1(wordcl=pp),
+(NP)(),
+X2(wordcl=vb & (vbf=prt | vbf=prs | vbf=imp)),
+X3(wordcl=pm & case=nom),
+X4(wordcl=nn)
+-->
+jump(sär_slut, 4)
+action(accepting)
+}
+
+särOKpm3@sär
+{
+X(wordcl=pm),
+Y(wordcl=pm)+
+-->
+jump(sär_slut, Y.no_of_tokens)
+action(accepting)
+}
+
+särOKpm4@sär
+{
+X(text="enligt"),
+Y(wordcl=pm),
+Z(wordcl=nn)
+-->
+jump(sär_slut, 2)
+action(accepting)
+}
+
+
+(* 11.
+   hittar en del nya fel, dock en del falska alarm också 
+ om hade en tagg för geografisk egennamn så skulle många falska
+ alarm försvinna. Mer jobb krävs! Men om man använder Stava så går det att få bort en alla
+falska alarm, men också en del korrekta detektioner
+ 
+(Norge rännan) <-- Rule #10 no name, term #0     
+ inför correctly_spelled(w)
+
+Jag tog Norge rännan ner och fick upp fin fart.
+*)
+
+
+(*
+sär9pm_nn@sär
+{
+X0(text!="ger" & text!="gav" & text!="givit" & text!="ge"),
+X(wordcl=pm & case=nom & is_all_cap & token=TOKEN_SIMPLE_WORD),
+Y(wordcl=nn & spec=def & !is_cap & token=TOKEN_SIMPLE_WORD& spell_OK(smart_concat(X.real_text, real_text), X.token))
+-->
+mark(X Y)
+corr(X.replace(smart_concat(concat(toupper(X.real_text),"-"), Y.real_text)) Y.delete())
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+*)
+
+
+
+
+(* 12 
+
+Vi tog Volvo bilen hem.
+*)
+
+(*
+
+sär10pm_nnA@sär
+{
+(Clause_del)(),
+X0(lemma!="ge" & lemma!="tillåta" & lemma!="förvägra" & lemma!="skänka" &
+lemma!="avundas" & lemma!="beröva")*, 
+X(wordcl=pm & case=nom & is_cap & token=TOKEN_SIMPLE_WORD & !E(lex.wordcl=jj)), % & A(lex.wordcl=pm)/,
+
+Y(wordcl=nn & !is_cap & spec=def & endOK & spell_OK(text, token) & !is_cap & token=TOKEN_SIMPLE_WORD)% & text!="sommaren" & text!="våren" & text!="vintern" &
+%text!="hösten") % & spell_OK(smart_concat(X.real_text, real_text), X.token))
+-->
+mark(X Y)
+corr(X.replace(smart_concat(concat(toupper(X.substr(0,1)),X.substr(1, X.length)), Y.real_text)) Y.delete())
+action(scrutinizing)
+jump(sär_slut, 2+X0.no_of_tokens+Clause_del.no_of_tokens)
+}
+*)
+
+
+
+(*
+De hade köpt en Zorn tavla på autktion.
+
+försöker utnyttja kongruens 
+
+*)
+
+sär10pm_nnB@sär
+{
+X1(wordcl=dt | wordcl=hd),
+X2(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X3(wordcl=pm & case=nom),
+X4(wordcl=nn & !is_cap & gender=X1.gender & num=X1.num & spec=X1.spec & 
+token=TOKEN_SIMPLE_WORD)
+-->
+mark(X3 X4)
+%corr(X3.replace(smart_concat(X3.real_text, X4.real_text)) X4.delete())
+corr(X3.join(X4.text))
+corr(X3.join(smart_concat("-", X4.text)))
+action(scrutinizing)
+jump(sär_slut,2+X2.no_of_tokens)
+}
+
+
+
+(* Jag köpte mina Salomon skor på Åhlens. *) 
+
+sär10pm_nnC@sär
+{
+X1(wordcl=ps),
+X2(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X3(wordcl=pm & case=nom),
+X4(wordcl=nn & !is_cap & gender=X1.gender & num=X1.num & spec=ind & 
+token=TOKEN_SIMPLE_WORD)
+-->
+mark(X3 X4)
+corr(X3.replace(smart_concat(X3.real_text, X4.real_text)) X4.delete())
+action(scrutinizing)
+jump(sär_slut, 2+X2.no_of_tokens)
+}
+
+
+(* 13 
+Jag tog en wasa knäcke till lunch.
+*)
+
+(*
+sär11pm_nn@sär
+{%V/wordcl!=pm/,
+
+X0(text!="ger" & text!="gav" & text!="givit" & text!="ge" & wordcl!=pp),% & wordcl!=pm),
+X(wordcl=pm & case=nom & !is_cap & !is_all_cap & token=TOKEN_SIMPLE_WORD & 
+!E(lex.wordcl=jj)), % & A(lex.wordcl=pm)/,
+
+Y(wordcl=nn & !is_cap & spec=def & token=TOKEN_SIMPLE_WORD)% & spec=ind/
+
+-->
+mark(X Y)
+corr(X.join(Y.real_text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+*)
+
+(* Sushi tallrik, Volvo bil 
+sär11bpm_nnind@sär
+{
+V(wordcl!=vb | lemma!="ge"),
+X(wordcl=pm & case=nom),
+Y(wordcl=nn & !is_cap & num=sin & spec=ind & !is_cap)
+-->
+mark(X Y)
+corr(X.join(Y.real_text))
+corr(X.replace(concat(X.real_text, "s")))
+corr(X.replace(concat(concat(X.real_text, "-"), Y.real_text)) Y.delete())
+action(scrutinizing)
+jump(sär_slut, 1)
+}
+*)
+
+(* 16. (käll sjöarna) <-- Rule #13 no name    
+
+adjektiv endast i utr
+*)
+
+sär15jj_nn@sär
+{
+X1(wordcl=jj & num=sin & gender=utr &
+spec=ind & kom=pos & token=TOKEN_SIMPLE_WORD),
+X2(wordcl=nn & (gender!=X1.gender | num!=X1.num | spec!=X1.spec) & !is_cap & 
+!is_all_cap & token=TOKEN_SIMPLE_WORD),
+X3(wordcl!=nn & spell_OK(smart_concat(X1.real_text, X2.real_text), X1.token))
+-->
+mark(X1 X2)
+corr(X1.join(X2.text))
+action(scrutinizing)
+jump(sär_slut, 1)
+}
+
+(* adjektivet får endast vara i utrum 
+ överväg att ta bort alla adj som slutar på -t
+*)
+sär_jj_nn2A@sär
+{
+(Clause_del)(text!="hur" & text!="som"),
+X0(text!="hur" & text!="som")*,
+X(wordcl!=dt & wordcl!=ps & wordcl!=hd & wordcl!=rg & wordcl!=ro & wordcl!=jj & sed!=sen & text!="hur" & vbt!=kop & text!="som"),
+Y(wordcl=jj & gender=utr & num=sin & spec=ind & case=nom & token=TOKEN_SIMPLE_WORD & text!="själv"),
+Z(wordcl=nn & token=TOKEN_SIMPLE_WORD 
+& ((gender!=undef & Y.gender!=undef & gender!=Y.gender) | 
+(num!=undef & Y.num!=undef & num!=Y.num) | 
+(spec!=undef & Y.spec!=undef & spec!=Y.spec)) & !is_cap & !is_all_cap &  
+spell_OK(concat(Y.real_text, real_text), Y.token))
+-->
+mark(Y Z)
+corr(Y.join(Z.text))
+jump(sär_slut, Clause_del.no_of_tokens+X0.no_of_tokens+2)
+action(scrutinizing)
+}
+
+(* ger bugg, ska det inte vara sed!=sen eller Y och Z som ska sättas ihop?
+sär_jj_nn2b@sär
+{
+X(sed=sen),
+Y(wordcl=jj & num=sin & aspec=ind & case=nom & token=TOKEN_SIMPLE_WORD),
+Z(wordcl=nn & token=TOKEN_SIMPLE_WORD & (gender!=Y.gender | num!=Y.num | spec!=Y.spec) & !is_cap & !is_all_cap &  
+spell_OK(concat(Y.real_text, real_text), Y.token))
+-->
+corr(X.join(Y.real_text))
+action(scrutinizing)
+}
+*)
+
+sär_jj_nn3@sär
+{
+X(wordcl=dt | wordcl=hd),
+X2(wordcl=jj & gender=X.gender & num=X.num & spec=X.spec)*,
+Y(wordcl=jj & num=sin & gender=utr & spec=ind & case=nom & token=TOKEN_SIMPLE_WORD),
+Z(wordcl=nn & gender=X.gender & num=X.num & spec=X.spec & token=TOKEN_SIMPLE_WORD & (gender!=Y.gender | num!=Y.num | spec!=Y.spec) & !is_cap & !is_all_cap &  
+spell_OK(concat(Y.real_text, real_text), Y.token))
+-->
+mark(Y Z)
+corr(Y.join(Z.text))
+jump(sär_slut,3) 
+action(scrutinizing)
+}
+
+
+(* 18 variant på regel #2 
+
+Vi var på väg i hus bilen igen. 
+
+*)
+sär17nn_nn@sär
+{
+X00(),
+X0(!(wordcl=dt & spec=def)),	 %wordcl=pp | sed=sen | wordcl=vb | wordcl=kn),
+X1(wordcl=nn & (num=sin | (text="öron" | text="ögon")) & case=nom & spec=ind & token=TOKEN_SIMPLE_WORD),
+X2(wordcl=nn & spec=def & (gender!=X0.gender & num!=X0.num & spec!=X0.spec) &
+  !is_cap & token=TOKEN_SIMPLE_WORD 
+& spell_OK(smart_concat(X1.real_text, real_text), X1.token)),	% & cap!=firstcapped/ % & cap=nocapped/
+X3(!(X2.text="år" | X2.text="åren")) % & rgt=yea)) %X3(!(wordcl=vb & (vbf=prs | vbf=prt)))
+-->
+mark(X1 X2)
+corr(X1.join(X2.text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+sär17bnn_nn@sär
+{
+X0(sen=sed),	 %wordcl=pp | sed=sen | wordcl=vb | wordcl=kn),
+X1(wordcl=nn & (num=sin | (text="öron" | text="ögon")) & case=nom & spec=ind & token=TOKEN_SIMPLE_WORD),
+X2(wordcl=nn & spec=def & (gender!=X0.gender & num!=X0.num & spec!=X0.spec) &
+  !is_cap & token=TOKEN_SIMPLE_WORD & spell_OK(smart_concat(X1.real_text, real_text), X1.token)),	% & cap!=firstcapped/ % & cap=nocapped/
+X3(!(X2.text="år" | X2.text="åren")) % & rgt=yea)) %X3(!(wordcl=vb & (vbf=prs | vbf=prt)))
+-->
+mark(X1 X2)
+corr(X1.join(X2.text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+
+(* 7 
+(sitt burriga henna färgade hår) <-- Rule #7 no name
+Rule #7 no name --> Regel 11: hennafärgade
+
+Hon skakade sitt burriga henna färgade hår.
+
+*)
+
+
+särimp_nnA@sär
+{
+V(sed!=sen & text!=":"), 	% 000114 Behåll växeln. Mata djuren med godis osv.
+X(beginOK & wordcl=vb & !is_cap & token=TOKEN_SIMPLE_WORD & vbf=imp & !E(lex.vbf=inf)),
+Y(endOK & wordcl=nn & token=TOKEN_SIMPLE_WORD & spell_OK(smart_concat(X.real_text, real_text), X.token)),
+Y2()+,
+Z2(sed=sen & extra!=exc)
+-->
+mark(X Y)
+corr(X.join(Y.text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+särpmgen_nnA@sär
+{
+X(wordcl=pm & case=gen & token=TOKEN_SIMPLE_WORD),
+Y(wordcl=nn & !is_cap & num=sin & spec=def & token=TOKEN_SIMPLE_WORD) % & spell_OK(concat(X3.real_text, real_text), X3.token)) Stava godkänner för få namn
+-->
+corr(X.replace(concat(concat(toupper(X.substr(0,1)),X.substr(1,X.length)), Y.real_text))
+     Y.delete())
+action(scrutinizing)
+mark(X Y)
+jump(sär_slut, 1)
+}
+
+
+(* ---------------Särskrivna adjektiv------------------ *)
+
+    
+
+
+
+   (* 8 den här verkar fungera rätt bra 
+ (en speciell maskin beroende fil) <-- Rule #11 no name  
+
+ inga falska alarm i training.txt 1 f.a. i felsamling.txt
+
+Programmet kräver en speciell maskin beroende fil.
+
+*)
+
+
+
+(* den skall fixa falska alarm från sär6nn_jj 
+"en tanke värd namnet" 
+*)
+
+särOKjj@sär
+{
+V1(wordcl=dt),
+V2(wordcl=nn & num=sin & spec=ind & case=nom & gender=V1.gender &
+num=V1.num & spec=V1.spec),
+X(wordcl=jj & spec=ind),
+Y(wordcl=nn & spec=def)
+-->
+jump(sär_jj_slut, 3)
+action(accepting)
+}
+
+
+särnn_jjkong1A@sär
+{
+X1(wordcl=dt | wordcl=hd),
+X2(wordcl=ab | wordcl=rg)?,
+X3(wordcl=jj | wordcl=ro)*,
+X4(wordcl=nn & token=TOKEN_SIMPLE_WORD & case=nom & num=sin & ((gender!=undef & X1.gender!=undef & gender!=X1.gender) |
+(num!=undef & X1.num!=undef & num!=X1.num) |
+(spec!=undef & X1.spec!=undef & spec!=X1.spec)) & token=TOKEN_SIMPLE_WORD),
+X5(wordcl=jj & token=TOKEN_SIMPLE_WORD & gender=X1.gender & num=X1.num & spec=X1.spec & text!="många" & text!="få"),
+X6(wordcl=nn & gender=X5.gender & num=X5.num & spec=X5.spec)
+-->
+mark(X4 X5)
+corr(X4.join(X5.text))
+action(scrutinizing)
+jump(sär_slut, 3+X2.no_of_tokens+X3.no_of_tokens)
+}
+
+särnn_jjkong2@sär
+{
+X1(wordcl=ps), % hs? 
+X2(wordcl=ab | wordcl=rg)?,
+X3(wordcl=jj | wordcl=ro)*,
+X4(wordcl=nn & case=nom & ((gender!=undef & X1.gender!=undef & gender!=X1.gender) |
+(num!=undef & X1.num!=undef & num!=X1.num) |
+(spec!=undef & X1.spec!=undef & spec=def)) & token=TOKEN_SIMPLE_WORD),
+X5(wordcl=jj & token=TOKEN_SIMPLE_WORD & gender=X1.gender & num=X1.num & spec=X1.spec & text!="många" &
+text!="få"), 
+X6(wordcl=nn & gender=X5.gender & num=X5.num & spec=ind)
+-->
+mark(X4 X5)
+corr(X4.join(X5.text))
+action(scrutinizing)
+jump(sär_slut, 3+X2.no_of_tokens+X3.no_of_tokens)
+}
+
+
+
+
+sär6nn_jjA@sär
+{
+X1(wordcl=dt | wordcl=ps | wordcl=hd), 
+% prövar med frågetecken här borde kanske vara en enskild regel
+
+X2(wordcl=ab | wordcl=rg)?,
+X3(wordcl=jj | wordcl=pc | wordcl=ro)*,
+X4(wordcl=nn & beginOK & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & 
+spec=ind & case=nom & 
+nntype!=dat & token=TOKEN_SIMPLE_WORD),
+X5((wordcl=jj | wordcl=pc) & (endOK | X4.text="jätte") & !is_cap & token=TOKEN_SIMPLE_WORD & substr(length-4, 4)!="ande" & 
+substr(length-2, 2)!="ad" & substr(length-2, 2)!="at"
+& substr(length-3, 3)!="ade" & substr(length-3,3)!="ende"		      
+& substr(length-1, 1)!="t"),
+X6(wordcl=nn & spell_OK(smart_concat(X4.real_text, X5.real_text), X4.token))
+-->
+mark(X4 X5)
+corr(X4.join(X5.text))
+action(scrutinizing)
+jump(sär_slut, 3)
+}
+
+
+(* 9 
+Det var ett litet blygt fux färgat årsföl.
+*)
+sär7nn_jj@sär
+{
+X2(wordcl!=pp),
+X3(wordcl=jj | wordcl=pc)+,
+X4(wordcl=nn & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & spec=ind & case=nom & % nntype!=set & 000104
+nntype!=dat & token=TOKEN_SIMPLE_WORD),
+X5((wordcl=jj | wordcl=pc) & endOK & !is_cap & token=TOKEN_SIMPLE_WORD & substr(length-4, 4)!="ande" & 
+substr(length-2, 2)!="ad" & substr(length-2, 2)!="at"
+& substr(length-3, 3)!="ade" & substr(length-3,3)!="ende" &
+spell_OK(smart_concat(X4.real_text, real_text), X4.token)),	%& substr(length-1, 1)!="t")),
+X6(wordcl=nn)
+-->
+mark(X4 X5)
+corr(X4.join(X5.text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+
+(* 10
+
+Jag letade bland de färg glada tygerna.
+
+Rule #10 no name --> Regel 3: färgglada
+ med Stava endast 2 falska alarm. 
+
+Vi borde klara: Jag tycker att de är färg glada och trevliga.
+*)
+
+sär8nn_jjA@sär
+{
+X0(wordcl!=pp & case!=gen & wordcl!=ps), % 000202
+X1(wordcl=nn & beginOK & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & 
+spec=ind & case=nom & nntype!=dat & token=TOKEN_SIMPLE_WORD & text!="slags" & text!="sorts"),
+X2((wordcl=jj | wordcl=pc) & (endOK | X1.text="jätte") & !is_cap & 
+token=TOKEN_SIMPLE_WORD & substr(length-4, 4)!="ande" & 
+substr(length-2, 2)!="ad" & substr(length-2, 2)!="at"
+& substr(length-3, 3)!="ade" & substr(length-3,3)!="ende"),		       % & substr(length-1, 1)!="t")+, % & A(lex.wordcl=jj)/,
+
+X3(wordcl=nn & spell_OK(smart_concat(X1.real_text, X2.real_text), X1.token))%wordcl!=nn & wordcl!=jj & wordcl!=pp/
+
+-->
+mark(X1 X2)
+corr(X1.join(X2.text))
+action(scrutinizing)
+jump(sär_slut, 3)
+}
+
+(*
+sär_8b_nn_jj@sär
+{
+X0(wordcl!=jj & wordcl!=pc & wordcl!=pp & wordcl!=ps & wordcl!=), % behövs det fler krav än wordcl!=pp?
+X1(wordcl=nn & nntype!=set & beginOK & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & spec=ind & case=nom &
+ 	 % nntype!=set  000104 JOhan satte tillbaks 000204
+nntype!=dat & token=TOKEN_SIMPLE_WORD & text!="slags" & text!="sorts"), % & case=nom & nntype!=set/,
+
+X2((wordcl=jj | wordcl=pc) & endOK & !is_cap & token=TOKEN_SIMPLE_WORD & 
+substr(length-4, 4)!="ande" & substr(length-2, 2)!="ad" & substr(length-2, 2)!="at"
+& substr(length-3, 3)!="ade" & substr(length-3,3)!="ende"),
+% & substr(length-1, 1)!="t")+, % & A(lex.wordcl=jj)/,
+
+X3(spell_OK(smart_concat(X1.real_text, X2.real_text), X1.token) & 
+wordcl!=nn & wordcl!=jj & wordcl!=pc & wordcl!=pp & wordcl!=pm & cht!=mad)
+
+-->
+mark(X1 X2)
+corr(X1.join(X2.real_text))
+action(scrutinizing)
+jump(sär_slut, 3)
+}
+
+*)
+
+
+(* 14. jätte vänlig 
+
+borde byggas ut funkar ju inte ens för detect nedan
+*)
+
+sär12nn_jj@sär
+{
+X0(wordcl!=pp), % 000202
+X1(wordcl=nn & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & spec=ind 	% & nntype!=set 000104
+& nntype!=dat & token=TOKEN_SIMPLE_WORD &
+ text!="sorts" & text!="slags"), % 
+X2(wordcl=jj & num=sin & spec=ind & endOK & token=TOKEN_SIMPLE_WORD & !E(lex.wordcl=pc) & !is_cap & 
+substr(length-4, 4)!="ande" & substr(length-2, 2)!="ad" & substr(length-2, 2)!="at"
+& substr(length-3, 3)!="ade" & substr(length-3,3)!="ende"),
+X3((wordcl=nn | wordcl=jj) & spell_OK(smart_concat(X1.real_text, X2.real_text), X1.token)) 
+
+-->
+mark(X1 X2)
+corr(X1.join(X2.text))
+action(scrutinizing)
+jump(sär_slut, 3)
+detect("Hon var nog jätte vänlig egentligen men inte idag.")
+}
+
+
+(* regel som tar hänsyn till meningsslut och annat?
+ väldigt lite testad 
+
+Kommer inte på några bra exempelmening, men:
+
+Jag äter gärna en ägg gula till frukost.
+
+
+*)
+
+sär13nn_jj@sär
+{
+X1(wordcl=nn & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & spec=ind 	% & nntype!=set 000104
+& nntype!=dat & token=TOKEN_SIMPLE_WORD),
+X2(wordcl=jj & num=sin & spec=ind & !is_cap & token=TOKEN_SIMPLE_WORD & !E(lex.wordcl=pc)),
+X3(sed=sen & spell_OK(smart_concat(X1.real_text, X2.real_text), X1.token))
+-->
+mark(X1 X2)
+corr(X1.join(X2.text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+
+(* fortsätt här... *)
+
+(* 15 särskrivning med predikativ 
+
+Väggarna är havs blå.
+*)
+
+sär14nn_jj@sär
+{
+X0(vbt=kop),
+X1(wordcl=nn & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & spec=ind 		% & nntype!=set  000104
+& nntype!=dat & token=TOKEN_SIMPLE_WORD),
+X2(wordcl=jj & num=sin & spec=ind & token=TOKEN_SIMPLE_WORD  & !E(lex.wordcl=pc) &
+  spell_OK(smart_concat(X1.real_text, real_text), X1.token))
+-->
+mark(X1 X2)
+corr(X1.join(X2.text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+
+
+
+
+(* 17 
+(sitt burriga henna färgade hår) <-- Rule #17 no name
+
+Hon skakade sitt burriga henna färgade hår igen.
+
+*)
+sär16nn_jj@sär
+{
+X1(wordcl=ps),
+X2((wordcl=jj | wordcl=pc) & gender=X1.gender & num=X1.num & spec=X1.spec),
+X3(wordcl=nn & gender!=X1.gender & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & token=TOKEN_SIMPLE_WORD),
+X4(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec & 
+token=TOKEN_SIMPLE_WORD & 
+spell_OK(smart_concat(X3.real_text, real_text), X3.token)),	%cap!=firstcapped/,
+
+X5(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind)
+-->
+mark(X3 X4)
+corr(X3.join(X4.text))
+action(scrutinizing)
+jump(sär_slut, 3)
+}
+
+(*
+sär_nn_jjchans@sär
+{
+V(wordcl!=pp & wordcl!=jj & case!=gen & wordcl!=hs & wordcl!=dt & 
+wordcl!=ps & wordcl!=hd & wordcl!=rg & wordcl!=ro),
+X(wordcl=nn & beginOK & nntype!=set & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & case=nom & spec=ind),
+Y(wordcl=jj & endOK & spell_OK(smart_concat(X.real_text, real_text), X.token) &
+substr(length-4, 4)!="ande" & substr(length-2, 2)!="ad" & substr(length-2, 2)!="at"
+& substr(length-3, 3)!="ade" & substr(length-3,3)!="ende")
+% & substr(length-1, 1)!="t")
+-->
+mark(X Y)
+corr(X.join(Y.real_text))
+action(scrutinizing)
+jump(sär_slut, 2)
+}
+*)
+
+
+sär_vb_jj@sär
+{
+X0(sed!=sen),
+X(wordcl=vb & vbf=imp & token=TOKEN_SIMPLE_WORD),
+Y(wordcl=jj & endOK & token=TOKEN_SIMPLE_WORD & spell_OK(smart_concat(X.real_text, real_text), X.token) &
+substr(length-4, 4)!="ande" & substr(length-2, 2)!="ad" & substr(length-2, 2)!="at"
+& substr(length-3, 3)!="ade" & substr(length-3,3)!="ende")
+% & substr(length-1, 1)!="t")
+-->
+mark(X Y)
+corr(X.join(Y.text))
+action(scrutinizing)
+jump(sär_slut, 1)
+}
+
+sär_jj_slut:
+
+(* ----------Särskrivna verb---------------------*)
+
+sär_nnvb@sär
+{
+X0(wordcl!=jj & wordcl!=pc & wordcl!=ps & wordcl!=hd & wordcl!=dt & 
+case!=gen & wordcl!=hs & wordcl!=pp),
+X(wordcl=nn & beginOK & token=TOKEN_SIMPLE_WORD & (num=sin | (gender=neu & num=plu & E(lex.num=sin))) & spec=ind & case=nom),
+Y(wordcl=vb & endOK & (vbf=inf | vbf=imp) & vbt!=aux & vbt!=mod & vbt!=kop
+& voice=akt & E(lex.wordcl=nn) & 
+spell_OK(smart_concat(X.real_text, real_text), X.token))
+-->
+mark(X Y)
+corr(X.join(Y.text))
+action(scrutinizing)
+jump(sär_slut, 1)
+}
+
+sär_slut_stava:
+
+(* ----------Särskrivna stavfel-------------------------------*)
+
+sär_stava1A@sär
+{
+V(),
+X(!spellOK & beginOK & token=TOKEN_SIMPLE_WORD & wordcl!=pm & 
+((!is_cap & V.sed=undef) | V.sed=sen)
+ & cht=undef & !spell_OK(real_text, token)),
+Y(endOK & spell_OK(smart_concat(X.real_text, real_text), X.token)
+ & vbt != mod & token=TOKEN_SIMPLE_WORD & vbt != aux & 
+(vbt != kop | text="vara") &
+wordcl!=kn & wordcl!=pp & !is_cap & wordcl!=hp & wordcl!=sn & cht=undef)   % Lägg till fler krav
+-->
+mark(X Y)
+corr(X.join(Y.text))
+action(scrutinizing)
+jump(sär_slut, 1)
+}
+
+
+(* bör förbättras! 
+varför detekteras "dag coh" 
+*)
+
+sär_stava2@sär
+{
+%X(sed=undef & cht=undef & wordcl!=pp & wordcl!=rg & wordcl!=dt & wordcl!=pn & wordcl!=ps),
+X(beginOK & token=TOKEN_SIMPLE_WORD),
+Y(!spellOK & endOK & token=TOKEN_SIMPLE_WORD & !is_cap & wordcl!=pm & !spell_OK(real_text, token) &
+spell_OK(smart_concat(X.real_text, real_text), X.token))
+-->
+mark(X Y)
+corr(X.join(Y.text))
+action(scrutinizing)
+jump(sär_slut, 1)
+detect("Jag märkte direkt rädslan och osäker heten i honom.")
+}
+
+sär_slut:
+
+
+(* ----- Inkongruenta nominalfraser ----- *)
+
+(* Inkongruensregler börjar 
+ har börjat införa cap!=firstcapped, måste göra det i alla
+ regler
+ utnyttja sed=sen för t.ex. np sist i meningar som alltås inte efterföljs 
+  av bisats
+  utnyttja nntype=set & nntype=dat
+  kolla upp adverb före adjektiv
+ flytta jj*-nn-regler sist?
+ inför wordcl=hd i samma matchningsvariabel som dt i granskningsregler (990423)
+ vad göra med hp? samma problematik som dt-pn.
+ fundera över accepterande regler, hur är det med rg i dt-variabeln, införa?
+
+Att kontrollera:
+1.goto token, 
+se till att vi får flera icke-slappa felanalyser på fel, undvik dock
+de slappa reglerna, t.ex. "de/FEL vanliga kriterier" - "de vanliga kriterier/FEL"
+
+2. optionella hjälpregler, lägg till ? på JJ
+
+*)
+
+
+
+(*      0. accepterande regel för att undvika falska alarm
+ *      för fraser av typen:
+ *      den bil som står
+ *      I det lilla hus som ligger där nere i dalen vill jag bo.
+ *      goto(inkongruens_slut) skall vara med
+ *	skall vi ha X4/text="som" för att få fram de fraser som verkligen är fel
+ försöker förbättra den här regel så att den inte skär bort så mycket 990309
+mer arbete krävs!!!    
+*)
+
+(* johan kommenterade bort för att testa 2000-01-25
+kongacc0@kong
+{
+%X0(sed!=sen), % initial position säker enligt Lingsoft.
+
+X1(wordcl=dt & spec=def),
+X2(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X3(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind), %,
+
+X4(),		% wordcl!=pp/, ganska osäkert krav
+
+X5(sed!=sen | (sed=sen & E(X3.lex.wordcl=jj)))% final position borde också vara hyfsat säker enligt Knutsson utomför adjektivistiska nomen
+%X4/cht=mid | text="som"/
+
+-->
+jump(slut_kong, X2.no_of_tokens+1)
+action(accepting)
+}
+*)
+
+kongOK@kong
+{
+X1(wordcl=dt & spec=def),
+X11(wordcl=ab)*,
+X2((wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec) | text="få")*,
+X3(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind),
+X4()*,
+X5(wordcl=hp | wordcl=ha | wordcl=hs | text="som")
+-->
+jump(slut_kong, X2.no_of_tokens+2)
+action(accepting)
+}
+
+kongOK2@kong
+{
+X1(wordcl=dt & spec=def),
+X2(wordcl=ab)*,
+X3(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X4(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind),
+X5()*,
+X6(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp)),
+X7()*,
+X8(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp))
+-->
+jump(slut_kong, X2.no_of_tokens+1)
+action(accepting)
+}
+
+
+kongOK33@kong
+{
+X1(wordcl=dt & spec=def),
+X2(wordcl=ab)*,
+X3(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X4(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind),
+(NP)()
+-->
+jump(slut_kong, X2.no_of_tokens+1)
+action(accepting)
+}
+
+
+kongOK3@kong
+{
+X(text="allt"),
+Y(wordcl=jj)
+-->
+jump(prob_regler)
+action(accepting)
+}
+
+kongreligösOK@kong
+{
+X(text="den"),
+Y(text="helige" | text="heliga"),
+Z(text="ande" | text="skrift")
+-->
+jump(slut_kong, 2)
+action(accepting)
+}
+
+kongOKtid1@kong
+{
+X(wordcl=dt | wordcl=hd),
+Y(wordcl=rg & num=plu),
+Z(text="sekunder" | text="minuter" | text="timmar" | text="dagar" | text="veckor" | text="år"),
+Z2(wordcl=jj & gender=X.gender & num=X.num & spec=X.spec)*,
+Z3(wordcl=nn & gender=X.gender & num=X.num & spec=X.spec)
+-->
+jump(slut_kong, 2+Z2.no_of_tokens)
+action(accepting)
+}
+
+(*
+kongOKtid2@kong
+{
+X(wordcl=ps),
+Y(wordcl=rg & num=plu),
+Z(text="sekunder" | text="minuter" | text="timmar" | text="dagar" | text="veckor" | text="år"),
+Z2(wordcl=jj & gender=X.gender & num=X.num & spec=def)*,
+Z3(wordcl=nn & gender=X.gender & num=X.num & spec=ind)
+-->
+jump(slut_kong, 2+Z2.no_of_tokens)
+action(accepting)
+}
+*)
+
+(* 991119 
+
+Det är emellertid inte troligt att vi kommer att få uppleva 
+en småföretagens renässans.
+
+*)
+
+
+
+
+(*
+kongacc01@kong
+{
+%X0(sed!=sen), % initial position säker enligt Lingsoft.
+
+X1(wordcl=dt & spec=def),
+X10(wordcl=ab),
+X2(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)+,
+X3(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind), %,
+
+X4(),		% wordcl!=pp/, ganska osäkert krav
+
+X5(sed!=sen)% final position borde också vara hyfsat säker enligt Knutsson.
+%X4/cht=mid | text="som"/
+
+-->
+jump(slut_kong, X2.no_of_tokens+1)
+action(accepting)
+}
+*)
+
+kongacc01any@a
+{
+X1((wordcl=dt | (wordcl=pn & (text="den" | text="det"))) & spec=def),
+X10(wordcl=ab | (wordcl=rg & num!=sin & X1.num=plu))*,
+X2(wordcl=jj & gender=X1.gender & spec=def)*,
+X3(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind),
+(PP)()?, %,
+X4(text="som" | cht=mid | wordcl=sn | wordcl=ha | wordcl=kn)
+-->
+jump(slut_kong, X10.no_of_tokens + 3)
+action(accepting)
+}
+
+kongacc01bny@a
+{
+X1((wordcl=dt | (wordcl=pn & (text="den" | text="det"))) & spec=def),
+X10(wordcl=ab | (wordcl=rg & num!=sin & X1.num=plu))*,
+X2(wordcl=jj & gender=X1.gender & spec=def)*,
+X3(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind), %,
+(NP)()
+-->
+jump(slut_kong, X10.no_of_tokens + 2)
+action(accepting)
+}
+
+
+(* substr(length-1, 1)="a") *)
+kongacc01cny@a
+{
+X1(wordcl=dt & spec=def),
+X10(wordcl=ab | (wordcl=rg & num!=sin & X1.num=plu))*,
+X2(wordcl=jj & gender=X1.gender & spec=def)*,
+X3(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind & 
+(substr(length-4,4)="ende" | substr(length-4,4)="ande" | substr(length-1,1)="a" |
+substr(length-4,4)="tion" | substr(length-3,3)="ing" | substr(length-4,4)="vård" |
+substr(length-4,4)="omst")),
+X4(cht!=mad)
+-->
+jump(slut_kong, X10.no_of_tokens +2)
+action(accepting)
+}
+
+
+(* behövs en till utan determinerare *)
+kongacc01dny@a
+{
+X1(wordcl=dt & spec=def),
+X10(wordcl=ab | (wordcl=rg & num!=sin & X1.num=plu))*,
+X2(wordcl=jj & (deg=kom | deg=suv))+,
+X22((wordcl=jj | wordcl=pc) & spec=def)*, 
+X3(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind),
+X4(cht!=mad)
+-->
+jump(slut_kong, X10.no_of_tokens + X2.no_of_tokens+ X22.no_of_tokens+2)
+action(accepting)
+}
+
+kongacc01eny@a
+{
+X1(wordcl!=dt & wordcl!=ps & wordcl!=jj),
+X2(wordcl=jj & (deg=kom | deg=suv))+,
+X22((wordcl=jj | wordcl=pc) & spec=def)*, 
+X3(wordcl=nn & spec=ind)
+-->
+jump(slut_kong, X2.no_of_tokens + X22.no_of_tokens + 1)
+action(accepting)
+}
+
+kongacc01fny@a
+{
+X1(wordcl!=dt & wordcl!=ps),
+X11(wordcl!=dt & wordcl!=ps & wordcl!=jj),
+X2(wordcl=jj & spec=def)+,
+X3(wordcl=nn & gender=X2.gender & spec=ind & 
+(substr(length-4,4)="ende" | substr(length-4,4)="ande" | substr(length-1,1)="a" |
+substr(length-4,4)="tion" | substr(length-3,3)="ing" | substr(length-4,4)="vård" |
+substr(length-4,4)="omst")),
+X4(cht!=mad)
+-->
+jump(slut_kong, X2.no_of_tokens)
+action(accepting)
+}
+
+(* de vackraste glada hundar 
+ § 44 SAG Nominalfraser *)
+
+kongacc01gny@a
+{
+X((wordcl=dt & spec=def & num=plu) | wordcl=ps | case=gen),
+Y(deg=suv), % wordcl=jj, ja men det finns ju adverb som ser likadana ut!
+Z(wordcl=jj & deg=pos)*,
+Z2(wordcl=nn & spec=ind)
+-->
+jump(slut_kong, 2+Z.no_of_tokens)
+action(accepting)
+}
+
+(* ett tre veckors uppehåll, en två veckors intensiv fjällvandring *)
+
+kongacc01iny@a
+{
+X1(wordcl=dt & num=sin & spec=ind),
+X2(wordcl=rg & num!=sin),
+X3(wordcl=nn & num=plu & spec=ind & case=gen),
+X4(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X5(wordcl=nn & gender=X1.gender & num=X1.num & spec=X1.spec)
+-->
+jump(slut_kong, 3+X4.no_of_tokens)
+action(accepting)
+}
+
+(* SAG Pron § 179 *)
+kongacc01hny@a
+{
+X(text="något"),
+Y(wordcl=jj & deg=kom)
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+(* Blir de statsråd under tiden? taggproblem 
+   Blir d
+kongacctaggprob1@a
+{
+X2(wordcl=vb & (vbf=prs | vbf=prt)),
+X3(wordcl=dt & (text="den" | text="det" | text="de")),
+%X4(wordcl=jj)*,
+X5(wordcl=nn & gender=X3.gender & num=X3.num & spec=ind)
+-->
+jump(slut_kong, 2+X1.no_of_tokens)
+action(accepting)
+}
+*)
+
+(* bör byggas ut med PP, man skär bort för mycket med dessa regler *)
+kongacctaggprob2@a
+{
+(Clause_del)(),
+X1(wordcl=ab | wordcl=rg)*,
+X2(wordcl=vb & (vbf=prs | vbf=prt)),
+X3(wordcl=dt & (text="det" | text="den" | text="alla" | text="de")),
+X33(wordcl=rg)?,
+X4((wordcl=jj & spec=def) | wordcl=ro)*, % & num=sin
+X5(wordcl=nn & (X4.no_of_tokens=0 | 
+X4.wordcl=ro | (gender=X4.gender & num=X4.num))) % spec=ind behövs denna?
+-->
+jump(slut_kong, Clause_del.no_of_tokens+2+X1.no_of_tokens)
+action(accepting)
+}
+
+kongacctaggprob2b@a
+{
+(Clause_del)(),
+X(wordcl=kn)?,
+(PP)(),
+X2(wordcl=vb & (vbf=prs | vbf=prt)),
+X3(wordcl=dt & (text="det" | text="den" | text="alla" | text="de")),
+X33(wordcl=rg)?,
+X4((wordcl=jj & spec=def) | wordcl=ro)*, % & num=sin
+X5(wordcl=nn & (X4.no_of_tokens=0 | 
+X4.wordcl=ro | (gender=X4.gender & num=X4.num))) % spec=ind behövs denna?
+-->
+jump(slut_kong, Clause_del.no_of_tokens+2+PP.no_of_tokens)
+action(accepting)
+}
+
+
+kongacctaggprob3@a
+{
+(Clause_del)(),
+(PP)(),
+X2(wordcl=vb & (vbf=prs | vbf=prt)),
+X3(wordcl=dt & (text="det" | text="den" | text="de")),
+X4(wordcl=jj & gender=X3.gender & num=sin & spec=def)*,
+X5(wordcl=nn & gender=X3.gender & num=X3.num & spec=ind)
+-->
+jump(slut_kong, Clause_del.no_of_tokens+X4.no_of_tokens+PP.no_of_tokens+2)
+action(accepting)
+}
+
+
+
+
+(*      1. accepterande regel för att undvika falska alarm för
+ *    fraser av typen:
+ *      den gult vita bil som står
+ *      det mycket lilla hus som sitter i
+ *      E(lex.wordcl=ab) behövs kravet?
+ *      goto(inkongruens_slut)//accepterande/
+ *)  
+
+kongacc1@kong
+{
+X1(wordcl=dt),
+X2((wordcl=jj & gender=neu & E(lex.wordcl=ab)) | wordcl=ab),
+X3(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec),
+X4(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X5(wordcl=nn & gender=X1.gender & num=X1.num & spec=X1.spec)
+-->
+jump(slut_kong, X4.no_of_tokens+3)
+action(accepting)
+}
+
+
+   (* 2. accepterande regel för att undvika falska alarm för
+ * den irakiske presidenten
+ *)
+
+kongacc2@kong
+{
+X1(wordcl=dt),
+X11(wordcl=ab)*,
+X2(wordcl=jj & gender=utr & num=X1.num & spec=X1.spec)*,
+X3(wordcl=jj & gender=mas & num=X1.num & spec=X1.spec),
+X30(cht=mid)?,
+X33(wordcl=jj & gender=mas & num=X1.num & spec=X1.spec)*,
+X4(wordcl=jj & gender=utr & num=X1.num & spec=X1.spec)*,
+X5(wordcl=nn & gender=utr & num=X1.num & spec=X1.spec)
+-->
+jump(masc_rule, X2.no_of_tokens+X33.no_of_tokens+X4.no_of_tokens+3+X30.no_of_tokens)
+action(accepting)
+}
+
+
+(* 3 *)
+kongacc3@kong
+{
+X0(),
+X1(wordcl=jj & gender=utr)*,
+X2(wordcl=jj & gender=mas & (X1.no_of_tokens=0 | num=X1.num))+,   % & spec=X1.spec)+,
+X3(wordcl=nn & gender=utr & num=X2.num)     % & spec=X2.spec)
+-->
+jump(masc_rule, X1.no_of_tokens + X2.no_of_tokens + 1)
+action(accepting)
+}
+
+
+kongacceval1@kong
+{
+X(text="de"),
+Y(wordcl=nn & % (substr(length-4, 4)="ande" | 
+(text="elever" | text="barn" | text="studenter"))
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+kongacceval2@kong
+{
+X(text="den"),
+Y(text="grad")
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+kongacceval38@kong
+{
+X(text="det"),
+Y(text="inre")
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+
+kongacceval4@kong
+{
+X(text="det"),
+Y(text="besked")
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+kongacceval5@kong
+{
+X(text="en"),
+Y(text="handfull"),
+Z(wordcl=nn & num=plu)
+-->
+jump(slut_kong, 2)
+action(accepting)
+}
+
+kongacceval6@kong
+{
+X(text="ett"),
+Y(wordcl=jj)*,
+Z(text="fotografi")
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+
+kongacceval7@kong
+{
+X(text="olika"),
+Z(wordcl=nn & spec=ind)
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+kongacceval8@kong
+{
+X(text="drygt"),
+Z(text="hälften")
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+
+kongacceval9@kong
+{
+X(text="de"),
+Y(wordcl=jj)*,
+Z(text="jeansen")
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+kongacceval10@kong
+{
+X(text="sin"),
+Y(wordcl=jj)?,
+Z(text="kulmen")
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+KOP@
+{
+V(wordcl=nn | (wordcl=pn & (text="den" | text="det"))),
+---ENDLEFTCONTEXT---,
+X(vbt=kop)
+-->
+action(help, gender:=V.gender, num:=V.num, spec:=V.spec)
+}
+
+
+kongaccpredikativ@kong
+{
+(KOP)(),
+Y(wordcl=ab)?,
+Z(wordcl=jj & gender=KOP.gender & num=KOP.num)
+-->
+jump(slut_kong, 2)
+action(accepting)
+}
+
+
+
+category kong {
+info("kongruensfel")
+link("" "")
+}
+
+kongaccsamma@kong
+{
+X(text="samma" | text="nästa")
+-->
+jump(samma_undantag)
+action(accepting)
+}
+
+kongnnistfjj@kong
+{
+X(wordcl=dt),
+X2(wordcl=jj)*,
+Y(wordcl=nn & nntype!=set & nntype!=dat & spec=ind & case=nom & substr(length-1, 1)="a"), %E(lex.wordcl=jj)),
+Z(wordcl=nn & gender=X.gender & num=X.num & spec=X.spec)
+-->
+corr(Y.form(wordcl:=jj, deg:=pos, gender:=X.gender))
+info("Kongruensfel" "Regel under konstruktion")
+action(scrutinizing)
+}
+
+(* egen obestämd form efter possesiv attribut  SAG 1 Pron § 234 *)
+kongegna1@kong
+{
+X1(((wordcl=ps | case=gen) & num!=plu) | (text="detta" | text="denna")),
+X2(text="egna"), %lemma="egen"), % & spec=X1.spec),
+X3(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X4(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind)
+-->
+corr(X2.replace(if X4.gender=utr then "egen" else "eget" end))
+info(italics(X2.text) "står vanligtvis i obestämd form direkt efter" italics(X1.text))
+action(scrutinizing)
+detect("Vårt egna lilla hus är fint")
+}
+
+kongegna2@kong
+{
+X1(((wordcl=ps | case=gen) & num!=plu) | (text="denna" | text="detta")), % min
+X10(wordcl=jj | wordcl=ab | wordcl=ro), % första
+X2(text="egen" | text="eget"), % egen
+X3(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*, %lilla
+X4(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind) % cykel
+-->
+corr(X2.replace("egna"))
+info(italics(X2.text) "står vanligtvis i bestämd form direkt när skiljs från" 
+italics(X1.text) "av ett annat ord till exempel" italics(X10.text))
+action(scrutinizing)
+detect("Jag såg min alldeles egen silhuett på väggen")
+}
+
+
+
+kongacc22a@kong
+{
+X(wordcl=dt & text!="denna" & text!="dessa" & text!="detta"
+& text!="samma" & text!="samme" & text!="nästa"),
+X2(wordcl=ab)*,
+(JJ/Y)()?,
+Z(wordcl=nn & gender=X.gender & spec=X.spec & num=X.num & case=nom & (Y.no_of_tokens = 0 | (gender=Y.gender & num=Y.num & spec=Y.spec)))
+-->
+jump(slut_kong, 1+Y.no_of_tokens)
+action(accepting)
+}
+
+
+
+(* ta bort vid fixen ovan *)
+
+
+kongacc22b@kong
+{
+X(wordcl=dt  & text!="denna" & text!="dessa" & text!="detta" & 
+text!="denne" & text!="samma" & text!="samme" & text!="nästa"),
+Z(wordcl=nn & gender=X.gender & num=X.num & spec=X.spec & case=nom)
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+
+kongacc22c@kong
+{
+X(wordcl=ps | text="denna" | text="dessa" | text="detta" | text="denne" | text="samma" | 
+text="samme" | text="nästa"),
+Y(wordcl=jj & spec=def & lemma!="egen")*,
+Z(wordcl=nn & gender=X.gender & gender=Y.gender & 
+num=X.num & num=Y.num & spec=ind & case=nom)
+-->
+jump(slut_kong, 1+Y.no_of_tokens)
+action(accepting)
+}
+
+kongacc3b@kong
+{
+X(text="denna" | text="detta" | text="dessa" | text="denne")
+-->
+jump(artikel_undantag)
+action(accepting)
+}
+
+
+(* bör förbättras
+egentligen ett adverb som bestämmer en NP *)
+kongaccjjneuNP@kong
+{
+X(wordcl=jj & deg=pos & gender=neu & num=sin & spec=ind),
+(NPkonj/Y)()
+-->
+jump(slut_kong, Y.no_of_tokens)
+action(accepting)
+} 
+
+falska_alarmOK@kong
+{
+T(),
+X(text="falska"),
+Y(text="alarm" | text="alarmen")
+-->
+jump(slut_kong, 2)
+action(accepting)
+}
+
+de_factoOK@kong
+{
+X(text="de"),
+Y(text="facto")
+-->
+jump(slut_kong, 1)
+action(accepting)
+}
+
+
+(* 991119 
+
+Även de vårdavtal som sluts mellan arbetsgivare och anställs är olagliga.
+
+*)
+
+
+ok@kong
+{
+X(gender=neu),
+Y(wordcl=nn & gender=neu & gender=X.gender & num!=X.num & E(lex.num=X.num) & 
+(spec=X.spec | X.text="de"))
+-->
+jump(slut_kong, X.no_of_tokens + 1)
+action(accepting)
+}
+
+
+(* 991118 *)
+
+okok@kong
+{
+T(gender=neu),
+T2(wordcl=ab)?,
+X(wordcl=jj)+,
+Y(wordcl=nn & gender=neu & gender=X.gender & 
+num=X.num & num!=T.num & E(lex.num=T.num) & 
+(spec=T.spec | T.text="de") & spec=X.spec)	% la till T.text="de" 991119
+-->
+jump(slut_kong, T.no_of_tokens + X.no_of_tokens + 1)
+action(accepting)
+}
+
+
+(* 991118 *)
+
+okokok@a
+{
+X(wordcl=jj)+,
+Y(wordcl=nn & gender=neu & gender=X.gender & num!=X.num & E(lex.num=X.num) & spec=X.spec)
+-->
+jump(slut_kong, X.no_of_tokens)
+action(accepting)
+}
+
+
+
+
+
+
+
+
+
+(*	4. Fel i något till alla särdrag, determineraren
+ *	gender | num | spec
+ *	dt(fel)-jj*-nn
+ *
+ *   matchar: 
+ *	en bilen
+ *	en gula bilen
+ * 	den gul bil
+ *	det gult hus
+ *	Olika färger i mark-fältet?
+ *	Kommentaren?
+ *   Massor av regler blir 3 regler
+ *   hur få bort ett(sin) material(sin/plu)? 
+ *   !E(lex.wordcl=nn & lex.num!=num)
+ *	det får inte existera någon tolkning som är nn och num!=num 
+ *)
+
+
+
+(* 4   ev. tester med undef 
+
+(Det viktigaste källorna) <-- Rule #4 no name
+(ett halvtimmes) <-- Rule #4 no name
+(ett graden) <-- Rule #4 no name
+(en demokratin) <-- Rule #4 no name
+
+*)
+
+
+
+
+
+(* "de/FEL vanliga kriterier för antagande fungerar inte" 
+    de vanliga kriterier/FEL, vilket ord är egentligen fel?
+ *)
+
+(* det behov av koncentration som styrelsen understryker *)
+
+(* prövar att ta bort goto här *)
+
+
+(* hur funkar ro här kan man ha flera på rad? *)
+
+kong22E@kong
+{
+X1((wordcl=dt | wordcl=hd)), % & text!="allt"), 
+% felet | (wordcl=pn & P(0.7,lex.wordcl=dt))/,
+X10((wordcl=ab & !is_cap & (text!="inte" & text!="alltså" & text!="antagligen" & 
+text!="bara" & real_text!="dess värre" &
+text!="däremot" & text!="då" & text!="ju" & text!="ej" & text!="ofta" & text!="emellertid" &
+text!="endast" & text!="enkom" & text!="förgäves" & text!="först" & text!="givetvis" &
+text!="helst" & real_text!="i synnerhet" & text!="icke" & text!="ingalunda" & 
+real_text!="inte ens" & real_text!="inte heller" & text!="inte" & text!="knappats" &
+real_text!="inte minst" & text!="just" & text!="kanske" & text!="lyckligtvis" & 
+text!="minsann" & text!="möjligen" & text!="möjligt" & text!="nog" & text!="nämligen" &
+text!="också" & text!="onekligen" & text!="redan" & real_text!="rent av" & 
+real_text!="rent ut" & text!="riktigt" & text!="säkerligen" & text!="säkert" &
+text!="särskilt" & real_text!="så att säga" & text!="således" & text!="tyvärr" &
+text!="verkligen" & text!="vidare" & text!="väl" & text!="ännu" & text!="även" &
+text!="åter" & text!="åtminstone" & text!="fortfarande" & text!="förmodligen"
+) | (wordcl=rg & num!=sin)))?,
+X22(wordcl=ro & !is_cap)*,
+X2(wordcl=jj & !is_cap)*,
+X3(wordcl=nn & !is_cap & (X10.no_of_tokens=0 | X22.no_of_tokens>=1 | X2.no_of_tokens>=1) & 
+(X2.no_of_tokens = 0 | (gender=X2.gender & num=X2.num & spec=X2.spec)) & 
+((gender!=undef & X1.gender!=undef & gender!=X1.gender & 
+!E(lex.wordcl=nn & lex.gender!=gender)) |  
+(!E(lex.wordcl=nn & lex.gender!=gender) 
+& num!=undef & X1.num!=undef & num!=X1.num) | 
+(spec!=undef & X1.spec!=undef & spec!=X1.spec)))
+-->
+corr(if (X1.text="samma" | X1.text="varje" | X22.wordcl=ro) then X1.donothing() else X1.form(gender:=X3.gender, num:=X3.num, spec:=X3.spec) end 
+X2.form(num:=X3.num) if (X1.text="samma" | X1.text="varje" | X22.wordcl=ro) then X3.form(spec:=ind) else X1.replace(X1.real_text) end)
+
+corr( %if (X1.text="samma" | X1.text="varje" | X10.wordcl=rg) then X1.donothing() else X1.form(gender:=X3.gender) end
+ X1.form(gender:=X3.gender) X2.form(gender:=X3.gender, num:=X1.num, spec:=X1.spec) X3.form(num:=X1.num, spec:=X1.spec))
+%corr(if X10.wordcl=rg then X3.form(num:=X1.num, spec:=X1.spec) else X3.donothing() end)
+%goto token(slut_kong, X2.no_of_tokens + 1)
+%info("Kongruensfel, artikeln" italics(X1.real_text) "stämmer inte överens med substantivet" italics(X3.real_text))
+jump(slut_kong,2+X10.no_of_tokens+X22.no_of_tokens+X2.no_of_tokens) 
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+
+
+
+(* specialfall, som alternativ ersättningsförslag bör man ha med att ta bort
+dt om nn är def eller plu, finns det andra fall?
+*)
+
+% la till gender:=X3.gender 990819
+kong22dtnn@kong
+{
+X1(wordcl=dt | wordcl=hd), % felet | (wordcl=pn & P(0.7,lex.wordcl=dt))/,
+
+X3(wordcl=nn & !is_cap & ((!E(lex.wordcl=nn & lex.gender!=gender) & num!=undef & X1.num!=undef & num!=X1.num) | 
+(spec!=undef & X1.spec!=undef & spec!=X1.spec))),
+X4(text!="som" & text!="vilken")
+-->
+mark(X1 X3)
+corr(if (X1.text="samma" | X1.text="varje") then X1.replace(X1.real_text) else
+X1.form(gender:=X3.gender, num:=X3.num, spec:=X3.spec) end 
+if (X1.text="samma" | X1.text="varje") then X3.form(spec:=ind) else X1.replace(X1.real_text) end)
+corr(if (X1.text="samma" | X1.text="varje") then X1.replace(X1.real_text) else X1.form(gender:=X3.gender) end 
+     X3.form(num:=X1.num, spec:=X1.spec)) % test 991111
+corr(X1.delete())  % test 991111
+%info("Kongruensfel, artikeln" italics(X1.real_text) "stämmer inte överens med substantivet" italics(X3.real_text))
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+jump(slut_kong, 2)
+}
+
+
+kong22extra@kong	% ny 990903
+
+{
+X1(wordcl=pn | wordcl=hd), % felet | (wordcl=pn & P(0.7,lex.wordcl=dt))/,
+ 
+(JJ/X2)(),
+X3(wordcl=nn & !is_cap & ((!E(lex.wordcl=nn & lex.gender!=gender) & num!=undef & X1.num!=undef & num!=X1.num) | 
+(spec!=undef & X1.spec!=undef & spec!=X1.spec))),
+X4(sed=sen)
+-->
+corr(X1.form(gender:=X3.gender, num:=X3.num, spec:=X3.spec))
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+jump(slut_kong, 2+X2.no_of_tokens)
+}
+
+
+% ny 990730 adjektiv tolkas som adverb, bör ge något falskt alarm ...
+kongab1@kong
+{
+X(wordcl=dt | wordcl=hd | wordcl=ps),
+X1(wordcl=rg)*,
+X11(wordcl=ro)*,
+X2(wordcl=jj)*,	% borde väl bli bättre?
+
+Y(wordcl=ab & E(lex.wordcl=jj) & text!="respektive" & text!="inte" & real_text!="s.k."), % & deg!=undef), % & E(lex.wordcl=jj & lex.gender=neu))+,	% kolla att det slutar på -t?
+
+Z(wordcl=nn & !is_cap & gender=X.gender & num=X.num & (spec=X.spec | (X.wordcl=ps & spec=ind)))
+-->
+corr(Y.form(wordcl:=jj, gender:=Z.gender, num:=Z.num, spec:=Z.spec))
+info("Om" italics(Y.real_text) "syftar på" italics(X.real_text) "är det kongruensfel")
+action(scrutinizing)
+jump(slut_kong, 2+X1.no_of_tokens+X11.no_of_tokens+X2.no_of_tokens)
+}
+
+kongab2@kong
+{
+X2(wordcl=jj)+,	% borde väl bli bättre?
+
+Y(wordcl=ab & E(lex.wordcl=jj)),% & deg!=undef), % & E(lex.wordcl=jj & lex.gender=neu))+,	% kolla att det slutar på -t?
+
+Z(wordcl=nn) % & gender=X2.gender & num=X2.num & spec=X2.spec)
+-->
+corr(Y.form(wordcl:=jj, deg:=pos, gender:=Z.gender, num:=Z.num, spec:=Z.spec))
+info("Om" italics(Y.real_text) "syftar på" italics(X2.real_text) "är det kongruensfel")
+action(scrutinizing)
+jump(slut_kong, X2.no_of_tokens+ 1)
+}
+
+(*
+kongab3@kong
+{
+%X0(wordcl=pp),
+X1(wordcl=ab & E(lex.wordcl=jj)),
+X2(wordcl=nn)
+-->
+corr(X1.form(wordcl:=jj, deg:=pos, gender:=X2.gender, num:=X2.num, spec:=X2.spec, 
+case:=nom))
+info("Om" italics(X1.real_text) "syftar på" italics(X2.real_text) "är det kongruensfel" "Regel under konstruktion")
+action(scrutinizing)
+}
+*)
+
+(*	5. Fel i ett till alla särdrag, fel i det första adjektivet 
+ *	gender, num, spec
+ *	dt-jj-jj*-nn
+ *	Olika färger i mark-fältet?
+ *	Kommentaren?
+ *	
+ *	Vi åkte i en gult liten bil.
+ * 	rättningsförslag?
+ * 	regeln skall kanske inte gälla för jj-neu eftersom
+ *	dessa sammanfaller med ab. Detta fixas med en
+ * 	accepterande regel.
+ *	gender!=mas, tog bort det!
+ *)
+
+kong5E@kong
+{
+X1(wordcl=dt | wordcl=hd),
+X11((wordcl=ab & text!="inte") | (wordcl=rg & num!=sin))*,
+X22(wordcl=ro)*,
+X2(wordcl=jj & deg=pos), % felet
+
+X3(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X4(wordcl=nn & !is_cap & gender=X1.gender & num=X1.num & spec=X1.spec &
+  ((gender!=undef & A(lex.gender=gender | lex.gender=undef) & X2.gender!=undef & gender!=X2.gender) | 
+   (A(lex.gender=gender | lex.gender=undef) & num!=undef & X2.num!=undef & num!=X2.num) |
+   (spec!=undef & X2.spec!=undef & spec!=X2.spec)))
+-->
+%mark(X2 X4)
+corr(X2.form(gender:=X4.gender, num:=X4.num, spec:=X4.spec))
+jump(slut_kong, 2+X3.no_of_tokens)
+info("Om" italics(X2.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel.")
+action(scrutinizing)
+}
+
+
+(*	6.Fel i det andra adjektivet 
+ *	gender
+ *	dt-jj-jj*-jj-jj*-nn
+ *	Olika färger i mark-fältet?
+ *	Kommentaren?
+ *	
+ *	Vi åkte i en liten gult bil.
+ * 	rättningsförslag?
+
+klarar inte:
+Under de tjugofem första gröna grön åren har jag bott här.
+ *)
+
+kong6@kong
+{
+X1(wordcl=dt | wordcl=hd),
+X11((wordcl=ab & text!="inte") | (wordcl=rg & num!=sin))*,
+X22(wordcl=ro)*,
+X2(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec),
+X3(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X4(wordcl=jj),	% felet
+
+X5(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X6(wordcl=nn & !is_cap & gender = X1.gender & num=X1.num & spec=X1.spec &
+  ((gender!=undef & A(lex.gender=gender | lex.gender=undef) & X4.gender!=undef & gender!=X4.gender) | 
+    (A(lex.gender=gender | lex.gender=undef) & num!=undef & X4.num!=undef & num!=X4.num) | 
+    (spec!=undef & X4.spec!=undef & spec!=X4.spec)))
+-->
+corr(X4.form(gender:=X6.gender, num:=X6.num, spec:=X6.spec))
+%goto token(slut_kong, X11.no_of_tokens + X3.no_of_tokens + X5.no_of_tokens + 3)
+%info("Kongruensfel")
+info("Om" italics(X4.real_text) "syftar på" italics(X6.real_text) "är det kongruensfel")
+action(scrutinizing)
+jump(slut_kong, 2+X11.no_of_tokens+X22.no_of_tokens+X3.no_of_tokens+X5.no_of_tokens)
+}
+
+
+% "generate_replacement(lem:=X4.lem, deg:=X4.deg, 
+% gender:=X6.gender, num:=X6.num, spec:=X6.spec, case:=X4.case)
+(*	7. substantivet avviker
+ *	gender
+ *	dt(fel)-jj(fel)-jj*-nn
+ *	
+ *	Olika färger i mark-fältet?
+ *	Kommentaren?
+ *	
+ *	Vi bor i en liten hus.
+ *	ett litet bil
+ * 	rättningsförslag? byt ut dt och jj är enda
+ *   alternativet
+ *	ett adjektiv måste finnas med annars är det fel på
+ *	determineraren och annan regel gäller? 	
+ * 	om det finns fler adjektiv i rad än 4 funkar inte regel
+ *	vi måste ju kunna ge ersättningsförslag
+ *)
+
+kong7@kong
+{
+X1(wordcl=dt | wordcl=hd),
+X2((wordcl=ab & text!="inte") | (wordcl=rg & num!=sin))?, % borde kanske vara !=satsadverbial?
+X22(wordcl=ro)*,
+X3(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X4(wordcl=nn & !is_cap & (gender!=undef & A(lex.gender=gender) & X1.gender!=undef & gender!=X1.gender) & 
+  num=X1.num & spec=X1.spec)
+-->
+corr(X1.form(gender:=X4.gender, num:=X4.num, spec:=X4.spec) 
+     X3.form(gender:=X4.gender, num:=X4.num, spec:=X4.spec))
+%goto token(slut_kong, X3.no_of_tokens + 2)/
+info("Om" italics(X1.real_text) italics(X2.real_text) italics(X3.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+action(scrutinizing)
+jump(slut_kong, 1+X2.no_of_tokens+X22.no_of_tokens+X3.no_of_tokens)
+detect("Vi bor i en liten grön hus.")
+}
+
+
+(*	8. Substantivet avviker
+ *	num och spec
+ *	dt-jj-jj*-nn(fel)
+ *	Ett adjektiv måste finnas med annars är
+ *	determineraren som det är fel på. Olika färger i 
+ *	mark-fältet?
+ *	
+ *	Jag körde en liten bilen i diket.
+ *	ett litet huset
+ * 	rättningsförslag? byt ut nn?
+ * 	dt och jj kongruerar. Skall vi ge flera olika
+ *	rättningsförslag?
+ *)
+
+kong8bE@kong
+{
+X1(wordcl=dt | wordcl=hd),
+X4(wordcl=nn & !is_cap &  
+gender=X1.gender & ((A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num != X1.num) | 
+  (spec!=undef & X1.spec!=undef & spec!=X1.spec)))
+-->
+corr(X4.form(num:=X1.num, spec:=X1.spec))
+corr(X1.form(gender:=X4.gender, num:=X4.num,spec:=X4.spec))
+jump(slut_kong, 1)
+info("Om" italics(X1.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+action(scrutinizing)
+%jump(1+X2.no_of_tokens+X3.no_of_tokens)
+detect("Jag körde en bilen i diket.")
+}
+
+
+kongacc8b@kong
+{
+X0(text!="det" | text!="det"), % chansning 000209
+X1(wordcl=jj & spec=def),
+X2(wordcl=jj & spec=def & gender=X1.gender & num=X1.num)*,
+X3(wordcl=nn & num=plu & spec=ind & gender=X1.gender & num=X1.num & case=nom)
+-->
+jump(slut_kong, X2.no_of_tokens + 2)
+action(accepting)
+}
+
+(* Jag vill ha svarta bollen av dig 
+kong8b@kong
+{
+X0(wordcl=vb),
+X1(wordcl=jj & spec=def),
+X2(wordcl=jj & spec=def & gender=X1.gender & num=X1.num)*,
+X3(wordcl=nn & num=sin & spec=def & gender=X1.gender & num=X1.num & case=nom)
+-->
+mark(X1 X2 X3)
+corr(if X3.gender=utr then X1.replace("den") else X1.replace("det") end
+     X3.form(spec:=def))
+info("Om" italics(X1.real_text) italics(X2.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel""Regel under konstruktion")
+action(scrutinizing)
+}
+*)
+
+(* skall man ha en hoppregel här om NP innehåller dt? borde funka utan
+*)
+
+(*
+kongacc8c@kong
+{
+X(wordcl!=dt & wordcl!=hd & wordcl!=pn & wordcl!=nn),	% !ps?
+
+(JJ)(),
+Y(wordcl=nn & gender=JJ.gender & num=JJ.num & spec=JJ.spec & case=nom)
+-->
+jump(slut_kong, JJ.no_of_tokens)
+info("ACCEPT-10")
+action(accepting)
+}
+*)
+
+samma_undantag:
+
+kongsammaacc@kong
+{
+X(text="samma" | text="nästa"),
+Y(wordcl=jj & gender=X.gender & num=X.num & spec=def)*,
+Z(wordcl=nn & spec=ind)
+-->
+jump(slut_kong, 1+Y.no_of_tokens)
+action(accepting)
+}
+
+
+kongsamma1@kong
+{
+X(text="samma" | text="nästa"),
+X2(wordcl=ab & text!="inte")*,
+Y(wordcl=jj & gender=X.gender & num=X.num & spec=def)*,
+Z(wordcl=nn & spec=def)
+-->
+corr(Z.form(spec:=ind))
+action(scrutinizing)
+}
+
+
+
+kongsamma2@kong
+{
+X(text="samma" | text="nästa"),
+X2(wordcl=ab & text!="inte")*,
+Y(wordcl=jj & spec=ind),
+Y2(wordcl=jj & gender=X.gender & num=X.num & spec=X.spec)*,
+Z(wordcl=nn & spec=ind)
+-->
+corr(Y.form(spec:=def))
+jump(slut_kong, 3+Y2.no_of_tokens)
+action(scrutinizing)
+}
+
+kongsamma3@kong
+{
+X(text="samma" | text="nästa"),
+X2(wordcl=ab & text!="inte")*,
+Y(wordcl=jj & gender=X.gender & num=X.num & spec=X.spec)*,
+Y2(wordcl=jj & spec=ind),
+Y3(wordcl=jj & gender=X.gender & num=X.num & spec=X.spec)*,
+Z(wordcl=nn & spec=ind)
+-->
+corr(Y2.form(spec:=def))
+jump(slut_kong, 3+Y2.no_of_tokens)
+action(scrutinizing)
+}
+
+
+
+
+artikel_undantag:
+
+
+(* 12. 
+ skall alla jj vara mas? denna/detta/dessa med i denna regel?
+*)
+
+kong12@kong
+{
+X1(wordcl=ps  & gender=utr),
+X11(wordcl=ab & text!="inte")*,
+X2(wordcl=jj & gender=utr & num=X1.num & spec=X1.spec)*,
+X3(wordcl=jj & gender=mas & num=X1.num & spec=X1.spec)+, 
+X4(wordcl=jj & gender=utr & num=X1.num & spec=X1.spec)*,
+X5(wordcl=nn & gender=utr & num=X1.num & spec!=X1.spec)
+-->
+jump(slut_kong, X2.no_of_tokens + X3.no_of_tokens + X4.no_of_tokens +1)
+action(accepting)
+}
+
+
+
+(*	13.Fel på substantivet?
+ * 	gender, num, spec(samma spec=fel)
+ *	ps-jj-nn(fel)
+ *	Olika färger i mark-fältet?
+ *	Kommentaren?
+ *	min bilen (denna bilen), mitt huset, mina bilarna, hennes 
+ * 	bilen/bilarna
+ * 	jag ändrar substantivet här
+ *)
+
+% const?
+(* vilket ord som är fel är inte helt lätt att säga, men om 
+ det bara är X1.spec=X3.spec så bör det vara nn
+vid num!= så borde vi två rättningsförslag *)
+
+% Är denna åsnan något som ni längtat efter hela livet.
+% Här är jag!!! egen regel för X1.gender!=X3.gender ??
+% KOLLA!! Är detta åsnan som du frågat efter KOLLA UPP!!!
+
+kong13E@kong
+{
+X1(wordcl=ps | (wordcl=dt & (text="denna" | text="detta" | text="dessa"))),
+% | text="samma"),
+X10((wordcl=ab & text!="inte") | (wordcl=rg & num!=sin))?,
+X22(wordcl=ro)*,
+X2(wordcl=jj & ((gender!=undef & X1.gender!=undef & gender=X1.gender)  & 
+(num!=undef & X1.num!=undef & num=X1.num) & 
+(spec!=undef & X1.spec!=undef & spec=X1.spec)))*, 
+X3(wordcl=nn  & !is_cap & ((gender!=undef & A(lex.gender=gender | lex.gender=undef) & X1.gender!=undef & gender != X1.gender) | 
+  (num!=undef & A(lex.gender=gender | lex.gender=undef) & X1.num!=undef & num!=X1.num) | 
+  (spec!=undef & X1.spec!=undef & spec=X1.spec)))
+-->
+corr(if X1.gender!=X3.gender then X1.form(gender:=X3.gender, num:=X3.num) else X3.form(num:=X1.num, spec:=ind) end) %X1.donothing() end) 
+%corr(if X1.gender=X3.gender then X3.form(num:=X1.num, spec:=ind) else X3.donothing() end)
+corr(if (X1.num!=X3.num & X1.gender=X3.gender) then X1.form(num:=X3.num) else X3.form(num:=X1.num, spec:=ind) end)
+%goto token(slut_kong, X2.no_of_tokens + 1)/
+%info("Kongruensfel")
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+jump(slut_kong, 1+X10.no_of_tokens+X22.no_of_tokens+X2.no_of_tokens)
+}
+
+
+kong13mitta@kong
+{
+X1(text="mitt"),
+X2(wordcl=ab & text!="inte")*,
+X22(wordcl=ro)*,
+X3(wordcl=jj & gender=neu & num=sin & spec=def & text!="eget")*,
+X4(wordcl=nn & ((A(lex.gender=gender | lex.gender=undef) & gender!=undef & gender!=neu) | (A(lex.gender=gender | lex.gender=undef) & num!=undef & num!=sin) |
+(spec!=undef & spec=def)))
+-->
+corr(if X1.gender!=X4.gender then
+ X1.form(wordcl:=ps, gender:=X4.gender, num:=X4.num, spec:=def) else X1.donothing() end
+ if X1.gender=X4.gender then X4.form(num:=sin, spec:=ind) else X4.donothing() end)
+info("Om" italics(X1.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+jump(slut_kong, 1+X2.no_of_tokens + X3.no_of_tokens)
+action(scrutinizing)
+}
+
+
+kong13mittb@kong
+{
+X1(text="mitt"),
+X2(wordcl=ab & text!="inte")*,
+X22(wordcl=jj & (gender=utr | num=plu | spec=ind) & text!="eget"),
+X3(wordcl=jj & gender=neu & num=sin & spec=def & text!="eget")*,
+X4(wordcl=nn & ((A(lex.gender=gender | lex.gender=undef) & gender!=undef & gender=neu) & (A(lex.gender=gender | lex.gender=undef) & num!=undef & num=sin) &
+(spec!=undef & spec=ind)))
+-->
+corr(X22.form(gender:=neu, num:=sin, spec:=def))
+info("Om" italics(X22.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+jump(slut_kong, 1+X2.no_of_tokens + X3.no_of_tokens)
+action(scrutinizing)
+}
+
+kong13mittc@kong
+{
+X1(text="mitt"),
+X2(wordcl=ab & text!="inte")*,
+X3(wordcl=jj & gender=neu & num=sin & spec=def & text!="eget")*,
+X22(wordcl=jj & (gender=utr | num=plu | spec=ind) & text!="eget"),
+
+X4(wordcl=nn & ((A(lex.gender=gender | lex.gender=undef) & gender!=undef & gender=neu) & (A(lex.gender=gender | lex.gender=undef) & num!=undef & num=sin) &
+(spec!=undef & spec=ind)))
+-->
+corr(X22.form(gender:=neu, num:=sin, spec:=def))
+info("Om" italics(X22.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+jump(slut_kong, 1+X2.no_of_tokens + X3.no_of_tokens)
+action(scrutinizing)
+}
+
+
+
+
+
+(*	14. Fel i det första adjektivet 
+ *	gender, num, spec
+ *	ps-jj(fel)-jj*-nn
+ *
+ * 	Olika färger i mark-fältet?
+ *	Kommentaren?
+ *	
+ *	Jag körde min gult liten bil i diket.
+ * 	rättningsförslag?
+ * 	regeln skall kanske inte gälla för jj-neu eftersom
+ *	dessa sammanfaller med ab. Detta fixas med en
+ * 	accepterande regel.
+ *)
+
+
+kong14E@kong
+{
+X1(wordcl=ps | (wordcl=dt & (text="denna" | text="detta" | text="dessa"))), % | text="samma"),
+X10(wordcl=ab & text!="inte")?,
+X2(wordcl=jj & ((A(lex.gender=gender | lex.gender=undef) & gender!=undef & X1.gender!=undef & gender !=X1.gender) | 
+  (A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num!=X1.num) | 
+  (spec!=undef & X1.spec!=undef & spec != X1.spec))), 
+X3(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X4(wordcl=nn & gender=X1.gender & num=X1.num & spec=ind)
+-->
+corr(X2.form(gender:=X1.gender, num:=X1.num, spec:=X1.spec))
+jump(slut_kong, X3.no_of_tokens + 2)
+info("Om" italics(X2.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+action(scrutinizing)
+detect("Är denna smaklös dumma åsna något som ni längtat efter hela livet.")
+}
+
+
+
+(*	15. Fel i något till alla särdrag
+ * 	gender, num, spec
+ *	ps-jj-jj*-jj(fel)-jj*-nn
+ *	Olika färger i mark-fältet?
+ *	Kommentaren?
+ *	fel i andra -> sista adjektivet 
+ *	Vi körde en liten gult bil i diket.
+ * 	rättningsförslag? följer ps
+ *)
+
+kong15@kong
+{
+X1(wordcl=ps | (wordcl=dt & (text="denna" | text="detta" | text="dessa"))),% | text="samma"),
+X10(wordcl=ab & text!="inte")?,
+X2(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec),
+X3(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*, %lagt till * 990309
+
+X4(wordcl=jj & ((gender!=undef & X1.gender!=undef & gender!=X1.gender) |
+  (num!=undef & X1.num!=undef & num!=X1.num) | 
+  (spec!=undef & X1.spec!=undef & spec!=X1.spec))),
+X5(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*, %lagt till * 990309
+
+X6(wordcl=nn & gender = X1.gender & num=X1.num & spec=ind)
+-->
+corr(X4.form(gender:=X1.gender, num:=X1.num, spec:=X1.spec))
+jump(slut_kong, X3.no_of_tokens + X5.no_of_tokens + 3)
+%info("Kongruensfel")
+info("Om" italics(X4.real_text) "syftar på" italics(X1.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+
+
+(*	10. Det första adjektivet
+ * 	avviker
+ *	gender, num, spec
+ *	jj(fel)-jj*-nn
+ *
+ *	Olika färger i mark-fältet?
+ *	Kommentaren?
+ *	
+ *	en liten hus
+ *	Vi körde ett litet båt i sjön.
+ * 	rättningsförslag? ev. byt ut nn?
+ *)
+
+(* Hur mycket betyder cap!=firstcapped här?   
+ % tog bort 000207, nya falska alarm?, 991216 & gröna bilar speciella företagsstöd är OK, 
+   borde däremot klara speciella företagsstöden?*)
+
+kong10OK@kong { % "Det är regionernas mer eller mindre fria disposition." 
+X(case=gen),
+(AbP)()?,
+Y(wordcl=jj & spec=def),
+Z(wordcl=nn & spec=ind & gender=Y.gender & num=Y.num)
+-->
+action(accepting)
+jump(slut_kong10, 3)
+} 
+
+% kolla vänsterkontexten noga här, en del skär bort för mycket
+kong10E@kong
+{
+(Clause_del)(),
+X00(case!=gen & wordcl!=ps)*,
+X0(wordcl!=dt & wordcl!=kn & wordcl!=ps & wordcl!=rg & wordcl!=jj & wordcl!=ro & case!=gen & cht!=mid), % & wordcl!=pp & sed!=sen & cht!=mid),
+X01(wordcl!=dt & wordcl!=kn & wordcl!=ps & wordcl!=rg & wordcl!=jj & wordcl!=ro & case!=gen & wordcl!=pm & !(text="'" & (X0.wordcl=pm & X0.substr(length-1, 1)!="s"))), % & wordcl!=pp & sed!=sen & cht!=mid),
+X1(wordcl=jj & deg=pos & gender=utr & !is_cap), 
+X2(wordcl=jj & deg=pos)*, 
+X3(wordcl=nn & ((A(lex.gender=gender | lex.gender=undef) & gender!=undef & X1.gender!=undef & gender != X1.gender) | 
+  (A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num!=X1.num) | (spec!=undef & X1.spec!=undef & spec !=X1.spec)) & !is_cap & 
+  (X2.no_of_tokens = 0 | (gender=X2.gender & num=X2.num & spec=X2.spec)))
+-->
+mark(X1 X2 X3)
+corr(X1.form(gender:=X3.gender, num:=X3.num, spec:=X3.spec))
+corr(X3.form(num:=X1.num,spec:=X1.spec))
+jump(slut_kong, X00.no_of_tokens + X2.no_of_tokens + 2)
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+detect("Han skriver bara med små bokstav.")
+accept("Han skriver bara med små bokstäver.")
+}
+
+
+kong10ab@kong
+{
+X0(sed=sen),
+X1(wordcl=jj & deg=pos), 
+X2(wordcl=jj & deg=pos)*, %(JJ/X2)(),	% ? /wordcl=jj & cap!=firstcapped/*,
+
+X3(wordcl=nn & ((gender=neu & !E(wordcl=nn & lex.num!=num)) | gender=utr)  &
+((A(lex.gender=gender | lex.gender=undef) & gender!=undef & X1.gender!=undef & gender != X1.gender) | 
+  (A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num!=X1.num) | (spec!=undef & X1.spec!=undef & spec !=X1.spec)) & !is_cap & 
+  (X2.no_of_tokens = 0 | (gender=X2.gender & num=X2.num & spec=X2.spec))) % & cap!=firstcapped)
+-->
+corr(X3.form(num:=X1.num,spec:=X1.spec))
+corr(X1.form(gender:=X3.gender, num:=X3.num, spec:=X3.spec))
+
+
+jump(slut_kong, X2.no_of_tokens + 2)
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+detect("Små bokstav skriver han med.")
+accept("Små bokstäver skriver han med.")
+}
+
+
+slut_kong10:
+
+kong10b@kong
+{
+X0(wordcl!=dt & wordcl!=kn & wordcl!=pp & wordcl!=ps & wordcl!=rg & wordcl!=jj & case!=gen & wordcl!=ro & cht!=mid),
+X01(wordcl!=dt & wordcl!=kn & wordcl!=pp & wordcl!=ps & wordcl!=rg & wordcl!=jj & case!=gen & wordcl!=ro & cht!=mid),
+X1(wordcl=jj & deg=pos), 
+X2(wordcl=jj & deg=pos)*, %(JJ/X2)(),	% ? /wordcl=jj & cap!=firstcapped/*,
+
+X3(wordcl=nn & gender=X1.gender & 
+  ((A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num!=X1.num)) &
+%  (spec!=undef & X1.spec!=undef & spec !=X1.spec)) & 991216
+  (X2.no_of_tokens = 0 | (gender=X2.gender & num=X2.num & spec=X2.spec))) % & cap!=firstcapped)
+-->
+corr(X3.form(num:=X1.num, spec:=ind)) 
+jump(slut_kong, X2.no_of_tokens + 1)
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+detect("Han skriver bara med små bokstav.")
+accept("Han skriver bara med små bokstäver.")
+}
+
+kong10bb@kong
+{
+X0(sed=sen),
+X1(wordcl=jj & deg=pos & (token=TOKEN_WORD  | token=TOKEN_SIMPLE_WORD  |
+token=TOKEN_SPLIT_WORD)), 
+X2(wordcl=jj & deg=pos)*, %(JJ/X2)(),	% ? /wordcl=jj & cap!=firstcapped/*,
+
+X3(wordcl=nn & gender=X1.gender & 
+  ((A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num!=X1.num)) &
+%  (spec!=undef & X1.spec!=undef & spec !=X1.spec)) & 991216
+  (X2.no_of_tokens = 0 | (gender=X2.gender & num=X2.num & spec=X2.spec))) % & cap!=firstcapped)
+-->
+corr(X3.form(num:=X1.num, spec:=ind))
+jump(slut_kong, X2.no_of_tokens + 1)
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+detect("Han skriver bara med små bokstav.")
+accept("Han skriver bara med små bokstäver.")
+}
+
+
+
+
+(*	11. Det andra (sista) adjektivet    
+ * 	avviker.
+ *	gender
+ *	jj-jj*-jj(fel)-jj*-nn
+ *	Vi körde lilla gul båten i sjön.
+ *	Olika färger i mark-fältet?
+ *	Kommentaren?
+ *	
+ * 	rättningsförslag? ev. byt ut nn?
+ * BÖR KANSKE FLYTTA UPP SPECIALREGELN FÖR MÖJLIGAST (SISTA REGELN)
+ *)
+
+kong11@kong
+{
+X1(wordcl=jj),
+X2(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X3(wordcl=jj & ((gender!=undef & X1.gender!=undef & gender != X1.gender) | 
+  (num!=undef & X1.num!=undef & num != X1.num))),
+%  (spec!=undef & X1.spec!=undef & spec!=X1.spec))), 991216
+X4(wordcl=jj & gender=X1.gender & num=X1.num & spec=X1.spec)*,
+X5(wordcl=nn & gender=X1.gender & num=X1.num & spec=X1.spec)
+-->
+corr(X3.form(gender:=X5.gender, num:=X5.num, spec:=X5.spec))
+jump(slut_kong, X2.no_of_tokens + X4.no_of_tokens +2)
+%info("Kongruensfel")
+info("Om" italics(X3.real_text) "syftar på" italics(X5.real_text) "är det kongruensfel")
+detect("Vi körde lilla gul båten i sjön.")
+accept("Vi körde lilla gröna båten i sjön.")
+action(scrutinizing)
+}
+
+
+
+(* 16  
+ adjektiv 2,3, ..., n kongruerar med substantiv 
+ när taggaren gör fel på adj.neu istället för ab blir det fel rättningsförslag
+	 specialregel?
+
+	inför ? på JJ*)
+
+% Vi körde en liten snabba båten i sjön.
+
+% en trygghet i negativ riktning
+
+artikelundantag2@kong
+{
+X(text="denna" | text="detta" | text="dessa" | text="mitt")
+-->
+jump(artikel_undantag2)
+action(accepting)
+}
+
+(*
+sammaundantag@kong
+{
+X(text="samma")
+-->jump(samma_undantag)
+action(accepting)
+*)
+
+
+kong16@kong
+{
+X1(wordcl=dt | wordcl=hd), % fel?
+X10(wordcl=ab & text!="inte")?,
+X2(wordcl=jj),	% fel?
+%(JJ, X3)
+
+X3(wordcl=jj & ((gender!=undef & X1.gender!=undef & gender!=X1.gender) | 
+                (num!=undef & X1.num!=undef & num!=X1.num) | 
+		(spec!=undef & X1.spec!=undef & spec!=X1.spec)))*,
+X4(wordcl=nn & !is_cap & gender=X3.gender & num=X3.num & spec=X3.spec &
+  ((!E(lex.wordcl=nn & lex.gender!=gender) & gender!=undef & X2.gender!=undef & gender != X2.gender) | 
+(!E(lex.wordcl=nn & lex.gender!=gender) & num!=undef & X2.num!=undef & num != X2.num) | 
+(spec!=undef & X2.spec!=undef & spec != X2.spec)) &
+  ((gender!=undef & gender != X1.gender) | (num!=undef & num != X1.num) | 
+(spec!=undef & spec != X1.spec)))
+-->
+corr(X1.form(gender:=X4.gender, num:=X4.num, spec:=X4.spec)
+     X2.form(gender:=X4.gender, num:=X4.num, spec:=X4.spec))
+corr(X2.form(gender:=X4.gender, num:=X1.num, spec:=X1.spec)
+     X3.form(gender:=X4.gender, num:=X1.num, spec:=X1.spec)
+     X4.form(num:=X1.num, spec:=X1.spec))
+jump(slut_kong, X3.no_of_tokens + 2)
+info("Om" italics(X1.real_text) italics(X10.real_text) italics(X2.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+detect("Vi körde en liten snabba båten i sjön.")
+accept("Vi har en grymt bra stor regelsamling")
+action(scrutinizing)
+}
+
+
+(* 17 
+ fel på detetmineraren och ev. övriga adjektiv (ej X2)
+ svårt att markera upp X3!
+
+	inför ? på JJ
+
+Vi körde ett lilla gult båten i sjön.
+*)
+
+kong17@kong
+{
+X1(wordcl=dt | wordcl=hd),	% fel?
+X10(wordcl=ab & text!="inte")?,
+X2(wordcl=jj & ((gender!=undef & X1.gender!=undef & gender != X1.gender) | 
+		(num!=undef & X1.num!=undef & num != X1.num) | 
+		(spec!=undef & X1.spec!=undef & spec != X1.spec))), 
+X3(wordcl=jj)*,	%	fel
+%(JJ, X3)//,
+
+X4(wordcl=nn & gender!=X2.gender & num!=X2.num & spec!=X2.spec &
+  ((A(lex.gender=gender | lex.gender=undef) & gender!=undef & X3.gender!=undef & gender != X3.gender) | 
+   (A(lex.gender=gender | lex.gender=undef) & num!=undef & X3.num!=undef & num != X3.num) | 
+	(spec!=undef & X3.spec!=undef & spec != X3.spec)))
+-->
+corr(X1.form(gender:=X4.gender, num:=X4.num, spec:=X4.spec)
+     if X3.no_of_tokens >= 1 then X3[0].form(gender:=X4.gender,num:=X4.num, spec:=X4.spec) else X3.donothing() end
+     if X3.no_of_tokens >= 2 then X3[1].form(gender:=X4.gender,num:=X4.num, spec:=X4.spec) else X3.donothing() end
+     if X3.no_of_tokens >= 3 then X3[2].form(gender:=X4.gender,num:=X4.num, spec:=X4.spec) else X3.donothing() end
+     if X3.no_of_tokens >= 4 then X3[3].form(gender:=X4.gender,num:=X4.num, spec:=X4.spec) else X3.donothing() end)
+jump(slut_kong, X3.no_of_tokens + 2)
+info("Om" italics(X4.real_text) "syftar på" italics(X1.real_text) "är det kongruensfel")
+detect("Vi körde ett lilla gult båten i sjön.")
+accept("Vi körde ett lilla gult båten i sjön.")
+action(scrutinizing)
+}
+
+
+(* 18 
+
+Vi köpte en liten röd hus i skogen.
+
+ersättningsförslag??
+
+*)
+
+kong18@kong
+{
+X1(wordcl=dt | wordcl=hd),
+X10(wordcl=ab & text!="inte")?,
+X2(wordcl=jj),
+(JJ/X3)(),		%X3/wordcl=jj/*,
+
+X4(wordcl=nn & 
+  ((A(lex.gender=gender | lex.gender=undef) & gender!=undef & X1.gender!=undef & gender != X1.gender) | 
+	(A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num != X1.num) | 
+	(spec!=undef & X1.spec!=undef & spec != X1.spec)) & 
+  ((gender!=undef & X2.gender!=undef & gender != X2.gender) | 
+	(num!=undef & X2.num!=undef & num != X2.num) | 
+	(spec!=undef & X2.spec!=undef & spec != X2.spec)) &
+  ((gender!=undef & X3.gender!=undef & gender!=X3.gender) | 
+	(num!=undef & X3.num!=undef & num!=X3.num) | 
+	(spec!=undef & X3.spec!=undef & spec!=X3.spec)))
+-->
+%corr(X1 X2 X3 X4)
+jump(slut_kong, X3.no_of_tokens + 2)
+%info("Kongruensfel")
+info("Om" italics(X1.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+
+
+
+
+
+(*
+hp@kong
+{
+X(sed=sen),
+Y(wordcl=hp),
+Y2(wordcl!=ab)*,
+Z(wordcl=jj)*,
+Z2(wordcl=nn & (Z.no_of_tokens=0 | (gender=Z.gender & num=Z.num & spec=Z.spec)) & 
+((A(lex.gender=gender | lex.gender=undef) & gender!=undef & Y.gender!=undef & gender!=Y.gender) & 
+  (A(lex.gender=gender | lex.gender=undef) & num!=undef & Y.num!=undef & num!=Y.num) | 
+  (spec!=undef & Y.spec!=undef & spec!=Y.spec)))
+-->
+mark(Y Z2)
+corr(Y.form(gender:=Z2.gender, num:=Z2.num, spec:=ind))
+corr(if Z2.gender=Y.gender then Z2.form(num:=Y.num) else Z2.donothing() end)
+detect("vilka person kom på festen")
+action(scrutinizing)
+}
+*)
+
+(* här borde det komma varianter på kong16 och framåt med "detta" och ps *)
+
+artikel_undantag2:
+
+kongaccjjdef@kong
+{
+X1(text="de"),
+X2(wordcl=pp),
+(NPmin/X3)(),
+X4(wordcl=jj & spec=def & num=plu & deg=pos),
+X5(wordcl=nn & spec=def & gender=X4.gender & num=X4.num)
+-->
+jump(kongjjdef_slut, 3+ X3.no_of_tokens)
+action(accepting)
+}
+
+
+kongjjdef_nndef@kong
+{
+V(wordcl!=dt & wordcl!=ps & wordcl!=hd & wordcl!=rg & wordcl!=pn & 
+wordcl!=jj & wordcl!=ro & wordcl!=pc & wordcl!=kn & wordcl!=pp & cht!=mid & wordcl!=ab & wordcl!=ha & text!="\""),
+X(wordcl=jj & spec=def & num=plu & num!=sin & deg=pos & text!="båda" & 
+text!="första" & text!="sista" & text!="ena" & text!="enda" & text!="själva" &
+text!="norra" & text!="södra" & text!="östra" & text!="västra" & text!="hela"),
+Y(wordcl=nn & spec=def & gender=X.gender & num=X.num & !is_cap)
+-->
+corr(Y.form(spec:=ind))
+info("Kongruensfel" "Regel under konstruktion adjbest-nnbest")
+jump(slut_kong, 2)
+action(scrutinizing)
+}
+
+kongjjdef_slut:
+
+(*
+kongjjsindef_nnsindef@kong
+{
+V(wordcl!=dt & wordcl!=ps & wordcl!=hd & wordcl!=rg & wordcl!=pn & 
+wordcl!=jj & wordcl!=ro & wordcl!=kn & wordcl!=pp & 
+cht!=mid & wordcl!=ab & wordcl!=ha),
+X(wordcl=jj & !is_cap & spec=def & num=sin & num!=plu & deg=pos & text!="båda" & 
+text!="första" & text!="sista" & text!="ena" & text!="enda"),
+Y(wordcl=nn & spec=def & gender=X.gender & num=X.num & !is_cap)
+-->
+corr(if Y.gender=utr then V.insert("den") else V.insert("det") end)
+info("Kongruensfel" "Regel under konstruktion adjsinbest-nnsinbest")
+action(scrutinizing)
+}
+*)
+
+(*
+kongjjsind_nnsind@kong
+{
+V(wordcl!=dt & wordcl!=ps & wordcl!=hd & wordcl!=rg & wordcl!=pn & 
+wordcl!=jj & wordcl!=ro & wordcl!=pp & wordcl!=kn & cht!=mid & wordcl!=ab & wordcl!=ha),
+X(wordcl=jj & spec=ind & num=sin & num!=plu & !is_cap & deg=pos & text!="båda" & 
+text!="första" & text!="sista" & text!="ena" & text!="enda"),
+Y(wordcl=nn & spec=ind & gender=X.gender & num=X.num & !is_cap)
+-->
+corr(V if Y.gender=utr then "en" else "ett" end X Y)
+info("Kongruensfel" "Regel under konstruktion adjobest-nnobest")
+action(scrutinizing)
+}
+*)
+
+
+
+
+kongOK76@kong {
+V(case != gen & wordcl!=dt & wordcl!=ps & wordcl!=hd & wordcl!=pn & wordcl!=jj), % johan la till case
+(JJ2/X)(text!="samma" & text!="nästa"),
+Y(wordcl=nn & gender=X.gender & num=X.num & spec=X.spec & case=nom)
+-->
+jump(slut_kong, X.no_of_tokens +1)
+action(accepting)
+}
+
+
+(* vad är dessa kongOK bra för egentligen. *)
+
+kongOK77@kong { 
+V(wordcl!=dt & wordcl!=ps & wordcl!=hd & wordcl!=pn & wordcl!=jj),
+(JJ2/X)(),
+Y(wordcl=nn & gender=X.gender & num=X.num & spec=ind & num=plu & case=nom)
+-->
+jump(slut_kong, X.no_of_tokens +1)
+action(accepting)
+}
+
+% fixa ersättningsförslagen, fler fall, Clause_del
+(*
+kongpndtini@kong
+{
+(Clause_del)(),
+X2(wordcl!=vb)*,
+X3(wordcl=pn & (text="det" | text="den")),
+X33(wordcl=ab & text!="inte")?,
+X4(wordcl=jj)*,
+X5(wordcl=nn & ((A(lex.gender=gender) & gender!=undef & gender!=X3.gender) | 
+(A(lex.gender=gender) & num!=undef & num!=X3.num))), % | spec!=X3.spec),
+X6(text!="som" & voice!=sfo)
+-->
+corr(X3.form(wordcl:=dt, gender:=X5.gender, num:=X5.num, spec:=X5.spec, pnf:=undef))
+%corr(if X5.num=plu then X3.replace("de") X5.form(spec:=def else X3.donothing() end)
+%corr(if (X6.text!="som" & X5.num=plu) then X3.replace("de") X5.form(spec:=def)else X3.donothing() end)
+info("Kongruensfel" "Regel under konstruktion")
+action(scrutinizing)
+jump(slut_kong, 2+X2.no_of_tokens+X33.no_of_tokens+X4.no_of_tokens)
+}
+*)
+
+(*
+
+kongpndtini2@kong
+{
+X1(sed=sen),
+X2(wordcl!=vb)*,
+X3(wordcl=pn & (text="det" | text="den")),
+X30(wordcl=ab & text!="inte")?,
+X33(wordcl=jj & ((gender!=undef & gender!=X3.gender) | (num!=undef & num!=X3.num)) |
+(spec!=undef & spec!=X3.spec)),
+X4(wordcl=jj & gender=X3.gender & num=X3.num & spec=X3.spec)*,
+X5(wordcl=nn & (gender=X3.gender & num=X3.num)),  % | spec!=X3.spec)),
+X6(text!="som")
+-->
+corr(X33.form(gender:=X5.gender, num:=X5.num, spec=X5.spec))
+info("Kongruensfel" "Regel under konstruktion")
+action(scrutinizing)
+}
+*)
+
+(*
+kongpndtini3@kong
+{
+X1(sed=sen),
+X2(wordcl!=vb)*,
+X3(wordcl=pn & (text="det" | text="den")),
+X300(wordcl=ab & text!="inte")?,
+X30(wordcl=jj & gender=X3.gender & num=X3.num & spec=X3.spec)+,
+X33(wordcl=jj & ((gender!=undef & gender!=X3.gender) | (num!=undef & num!=X3.num)) |
+(spec!=undef & spec!=X3.spec)),
+X4(wordcl=jj & gender=X3.gender & num=X3.num & spec=X3.spec)*,
+X5(wordcl=nn & (gender=X3.gender & num=X3.num)), % | spec!=X3.spec)),
+X6(text!="som")
+-->
+corr(X33.form(gender:=X5.gender, num:=X5.num, spec=X5.spec))
+info("Kongruensfel" "Regel under konstruktion")
+action(scrutinizing)
+}
+*)
+
+
+(* Min boken säljer dåligt sa Lundell på presskonferensen. *)
+(*
+kong22d@kong
+{
+X(wordcl=ps | (wordcl=dt & (text="denna" | text="dessa" | text="detta"))),
+X2(wordcl=ab & text!="inte")?,
+Y(wordcl=jj)*,
+Z(wordcl=nn & spec!=X.spec)
+-->
+corr(Z.form(spec:=ind, num:=X.num))
+jump(slut_kong, Y.no_of_tokens+1)
+info(" [KONGRUENSFEL-SLAPP-0:"
+     concat(Z.text, "/FEL -->"))
+action(scrutinizing)
+}
+*)
+
+(* En gul boken är dålig sa Lundell. *)
+(*
+kong22e@kong
+{
+X(wordcl=dt),
+X2(wordcl=ab & text!="inte")?,
+Y(wordcl=jj)*,
+Z(wordcl=nn & gender=X.gender & num=X.num & spec!=X.spec),
+Z2(text!="som" & text!="vilken")% bör utvecklas
+-->
+corr(Z.form(spec:=X.spec, num:=X.num))
+jump(slut_kong, Y.no_of_tokens+1)
+info(" [KONGRUENSFEL-SLAPP-00:"concat(Z.text, "/FEL -->"))
+action(scrutinizing)
+}
+*)
+
+(* ersättningsförslag? 
+fixa adjektiven!!
+*)
+(*
+kong22f@kong
+{
+X(wordcl=dt),
+Y(wordcl=jj)*,
+Z(wordcl=nn)
+-->
+corr(X.form(gender:=Z.gender, num:=Z.num, spec:=Z.spec))
+jump(slut_kong, Y.no_of_tokens+1)
+info(" [KONGRUENSFEL-SLAPP-1:")
+action(scrutinizing)
+}
+*)
+
+(* inför JJ? här *)
+(*
+kong22g@kong
+{
+X0(wordcl=jj),
+X1(wordcl=jj)?,
+X2(wordcl=jj)*,
+Y(wordcl=nn)
+-->
+corr(X0.form(gender:=Y.gender, num:=Y.num, spec:=Y.spec))
+jump(slut_kong, X1.no_of_tokens)
+info("[KONGRUENSFEL-SLAPP-2: " concat(X0.text, "/FEL -->"))
+action(scrutinizing)
+}
+*)
+
+
+
+
+% saknar goto token!!!!!!
+(* 24 ej generell lösning
+ Jag såg mannens gula bilen
+
+mannens<nn.utr.sin.def.gen> gula<jj.pos.utr/neu.sin.def.nom> bilen<nn.utr.sin.def.nom>.<mad>$.<sen.per>
+
+mannens<nn.utr.sin.def.gen> gul<jj.pos.utr.sin.ind.nom> bil<nn.utr.sin.ind.nom>.<mad>$.<sen.per>
+*)
+
+kong24@kong
+{
+X(((wordcl=nn & nntype!=dat) | wordcl=pm) & A(lex.case=gen) & text!="slags" &
+text!="sorts" & text!="måndags" & text!="tisdags" & text!="onsdags" & 
+text!="torsdags" & text!="fredags" & text!="lördags" & text!="söndags"),
+Y(wordcl=jj & !is_cap)*,
+Z(wordcl=nn & spec=def & !is_cap)
+-->
+mark(X Y Z)
+corr(Y.form(spec:=def) Z.form(spec:=ind))
+info("Om" italics(X.real_text) "syftar på" italics(Z.real_text) "bör" italics(Z.real_text) "vara i obestämd form")
+action(scrutinizing)
+}
+
+
+% saknar goto token!!!!!!
+(* 25 *
+ Vi såg mannens gul bil.
+
+*)
+
+
+kong25@kong
+{
+X(((wordcl=nn & spec=def & nntype!=dat) | wordcl=pm) & case=gen),
+Y(wordcl=jj & !is_cap & deg=pos & num=sin & (spec!=undef & spec!=def))+,
+Z(wordcl=nn & spec=ind & !is_cap)
+-->
+mark(Y)
+corr(Y.form(spec:=def))
+info("Om" italics(X.real_text) "syftar på" italics(Z.real_text) "bör" italics(Y.real_text) "vara i bestämd form")
+action(scrutinizing)
+}
+
+(* avvaktar ...
+kong25b@kong
+{
+V(wordcl=rg),
+X(wordcl=nn & spec=ind & nntype!=dat & case=gen),
+Y(wordcl=jj & deg=pos & num=sin & spec=def)+,
+Z(wordcl=nn & spec=ind & !is_cap)
+-->
+mark(Y)
+corr(Y.form(spec:=ind))
+info("Om" italics(X.real_text) "syftar på" italics(Z.real_text) "bör" italics(Y.real_text) "vara i obestämd form" "Regel under konstruktion")
+action(scrutinizing)
+}
+*)
+
+masc_rule:
+
+(* 26 
+Vi träffade den bleke kvinnan.
+*)
+
+kong26@kong
+{
+X(wordcl=dt),
+Y(wordcl=jj & gender=mas)+,
+Z(wordcl=nn & (gender=neu | verbtype=3))
+-->
+mark(Y)
+corr(Y.form(gender:=Z.gender, num:=Z.num))
+info("Om" italics(Y.real_text) "syftar på" italics(Z.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+
+pnistdtE@kong
+{
+(Clause_del)(),
+X0(wordcl=pp)?,		% 000328
+X1((wordcl=pn & E(lex.wordcl=dt)) | (wordcl=hp & E(lex.wordcl=hd))),
+X2(wordcl=nn & ((A(lex.gender=gender | lex.gender=undef) & gender!=undef & X1.gender!=undef & gender!=X1.gender) |
+(A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num!=X1.num) | (spec!=undef & X1.spec!=undef &
+spec!=X1.spec))),
+X3(wordcl=vb & voice=akt & (vbf=prs | vbf=prt | vbf=imp))
+-->
+mark(X1 X2)
+corr(X1.form(wordcl:=dt, gender:=X2.gender, num:=X2.num, spec:=X2.spec, pnf:=undef))
+corr(X2.form(num:=X1.num, spec:=X1.spec))
+info("Kongruensfel Regel under konstruktion")
+action(scrutinizing)
+}
+
+
+(* ny 000131,  ej testad på riksdagstexterna 
+kong27@kong
+{
+X(wordcl!=dt & cht!=mid & wordcl!=pn & wordcl!=pc & !(wordcl=nn & case=nom) & wordcl!=jj & wordcl!=ro & text!="år" & text!="§"), % allt som kan determinera rg+nn
+Y(wordcl=rg),
+Z(wordcl=nn & spec=def & !is_cap & text!="åren")
+-->
+mark(Y Z)
+corr(Z.form(spec:=ind))
+info("Om" italics(Y.real_text) "syftar på" italics(Z.real_text) "är det kongruensfel" "Regel under konstruktion")
+action(scrutinizing)
+}
+
+*)
+
+
+(* svårt!
+egentligtsubjekt@kong
+{
+X0(sed=sen),
+X1(text="det"),
+X2(vbt=aux | vbt=mod)?,
+X3(wordcl=vb),
+X4(wordcl=ab)?,
+(NPmin/X5)(wordcl=nn & spec=def)
+-->
+mark(X5)
+corr(X5.form(spec:=ind))
+info("Om" italics(X5.real_text) "syftar på" italics(X1.real_text) "bör" italics(X5.real_text) "vara i obestämd form" "Regel under konstruktion")
+action(scrutinizing)
+}
+*)
+
+(* varför funkar inte denna regel?
+relativkong@kong
+{
+X(wordcl=nn | wordcl=pm),
+Y()*,
+Z(wordcl=pn & text="vilken" & (gender!=X.gender | num!=X.num))
+-->
+mark(X Z)
+corr(Z.replace("vilket")) %if X.gender!=Z.gender then Z.replace("vilket") else Z.replace("vilka") end)
+info("Om" italics(Z.real_text) "syftar på" italics(X.real_text) "bör" italics(Z.real_text) "bytas ut" "Regel under konstruktion")
+action(scrutinizing)
+}
+*)
+
+
+(* inga nya sakkunnig
+   funkar ej?
+*)
+dt_jjE@kong
+{
+X(wordcl=dt),
+%Y(wordcl=jj & gender=X.gender & num=X.num & spec=X.spec)*,
+Z(wordcl=jj & 
+((A(lex.gender=gender | lex.gender=undef) & gender!=mas & gender!=undef & X.gender!=undef & gender!=X.gender) | 
+(gender=mas & X.gender=neu) | (A(lex.gender=gender | lex.gender=undef) & num!=undef & X.num!=undef & num!=X.num) | 
+(spec!=undef & X.spec!=undef & spec!=X.spec))),
+Z2(wordcl!=nn & wordcl!=kn & cht!=mid & wordcl!=rg & wordcl!=ro & wordcl!=pm & wordcl!=jj & wordcl!=pc)
+-->
+%mark(X Y Z)
+corr(Z.form(gender:=X.gender, num:=X.num, spec:=X.spec))
+jump(slut_kong, 1) %+Y.no_of_tokens)
+info("Om" italics(X.real_text) "syftar på" italics(Z.real_text) "är det kongruensfel" "Regel under konstruktion")
+action(scrutinizing)
+}
+
+
+
+
+
+
+(*
+
+kongpmE@kong
+{
+X(text="den" | text="det" | text="de"),
+Y(wordcl=jj & spec!=def),
+Z(wordcl=pm)
+-->
+mark(X Y Z)
+corr(Y.form(spec:=def))
+info("Om" italics(Y.real_text) "syftar på" italics(Z.real_text) "är det kongruensfel" "regel under konstruktion")
+action(scrutinizing)
+detect("Jag träffade den ljuv Lena igår")
+}
+
+*)
+
+
+(* predikativt attribut
+   testar om det funkar att hitta den här typen av kongruens
+ 
+
+man skulle kunna kolla predikativa attribut *utan* efterställda attribut 
+*)
+
+(* genus- hur är det med utrum i NP och neu i jj? *)
+predattribut_nn_jj_ppE@kong
+{
+X((wordcl=nn & spec=ind & text!="mil" & text!="kilometer" & text!="km") | wordcl=pn),	% wordcl=pn 000516
+Y(wordcl=jj & A(lex.wordcl=jj) & !is_cap & (num!=undef & X.num!=undef & num!=X.num)), %gender semantiskt betingat
+Z(wordcl=pp | text="som"),
+Z2(wordcl=nn)
+-->
+corr(Y.form(gender:=X.gender, num:=X.num, spec:=ind))
+info("Om" italics(Y.real_text) "syftar på" italics(X.real_text) "är det kongruensfel" "regel under konstruktion")
+action(scrutinizing)
+jump(pred_slut, 3)
+detect("Han kom med en säck fyllda med äpplen")
+}
+
+
+predattribut_nn_jjacc@kong
+{
+X(wordcl=nn | wordcl=pn), % wordcl=pn 000516
+(PP)(),
+Y(wordcl=jj & num=X.num) % gender semantiskt betingat
+-->
+action(accepting)
+jump(pred_slut, 1+PP.no_of_tokens) 
+}
+
+
+predattribut_nn_jjE@kong
+{
+V(wordcl!=rg),
+X(wordcl=nn & case=nom & spec=ind), % | (wordcl=pn & text!="det")), % wordcl=pn 000516
+Y(wordcl=jj & A(lex.wordcl=jj) & !is_cap & (num!=undef & X.num!=undef & num!=X.num)), % gender semantiskt betingat
+Z(wordcl!=pp & text!="som" & wordcl!=jj & wordcl!=nn & wordcl!=pc & sed!=sen)
+-->
+mark(X Y)
+corr(Y.form(gender:=X.gender, num:=X.num, spec:=ind))
+info("Om" italics(Y.real_text) "syftar på" italics(X.real_text) "är det kongruensfel" "regel under konstruktion")
+action(scrutinizing)
+jump(pred_slut, 2) 
+detect("Jag lämnade pojkarna ensam sa hon")
+}
+
+
+slut_kong:
+
+
+
+kong22pp@kong
+{
+X1((wordcl=dt | wordcl=hd) & lemma!="denna"), % & text!="allt"), 
+% felet | (wordcl=pn & P(0.7,lex.wordcl=dt))/,
+X11(cht=mid),
+(PP)(case=nom),
+X111(cht=mid),
+X10((wordcl=ab & text!="inte") | (wordcl=rg & num!=sin))?,
+X22(wordcl=ro)*,
+X2(wordcl=jj)*,
+X3(wordcl=nn &  
+(X2.no_of_tokens = 0 | (gender=X2.gender & num=X2.num & spec=X2.spec)) & 
+((A(lex.gender=gender | lex.gender=undef) & gender!=undef & X1.gender!=undef & gender!=X1.gender) | 
+(A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num!=X1.num) | 
+(spec!=undef & X1.spec!=undef & spec!=X1.spec))) % | num!=X1.num | spec!=X1.spec)
+-->
+corr(if (X1.text="samma" | X1.text="varje" | X22.wordcl=ro) then X1.donothing() else X1.form(gender:=X3.gender, num:=X3.num, spec:=X3.spec) end 
+X2.form(num:=X3.num) if (X1.text="samma" | X1.text="varje" | X22.wordcl=ro) then X3.form(spec:=ind) else X1.replace(X1.real_text) end)
+
+corr(if (X1.text="samma" | X1.text="varje" | X10.wordcl=rg) then X1.donothing() else X1.form(gender:=X3.gender) end
+      X2.form(num:=X3.num, spec:=X3.spec) X3.form(num:=X1.num, spec:=X1.spec))
+%corr(if X10.wordcl=rg then X3.form(num:=X1.num, spec:=X1.spec) else X3.donothing() end)
+%goto token(slut_kong, X2.no_of_tokens + 1)
+%info("Kongruensfel, artikeln" italics(X1.real_text) "stämmer inte överens med substantivet" italics(X3.real_text))
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+detect("Han har ett, enligt läkarna, ovanlig sjukdom sa hon")
+jump(slut_kong_extra,2+X10.no_of_tokens+X22.no_of_tokens+X2.no_of_tokens) 
+}
+
+kong22ppab@kong
+{
+X1((wordcl=dt | wordcl=hd)), % & text!="allt"), 
+% felet | (wordcl=pn & P(0.7,lex.wordcl=dt))/,
+X11(cht=mid),
+(PP)(),
+X110(wordcl=ab),
+X111(cht=mid),
+X10((wordcl=ab & text!="inte") | (wordcl=rg & num!=sin))?,
+X22(wordcl=ro)*,
+X2(wordcl=jj)*,
+X3(wordcl=nn & 
+(X2.no_of_tokens = 0 | (gender=X2.gender & num=X2.num & spec=X2.spec)) & 
+((A(lex.gender=gender | lex.gender=undef) & gender!=undef & X1.gender!=undef & gender!=X1.gender) | 
+(A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num!=X1.num) | 
+(spec!=undef & X1.spec!=undef & spec!=X1.spec))) % | num!=X1.num | spec!=X1.spec)
+-->
+corr(if (X1.text="samma" | X1.text="varje" | X22.wordcl=ro) then X1.donothing() else X1.form(gender:=X3.gender, num:=X3.num, spec:=X3.spec) end 
+X2.form(num:=X3.num) if (X1.text="samma" | X1.text="varje" | X22.wordcl=ro) then X3.form(spec:=ind) else X1.replace(X1.real_text) end)
+
+corr(if (X1.text="samma" | X1.text="varje" | X10.wordcl=rg) then X1.donothing() else X1.form(gender:=X3.gender) end
+      X2.form(num:=X3.num, spec:=X3.spec) X3.form(num:=X1.num, spec:=X1.spec))
+%corr(if X10.wordcl=rg then X3.form(num:=X1.num, spec:=X1.spec) else X3.donothing() end)
+%goto token(slut_kong, X2.no_of_tokens + 1)
+%info("Kongruensfel, artikeln" italics(X1.real_text) "stämmer inte överens med substantivet" italics(X3.real_text))
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+detect("Han har ett, enligt läkarna, ovanlig sjukdom sa hon")
+jump(slut_kong_extra,2+X10.no_of_tokens+X22.no_of_tokens+X2.no_of_tokens) 
+}
+
+
+(* 19 
+(deterministisk eller statistiska lagar) <-- Rule #19 no name
+
+Han följer varken deterministisk eller statistiska lagar.
+
+Regler för hennes deterministiska och statistiska lagar.
+*)
+
+kong19@kong
+{
+X0(vbt!=kop),
+X01(vbt!=kop & case!=gen & wordcl!=dt & wordcl!=ps),
+X02((wordcl=ab | wordcl=jj) & text!="inte")*,
+X1(wordcl=jj),
+X2(wordcl=kn & (text="och" | text="eller")), % behövs det fler?,
+X3(wordcl=jj & ((gender!=undef & X1.gender!=undef & gender != X1.gender) | 
+		(num!=undef & X1.num!=undef & num != X1.num) | 
+		(spec!=undef & X1.spec!=undef & spec != X1.spec))),
+X4(wordcl=nn & gender=X3.gender & num=X3.num & spec=X3.spec)
+-->
+mark(X1 X4)
+corr(X1.form(gender:=X3.gender, num:=X3.num, spec:=X3.spec))
+jump(slut_kong_extra, X02.no_of_tokens + 5)
+info("Om" italics(X1.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+(*
+kong19base@kong
+{
+X1(wordcl=jj),
+X2(wordcl=kn), % & (text="och" | text="eller")), % behövs det fler?,
+X3(wordcl=jj & ((gender!=undef & X1.gender!=undef & gender != X1.gender) | 
+		(num!=undef & X1.num!=undef & num != X1.num) | 
+		(spec!=undef & X1.spec!=undef & spec != X1.spec))),
+X4(wordcl=nn & gender=X3.gender & num=X3.num & spec=X3.spec)
+-->
+mark(X1-X3)
+corr(X1.form(gender:=X3.gender, num:=X3.num, spec:=X3.spec))
+jump(slut_kong_extra, 4)
+info("Om" italics(X1.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+*)
+
+(* 
+
+Om varje mental process är identisk med någon fysikalisk process följer 
+det att varje mental process sker enligt deterministiska eller
+ statistiskt lagar.
+*)
+
+kong19b@kong
+{
+X0(vbt!=kop),
+X01(vbt!=kop & case!=gen & wordcl!=dt & wordcl!=ps),
+X02((wordcl=ab | wordcl=jj) & text!="inte")*,
+X1(wordcl=jj),
+X2(wordcl=kn & (text="och" | text="eller")),
+X3(wordcl=jj & ((gender!=undef & X1.gender!=undef & gender != X1.gender) | 
+		(num!=undef & X1.num!=undef & num != X1.num) | 
+		(spec!=undef & X1.spec!=undef & spec != X1.spec))),
+X4(wordcl=nn & gender=X1.gender & num=X1.num & spec=X1.spec)
+-->
+mark(X02 X1 X2 X3 X4)
+corr(X3.form(gender:=X1.gender, num:=X1.num, spec:=X1.spec))
+jump(slut_kong_extra, X02.no_of_tokens + 5)
+info("Om" italics(X3.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+
+(* fel på substantivet 
+
+Om varje mental process är identisk med någon fysikalisk process följer det 
+att varje mental process sker enligt deterministiska eller
+ statistiska lag.
+
+Humaniora<nn.utr.plu.ind.nom> har<vb.prs.akt.aux> 
+stor<jj.pos.utr.sin.ind.nom> betydelse<nn.utr.sin.ind.nom> 
+för<pp> Sveriges<pm.gen>
+kulturella<jj.pos.utr/neu.sin.def.nom>,<mid> 
+andliga<jj.pos.utr/neu.sin.def.nom> 
+och<kn> 
+historiska<jj.pos.utr/neu.sin.def.nom> 
+utveckling<nn.utr.sin.ind.nom> 
+och<kn>
+självförståelse<nn.utr.sin.ind.nom>,<mid>
+
+*)
+
+kong19c@kong
+{
+X0(vbt!=kop & wordcl!=jj),
+X01(vbt!=kop & case!=gen & wordcl!=dt & wordcl!=ps & wordcl!=ab & wordcl!=jj),
+X02((wordcl=ab | wordcl=jj | cht=mid) & text!="inte")*,
+X1(wordcl=jj | cht=mid)+,
+X2(wordcl=kn & (text="och" | text="eller")),
+X3(wordcl=jj & gender = X1.gender | num = X1.num | spec = X1.spec),
+X4(wordcl=nn & ((A(lex.gender=gender | lex.gender=undef) & num!=undef & X1.num!=undef & num!=X1.num) | 
+		(spec!=undef & X1.spec!=undef & spec!=X1.spec)))
+-->
+mark(X02 X1 X2 X3 X4)
+corr(X4.form(num:=X1.num, spec:=X1.spec))
+corr(X1.form(num:=X4.num, spec:=X1.spec)) %johan testar
+% andra corr tog bort falskt alarm i "Kvinnor har mer monotona och förslitande arbetsuppgifter"
+jump(slut_kong_extra, X02.no_of_tokens + 5)
+info("Om" italics(X1.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+accept("Olika arbetssätt för dagens stelbenta och cenraliserade arbetsmarknaspolitik")
+action(scrutinizing)
+}
+
+
+(* Om varje mental process är identisk med någon fysikalisk process följer det 
+att varje mental process sker enligt deterministisk eller
+ statistisk vin.
+
+*)
+
+kong19d@kong
+{
+X0(vbt!=kop),
+X01(vbt!=kop & wordcl!=kn),
+X02((wordcl=ab | wordcl=jj) & text!="inte")*,
+X1(wordcl=jj),
+X2(wordcl=kn & (text="eller"  | text="och")),
+X3(wordcl=jj & gender = X1.gender | num = X1.num | spec = X1.spec),
+X4(wordcl=nn & (A(lex.gender=gender | lex.gender=undef) & gender!=undef & X3.gender!=undef & gender!=X3.gender))
+-->
+mark(X1 X2 X3 X4)
+corr(X1.form(gender:=X4.gender) X3.form(gender:=X4.gender))
+jump(slut_kong_extra, X02.no_of_tokens + 5)
+info("Om" italics(X3.real_text) "syftar på" italics(X4.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+(* 20 
+ "Grammatikkontroll är en av språkteknologins största tillämpningsområden"
+ kan förbättras med en generell NP 
+ begränsar med "av" så länge *)
+
+kong20@kong
+{
+X1(wordcl=dt | wordcl=pn | wordcl=hd | wordcl=rg), % fler krav behövs {en,ett, ? }
+
+X2(text="av" & wordcl=pp),
+X21(wordcl=dt)?,
+X22(wordcl=jj)*,
+X3(wordcl=nn & case=gen & !is_cap),
+X30(wordcl=ab)*,
+X4(wordcl=jj)*,
+X5(wordcl=nn & (A(lex.gender=gender | lex.gender=undef) & gender!=undef & X1.gender!=undef & gender!=X1.gender))
+-->
+corr(X1.form(wordcl:=pn, gender:=X5.gender))
+info("Om" italics(X1.real_text) "syftar på" italics(X5.real_text) "är det kongruensfel")
+jump(slut_kong_extra, 3+X21.no_of_tokens+X22.no_of_tokens+X30.no_of_tokens+
+X30.no_of_tokens+X4.no_of_tokens)
+action(scrutinizing)
+}
+
+
+(* 21 
+en <pn.utr.sin.ind.sub/obj> 
+av <pp> 
+de <dt.utr/neu.plu.def> 
+tre <rg.utr/neu.plu.ind/def.nom> 
+aggregaten <nn.neu.plu.def.nom>
+
+En av de tre aggregaten var tyvärr sönder.
+
+*)
+
+kong21@kong
+{
+X1(wordcl=dt | wordcl=pn | wordcl=hd | wordcl=rg),
+X2(text="av" & wordcl=pp),
+X3(wordcl=dt),
+X30(wordcl=ab)*,
+X4(wordcl=jj | wordcl=rg | wordcl=ro)*,
+X5(wordcl=nn & case=nom & (A(lex.gender=gender | lex.gender=undef) & gender!=undef & X1.gender!=undef & gender!=X1.gender))
+-->
+corr(if X1.wordcl=rg then X1.form(gender:=X5.gender) else
+        X1.form(wordcl:=pn,gender:=X5.gender) end)
+%info("Kongruensfel")
+info("Om" italics(X1.real_text) "syftar på" italics(X5.real_text) "är det kongruensfel")
+jump(slut_kong_extra, 3+X30.no_of_tokens+X4.no_of_tokens)
+action(scrutinizing)
+}
+
+(*
+kong25b@kong
+{
+X(wordcl=nn & spec=ind & nntype!=dat & case=gen),
+Y(wordcl=jj & deg=pos & !is_cap & spec=def)+,
+Z(wordcl=nn & spec=ind & !is_cap)
+-->
+mark(Y)
+corr(Y.form(spec:=ind))
+info("Om" italics(X.real_text) "syftar på" italics(Z.real_text) "bör" italics(Y.real_text) "vara i obestämd form" "Regel under konstruktion")
+action(scrutinizing)
+}
+*)
+
+slut_kong_extra:
+
+
+(* ------------------------------Predikativ-----------------------------------
+
+
+
+endast fel i genus och numerus *)
+
+
+predbiacc1@pred
+{
+S(),
+T(wordcl!=pp),
+(biNP)(),
+(PP/T3)()?,
+V(wordcl=ab | wordcl=hp)*,
+X(wordcl=vb & vbt=kop),
+X2(wordcl=ab)*,
+Y(wordcl=jj & ((gender=biNP.gender & num=biNP.num) | (text="få" | text="många"))) 
+-->
+jump(pred_slut, biNP.no_of_tokens+T3.no_of_tokens+V.no_of_tokens+X2.no_of_tokens+3)
+action(accepting)
+}
+
+predsem@pred
+{
+X0(wordcl!=ps & case!=gen),
+X1(wordcl=nn & gender=utr & spec=ind),
+X11(wordcl=vb & (vbt=mod | vbt=aux))?, 
+X2(wordcl=vb & vbt=kop),
+X22(wordcl=ab)?,
+X3(wordcl=jj & gender=neu & gender!=utr & spec=ind)
+-->
+jump(pred_slut, 2+X11.no_of_tokens+X22.no_of_tokens)
+action(accepting)
+}
+
+
+predbiacc2@pred
+{
+T(sed=sen),
+(biNP)(),
+(PP/T3)()?,
+V(wordcl=ab | wordcl=hp)*,
+X(wordcl=vb & vbt=kop),
+X2(wordcl=ab)*,
+Y(wordcl=jj & ((gender=biNP.gender & num=biNP.num) | (text="få" | text="många"))) 
+-->
+jump(pred_slut, biNP.no_of_tokens+T3.no_of_tokens +V.no_of_tokens+X2.no_of_tokens+1)
+action(accepting)
+}
+
+category pred {
+info("kongruensfel i predikativ")
+link("" "")
+}
+
+predpartacc@pred
+{
+(NPpartplu/X1)(),
+Y(wordcl=vb & vbt=kop),
+Z(wordcl=ab)*,
+V(wordcl=jj & ((gender=X1.gender & num=X1.num) | (text="få" | text="många") |
+(X1.gender=neu & X1.num=sin))), % ingen bra lösning, men vad göra? hus
+T(wordcl!=nn & wordcl!=jj & wordcl!=pc)
+-->
+jump(pred_slut, X1.no_of_tokens + 3)
+action(accepting)
+}
+
+predpart@pred
+{
+(NPpartplu/X1)(num=plu),
+Y(wordcl=vb & vbt=kop),
+Z(wordcl=ab)*,
+V(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & (((gender!=undef & gender!=X1.gender) | 
+(num!=X1.num & num!=X1.num)) | (text="få" | text="många"))),
+T(wordcl!=nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(X1 V)
+corr(V.form(gender:=X1.gender, num:=X1.num, spec:=ind))
+info("Om" italics(V.real_text) "syftar på" italics(X1.real_text) "är det kongruensfel")
+jump(pred_slut, X1.no_of_tokens + 3)
+action(scrutinizing)
+}
+
+
+pred3acc@pred
+{
+S(wordcl!=pp & vbf!=inf),
+(NP/X1)(),
+(PP/X2)()?,
+(PP/X3)()?,
+(PP/X4)()?,
+Y(wordcl=vb & vbt=kop),
+Z(wordcl=ab)*,
+V(wordcl=jj & ((gender=X1.gender & num=X1.num) | (text="få" | text="många"))),
+T(wordcl!=nn & wordcl!=jj & wordcl!=pc)
+-->
+jump(pred_slut, X1.no_of_tokens + X2.no_of_tokens + X3.no_of_tokens + X4.no_of_tokens)
+action(accepting)
+}
+
+
+
+(* vi borde fixa fel som "att hoppa bock är rolig" "att se på tv är tråkig"
+   hur gör vi?
+*)
+
+% ny 000104
+predinfacc1@pred
+{
+(NP/X)(),
+(PP/X01)()?,
+(INFP/X2)(wordcl=ie),
+Y(wordcl=vb & vbt=kop),
+Z(wordcl=ab)*,
+Z2(wordcl=jj & ((gender=X.gender & num=X.num) | (text="få" | text="många")))
+-->
+jump(pred_slut, X.no_of_tokens+ X01.no_of_tokens+X2.no_of_tokens)
+action(accepting)
+}
+
+
+predinfacc@pred
+{
+(INFP/X)(),
+Y(wordcl=vb & vbt=kop),
+Z(wordcl=ab)*,
+Z2(wordcl=jj & ((gender=X.gender & num=X.num) | (text="få" | text="många")))
+-->
+jump(pred_slut, X.no_of_tokens)
+action(accepting)
+}
+
+% ny 000104
+predinfa@pred
+{
+X0(wordcl!=pp),
+(NP/X)(),
+(PP/X01)(),
+(PP/X02)()?,
+(INFP/X2)(wordcl=ie),
+(PP/X20)()?,
+Y0(vbt=mod | vbt=aux)?,
+Y(wordcl=vb & vbt=kop),
+Z(wordcl=ab)*,
+Z2(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & ((gender!=undef & X.gender!=undef & gender!=X.gender) | 
+(num!=undef & X.num!=undef & num!=X.num))),
+Z3(wordcl!=nn & wordcl!=jj)
+-->
+mark(X Y Z2)
+corr(Z2.form(gender:=neu, num:=sin))
+info("Om" italics(Z2.real_text) "syftar på" italics(X2.text) "är det kongruensfel")
+jump(pred_slut, X.no_of_tokens+ X20.no_of_tokens+ X2.no_of_tokens)
+action(scrutinizing)
+}
+
+predinfb@pred
+{
+T(sed=sen),
+T2()?,
+(INFP/X)(),
+Y(wordcl=vb & vbt=kop),
+Z(wordcl=ab)*,
+Z2(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) 
+& ((gender!=undef & X.gender!=undef & gender!=X.gender) | 
+(num!=undef & X.num!=undef & num!=X.num))),
+Z3(wordcl!=nn & wordcl!=jj)
+-->
+mark(X Y Z2)
+corr(Z2.form(gender:=neu, num:=sin))
+info("Om" italics(Z2.real_text) "syftar på" italics(X.text) "är det kongruensfel")
+jump(pred_slut, X.no_of_tokens)
+action(scrutinizing)
+}
+
+(* bör utvecklas ...
+predinfc@pred
+{
+(INFP/X2)(wordcl=ie),
+(PP/X20)()?,
+Y0(vbt=mod | vbt=aux)?,
+Y(wordcl=vb & vbt=kop),
+Z(wordcl=ab)*,
+Z2(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & ((gender!=undef & X2.gender!=undef & gender!=X2.gender) | 
+(num!=undef & X2.num!=undef & num!=X2.num)))
+-->
+mark(X2 Y Z2)
+corr(Z2.form(gender:=neu, num:=sin))
+jump(pred_slut, X2.no_of_tokens+ X20.no_of_tokens)
+action(scrutinizing)
+}
+*)
+
+
+
+
+predaccrelbisats@pred
+{
+X1(sed=sen),
+X2()*,
+X3(text="som" | text="där" | text="vars"),
+(NP/X4)(),
+X5(wordcl=ab)*,
+X6(vbt=aux | vbt=mod)*,
+X7(vbt=kop),
+X8(wordcl=jj & !is_cap & gender=X4.gender & num=X4.num),
+X9(wordcl!=nn & wordcl!=jj & wordcl!=pc)
+-->
+jump(pred_slut, X2.no_of_tokens + X3.no_of_tokens + X5.no_of_tokens+X6.no_of_tokens+4)
+action(accepting)
+}
+
+predrelbisats@pred
+{
+X1(sed=sen),
+X2()*,
+X3(text="som" | text="där" | text="vars"),
+(NP/X4)(),
+X5(wordcl=ab)*,
+X6(vbt=aux | vbt=mod)*,
+X7(vbt=kop),
+X8(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & ((gender!=undef & X4.gender!=undef & gender!=X4.gender) |
+(num!=undef & X4.num!=undef &  num!=X4.num))),
+X9(wordcl!=nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(X4 X7 X8)
+jump(pred_slut, X2.no_of_tokens + X3.no_of_tokens + X5.no_of_tokens+X6.no_of_tokens+4)
+corr(X8.form(gender:=X4.gender, num:=X4.num))
+info("Om" italics(X8.real_text) "syftar på" italics(X4.text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+
+predacc@pred
+{
+S(wordcl!=pp),
+T(wordcl!=pp & vbf!=inf),
+(NP)(),
+V(wordcl=ab | wordcl=hp)*,
+X(wordcl=vb & vbt=kop),
+X2(wordcl=ab)*,
+Y(wordcl=jj & (((NP.gender=undef | gender=NP.gender) & num=NP.num) | (text="få" & text="många"))) 
+-->
+jump(pred_slut, NP.no_of_tokens) % + V.no_of_tokens + 1 + X2.no_of_tokens))
+action(accepting)
+}
+
+predacc2@pred
+{
+T(wordcl!=pp & vbf!=inf),
+(NP)(),
+V(wordcl=ab | wordcl=hp)*,
+X(wordcl=vb & vbt=kop),
+X2(wordcl=ab)*,
+Y(wordcl=jj & (((NP.gender=undef | gender=NP.gender) & num=NP.num) | (text="få" & text="många"))) 
+-->
+jump(pred_slut, NP.no_of_tokens) % + V.no_of_tokens + 1 + X2.no_of_tokens))
+action(accepting)
+}
+
+
+
+
+
+(* Kommentaren blir fel när den första NPn i bi innehåller flera ord 
+   Man behöver kunna sätta vad som är huvud i en mer komplex NP
+   "Den gamle mannen" är huvud i "Den gamle mannen som står därborta"
+   Hur fixar vi detta i regelsyntaxen?
+*)
+
+pred1bisats@pred
+{
+T0(wordcl!=pp),
+T(wordcl!=pp),
+(biNP)(),
+(PP/T3)()?,
+V(wordcl=ab | wordcl=hp)*,
+X(wordcl=vb & vbt=kop),
+X2(wordcl=ab)*,
+Y(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & ((gender!=undef & biNP.gender!=undef & gender!=biNP.gender) | 
+(num!=undef & biNP.num!=undef & num!=biNP.num)) & text!="få"), % |(wordcl=vb & E(lex.wordcl=pc))/,
+
+Z(wordcl!= nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(biNP X Y)
+corr(Y.form(gender:=biNP.gender, num:=biNP.num, spec:=ind))
+info("Om" italics(Y.real_text) "syftar på" italics(biNP[0].real_text) "är det kongruensfel")
+jump(pred_slut, biNP.no_of_tokens+1+T3.no_of_tokens)
+action(scrutinizing)
+}
+
+pred1bbisats@pred
+{
+T(sed=sen),
+(biNP)(),
+V(wordcl=ab | wordcl=hp)*,
+X(wordcl=vb & vbt=kop),
+X2(wordcl=ab)*,
+Y(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & ((gender!=undef & biNP.gender!=undef & gender!=biNP.gender) | 
+(num!=undef & biNP.num!=undef & num!=biNP.num)) & text!="få"), % |(wordcl=vb & E(lex.wordcl=pc))/,
+
+Z(wordcl!= nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(biNP X Y)
+corr(Y.form(gender:=biNP.gender, num:=biNP.num, spec:=ind))
+info("Om" italics(Y.real_text) "syftar på" italics(biNP[0].real_text) "är det kongruensfel")
+jump(pred_slut, biNP.no_of_tokens+1)
+action(scrutinizing)
+}
+
+
+(* 1. 
+Bilen är gröna  och päron blå.
+
+Fixa:
+Eftersom en kommunal daghemsplats är en av de dyraste tillsynsformer som finns hade vårdnadsbidraget på lite längre sikt också blivit
+samhällsekonomiskt lönsamt. 
+
+adverbet "lite" hamnar utanför NP och det ser ut som om NP inte tillhör en PP
+längsta matchning skulle fixa detta problem, men ibland är det inte önskvärt med l-matchning
+t.ex. två i NP i rad där den första saknar nomen: ge de anställda mer delaktighet, man vill ju kunna
+hitta dessa två NP med hjälp av verbinformationen.
+*)
+
+
+
+pred1@pred
+{
+S(),
+T(wordcl!=pp & wordcl!=dt & wordcl!=ps & wordcl!=rg & wordcl!=jj & wordcl!=ab & (wordcl!=nn & spec!=def) & !(S.wordcl=nn & wordcl=kn & (gender!=S.gender | num!=S.num))),
+(NP/Np)(pnf!=obj),
+V(wordcl=ab | wordcl=hp)*,
+X0(vbt=mod | vbt=aux)?,
+X(wordcl=vb & vbt=kop),
+X2(wordcl=ab)*, % X3(wordcl=jj)  borde man få in här, det borde vara hela adjektivfrasen
+Y(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & 
+((gender!=undef & Np.gender!=undef & gender!=Np.gender)
+ | (num!=undef & Np.num!=undef & num!=Np.num)) & text!="få"),     % |(wordcl=vb & E(lex.wordcl=pc))/,
+Z(wordcl!= nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(Np X Y)
+corr(if Np.spec=def then Y.form(gender:=Np.gender, num:=Np.num, spec:=ind) else
+     Y.form(gender:=Np.gender, num:=Np.num, spec:=ind) end)
+%corr(if (Np.num!=Y.num & Np.no_of_tokens=1) then Np.form(num:=Y.num) else Np.donothing() end)
+jump(pred_slut, 5+Np.no_of_tokens)
+info("Om" italics(Y.real_text) "syftar på" italics(Np.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+
+
+pred1b@pred
+{
+S(sed=sen),
+(NP/Np)(wordcl!=pn),
+V(wordcl=ab | wordcl=hp)*,
+X0(wordcl=vb & vbt=mod)?, % problem med opt-filen, verkar borta nu?
+X(wordcl=vb & vbt=kop),
+X2(wordcl=ab)*, % X3(wordcl=jj)  borde man få in här, det borde vara hela adjektivfrasen
+Y(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & 
+((gender!=undef & Np.gender!=undef & gender!=Np.gender)
+ | (num!=undef & Np.num!=undef & num!=Np.num)) & 
+text!="få" & !(text="enkelt" & X2.text="helt")),
+Z(wordcl!= nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(Np X Y)
+%corr(Y.form(gender:=Np.gender, num:=Np.num, spec:=ind))
+corr(if Np.spec=def then Y.form(gender:=Np.gender, num:=Np.num, spec:=ind) else
+  Y.form(gender:=Np.gender, num:=Np.num, spec:=ind) end)
+%corr(if (Np.num!=Y.num & Np.no_of_tokens=1) then Np.form(num:=Y.num) else Np.donothing() end)
+info("Om" italics(Y.real_text) "syftar på" italics(Np.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+pred1ex@pred
+{
+S(sed=sen),
+T(wordcl=pp), %& (wordcl!=nn & spec!=def)),    % & !(S.wordcl=nn & wordcl=kn)),
+(NP/Np)(pnf!=obj),
+V(wordcl=ab | wordcl=hp)*,
+%X0(vbt=aux | vbt=mod)?,
+X(wordcl=vb & vbt=kop),
+X2(text="man" & wordcl=pn),
+Y(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & ((gender!=undef & Np.gender!=undef & gender!=Np.gender)
+ | (num!=undef & Np.num!=undef & num!=Np.num)) & text!="få"),     % |(wordcl=vb & E(lex.wordcl=pc))/,
+Z(wordcl!= nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(X X2 Y)
+corr(if Np.spec=def then Y.form(gender:=Np.gender, num:=Np.num, spec:=ind) else
+       Y.form(gender:=Np.gender, num:=Np.num, spec:=ind) end)
+%corr(if (Np.num!=Y.num & Np.no_of_tokens=1) then Np.form(num:=Y.num) else Np.donothing() end)
+info("Om" italics(Y.real_text) "syftar på" italics(Np.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+
+
+
+(* 2. 
+Handsken av stål på riddarutrustningen i tornet bredvid slottet på ön är snygga. 
+*)
+
+(* avvaktar bugg-fix, johan fick bugg på htmltest
+
+pred2@pred
+{
+T(wordcl!=pp & wordcl!=kn & wordcl!=dt & wordcl!=jj & wordcl!=ps & wordcl!=rg & wordcl!=ro),
+(NP)(pnf!=obj),
+(PP/P1)(),
+(PP/P2)()?,
+(PP/P3)()?,
+(PP/P4)()?,
+(PP/P5)(),
+V3(wordcl=ab)*,
+V4(wordcl=vb & vbt=mod)?,
+X(wordcl=vb & vbt=kop),
+Y(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & ((gender!=undef & NP.gender!=undef & gender!=NP.gender) | 
+(num!=undef & NP.num!=undef & num!=NP.num))),
+Z(wordcl!= nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(NP X Y)
+corr(if NP.spec=def then 
+     Y.form(gender:=NP.gender, num:=NP.num, spec:=ind) else
+     Y.form(gender:=NP.gender, num:=NP.num) end)
+%corr(if (NP.num!=Y.num & NP.no_of_tokens=1) then NP.form(num:=Y.num) else NP.donothing() end)
+info("Kongruensfel i predikativ")
+action(scrutinizing)
+}
+*)
+
+pred2b@pred
+{
+L(wordcl!=pp & wordcl!=vb),
+M(wordcl!=pp & wordcl!=vb & wordcl!=dt & wordcl!=jj & wordcl!=kn & wordcl!=ps & wordcl!=rg & wordcl!=ro),
+(NP/N)(pnf!=obj),
+(PP/P1)()?,
+(INFP/P11)(wordcl=ie)?,
+(PP/P2)()?,%(PP,P3)//?,
+%(PP,P4)//?,
+
+(PP/P5)(),
+V3(wordcl=ab)*,
+V4(wordcl=vb & vbt=mod)?,
+X(wordcl=vb & vbt=kop),
+X2(wordcl=ab)*,
+Y(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & ((gender!=undef & N.gender!=undef & gender!=N.gender) | 
+(num!=undef & N.num!=undef & num!=N.num))),
+Z(wordcl!= nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(N X Y)
+corr(%if N.spec=def then 
+     %Y.form(gender:=N.gender, num:=N.num, spec:=ind) else
+     Y.form(gender:=N.gender, num:=N.num, spec:=ind))
+%corr(if (N.num!=Y.num & N.no_of_tokens=1) then N.form(num:=Y.num) else N.donothing() end)
+info("Om" italics(Y.real_text) "syftar på" italics(N.real_text) "är det kongruensfel")
+jump(pred_slut,N.no_of_tokens+P1.no_of_tokens + P2.no_of_tokens+P5.no_of_tokens)
+action(scrutinizing)
+}
+
+pred2bc@pred
+{
+M(sed=sen),
+(NP/N)(pnf!=obj),
+(PP/P1)()?,
+(INFP/P11)(wordcl=ie)?,
+(PP/P2)()?,%(PP,P3)//?,
+%(PP,P4)//?,
+
+(PP/P5)(),
+V3(wordcl=ab)*,
+V4(wordcl=vb & vbt=mod)?,
+X(wordcl=vb & vbt=kop),
+X2(wordcl=ab)*,
+Y(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & ((gender!=undef & N.gender!=undef & gender!=N.gender) | 
+(num!=undef & N.num!=undef & num!=N.num))),
+Z(wordcl!= nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(N X Y)
+corr(%if N.spec=def then Y.form(gender:=N.gender, num:=N.num, spec:=ind) else
+     Y.form(gender:=N.gender, num:=N.num, spec:=ind))
+%corr(if (N.num!=Y.num & N.no_of_tokens=1) then N.form(num:=Y.num) else N.donothing() end)
+%info("Kongruensfel i predikativ")
+info("Om" italics(Y.real_text) "syftar på" italics(N.real_text) "är det kongruensfel")
+jump(pred_slut,N.no_of_tokens+P1.no_of_tokens + P2.no_of_tokens+P5.no_of_tokens)
+action(scrutinizing)
+}
+
+
+
+(* 3. 
+
+Han var arga idag.
+*)
+
+pred3@pred
+{
+X(wordcl=pn & pnf!=obj),	% pnf!=obj 991102
+(PP/X2)()?,
+Y(wordcl=vb & (vbt=kop | text="vore")),
+Z(wordcl=ab)*,
+V(wordcl=jj & !is_cap & A(lex.gender=gender | lex.gender=undef) & ((gender!=undef & X.gender!=undef & gender!=X.gender) | 
+(num!=undef & X.num!=undef & num!=X.num))),
+T(wordcl!=nn & wordcl!=jj & wordcl!=pc)
+-->
+mark(X Y V)
+corr(V.form(gender:=X.gender, num:=X.num))
+%info("Kongruensfel i predikativ")
+info("Om" italics(X.real_text) "syftar på" italics(V.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+
+
+
+(* 
+Kvinnan är nykterister
+Mannen som sitter på bänken är mina bröder.
+*)
+
+(*
+predNPbinp@
+{
+(biNP/X1)(),
+X2(wordcl=vb & vbt=kop),
+X3(wordcl=ab)?,
+X4(wordcl=nn & num!=X1.num)	%(NP/X4)(num!=X1.num)
+-->
+corr(X4.form(num:=X1.num))
+jump(pred_slut)
+action(scrutinizing)
+}
+
+
+prednpnp@
+{
+(biNP/X1)(),
+X2(wordcl=vb & vbt=kop),
+X3(wordcl=ab)?,
+X4(wordcl=nn & num!=X1.num)	%(NP/X4)(num!=X1.num)
+-->
+corr(X4.form(num:=X1.num))
+jump(pred_slut)
+action(scrutinizing)
+}
+*)
+
+(* många falska alarm, kräver mer arbete 000829
+
+predtest1a@pred
+{
+X0(wordcl!=pp & text!="att"),	% en ny regel för "att" - neutrum
+X1(wordcl=pn | wordcl=nn),
+(PP/X10)()?,
+X11(wordcl=vb)?,
+X2(wordcl=pp & text="för"), % | text="till")),
+X3(wordcl=ab)*,
+X4(wordcl=jj & text!="många" & text!="få" & 
+A(lex.gender=gender | lex.gender=undef) & 
+text!="gott" & (gender!=X1.gender | num!=X1.num)),
+X5(wordcl!=nn & wordcl!=rg & wordcl!=ro & wordcl!=jj & wordcl!=pc & wordcl!=kn & text!="som")
+-->
+mark(X1 X4)
+corr(X4.form(gender:=X1.gender, num:=X1.num, spec:=ind))
+info("Om" italics(X4.real_text) "syftar på" italics(X1.real_text) "är det kongruensfel" "regel under konstruktion")
+action(scrutinizing)
+}
+
+predtest2a@pred
+{
+X0(wordcl!=pp),
+X1(wordcl=pn | wordcl=nn),
+(PP/X10)()?,
+X11(wordcl=vb)?,
+X2(text="som"),
+X3(wordcl=ab)?,
+X4(wordcl=jj & text!="många" & text!="få" & 
+A(lex.gender=gender | lex.gender=undef) & (gender!=X1.gender | num!=X1.num)),
+X5(wordcl!=jj & wordcl!=rg & wordcl!=ro & wordcl!=nn & wordcl!=pc)
+-->
+mark(X1 X4)
+corr(X4.form(gender:=X1.gender, num:=X1.num, spec:=ind))
+info("Om" italics(X4.real_text) "syftar på" italics(X1.real_text) "är det kongruensfel" "regel under konstruktion")
+action(scrutinizing)
+}
+
+
+*)
+
+
+
+
+
+
+pred_slut:
+
+
+
+
+(* --------------VERBREGLER--------------- *)
+
+(*	37. Dubbelsupinum. Rättningsförslag? 
+ *
+ *	Vi har inte kunnat spelat tennis idag.
+ *)
+
+dubbel_supinum@verb
+{
+X1(vbf=sup),
+X2(vbf=sup)
+-->
+corr(X2.form(vbf:=inf))
+info("Dubbelsupinum")
+action(scrutinizing)
+jump(slut_verb, 1)
+}
+
+category verb {
+info("underlig verbkonstruktion")
+link("" "")
+}
+
+(* johans generellare variant av dubbelsup 
+
+fel_verbform_efter_sup@verb {
+X1(vbt=mod), % & voice!=sfo),
+X2(wordcl=vb & vbf!=inf)
+-->
+corr(X2.form(vbf:=inf))
+info("ett verb efter ett modalt verb i supinum bör vara i infinitiv")
+action(scrutinizing)
+jump(slut_verbform, 1)
+}
+*)
+(* johans *)
+
+fel_verbform_efter_mod@verb {
+X00(text!="som"),
+X(vbt=mod),
+Y(wordcl=ab)*,
+Z(wordcl=vb & vbf!=inf & text!="ha")
+-->
+corr(Z.form(vbf:=inf))
+corr(Z.insert("ha") Z.form(vbf:=sup))
+info("ovanligt med verbformen" italics(Z.text) "efter modalt verb" italics(X.text))
+action(scrutinizing)
+jump(slut_verbform, 1)
+}
+
+(* johans *)
+
+verb_efter_kop@verb {
+X(vbt=kop),
+Y(wordcl=vb)
+-->
+info("det är ovanligt med ett verb efter verbet" italics(X.real_text))
+action(scrutinizing)
+jump(slut_verbform, 1)
+}
+
+verb_efter_aux@verb {
+X(vbt=aux),
+Y(wordcl=ab)*,
+Z(wordcl=vb & vbf!=sup)
+-->
+info("det brukar vara ett verb i supinum efter verbet" italics(X.real_text))
+corr(Z.form(vbf:=sup))
+action(scrutinizing)
+jump(slut_verbform, 1)
+detect("Inkomstskillnaderna i Sverige har ökar starkt under 1990-talet.") 
+}
+
+slut_verbform:
+
+% generate_replacement(lem:=X2.lem, vbf:=inf, voice:=akt)
+(*	38. kommer utan att	 
+ * 	
+ *	klarar till och med:
+ *     Visst kommer den gamle, blinde mannen som står där borta hitta hem.
+ *)
+
+(* verkar inte behövas
+kommer_utan_attOK@verb
+{
+X(text = "kommer"),
+Y(wordcl = ab)*,
+Z(text = "hem" | text = "fram" | text = "ifrån")
+-->
+action(accepting)
+jump(slut_kommer, 2)
+}
+*)
+
+(* tog bort dessa 031203
+kommer_utan_att@verb
+{
+X1(text ="kommer"),
+X2(wordcl != ie & vbt != mod & text!="att" & text!="(")*,   % johan la till vbt!=mod
+X3(vbf=inf)
+-->
+mark(X1 X3)
+corr(X3.insert("att"))
+info(italics("Kommer") "utan" italics("att") "före verb i infinitiv")
+accept("Angrepp skall mötas var det än kommer ifrån och hela landet skall försvaras.")
+detect("Vi kommer kanske spela tennis sen.")
+action(scrutinizing)
+}
+
+
+
+kommer_dubbla_att@verb
+{
+X1(text ="kommer"),
+Y()*,
+X2(wordcl=ie),
+Z(vbf!=inf)*,
+X3(wordcl=ie),
+R(vbf!=inf)*,
+X4(vbf=inf)
+-->
+mark(X1 X2 X3 X4)
+corr(X2.delete())
+info(italics("Kommer") "med många" italics("att") "före verb i infinitiv")
+accept("Angrepp skall mötas var det än kommer ifrån och hela landet skall försvaras.")
+detect("Vi kommer att förr eller senare att spela tennis sen.")
+action(scrutinizing)
+}
+
+slut_kommer:
+*)
+
+för_avsikt_utan_att@verb
+{
+För(text ="för"),
+Avsikt(text ="avsikt"),
+InteAtt(wordcl!=ab & text!="att")*,   % johan la till vbt!=mod
+Adverb(wordcl=ab)*,
+Infinitiv(vbf=inf)
+-->
+%corr(För Avsikt InteAtt "att" Adverb Infinitiv)
+corr(Adverb.insert("att"))
+info(italics("För avsikt") "utan" italics("att") "före verb i infinitiv")
+detect("Hon sa att hon hade för avsikt inte resa till London på konferensen.") 
+action(scrutinizing)
+}
+
+(*	39. dubbelpassivum  *)
+
+dubbel_passiv@verb
+{
+X1(voice=sfo),
+X2(wordcl=ie)?,
+X3(voice=sfo)
+-->
+info("Dubbelpassivum anses osnyggt av många.")
+%corr(X1.form(voice:=akt))
+action(scrutinizing)
+detect("Den registrerade posten behövs sorteras.")
+}
+
+
+(* 10. Supinum utan "ha" (Supine without "ha").
+    De kunde fått bilderna på begravningsgästerna från danska polisen. 
+    Inget talar för att dessa forskare skulle medvetet sorterat information.
+*)
+
+supinumOK@verb {
+X(wordcl=hp | wordcl=ha | wordcl=sn | vbt=aux | vbt=kop | text="om"),
+Y()*,
+Z(vbf=sup)
+-->
+jump(supinum_slut, Y.no_of_tokens + 1)
+action(accepting)
+}
+
+supinumOK2@verb {
+X(vbf=prs | vbf=prt | vbf = imp),
+Y()*,
+Z(vbf=sup)
+-->
+jump(supinum_slut, Y.no_of_tokens + 1)
+action(accepting)
+}
+
+supinumOK3@verb {
+X(vbf=sup),
+Y()*,
+Z(vbf=prs | vbf=prt | vbf = imp)
+-->
+jump(supinum_slut, Y.no_of_tokens + 1)
+action(accepting)
+}
+
+(*
+j_supinum_utan_ha1@verb
+{
+X(vbt=mod & vbf=prt),
+R(wordcl=ab)*,
+(PP)()?,
+Y(wordcl=ab)*,
+Z(vbf=sup)
+-->
+corr(Z.insert("ha"))
+info("Supinum utan verbet" italics("ha"))
+detect("De kunde fått bilderna från polisen.") 
+jump(supinum_slut, Y.no_of_tokens + 2)
+action(scrutinizing)
+}
+
+j_supinum_utan_ha2@verb {
+X(wordcl=ab)*,
+Y(vbf=sup)
+-->
+corr(X.insert("har"))
+corr(X.insert("hade"))
+info("Supinum utan verbet" italics("ha"))
+detect("De fått bilderna från polisen.") 
+action(scrutinizing)
+jump(supinum_slut, X.no_of_tokens + 1)
+}
+*)
+
+harOK@verb
+{
+X(text="har" | text="hade"),
+Y(vbf!=sup)*,
+Z(vbf=sup)
+-->
+jump(supinum_slut, Y.no_of_tokens + 1)
+action(accepting)
+}
+
+
+supinum_utan_ha@verb
+{
+X0(wordcl=vb & vbf!=sup & text!="ha" & text!="har" & text!="hade" & vbt!=kop
+& text!="få"),
+X2(wordcl!=kn & wordcl!=sn & cht!= mid & vbt!=kop & text!="ha" & text!="har" & 
+  text!="hade" & text!="som")2,	%lem!="ha"/?,
+X3(vbf=sup)
+-->
+corr(X2.insert("ha"))
+corr(X3.insert("ha"))
+info("Supinum utan verbet" italics("ha"))
+action(scrutinizing)
+}
+
+(*
+supinum_utan_hab@verb
+{
+X0(vbf!=sup & text!="ha" & text!="har" & text!="hade" & vbt!=kop
+& text!="få"),	%X1//3,
+
+X2(wordcl!=kn & wordcl!=sn & cht!= mid & vbt!=kop & text!="ha" & text!="har" & 
+  text!="hade" & text!="som" & text!="få" & wordcl!=vb),	%lem!="ha"/?,
+%X4//3,
+
+X3(vbf=sup)
+-->
+corr(X3.insert("ha"))
+corr(X3.insert("har"))
+corr(X3.insert("hade"))
+info("Supinum utan verbet" italics("ha"))
+action(scrutinizing)
+}
+*)
+
+supinum_slut:
+
+(* 1 
+Vidare ska pengar omfördelas till bland annat satsningar på Internet för 
+    stödja myndigheters och företags miljöarbete.
+*)
+
+till_kännaOK@verb
+{
+X(text="till"),
+Y(text="känna")
+-->
+jump(till_kanna, 1)
+action(accepting)
+}
+
+(* rektion efter preposition *)
+verb_fras3@verb
+{
+X1(wordcl=pp), % | E(lex.wordcl=pp)), bort 991118
+X2(wordcl=vb & vbf=inf & !is_cap)
+-->
+mark(X1 X2)
+corr(X2.insert("att"))
+detect("Man kan längta efter stå här i rampljuset")
+info("Om" italics(X2.real_text) "står i infinitiv bör det föregås av" italics("att"))
+action(scrutinizing)
+}
+
+(* attribut *)
+(* verbfras3b@verb
+{
+T(sed=sed),
+X(text!="att")+,
+(NP)(),
+Y(wordcl=vb & vbf=inf)
+-->
+corr(Y.insert("att"))
+detect("Men viljan segra var stark")
+info("När infinitivfrasen är ett attribut till nominalfrasen bör infinitivfrasen föregås av infinitvmärket" italics("att") "Regel under konstruktion")
+action(scrutinizing)
+}
+*)
+
+(*
+verbfras3bb@verb
+{
+T(sed=sed),
+(NP)(),
+Y(wordcl=vb & vbf=inf)
+-->
+corr(Y.insert("att"))
+detect("Men viljan segra var stark")
+info("När infinitivfrasen är ett attribut till nominalfrasen bör infinitivfrasen föregås av infinitvmärket" italics("att") "Regel under konstruktion")
+action(scrutinizing)
+}
+*)
+
+
+till_kanna:
+
+(* 2 fler krav behövs
+
+Han kunde inte undvika möta hennes blick.
+
+*)
+
+verb_fras4@verb
+{
+X1(vbf=inf & vbt!=mod & !is_cap & voice=akt), % & vbt!=aux),
+X10(wordcl=ab)*,
+%X2(wordcl!=ie & wordcl!=kn & cht!=mid & vbf!=inf)2,
+X3(vbf=inf & !is_cap & voice=akt & (text!="känna" & X1.text!="lära")) % voice=akt 991102
+-->
+mark(X1 X3)
+corr(X3.insert("att"))
+info("Om" italics(X3.real_text) "står i infinitiv bör det föregås av" italics("att"))
+action(scrutinizing)
+}
+
+
+verb_fras4b@verb
+{
+X(wordcl=vb & (lemma="undvika" | lemma="upphöra" | lemma="ha" | 
+lemma="äga" | lemma="tendera" | lemma="hota" | lemma="riskera" | 
+lemma="avse" | lemma="diskutera" | lemma="överväga" |lemma="svära" | 
+lemma="välja" | lemma="förstå" | lemma="förtjäna" | lemma="acceptera" |
+lemma="avsky" | lemma="förakta" | lemma="föredra" | lemma="gilla" | 
+lemma="hata" | lemma="sakna" | lemma="älska" | lemma="negligera"  
+| lemma="avböja" | lemma="försumma" | lemma="underlåta" | lemma="undvika")),
+Y(wordcl=ab)*,
+Z(vbf=inf)
+-->
+mark(X Y Z)
+corr(Z.insert("att"))
+%info("Verbfrasfel")
+info("Om" italics(Z.real_text) "står i infinitiv bör det föregås av" italics("att"))
+action(scrutinizing)
+}
+
+
+(* accepterande regel
+*)
+
+okokkokokoko@verb
+{
+X(sed=sen),
+Y(wordcl=rg),
+Z(cht=mad),
+%Z2(),
+Z2(sed=sen)
+-->
+jump(prob_regler, 1)
+action(accepting)
+}
+
+
+inget_subjekt_verb_OK@verb
+{
+X(sed=sen),
+Y(wordcl=in | wordcl=rg | cht=mad | cht=mid | cht=pad)+,
+Z(sed=sen)
+-->
+action(accepting)
+jump(slut_verb, Y.no_of_tokens+1)
+}
+
+inget_subjekt@verb
+{
+X0(sed=sen & extra!=hea & extra!=non),
+X1(wordcl!=nn & wordcl!=jj & wordcl!=ps & wordcl!=pc & wordcl!=pn &
+wordcl!=hs & wordcl!=hp & wordcl!=pm)+,
+X2(sed=sen & extra!=exc)
+-->
+mark(X1)
+info("Ett subjekt verkar saknas i satsen")
+action(scrutinizing)
+}
+
+
+
+
+
+inget_verb@verb
+{
+X0(sed=sen & extra!=hea & extra!=non),
+X1(wordcl!=vb)+,
+X2(sed=sen & extra!=exc)
+-->
+info("Verb verkar saknas i satsen. Om detta är en rubrik bör den inte avslutas med punkt.")
+action(scrutinizing)
+jump(slut_verb, X1.no_of_tokens)
+detect("Ingenting här.")
+}
+
+
+
+
+inget_finit_verbOK@verb
+{
+X0(sed=sen),
+X1(text!="att")*,
+X2(voice=sfo & E(lex.vbf=prs))
+-->
+action(accepting)
+jump(slut_verb, X1.no_of_tokens+1)
+detect("Kontinuiteten i vården garanteras.")
+}
+
+
+
+inget_finit_verb@verb
+{
+X0(sed=sen & extra!=hea & extra!=non),
+X1(vbf!=prs & vbf!=prt & vbf!=imp)+,
+X2(sed=sen)
+-->
+info("Tempusböjt verb verkar saknas i satsen")
+action(scrutinizing)
+detect("Hon börja spela cello.")
+accept("Han åt en macka.")
+}
+
+
+slut_verb:
+
+modalt_att@verb
+{
+X(vbt=mod),
+A1(wordcl=ab)*,
+Y(wordcl=ie),
+A2(wordcl=ab)*,
+A3(vbt=aux)?,
+Z(vbt!=aux & vbf=inf & lemma!="förefalla" & lemma!="hinna" & lemma!="våga")
+-->
+mark(X Y Z)
+corr(Y.delete())
+info("Efter verbet" italics(X.text) "brukar inte" italics("att") "förekomma")
+action(scrutinizing)
+detect("Sverige började att klassa kärnkraftsincidenter enligt den internationella standarden.")
+}
+
+(*
+ej_modalt_ej_att@verb
+{
+V(vbt!=mod & vbt!=aux),
+X(wordcl=vb & vbt!=mod & voice=akt & text!="behövs" & lemma!="önska"),
+Y(wordcl=ab)*,
+Z(vbf=inf)
+-->
+mark(X Z)
+corr(Z.insert("att"))
+info("Efter verbet" italics(X.text) "brukar" italics("att") "förekomma före verb i infinitiv")
+action(scrutinizing)
+detect("Jag undvek plocka de gula blommorna.")
+}
+
+*)
+
+verb_fras6@verb
+{
+X1(wordcl=vb & (lemma="ämna" | lemma="önska")),
+X2(wordcl=ab)*,
+X3(voice=sfo)
+-->
+info("Verbfrasfel")
+action(scrutinizing)
+detect("Huset ämnar byggas nästa månad.")
+}
+
+ie_utan_infinitiv@verb
+{
+X2(wordcl=ie),
+X3(vbf!=inf & cht!=mad)+,
+X4(sed=sen)
+-->
+mark(X2)
+info("Verb i infinitiv saknas efter" italics("att"))
+action(scrutinizing)
+jump(slut_att, X3.no_of_tokens)
+detect("Projektet syftar till att fram ett grammatikgranskningsverktyg för svenska språket.")
+}
+
+att_utan_verbOK@verb
+{
+X(text="att"),
+X2()*,
+X3(text=":"),
+X4(sed=sen)
+-->
+jump(slut_att, 1)
+action(accepting)
+}
+
+att_utan_verb@verb
+{
+X2(text="att"),
+X3(wordcl!=vb)*,
+X4(sed=sen)
+-->
+mark(X2)
+info("Verb saknas efter" italics("att"))
+action(scrutinizing)
+detect("Hyresvärden är hemma och disponerar att rum i lägenheten")
+}
+
+att_ej_infinitiv@verb
+{
+X2(text="att"),
+X3(wordcl=vb & vbf!=inf)
+-->
+info("Verb i infinitiv saknas efter" italics("att"))
+corr(X3.form(vbf:=inf))
+action(scrutinizing)
+detect("Det är inte lämpligt att beviljar pojken veckopeng.")
+}
+
+slut_att:
+
+(* 9 För många finita verb i satsen 
+ man måste känna till satsgränser för att implementera den 
+här regeln 
+*)
+
+
+(* --------------------SATSREGLER/ORDFÖLJDSREGLER-----------------------*)
+
+
+(* 20.Placering av adverb i bisats (Position of adverb in subordinate clauses).
+    Den har setts av så få personer på biograferna att den lär knappast gå över
+    den magiska miljongränsen. *)
+	(* 2 bygg ut med att de inte får inleda mening
+%text="alldeles"*)
+of1@ordföljd
+{
+X0(sed!=sen),
+X1(wordcl=sn | text="att"  | text="eftersom"), 
+(NP/X2)(),
+X3(wordcl=vb),
+X4(wordcl=ab & (text="alltså" | text="antagligen" | 
+text="bara" | real_text="dess värre" |
+text="däremot" | text="då" | text="ju" | text="ej" | text="emellertid" |
+text="endast" | text="enkom" | text="förgäves" | text="först" | text="givetvis" |
+text="helst" | real_text="i synnerhet" | text="icke" | text="ingalunda" | 
+real_text="inte ens" | real_text="inte heller" | text="inte" | text="knappats" |
+real_text="inte minst" | text="just" | text="kanske" | text="lyckligtvis" | 
+text="minsann" | text="möjligen" | text="möjligt" | text="nog" | text="nämligen" |
+text="också" | text="onekligen" | text="redan" | real_text="rent av" | 
+real_text="rent ut" | text="riktigt" | text="säkerligen" | text="säkert" |
+text="särskilt" | real_text="så att säga" | text="således" | text="tyvärr" |
+text="verkligen" | text="vidare" | text="väl" | text="ännu" | text="även" |
+text="åter" | text="åtminstone" | text="fortfarande" | text="förmodligen"))+, 
+%X5(wordcl=vb )    % johan ändrade, ola la till förmodligen
+X5(wordcl!=jj) % & wordcl!=ab)
+-->
+corr(X3.delete() X5.insert(X3.real_text))
+info("Ordföljdsfel, felaktig placering av adverb i bisats")
+accept("Vid en avkastning som i princip är lika hög som inflationen blir således nettoavkastningen noll.") 
+action(scrutinizing)
+}
+
+category ordföljd {
+info("underlig ordföljd")
+link("" "")
+}
+
+(*
+of1b@ordföljd
+{
+X0(sed!=sen),
+X1(wordcl=sn | text="att" | text="eftersom"), %text="som" gav fa på accept 
+(NP/X2)(),
+X3(wordcl=vb),
+X4(wordcl=ab & (text="alldeles"
+| text="alltså" | text="antagligen" | text="bara" | real_text="dess värre" |
+text="däremot" | text="då" | text="ju" | text="ej" | text="emellertid" |
+text="endast" | text="enkom" | text="förgäves" | text="först" | text="givetvis" |
+text="helst" | real_text="i synnerhet" | text="icke" | text="ingalunda" | 
+real_text="inte ens" | real_text="inte heller" | text="inte" | text="knappats" |
+real_text="inte minst" | text="just" | text="kanske" | text="lyckligtvis" | 
+text="minsann" | text="möjligen" | text="möjligt" | text="nog" | text="nämligen" |
+text="också" | text="onekligen" | text="redan" | real_text="rent av" | 
+real_text="rent ut" | text="riktigt" | text="säkerligen" | text="säkert" |
+text="särskilt" | real_text="så att säga" | text="således" | text="tyvärr" |
+text="verkligen" | text="vidare" | text="väl" | text="ännu" | text="även" |
+text="åter" | text="åtminstone" | text="fortfarande")),
+X5(wordcl!=jj & wordcl!=ab)  % johan ändrade igen
+-->
+corr(X3.delete() X5.insert(X3.real_text))
+info("Ordföljdsfel, felaktig placering av adverb i bisats")
+action(scrutinizing)
+accept("Vid en avkastning som i princip är lika hög som inflationen blir således nettoavkastningen noll.") 
+}
+*)
+
+
+(* 3 bygg ut med att de inte får inleda mening *)
+of2@ordföljd
+{
+X0(sed!=sen),
+X1(wordcl=sn | text="att"),
+X2(wordcl=pn & (text="den" | text="det")),
+X3(wordcl=vb),
+X4(wordcl=ab),
+X5(wordcl=vb)    % johan ändrade
+%X5(wordcl!=jj & wordcl!=ab)
+-->
+mark(X3 X4 X5)
+corr(X3.delete() X5.insert(X3.real_text))
+info("Ordföljdsfel, felaktig placering av adverb i bisats")
+action(scrutinizing)
+}
+
+
+(*    21. Placering av negerat led i bisats (Position of negated element in
+    subordinate clauses).
+    En del håller på den gamla goda tiden och påstår att lite stryk gör ingen
+    skada.
+*)
+(* är den verkligen fel, kolla upp! *)
+of3@ordföljd
+{
+X1(wordcl=sn | text="att"), 
+(NP/X2)(),
+X3(wordcl=vb),
+X4(text="ingen" | text="inget"),
+(NP/X5)()
+-->
+corr(X3.insert("inte")
+     if X4.text="inget" then X4.replace("något") else X4.insert("någon") end)
+info("Ordföljdsfel, felaktig placering av negerat led i bisats")
+action(scrutinizing)
+}
+
+
+
+(*    22. Ledföljd i indirekt frågesats (Constituent order in subordinate
+    interrogative clauses).
+    Jag undrar vad gör de de unga männen i Finland.
+    Note: This is a check for the order between subject and finite verb in
+    subordinate clauses introduced by an interrogative word (e.g. vad). *)
+
+of4@ordföljd
+{
+X0(sed=sen),
+X00()*,
+X01(lemma="undra" | lemma="veta" | lemma="fråga"),
+X02()*,
+X1((wordcl=hp | wordcl=ha) & text!="som"), % frågeord
+
+X2(wordcl=vb & (vbf=prt | vbf=prs)),
+X3(wordcl=pn & text!="få"), % bygg ut med NP
+X4(wordcl=dt)?, 
+(NP/X5)(),
+X6()*,
+X7(extra=per | extra=exc)
+-->
+corr(X0 X00 X01 X02 X1 X3 X2 X4 X5 X6 X7)
+info("Ordföljdsfel, felaktig ledföljd i indirekt frågesats")
+action(scrutinizing)
+detect("Hon frågade varför sparkade han bollen")
+}
+
+of4b@ordföljd
+{
+X0(sed=sen),
+X00()*,
+X01(lemma="undra" | lemma="veta"),
+X02()*,
+X1((wordcl=hp | wordcl=ha) & text!="som"), % frågeord
+
+X2(wordcl=vb & (vbf=prt | vbf=prs)),
+(NP/X3)(wordcl!=pn),
+X4(wordcl=dt)?, 
+(NP/X5)(),
+X6()*,
+X7(extra=per | extra=exc)
+-->
+corr(X0 X00 X01 X02 X1 X3 X2 X4 X5 X6 X7)
+info("Ordföljdsfel, felaktig ledföljd i indirekt frågesats")
+action(scrutinizing)
+detect("Hon frågade varför sparkade han bollen")
+}
+
+(* Lenas regel *)
+(* ger för många falska alarm 
+of5pp@ordföljd
+{
+X0(sed=sen),
+%(PP/X1)(case=nom),
+X1(wordcl=pp),
+(NPmin/X11)(case=nom),
+(NP/X2)(),
+X3(wordcl=vb & (vbf=prs | vbf=prt)),
+X4()
+-->
+mark(X1 X2 X3)
+corr(X4.insert(X2.real_text) X2.delete())
+info("Ordföljdsfel, felaktig ordföljd vid adverbial i fundamentet" "Regel under konstruktion")
+action(scrutinizing)
+detect("På stan det finns folk från olika förorter")
+} 
+*)
+
+(* variant på Lenas regel 
+ listar några rumsadverbial till att börja med, bör ha en egen tagg, se filen /suc/lexicons/rumsadverbial
+*)
+of6ab@ordföljd
+{
+X0(sed=sen),
+X1(wordcl=ab & (text="då" | text="hemma" | text="borta" | text="där")),
+% (NP/X2)(),
+(NPmin/X2)(),
+X3(wordcl=vb & (vbf=prs | vbf=prt))
+-->
+mark(X1 X2 X3)
+corr(X0 X1 X3 X2)
+info("Ordföljdsfel, felaktig ordföljd vid adverbial i fundamentet" "Regel under konstruktion")
+action(scrutinizing)
+detect("Hemma det finns folk från olika förorter")
+} 
+
+
+(* 23. Dubbel negation (Double negation). *)
+(* behöver bli lite generellare!! *)
+
+category negation {
+info("underlig negation")
+link("" "")
+}
+
+neg1@negation
+{
+X(text="inte" | text="ej"),
+Y()?,
+Z(text="varken")
+-->
+mark(X Z)
+corr(X.delete() Y.insert(Z.real_text) Z.delete())
+corr(Z.replace("vare sig"))
+info("Dubbel negation")
+action(scrutinizing)
+detect("Det är svårt att få jobb och om man inte har varken pengar eller familj.")
+}
+
+
+(*    24. Prepositionsbruk vid tvåledad konjunktion (Use of preposition with
+    two-part conjunctions).
+
+ Skall man kolla vilken typ av konjunktion det är, behövs det? *)
+
+category prep {
+info("ovanligt prepositionsbruk")
+link("" "")
+}
+
+prep1@prep
+{
+X0(text="varken" | text="både" | text="vare sig" | text="antingen" | text="såväl"),
+X1(wordcl=pp),
+(NP/X2)(),
+X3(wordcl=kn),
+(NP/X4)()
+-->
+corr(X4.insert(X1.text))
+corr(X2.insert(X0.real_text) X0.delete())
+info("Felaktigt prepositionsbruk")
+action(scrutinizing)
+detect("Detta erbjuds inte vare sig i Lund eller Malmö.")
+jump(slut_prep1, 4)
+}
+
+slut_prep1:
+
+enlighet@prep
+{
+X(text="i"),
+Y(text="enlighet"),
+Z(wordcl=pp & text!="med")
+-->
+%corr(X Y "med")
+corr(Z.replace("med"))
+info("felaktig preposition")
+action(scrutinizing)
+}
+
+bestå@prep
+{
+X(wordcl=vb & lemma="bestå"),
+Y(wordcl=ab)*,
+Z(text="utav")
+-->
+corr(X Y "av")
+info("felaktig preposition")
+action(scrutinizing)
+}
+
+
+
+
+(*-------------------HJÄLPREGLER------------------------------*)
+
+
+(* Bisatser i NP bör Granska klara!
+Boken som jag läste var dåligt.
+Boken som jag läste var dåliga.
+Mannen som sitter på bänken är mina bröder.
+Den avhandling vilken Jonsson försvarade i våras blev underkända.
+
+Mannen som står därborta är dumma
+Mannen som gillar fisk är fega.
+
+ bör infogas i reglerna, gäller för övrigt även andra fina NP-regler
+
+fler regler bör skrivas!!!!!
+
+kan vi fixa:
+
+Boken jag läste var dåliga.
+
+vore det snyggt.
+
+
+*)
+
+
+(* En hjälpregel gör att vi inte behöver en slinga för att gå igenom
+ en sekvensvariabel 
+*)
+
+JJ@
+{
+X(wordcl=jj | wordcl=ro),
+Y(wordcl=jj & gender=X.gender & num=X.num & spec=X.spec)*
+-->
+action(help,gender:=X.gender, num:=X.num, spec:=X.spec)
+}
+
+
+(* alternativ JJ, pröva!
+JJ@
+{
+X/wordcl=jj | wordcl=ro/,
+Y/wordcl=X.wordcl & gender=X.gender & num=X.num & spec=X.spec/
+-->
+/////hjälp, gender:=X.gender, num:=X.num, spec:=X.spec/
+}
+*)
+
+
+
+NP2@
+{
+X(wordcl=dt | wordcl=ps | wordcl=hd)?,
+Y(wordcl=jj | wordcl=ro | wordcl=rg | wordcl=pc)*, 
+Z(wordcl=nn | wordcl=pn | wordcl=pm)
+-->
+info("NP")
+action(help, gender:=Z.gender, num:=Z.num, spec:=Z.spec, case:=Z.case)
+
+}
+
+
+(* SAG: § 4-5 *)
+ 
+(* SAG 3 § 75
+
+När en infitivfras är efterställt attribut har den alltid infintivmärke
+
+sätter wordcl så man vet om frasen inleds med infinitvmärke
+*)
+
+VBINF@ {
+X(vbf=inf),
+Y(wordcl=kn),
+Z(vbf=inf) --> action(help);
+X(vbf=inf) --> action(help)
+}
+
+INFP@
+{
+T(text="att"),
+(VBINF)(),
+Y(wordcl=ab)*,
+(NP/Z)()?
+-->
+action(help, gender:=neu, num:=sin);
+
+T(text!="att"),
+---ENDLEFTCONTEXT---,
+(VBINF)(),
+Y(wordcl=ab)*,
+(NP/Z)()?
+-->
+action(help, gender:=neu, num:=sin);
+
+T(text="att")?,
+(VBINF)(),
+Y(wordcl=ab)*,
+(NP/Z)(),
+(PP/Z2)()
+-->
+action(help, wordcl:=T.wordcl, gender:=neu, num:=sin)
+;
+
+T(text="att")?,
+(VBINF)(),
+Y(wordcl=ab)*,
+(PP/Z2)()
+-->
+action(help, wordcl:=T.wordcl, gender:=neu, num:=sin)
+}
+
+(* Bör fixa det här snyggare 
+
+biNPkonj@
+{
+(biNP/X1)(),
+X2(wordcl=kn),
+(biNP/X2)()
+-->
+action(help, gender:=
+*)
+
+
+biNP@
+{
+(NPbisats1)() --> 
+action(help, gender:=NPbisats1.gender, num:=NPbisats1.num, spec:=NPbisats1.spec);
+
+(NPbisats2)() --> 
+action(help, gender:=NPbisats2.gender, num:=NPbisats2.num, spec:=NPbisats2.spec);
+
+(NPbisats3)() --> 
+action(help, gender:=NPbisats3.gender, num:=NPbisats3.num, spec:=NPbisats3.spec);
+
+(NPbisats4)() --> 
+action(help, gender:=NPbisats4.gender, num:=NPbisats4.num, spec:=NPbisats4.spec);
+(NPbisats5)() --> 
+action(help, gender:=NPbisats5.gender, num:=NPbisats5.num, spec:=NPbisats5.spec)
+}
+
+NP@
+{
+(NPkonj)() --> action(help, wordcl:=kn, pnf:=NPkonj.pnf, gender:=undef,
+			num:=NPkonj.num, spec:=NPkonj.spec, case:=NPkonj.case);
+(NPgen)() --> action(help, gender:=NPgen.gender, num:=NPgen.num, spec:=NPgen.spec,
+			 case:=NPgen.case, pnf:=NPgen.pnf);
+(NPmin)() --> action(help, pnf:=NPmin.pnf, gender:=NPmin.gender,
+			num:=NPmin.num, spec:=NPmin.spec, case:=NPmin.case);
+(NP_jj)() --> action(help, wordcl:=jj, pnf:=undef, gender:=NP_jj.gender, 
+			num:=NP_jj.num, spec:=NP_jj.spec, case:=NP_jj.case);
+(NP_dtjj)() --> action(help, pnf:=undef, gender:=NP_dtjj.gender, 
+			num:=NP_dtjj.num, spec:=NP_dtjj.spec, case:=NP_dtjj.case);
+(NPdbkonj)() --> action(help,pnf:=undef, gender:=NPdbkonj.gender, 
+			num:=NPdbkonj.num, spec:=NPdbkonj.spec, case:=NPdbkonj.case);
+(NPapp)()--> action(help, gender:=NPapp.gender, num:=NPapp.num, spec:=NPapp.spec, case:=NPapp.case);
+(NPpm)()--> action(help, wordcl:=pm, pnf:=undef, gender:=undef, num:=undef, spec:=def, case:=NPpm.case);
+
+(NPpartplu)() -->action(help, pnf:=NPpartplu.pnf, gender:=NPpartplu.gender, num:=NPpartplu.num, spec:=NPpartplu.spec, case:=NPpartplu.case);
+(NPmPP)()--> action(help, pnf:=NPmPP.pnf, gender:=NPmPP.gender,
+			  num:=NPmPP.num, spec:=NPmPP.spec, case:=NPmPP.case);
+(NP_INF)() --> action(help, pnf:=NP_INF.pnf, gender:=NP_INF.gender,
+			num:=NP_INF.num, spec:=NP_INF.spec, case:=NP_INF.case);
+
+(NPset)()--> action(help, pnf:=NPset.pnf, gender:=NPset.gender, num:=NPset.num, spec:=NPset.spec, case:=NPset.case);
+
+(NPhs)() --> action(help, pnf:=NPhs.pnf, gender:=NPhs.gender, num:=NPhs.num, spec:=NPhs.spec, case:=NPhs.case);
+(NPhp)()--> action(help, pnf:=NPhp.pnf, gender:=NPhp.gender, num:=NPhp.num, spec:=NPhp.spec, case:=NPhp.case)
+}
+
+NPmPP@ {
+(NPmin)(text!="det" & text!="den"),
+(PP)()
+--> action(help, pnf:=NPmin.pnf, gender:=NPmin.gender, num:=NPmin.num, spec:=NPmin.spec, case:=NPmin.case)
+}
+
+NP_INF@ {
+(NPmin)(),
+(INFP)()
+--> action(help, pnf:=NPmin.pnf, gender:=NPmin.gender, num:=NPmin.num, spec:=NPmin.spec, case:=NPmin.case)
+}
+
+NPpartplu@	{
+(Partattr)(),
+(NP)()
+-->
+action(help, pnf:=Partattr.pnf, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+}
+
+
+Partattr@	{
+X1(((wordcl=pn | (wordcl=rg & rgt!=yea)) & text!="en" & text!="ett" & text!="ingen" & 
+text!="inget") | token=TOKEN_PERCENTAGE |
+text="hälften" | text="resten"),
+X2(wordcl=pp & text="av")
+--> action(help, pnf:=X1.pnf, gender:=X1.gender, num:=plu, spec:=X1.spec, case:=X1.case);
+X0(wordcl=dt & text="en"),
+X1(substr(length-3,3)="del"),
+X2(wordcl=pp & text="av")
+--> action(help, pnf:=sub, gender:=utr, num:=plu, spec:=ind, case:=nom)
+}
+
+NPinkPM@ {
+(NP)() --> action(help, wordcl:=NP.wordcl, pnf:=NP.pnf,
+		  num:=NP.num, spec:=NP.spec, case:=NP.case);
+(NPpm)() --> action(help, wordcl:=pm, case:=NPpm.case)
+%X(wordcl=pm)+ --> action(help, wordcl:=pm) 
+}
+
+(* spec:= def, alla namn måste ju vara definita? *)
+NPpm@
+{
+X(wordcl=pm)+ --> action(help, wordcl:=pm, pnf:=undef,gender:=undef, num:=undef, spec:=def, case:=X.case) 
+}
+
+(*
+NPgen@
+{
+(NPgengrund/Y)()
+-->
+action(help, gender:=Y.gender, num:=Y.num, spec:=Y.spec, case:=Y.case, pnf:=undef)
+;
+(NPhs/Y)()
+-->
+action(help, gender:=Y.gender, num:=Y.num, spec:=Y.spec, case:=Y.case, pnf:=undef)
+}
+*)
+
+NPgen@
+{
+(NPmin/X)(case=gen),
+(NPmin/Y)(spec=ind)
+-->
+action(help, gender:=Y.gender, num:=Y.num, spec:=Y.spec, case:=Y.case, pnf:=undef)
+}
+
+
+(* en massa hus, ett fyrtiotal hundar *)
+
+NPset@
+{
+X1(wordcl=dt & num=sin),
+X2(wordcl=nn & nntype=set)+,
+X3(wordcl=jj)*,
+X4(wordcl=nn & spec=ind)
+-->
+action(help, gender:=X4.gender, num:=plu, spec:=ind, case:=X4.case, pnf:=undef)
+}
+
+(* vems glada fru är snäll? *)
+
+NPhs@
+{ 
+X1(wordcl=hs),
+X2(wordcl=jj)*,
+X3(wordcl=nn)
+-->
+action(help, gender:=X3.gender, num:=X3.num, spec:=def, case:=X3.case, pnf:=undef)
+}
+
+(* vad är grön? *)
+
+NPhp@
+{
+Y(wordcl=hp & text!="som")
+-->
+action(help, gender:=Y.gender, num:=Y.num, spec:=Y.spec, case:=Y.case, pnf:=undef)
+}
+
+
+(* min vän generalen, det förunderliga fenomenet bilen 
+   min bror Per, Staden Kalmar *)
+
+
+NPapp@
+{
+(NPmin/X)(spec=def), % wordcl=nn?
+Y(wordcl=nn & !is_cap & spec=def)
+--> 
+action(help,gender:=X.gender, num:=X.num, spec:=def, case:=Y.case)
+;
+(NPmin/X)(spec=def),
+(NPpm/Y)()
+-->
+action(help,gender:=X.gender, num:=X.num, spec:=def, case:=Y.case)
+}
+
+
+(* inget direkt generellt, fixa senare ... 
+såväl<kn> principiella<jj.pos.utr/neu.plu.ind/def.nom> som<kn>
+praktiska<jj.pos.utr/neu.plu.ind/def.nom> utgångspunkter<nn.utr.plu.ind.nom
+*)
+
+NPdbkonj@
+{
+X(text="såväl"),
+Y(wordcl=ab)?,
+Z(wordcl=jj)+,
+Z2(text="som"),
+Z3(wordcl=ab)?,
+Z4(wordcl=jj)+,
+Z5(wordcl=nn)
+-->
+action(help, gender:=Z5.gender, num:=Z5.num, spec:=Z5.spec, case:=Z5.case, pnf:=undef)
+}
+
+(* ensamt adjektiv som fungerar som ett substantiv 
+la till text!=för" & text!="som" eftersom det är en form av predikativ
+pred attribut "säcken full"
+*)
+
+NP_jj@
+{
+X(wordcl!=dt & wordcl!=kn & text!="för" & text!="som" & wordcl!=nn & wordcl!=jj & wordcl!=ps & vbt!=kop), % vbt!=kop adj efter kop bör vara adj
+---ENDLEFTCONTEXT---,
+Y(wordcl=jj & substr(length-1, 1) = "a"),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl!=jj & wordcl!=nn & wordcl!=kn)
+-->
+action(help, wordcl:=Y.wordcl, gender:=Y.gender,num:=Y.num,spec:=Y.spec,case:=Y.case)
+}
+
+NP_dtjj@
+{
+---ENDLEFTCONTEXT---,
+X(wordcl=dt | wordcl=hd | wordcl=ps),
+Y(wordcl=jj & substr(length-1, 1) = "a"),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl!=jj & wordcl!=nn)
+-->
+action(help, gender:=Y.gender,num:=Y.num,spec:=Y.spec,case:=Y.case)
+}
+
+(* *)
+Clause_del@
+{
+% Eva 1
+---ENDLEFTCONTEXT---,
+Z(sed=sen),
+---BEGINRIGHTCONTEXT---,
+Z2(cht!=mad)
+-->
+action(help, wordcl:=Z.wordcl)
+;
+
+% Eva 2
+---ENDLEFTCONTEXT---,
+X(cht=mid),
+---BEGINRIGHTCONTEXT---,
+Y(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=X.wordcl)
+;
+
+% Eva 3
+X(cht=mid),
+---ENDLEFTCONTEXT---,
+X2((wordcl=pn & pnf=sub) | (wordcl=nn & case=nom) | (wordcl=pm & case=nom) | 
+wordcl=ab), 
+---BEGINRIGHTCONTEXT---,
+Y(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=X2.wordcl)
+;
+
+% Eva 4
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=kn),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=sn)
+-->
+action(help, wordcl:=Y.wordcl)
+;
+
+% Eva 5
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=sn),	% ny sats börjar här
+---BEGINRIGHTCONTEXT---
+-->
+action(help, wordcl:=Y.wordcl)
+
+;
+
+% Eva 6
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=kn),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=ha | wordcl=hd | wordcl=hp | wordcl=hs)
+-->
+action(help, wordcl:=Y.wordcl)
+;
+
+% Eva7
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=ha | wordcl=hd | wordcl=hp | wordcl=hs),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=ha | wordcl=hd | wordcl=hp | wordcl=hs)
+-->
+action(help, wordcl:=Y.wordcl)
+;
+
+% Eva8
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=ha | wordcl=hd | wordcl=hp | wordcl=hs),
+---BEGINRIGHTCONTEXT---,
+Z()
+-->
+action(help, wordcl:=Y.wordcl)
+;
+
+% Eva9
+X(),
+---ENDLEFTCONTEXT---,
+X2(wordcl=vb & (text="är" | text="var" | text="varit" | text="går" | text="gick" |
+text="gått" | text="står" | text="stod" | text="stått" | text="sitter" |
+text="satt" | text="suttit")),
+---BEGINRIGHTCONTEXT---,
+Y(wordcl=kn),
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=X2.wordcl)
+
+;
+
+% Eva 10 
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup)),
+---ENDLEFTCONTEXT---,
+Y(wordcl=kn),
+---BEGINRIGHTCONTEXT---,
+Z()
+-->
+action(help, wordcl:=Y.wordcl)
+;
+
+
+% Eva 11
+---ENDLEFTCONTEXT---,
+X(wordcl=pn | wordcl=pm | wordcl=nn | wordcl=ab),
+---BEGINRIGHTCONTEXT---,
+Y(wordcl=kn),
+Y2(wordcl=pn | wordcl=pm | wordcl=nn | wordcl=ab),
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp)) % | vbf=sup))
+-->
+action(help, wordcl:=Y.wordcl)
+;
+
+% Eva 12
+---ENDLEFTCONTEXT---,
+X(),
+---BEGINRIGHTCONTEXT---,
+Y(wordcl=kn),
+Y2(wordcl!=X.wordcl),
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=Y.wordcl)
+;
+
+% Eva 13
+---ENDLEFTCONTEXT---,
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup)),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp)) % vbf=sup konstigt Eva!
+-->
+action(help, wordcl:=X.wordcl)
+;
+
+% Eva 14
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup)),
+---ENDLEFTCONTEXT---,
+Y(),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=Y.wordcl) 
+%}
+
+ ;
+% Eva 15
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup)),
+Y(),
+---ENDLEFTCONTEXT---,
+Z(wordcl=nn | wordcl=pn | wordcl=pm),
+---BEGINRIGHTCONTEXT---,
+Z2(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=Z.wordcl)
+%}
+;
+% Eva 16
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup)),
+Y(),
+---ENDLEFTCONTEXT---,
+Z(),
+---BEGINRIGHTCONTEXT---,
+Z2(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=Z2.wordcl)
+}
+
+
+
+
+Ola1@
+{
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup)),
+---ENDLEFTCONTEXT---,
+Y(wordcl=kn),
+---BEGINRIGHTCONTEXT---,
+Z()
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+
+
+
+
+
+
+
+
+(* 
+Boken som jag läste var dåligt.
+Boken som jag läste var dåliga.
+Den avhandling vilken Jonsson försvarade i våras blev underkända.
+
+*)
+
+(*
+Det<pn.neu.sin.def.sub/obj> 
+är<vb.prs.akt.kop> 
+alltså<ab> uppenbart<jj.pos.neu.sin.ind.nom> att<sn> 
+den<dt.utr.sin.def> lagstiftning<nn.utr.sin.ind.nom> som<hp> nu<ab>
+införs<vb.prs.sfo> redan<ab> är<vb.prs.akt.kop> 
+föråldrad<jj.pos.utr.sin.ind.nom> och<kn> har<vb.prs.akt.aux> 
+små<jj.pos.utr/neu.plu.ind/def.nom>
+teknikstyrande<pc.prs.utr/neu.sin/plu.ind/def.nom> 
+effekter<nn.utr.plu.ind.nom>.<mad>
+*)
+
+NPbisats1@
+{ 
+(NP/X1)(),
+X11(cht=mid)?,
+X2(text="som" | text="vilken" | text="vad" | wordcl=ha), % ha är en chansning ev. skulle man endast använda den för de acceperande reglerna.
+(NP/X3)(),
+X31(wordcl=ab)?,
+X4(wordcl=vb), % & (vbf=prs | vbf=prt)/,
+ X44(wordcl=pl)?,
+(PP/X5)()?,
+X6(cht=mid)?
+-->
+action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
+}
+
+
+(* Mannen som sitter på bänken är mina bröder.
+Mannen som står i vassen är dumma.
+
+Skulle det gå att kolla om som saknas här vore det bra, går det, som
+får ju endast utelämnas när subjektet finns i bisatsen: Boken jag läste var trist.
+
+*)
+
+NPbisats2@
+{ 
+(NP/X1)(),
+X10(cht=mid)?,
+X2(text="som" | text="vilken" | text="vad"| wordcl=ha), % ha en chansning 991229
+X3(wordcl=ab)?,
+X4(wordcl=vb), % & (vbf=prs | vbf=prt)/,
+ X44(wordcl=pl)?,
+(PP/X5)()?,
+(PP/X6)()?, 	% ny 000221
+X7(cht=mid)?
+-->
+action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
+}
+
+
+(* Mannen som står därborta är dumma *)
+
+NPbisats3@
+{ 
+(NP/X1)(),
+X11(cht=mid)?,
+X2(text="som" | text="vilken" | text="vad"| wordcl=ha), % ha en chansning 991229
+X3(wordcl=ab)?,
+X4(wordcl=vb), % & (vbf=prs | vbf=prt)/,
+X44(wordcl=pl)?,
+X5(wordcl=ab)+,	% vågar vi ? här "Mannen som står är dum."
+
+X6(cht=mid)?
+-->
+action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
+}
+
+
+(* Mannen som gillar fisk är fega. *)
+
+NPbisats4@
+{ 
+(NP/X1)(),
+X11(cht=mid)?,
+X2(text="som" | text="vilken" | text="vad"| wordcl=ha),% ha en chansning 991229
+X3(wordcl=ab)?,
+X4(wordcl=vb), % & (vbf=prs | vbf=prt)/,
+ X44(wordcl=pl)?,
+(NP/X5)(),
+X6(cht=mid)?
+-->
+action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
+}
+
+(* ett land som sedan mer än 35 år är ockuperat *)
+
+NPbisats5@
+{
+(NP/X1)(),
+X2(text="som"),
+X3(wordcl=ab)+,
+X4(text="än"),
+(NP/X5)()
+-->
+action(help, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
+}
+
+
+
+
+
+(* 22 *)
+(* gender:=???? fixa *)
+NPkonj@
+{
+(NPkonj1/X)()
+--> action(help, wordcl:=kn, num:=X.num, case:=X.case)
+;
+(NPkonj2/Y)()
+--> action(help, wordcl:=kn, num:=Y.num, case:=Y.case)
+;
+(NPkonj3/Z)()
+--> action(help, wordcl:=kn, num:=Z.num, case:=Z.case)
+;
+(NPkonj4/Z2)()
+--> action(help, wordcl:=kn, gender:=Z2.gender, num:=Z2.num, spec:=Z2.spec, case:=Z2.case)
+}
+
+NPkonj1@
+{ 
+(NPmin/X)(),
+Y(wordcl=kn & (text="och" | text="&" | text="samt")), % la till text-kraven, borde kanske vara fler 
+(NPmin/Z)(Z[0].text!="varje" & wordcl!=pn & spec=X.spec) % johan la till för att slippa "saken och det" ola la till text!="varje" efter som varje är speciell, fler?
+-->
+action(help, wordcl:=kn,num:=plu, case:=Z.case)
+%action(help, if (Y.text="eller" & X.num=sin & Z.num=sin) then num:=sin else num:=plu end, case:=Z.case)
+}
+
+
+NPkonj2@
+{ 
+(NPmin/X)(num=sin),
+Y(wordcl=kn & text="eller"), % la till text-kraven, borde kanske vara fler 
+(NPmin/Z)(num=sin)
+-->
+action(help, wordcl:=kn, num:=sin, case:=Z.case)
+%action(help, if (Y.text="eller" & X.num=sin & Z.num=sin) then num:=sin else num:=plu end, case:=Z.case)
+}
+
+NPkonj3@
+{ 
+(NPmin/X)(num=plu),
+Y(wordcl=kn & text="eller"), % la till text-kraven, borde kanske vara fler 
+(NPmin/Z)(num=plu)
+-->
+action(help, wordcl:=kn, num:=plu, case:=Z.case)
+%action(help, if (Y.text="eller" & X.num=sin & Z.num=sin) then num:=sin else num:=plu end, case:=Z.case)
+}
+
+NPkonj4@
+{
+X1(wordcl=dt | wordcl=hd | wordcl=ps)?,
+X2(wordcl=rg | wordcl=ab)?,
+X3(wordcl=ro)?,
+X4(wordcl=jj)+,
+X5(wordcl=kn),
+X6(wordcl=jj),
+X7(wordcl=nn)
+-->
+action(help, wordcl:=kn, num:=X7.num, case:=X7.case, gender:=X7.gender, spec:=X7.spec)
+}
+
+(*
+{
+(NPkonj/X)(num=plu)
+-->
+action(scrutinizing)
+info(tostring(X.num))
+}
+
+*)
+
+NPjjkonj@
+{
+X0(wordcl=ab)?,
+X1(wordcl=jj),
+X2(wordcl=kn),
+X3(wordcl=jj),
+X4(wordcl=nn)
+-->
+action(help, gender:=X4.gender)
+}
+
+NPmin@
+{
+X(wordcl=dt | wordcl=hd),
+X2(wordcl=ab | wordcl=rg)*,
+Y(wordcl=jj | wordcl=ro | wordcl=pc)*, 
+Z(wordcl=nn)
+-->
+%jump(endlabel, 1+X2.no_of_tokens+Y.no_of_tokens)
+action(help, wordcl:=Z.wordcl, pnf:= undef,
+	gender:=Z.gender, num:=Z.num,spec:=Z.spec, case:=Z.case)
+;
+%X(wordcl=dt | wordcl=hd)?,
+X2(wordcl=ab | wordcl=rg)*,
+Y(wordcl=jj | wordcl=ro | wordcl=pc)*, 
+Z(wordcl=nn)
+-->
+action(help, wordcl:=Z.wordcl, pnf:= undef,
+	gender:=Z.gender, num:=Z.num,spec:=Z.spec, case:=Z.case);
+
+
+X(wordcl=ps),
+X2(wordcl=ab | wordcl=rg)*,
+Y(wordcl=jj | wordcl=ro | wordcl=pc)*, 
+Z(wordcl=nn)
+-->
+action(help, wordcl:=Z.wordcl, pnf:= undef,
+	gender:=Z.gender, num:=Z.num,spec:=def, case:=Z.case);
+
+X(wordcl=pn) -->action(help, wordcl:=pn,pnf:= X.pnf, gender:=X.gender,
+			num:=X.num, spec:=X.spec, case:=X.case);
+(NPpm)() --> action(help, wordcl:=pm, pnf:=undef, gender:=undef, 
+			num:=undef, spec:=def,case:=NPpm.case)
+}
+
+
+nnOrpn@ {
+ X(wordcl=nn) -->action(help, pnf:= obj, gender:=X.gender,
+			num:=X.num, spec:=X.spec, case:=X.case);
+ X(wordcl=pn) -->action(help, pnf:= X.pnf, gender:=X.gender,
+			num:=X.num, spec:=X.spec, case:=X.case)
+}
+
+
+NPmin2@
+{
+X(wordcl=dt | wordcl=ps | wordcl=hd)?,
+Y(wordcl=jj | wordcl=ro | wordcl=rg | wordcl=pc)*, 
+Z(wordcl=nn | wordcl=pn)
+-->
+info("NP")
+action(help, gender:=Z.gender, num:=Z.num, spec:=Z.spec, case:=Z.case)
+}
+
+NPJohan@
+{
+X(wordcl=dt | wordcl=ps | wordcl=hd),
+Y(wordcl=jj | wordcl=ro | wordcl=rg | wordcl=pc)*, 
+Z(wordcl=nn | wordcl=pn)
+-->
+info("NP")
+action(help, gender:=Z.gender, num:=Z.num, spec:=Z.spec, case:=Z.case)
+}
+
+(* subtraktion vore bra här för att ta bort "ingen av grannarna"*)
+
+PP@
+{
+a(wordcl=pp),
+(NP)(wordcl!=kn)
+-->
+action(help, case:=NP.case); % text:=a.text
+b(wordcl=pp),
+(biNP)()
+-->
+action(help, case:=biNP.case)	% text:=b.text
+}
+
+(*
+PP@
+{
+a(wordcl=pp),
+(NP)()
+-->
+info("info")
+action(help);
+b(wordcl=pp),
+(biNP)()
+-->
+action(help)
+}
+*)
+
+
+(* -----------------------OBS!--------------------------------
+   inför ? på JJ
+ *)
+
+(* KORREKT NP-reglerna bör kanske flyttas till ovan inkongruensreglerna *)
+
+
+
+(* fixa tilldelning *)
+
+JJ2@
+{
+X(wordcl=jj),
+Y(wordcl=jj & gender=X.gender & num=X.num & spec=X.spec)*
+-->
+action(help, gender:=X.gender, num:=X.num, spec:=X.spec)
+% johan ändrade från Y till X i raden ovan!
+}
+
+
+
+(* ---------------------Nya regler 991005, bör göras bättre -----------------------------*)
+
+nrulerg1@kong
+{
+X1(wordcl=dt)?,
+X2(wordcl=rg & num!=undef),
+X22(wordcl=jj & !is_cap),
+X3(wordcl=nn & num!=X2.num & nntype!=dat)
+-->
+corr(X22.form(num:=X2.num) X3.form(num:=X2.num))
+info("kongruensfel")
+action(scrutinizing)
+}
+
+
+(* ej komplett ersättningsförslag *)
+nrulerg2@kong
+{
+X1(wordcl=rg & num=sin & real_text!="1"),
+X2(wordcl=jj & !is_cap)*,
+X3(wordcl=nn & !is_cap & ((X1.real_text!="1" & X1.gender!=undef & gender!=X1.gender) | num!=X1.num | (X1.spec!=undef & spec!=X1.spec)) & nntype!=dat &
+(X2.no_of_tokens=0 | (gender=X2.gender & num=X2.num & spec=X2.spec)))
+-->
+corr(if (X1.gender!=X3.gender & X3.gender=utr) then X1.replace("en")
+     else X1.replace("ett") end
+     X3.form(num:=X1.num, spec:=X1.spec))
+action(scrutinizing)
+}
+
+(* Ny fix, bör göras bättre *)
+
+spec1@kong
+{
+X1(text="vardera"), % | text="någondera" | text="ingendera" | text="endera"), %hur? | text="bådadera"),
+X2(wordcl=jj)*,
+X3(wordcl=nn & gender=neu & num=sin)
+-->
+corr(X1.replace("vartdera"))
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+(*
+spec1b@kong
+{
+X1(text="vardera"), %| text="någondera" | text="ingendera" | text="endera"),
+X2(wordcl=jj)*,
+X3(wordcl=nn & (spec=ind  | num=plu))
+-->
+corr(X3.form(num:=sin, spec:=def))
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+*)
+
+spec2@kong
+{
+X1(text="vartdera"),
+X2(wordcl=jj)*,
+X3(wordcl=nn & gender=utr)
+-->
+corr(X1.replace("vardera") X2 X3)
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+spec2b@kong
+{
+X1(text="vartdera"),
+X2(wordcl=jj)*,
+X3(wordcl=nn & (spec=ind  | num=plu))
+-->
+corr(X3.form(num:=sin, spec:=ind))
+info("Om" italics(X1.real_text) "syftar på" italics(X3.real_text) "är det kongruensfel")
+action(scrutinizing)
+}
+
+(*
+subj_obj2@kong
+{
+X1(wordcl=pn & pnf=sub & pnf!=obj),
+X2(wordcl=vb (vbf=prs | vbf=prt)),
+X3(wordcl=pn & pnf=sub & pnf!=obj)
+-->
+corr(X3.form(pnf:=obj))
+action(scrutinizing)
+}
+*)
+
+(*
+nrule15@
+{
+V(sed=sen),
+V2()*,
+X(wordcl=vb & vbf=prt & vbt!=kop),
+Y()*,
+Z(text="har"),
+Z1(wordcl=ab)?,
+Z2(vbf=sup & vbt!=kop),
+Z3()*,
+Z4(sed=sen)
+-->
+corr(V V2 X Y "hade" Z1 Z2 Z3 Z4)
+info("Dålig tempusharmoni")
+action(scrutinizing)
+}
+*)
+
+(* Jag håller mig inne, tills stormen hade bedarrat. *)
+
+(* 12 *)
+(*
+nrule16@
+{
+V(sed=sen),
+V2()*,
+X(wordcl=vb & vbf=prs & vbt!=kop),
+Y()*,
+Z(text="hade"),
+Z1(wordcl=ab)?, % andra ordklasser, behövs dedt några krav?
+
+Z2(vbf=sup & vbt!=kop),
+Z3()*,
+Z4(sed=sen)
+-->
+corr(V V2 X Y "har" Z1 Z2 Z3 Z4)
+info("Felaktig tempusharmoni")
+action(scrutinizing)
+}
+*)
+
+(*
+category kommatering {
+info("kommeteringsfel")
+link("" "")
+}
+*)
+
+(* johan 
+kommateringOK@kommatering { 
+B(wordcl=hp),
+C(wordcl=ab)*,
+X(wordcl=vb & vbf=prs & voice=akt),
+Y(wordcl=vb & vbf=prs & voice=akt & vbt!=kop & !E(lex.wordcl=jj))
+-->
+action(accepting)
+jump(slut_kommatering, 2)
+}
+
+kommatering1@kommatering
+{
+X(wordcl=vb & vbf=prs & voice=akt),
+Y(wordcl=vb & vbf=prs & voice=akt & vbt!=kop & !E(lex.wordcl=jj))
+-->
+mark(X Y)
+corr(Y.insert(","))
+info("Kommatering, det kan saknas ett kommatecken här")
+action(scrutinizing)
+}
+
+slut_kommatering:
+
+kommatering2@kommatering
+{
+X(wordcl=vb & vbf=prt & voice=akt),
+Y(wordcl=vb & vbf=prt & voice=akt & vbt!=kop & !E(lex.wordcl=jj))
+-->
+mark(X Y)
+corr(Y.insert(","))
+info("Kommatering, det kan saknas ett kommatecken här")
+action(scrutinizing)
+}
+
+*)
+
+(*
+flera_konjunktioner@a
+{
+X(wordcl=kn),
+Y(wordcl=kn & (X.text!="samt" | text!="dels") & (X.text!="men" | text!="varken") &
+ (X.text!="och" | (text!="dels" & text!="som" & text!="ömsom" & text!="både")) &
+ (text!="som" | (X.text!="och" & X.text!="eller" & X.text!="även" & X.text!="än" & X.text!="dels")) &
+ (X.text!="som" | text="och" | text="men" | text="eller" | text="samt" | text="ty")),
+Z(wordcl=kn)*
+-->
+info("Flera konjunktioner på raken verkar underligt")
+action(scrutinizing)
+jump(slut_konj, 2+Z.no_of_tokens)
+}
+*)
+slut_konj:
+
+(*
+subjunktion@meningsslut
+{
+X(wordcl=sn),
+Y(cht=mad),
+Z(sed=sen)
+-->
+mark(X)
+info("Meningen slutar med subjunktion" italics(X.text))
+action(scrutinizing)
+}
+*)
+
+(*
+category meningsslut {
+info("underligt slut på mening")
+link("" "")
+}
+*)
+
+(*
+relativ_pronomen@meningsslut
+{
+X(wordcl=ha),
+Y(cht=mad),
+Z(sed=sen)
+-->
+mark(X)
+info("Meningen slutar med relativt pronomen" italics(X.text))
+action(scrutinizing)
+}
+*)
+
+(* ger en hel del falska alarm 
+dubbla_adjektiv@meningsslut
+{
+X(wordcl!=dt),
+X1(wordcl=jj),
+X2(wordcl=jj),
+Y(cht=mad),
+Z(sed=sen)
+-->
+mark(X1 X2)
+info("Meningen slutar med två adjektiv" italics(X1.text) italics(X2.text))
+action(scrutinizing)
+}
+*)
+
+
+nrule36@a
+{
+X(wordcl=pp),
+Y(wordcl=pp),
+Z(wordcl=pp)+
+-->
+% corr(X Y Z)
+info("Fler än två prepositioner på raken verkar underligt")
+action(scrutinizing)
+}
+
+felplacerat@adjektiv {
+(NP)(),
+X(wordcl=vb & vbt!=kop), %johan la till vbt!=kop
+Y(wordcl=jj & text!="hela" & text!="all" & text!="samtliga" & text!="halva" &
+text!="båda" & text!="själva" & text!="alla"),
+(NPJohan)()
+-->
+info("felplacerat adjektiv" italics(Y.real_text) "?")
+action(scrutinizing)
+}
+
+(* inte bra
+felplacerat_adverb1@ordföljd {
+X(wordcl=jj & text!="många" & text!="få" & text!="samtliga"),
+Y(wordcl=ab),
+(NP)(wordcl!=jj & NP[0].wordcl!=ab)
+-->
+info("felplacerat adverb" italics(Y.real_text) "?")
+action(scrutinizing)
+}
+*)
+
+(* ger många falska alarm pga feltaggning
+felplacerat_adverb2@ordföljd {
+X(wordcl=pp | wordcl=vb),
+Y(wordcl=ab & deg!=undef),
+Z(wordcl=nn)
+-->
+info("felplacerat adverb" italics(Y.real_text) "?")
+action(scrutinizing)
+}
+*)
+
+category lexin_verb {
+info("underlig verbkonstruktion")
+link("" "")
+}
+
+villOK@lexin_verb
+{
+X2(vbf=inf),
+(PP)(),
+(NP)(),
+X1(wordcl=vb & text="vill")
+-->
+jump(slut_vill, NP.no_of_tokens + PP.no_of_tokens + 2)
+action(accepting)
+}
+
+(*
+vill@lexin_verb
+{
+(NP/X0)(),
+X1(wordcl=vb & text="vill"),
+X2(vbf!=inf & cht!=mid & text!="att")+,
+X3(cht=mad),
+X4(sed=sen)
+-->
+corr(X3.insert("ha"))
+info("Det verkar saknas ett verb i infinitiv efter" italics(X1.real_text))
+action(scrutinizing)
+}
+*)
+slut_vill:
+
+(*
+syftar@lexin_verb
+{
+(NP/X0)(),
+X1(wordcl=vb & text="syftar"),
+X2(text="till"),
+X3(text="att"),
+X4(vbf!=inf)+,
+X5(cht=mad),
+X6(sed=sen)
+-->
+mark(X1 X2 X3)
+corr(X4.insert("ta"))
+corr(X4.insert("ge"))
+corr(X4.insert("få"))
+info("Det verkar saknas ett verb i infinitiv efter" italics(X3.real_text))
+action(scrutinizing)
+}
+
+*)
+
+(* ----- VERBREGLER - TRANSITIVITET ----- *)
+
+(* ----- INTRANSITIVT VERB ----- *)
+
+(*
+intransitivtOK@lexin_verb {
+T(),
+X(text="det"),
+Y(wordcl=ab)*,
+V(verbtype=1),
+Z(wordcl=ab)*,
+(NP)(),
+W(wordcl=ab)*,
+Pw(wordcl=pp | wordcl=pl | NP.pnf!=sub)
+-->
+action(accepting)
+jump(slut_intransitivt, Y.no_of_tokens + 3)
+}
+*)
+(*
+intransitivtOK2@lexin_verb {
+(PP)(),
+%Y(wordcl=ab)*,
+V(verbtype=1),
+Z(wordcl=ab)*,
+(NP)()
+-->
+action(accepting)
+jump(slut_intransitivt, 4)
+}
+*)
+
+(*
+intransitivtOK3@lexin_verb {
+X(wordcl=vb),
+(NP/Np1)(),
+%Y(wordcl=ab)*,
+V(verbtype=1),
+Z(wordcl=ab)*,
+(NP/Np2)()
+-->
+action(accepting)
+jump(slut_intransitivt, 4)
+}
+*)
+
+(* massor av falska alarm, Ola 000417
+intransitivt@lexin_verb {
+B(wordcl!=pp),
+(NP/Np1)(wordcl!=jj),
+Y(wordcl=ab)*,
+V(verbtype=1 & (B.text!="som" | voice!=sfo)),
+Z(wordcl=ab)*,
+(NP/Np2)(wordcl!=jj)
+-->
+mark(V Np2)
+info("Det brukar inte heta att någon" V.real_text "något eller någon, utan bara att någon" V.real_text)
+action(scrutinizing)
+}
+*)
+slut_intransitivt:
+
+(* ----- TRANSITIVT VERB ----- *)
+
+(*
+OchVerb@ {
+X(wordcl=kn),
+Y(wordcl=vb)
+-->
+action(help)
+}	
+
+VerbOch@ {
+X(wordcl=vb),
+Y(wordcl=kn | cht=mid)
+-->
+action(help)
+}	
+*)
+
+(* Clownen härmar med gester alla gäster 
+transitivt_OK1@lexin_verb { 
+Y(wordcl!=pp),
+(NP/Np1)(), % NPinkpm
+V(text="härmar"),
+X()*,
+S(wordcl!=pp & wordcl!=kn & wordcl!=vb),
+(NP/Np2)(wordcl!=pn | pnf!=sub) % NPinkpm
+-->
+jump(slut_transitivt, 3)
+action(accepting)	
+}
+*)
+
+(* Kalle härmar och förlöjligar Pelle 
+transitivt_OK2@lexin_verb { 
+Y(wordcl!=pp),
+(NP/Np1)(), % NPinkpm
+(VerbOch)()?,
+V(text="härmar"),
+(OchVerb)()?,
+X(wordcl=ab)*,
+(NP/Np2)(wordcl!=pn | pnf!=sub ) % NPinkpm
+-->
+jump(slut_transitivt, 5)
+action(accepting)	
+}
+*)
+
+(* mig som Kalle härmar 
+transitivt_OK3@lexin_verb { 
+(NP/Np1)(), % NPinkpm
+X(text="som"),
+(NP/Np2)(), % NPinkpm
+V(text="härmar")
+-->
+jump(slut_transitivt, 5)
+action(accepting)	
+}
+*)
+
+(* ingen just nu 
+transitivt_OK4@lexin_verb { 
+Y(wordcl=pp),
+(NP/Np1)(), % NPinkpm
+V(text="härmar"),
+X()*,
+S(wordcl!=pp & wordcl!=kn),
+(NP/Np2)(),% NPinkpm
+(NP/Np3)(wordcl!=pn | pnf!=sub) % NPinkpm
+-->
+jump(slut_transitivt, 5)
+action(accepting)	
+}
+
+*)
+
+(*
+Med gester härmar clownen publiken 
+transitivt_OK5@lexin_verb { 
+Y(wordcl=pp),
+(NP/Np1)(),  % NPinkpm
+V(text="härmar"),
+X()*,
+(NP/Np2)(),% NPinkpm
+(NP/Np3)(wordcl!=pn | pnf!=sub) % NPinkpm
+-->
+jump(slut_transitivt, 5)
+action(accepting)	
+}
+
+*)
+
+
+(* först härmar han, sedan förlöjligar han Pelle 
+transitivt_OK6@lexin_verb { 
+V(text="härmar"),
+X()*,
+%S(wordcl!=pp & wordcl!=kn & wordcl!=vb),
+(NP/Np2)(wordcl=pn & pnf=sub),% NPinkpm
+Z(wordcl!=sn)*,
+(NP/Np3)(wordcl!=pn | pnf!=sub) % NPinkpm
+-->
+jump(slut_transitivt, 4)
+action(accepting)	
+}
+
+*)
+
+
+(*
+transitivt_utan_objekt@lexin_verb {
+V(text="härmar")
+-->
+mark(V)
+info("Det brukar heta att någon" V.real_text "någon annan eller något annat")
+action(scrutinizing)
+}
+*)
+
+slut_transitivt:
+
+
+
+
+
+(* ----- NP VERB NP till NP ----- *)
+
+(*
+förvandla@lexin_verb {
+(NP/X)(),
+V(wordcl=vb & lemma="förvandla"),
+(NP/Y)(),
+EjTill(text!="till")*,
+(NP/Z)()
+-->
+mark(V Y)
+info("Det brukar heta att någon förvandlar något" italics("till") "något annat")
+corr(Z.insert("till"))
+action(scrutinizing)
+}
+
+
+*)
+
+(* ----- NP VERB till NP ----- *)
+
+(*
+inbjuda_OK@lexin_verb {
+X(wordcl=vb & lemma="inbjuda"),
+Y()*,
+Z(text="till")
+-->
+jump(slut_gränsa, Y.no_of_tokens+1)
+action(accepting)
+}
+
+gränsa_OK@lexin_verb {
+X(text="till"),
+(NP/Np1)(),
+EjTill1(wordcl=ab)*,
+Y(wordcl=vb & vbt!=kop & (lemma="gränsa"|lemma="mana"|lemma="inbjuda"|lemma="relatera")),
+EjTill2(wordcl=ab)*,
+(NP/Np2)()
+-->
+jump(slut_gränsa, 6)
+action(accepting)
+}
+
+gränsa_fel_prep@lexin_verb {
+(NP/X)(),
+V(wordcl=vb & (lemma="gränsa"|lemma="mana"|lemma="inbjuda"|lemma="relatera")),
+EjTill1(wordcl=ab)*,
+Prp(wordcl=pp & text != "till"),
+EjTill2(wordcl=ab)*,
+(NP/Z)()
+-->
+mark(V Prp Z)	
+info("Det brukar heta att något" V.real_text italics("till") "något annat")
+corr(Prp.replace("till"))
+action(scrutinizing)
+jump(slut_gränsa, X.no_of_tokens + EjTill1.no_of_tokens + EjTill2.no_of_tokens + Z.no_of_tokens + 1)
+}
+
+*)
+
+(*
+gränsa_utan_prep@lexin_verb {
+(NP/X)(),
+V(wordcl=vb & (lemma="gränsa"|lemma="mana"|lemma="inbjuda"|lemma="relatera")),
+Y(text!="till")*,
+(NP/Z)()
+-->
+mark(V Z)
+info("Det brukar heta att något" V.real_text italics("till") "något annat")
+corr(Y.insert("till"))
+action(scrutinizing)
+jump(slut_gränsa, 4)
+}
+
+*)
+
+slut_gränsa:
+
+
+
+(* ----- NP VERB på NP ----- *)
+
+(*
+glänta_OK@lexin_verb {
+X(text="på"),
+(NP/Np1)(),
+EjPå1(wordcl=ab)*,
+Y(wordcl=vb & lemma="glänta"),
+EjPå2(wordcl=ab)*,
+(NP/Np2)()
+-->
+jump(slut_glänta, 6)
+action(accepting)
+}
+
+glänta_fel_prep@lexin_verb {
+(NP/X)(),
+V(wordcl=vb & lemma="glänta"),
+EjPå1(wordcl=ab)*,
+Prp(wordcl=pp & text!="på"),
+EjPå2(wordcl=ab)*,
+(NP/Z)()
+-->
+info("Det brukar heta att något" V.real_text italics("på") "något annat")
+corr(X V EjPå1 "på" EjPå2 Z)
+action(scrutinizing)
+jump(slut_glänta)
+}
+
+glänta_utan_prep@lexin_verb {
+(NP/X)(),
+V(wordcl=vb & lemma="glänta"),
+EjPå1(text!="på")*,
+(NP/Z)()
+-->
+info("Det brukar heta att något" V.real_text italics("på") "något annat")
+corr(X V EjPå1 "på" Z)
+action(scrutinizing)
+}
+
+slut_glänta:
+
+*)
+
+(* ----- DIVERSE REGLER UNDER UTVECKLING ----- *)
+
+(*
+så_adj_som_adv@a {
+X(text="så"),
+Y(wordcl=jj | wordcl=ab),
+Z(text="som"),
+F(wordcl=jj & gender=utr & num=sin)
+-->
+mark(Y F)
+corr(F.form(gender:=neu))
+info("Om" italics(F.real_text) "syftar på" italics(Y.real_text) "bör det vara ett adverb")
+action(scrutinizing)
+}
+*)
+
+sort_slag@a {
+X(wordcl=dt),
+Y((text="sort" | text="slag") & gender=X.gender),
+Z(wordcl=nn  & spec=ind)
+--> 
+mark(Y)
+corr(Y.replace(concat(Y.real_text, "s")))
+info("Regel under konstruktion: Det saknas ett" italics("s") "på" italics(Y.real_text))
+action(scrutinizing)
+}
+
+ju_ju@a {
+X1(text="ju"),
+X2(deg=kom),
+X3(text!="desto")*,
+X4(text="ju"),
+X5(deg=kom)
+--> 
+corr(X4.replace("desto"))
+info("Ju fler, desto bättre")
+action(scrutinizing)
+}
+
+även_fast@sammanblandning {
+X(text="även"),
+Y(text="fast")
+-->
+corr(X.replace("även") Y.replace("om"))
+corr(X.replace("fastän") Y.delete())
+corr(X.replace("fast") Y.delete())
+info("även fast är en tautologi")
+action(scrutinizing)
+}
+
+(*
+fråga_utan_frågetecken@a {
+X(sed=sen),
+X1(wordcl=in)?,
+X2(cht=mid)?,
+Y(wordcl=ha | wordcl=hp),
+Z(wordcl=vb),
+Z1()*,
+Z2(cht=mad & text!="?"),
+Z3(sed=sen)
+-->
+corr(Z3.insert("?"))
+info("Är denna mening en fråga bör den avslutas med frågetecken.")
+action(scrutinizing)
+detect("Ja, vad gör vi av det.")
+}
+
+
+fråga_utan_frågetecken2@a {
+X(sed=sen),
+(NP)(),
+X2(cht=mid)?,
+Y((wordcl=ha | wordcl=hp) & text!="som"),
+Z(wordcl=vb),
+Z1()*,
+Z2(cht=mad & text!="?"),
+Z3(sed=sen)
+-->
+corr(Z3.insert("?") if X2.no_of_tokens = 0 then X2.insert(",") else X2.donothing() end)
+info("Är denna mening en fråga bör den avslutas med frågetecken.")
+action(scrutinizing)
+detect("Avfallet vad gör vi av det.")
+}
+
+*)
+
+(*
+en_av_flera@a {
+X1((wordcl=pn | wordcl=dt) & num=sin),
+X2(text="av"),
+X3(wordcl=dt),
+X4(wordcl=ab)*,
+X5(wordcl=jj)?,
+X6(wordcl=jj),
+X7(wordcl=nn & num=sin & case=nom)
+-->
+info("regel under konstruktion")
+corr(X1.delete() X2.delete())
+corr(X3.form(spec:=def, num:=plu)
+     X5.form(num:=plu) X6.form(num:=plu) X7.form(num:=plu))
+action(scrutinizing)
+detect("Peter är en av den största tekniska auktoriteten inom Internet.")
+}
+*)
+
+(* ----- PARSNINGSREGLER ----- *)
+
+AbP@ {
+X(wordcl=ab)+ --> action(help);
+X(wordcl=ab)+,
+Y(wordcl=kn),
+Z(wordcl=ab)+ --> action(help)
+}
+
+VP@ {
+X(wordcl=vb)+
+-->
+action(help)
+}
+
+NP_VP_NP@ {
+(NP/Np1)(),
+(VP)(),
+(NP/Np2)()
+-->
+action(help)
+}
+
+clause@ {
+(NP_VP_NP)() --> action(help)
+}	       
+
+clauses@ {
+(clause)() --> action(help);
+(clause/c1)(),
+X(wordcl=kn),
+(clause/c2)() --> action(help)
+}
+
+(* framkallar NO IMPROVEMENT 
+sentence@analyze {
+S1(sed=sen),
+(clauses)(),
+X(cht=mad),
+S2(sed=sen)
+-->
+action(scrutinizing)
+}
+*)
+
+prob_regler:
+
+prob1@prob
+{
+V(sed=sen),
+X()*,
+Y(sed=sen & X.probcheck()=12345)
+-->
+mark(X[X.probcheck()])
+action(scrutinizing)
+info("probgranskning: misstänkt fel nära" italics(X[X.probcheck()].real_text) "(ord" tostring(X.probcheck() + 1) ")" )
+}
+
+

@@ -1,0 +1,2748 @@
+
+category nprecog {
+info("")
+link("" "")
+}
+
+category abrecog {
+info("")
+link("" "")
+}
+
+category qnrecog {
+info("")
+link("" "")
+}
+
+
+category acc {
+info("")
+link("" "")
+}
+
+
+category jjrecog {
+info("")
+link("" "")
+}
+
+category funcrecog {
+info("")
+link("" "")
+}
+
+
+category vbrecog {
+info("")
+link("" "")
+}
+
+category clrecog {
+info("CL")
+link("" "")
+}
+
+category pprecog {
+info("")
+link("" "")
+}
+
+category senrecog {
+info("SEN")
+link("" "")
+}
+
+category prob {
+info("PROB")
+link("" "")
+}
+
+clbegin@clrecog
+{
+(Clause_begin/X)()
+-->
+action(scrutinizing)
+mark(X)
+info("<clbegin>")
+jump(clbegin_end) %, 1)
+}
+
+
+
+clbegin_end:
+
+
+
+
+
+
+
+clend@clrecog
+{
+(CLEND/X)()
+-->
+action(scrutinizing)
+mark(X)
+info("<clend>")
+jump(clend_end, 1)
+}
+
+clend_end:
+
+(*
+CLAFTERBEGIN@
+{
+(Clause_begin/X)(),
+---ENDLEFTCONTEXT---,
+Y()
+-->
+action(help, wordcl:=Y.wordcl)
+}
+*)
+
+
+CLEND@
+{
+V(sed!=sen),
+---BEGINRIGHTCONTEXT---,
+(Clause_end/X)()
+-->
+action(help, wordcl:=V.wordcl)
+}
+
+
+(*
+cl@clrecog
+{
+(Clause_begin/X)(),
+Y()*,
+(CLEND/Z)()
+-->
+%jump(clend, X.no_of_tokens+Y.no_of_tokens)
+action(scrutinizing)
+}
+*)
+
+clend:
+
+
+
+
+
+
+
+(*
+subj1@funcrecog
+{
+(SUBJ/X)()
+-->
+jump(subj_end, X.no_of_tokens)
+info(X.text tostring(X.wordcl))
+action(scrutinizing)
+}
+*)
+
+
+
+(*
+subj2a@funcrecog
+{
+(CLBEFORESTART/X)(),
+(ADV/X2)(),
+(VBCHAIN/X3)(),
+(NPcomp/Y)() % egentligen bästa NP-kandidat
+-->
+mark(Y)
+jump(subj_end, X2.no_of_tokens+X3.no_of_tokens+Y.no_of_tokens)
+info(Y.text tostring(Y.wordcl))
+action(scrutinizing)
+}
+*)
+
+(*
+subj2b@funcrecog
+{
+(CLBEFORESTART/X)(),
+(ADV/X2)(),
+(VBCHAIN/X3)(),
+(NP/Y)() % egentligen bästa NP-kandidat
+-->
+mark(Y)
+jump(subj_end, X2.no_of_tokens+X3.no_of_tokens+Y.no_of_tokens)
+info(Y.text tostring(Y.wordcl))
+action(scrutinizing)
+}
+*)
+
+(*
+subj3a@funcrecog
+{
+(CLAFTERBEGIN/X)(),
+(ADV)(),
+(VBCHAIN)(),
+(NPcomp/Y)() % egentligen bästa NP-kandidat
+-->
+mark(Y)
+jump(subj_end, Y.no_of_tokens)
+info(Y.text tostring(Y.wordcl))
+action(scrutinizing)
+}
+*)
+
+(*
+subj3b@funcrecog
+{
+(CLAFTERBEGIN/X)(),
+(ADV)(),
+(VBCHAIN)(),
+(NP/Y)() % egentligen bästa NP-kandidat
+-->
+mark(Y)
+jump(subj_end, Y.no_of_tokens)
+info(Y.text tostring(Y.wordcl))
+action(scrutinizing)
+}
+*)
+
+(*
+subj4a@funcrecog
+{
+(Clause_begin/X)(),
+(ADV)(),
+(VBCHAIN)(),
+(NPcomp/Y)() % egentligen bästa NP-kandidat
+-->
+mark(Y)
+jump(subj_end, Y.no_of_tokens)
+info(Y.text tostring(Y.wordcl))
+action(scrutinizing)
+}
+*)
+
+(*
+subj4b@funcrecog
+{
+(Clause_begin/X)(),
+(ADV)(),
+(VBCHAIN)(),
+(NP/Y)() % egentligen bästa NP-kandidat
+-->
+mark(Y)
+jump(subj_end, Y.no_of_tokens)
+info(Y.text tostring(Y.wordcl))
+action(scrutinizing)
+}
+*)
+
+
+
+
+subj_end:
+
+(*
+obj1a@funcrecog
+{
+(SUBJ/X1)(),
+(ABCHAIN/X2)(),
+(VBCHAIN/X3)(),
+(NPcomp/Y)()
+-->
+mark(Y)
+info(Y)
+jump(obj_end, X1.no_of_tokens+ X2.no_of_tokens+ X3.no_of_tokens+Y.no_of_tokens) 
+action(scrutinizing)
+}
+*)
+
+(*
+obj1b@funcrecog
+{
+(SUBJ/X1)(),
+(ABCHAIN/X2)(),
+(VBCHAIN/X3)(),
+(NP/Y)()
+-->
+mark(Y)
+info(Y)
+jump(obj_end, X1.no_of_tokens+ X2.no_of_tokens+ X3.no_of_tokens+Y.no_of_tokens) 
+action(scrutinizing)
+}
+*)
+
+(*
+obj2a@funcrecog
+{
+(SUBJ/X1)(),
+(VBCHAIN/X2)(),
+(NPcomp/Y)()
+-->
+mark(Y)
+info(tostring(Y.wordcl))
+jump(obj_end, X1.no_of_tokens+ X2.no_of_tokens+Y.no_of_tokens) 
+action(scrutinizing)
+}
+*)
+
+(*
+obj2b@funcrecog
+{
+(SUBJ/X1)(),
+(VBCHAIN/X2)(),
+(NP/Y)()
+-->
+mark(Y)
+info(tostring(Y.wordcl))
+jump(obj_end, X1.no_of_tokens+ X2.no_of_tokens+Y.no_of_tokens) 
+action(scrutinizing)
+}
+*)
+
+obj_end:
+
+(*
+obj@funcrecog
+{
+(OBJ/X)()
+-->
+jump(objend, X.no_of_tokens)
+info(X.text tostring(X.wordcl))
+action(scrutinizing)
+}
+*)
+
+objend:
+
+
+ADV@
+{
+(ABCHAIN/X)()
+-->
+action(help, wordcl:=ab)
+;
+(PP/X)()
+-->
+action(help, wordcl:=ab)
+}
+
+
+NPall@
+{
+(NPcomp)()--> action(help)
+;
+(NP)()--> action(help)
+}
+
+SUBJ@
+{
+(CLBEFORESTART/X)(),
+---ENDLEFTCONTEXT---,
+(NPall/Y)(), % egentligen bästa NP-kandidat
+---BEGINRIGHTCONTEXT---,
+(ADV)()?,
+(VBCHAIN)()
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+
+
+
+
+
+CLBEFORESTART@
+{
+(CLEND/X)()
+--> action(help, wordcl:=X.wordcl)
+;
+X(sed=sen)
+-->
+action(help, wordcl:=X.wordcl)
+}
+
+
+
+
+ie@vbrecog
+{
+(IEFALSE/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.vbf) tostring(X.voice))
+%jump(np_end)
+}
+
+
+% fixa hjälpregel med context
+abchain1@abrecog
+{
+(ABCHAIN/X)()
+-->
+mark(X)
+action(scrutinizing)
+info("ab")
+%jump(jj_end, X.no_of_tokens-1)
+}
+
+jjexternal@jjrecog
+{
+(ABCHAIN)()?,
+(JJEXTERNAL/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num) tostring(X.spec) tostring(X.case))
+jump(jj_end, X.no_of_tokens-1)
+}
+
+jjinternal@jjrecog
+{
+(JJINTERNAL/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num) tostring(X.spec) tostring(X.case))
+jump(jj_end, X.no_of_tokens-1)
+}
+
+
+jj_end:
+JJINTERNAL@
+{
+V(wordcl=dt | wordcl=rg | wordcl=ab),
+ENDLEFTCONTEXT,
+(ADJP/X)(),
+BEGINRIGHTCONTEXT,
+Y(wordcl=nn | wordcl=pm)
+-->
+action(help, wordcl:=X.wordcl, deg:=X.deg, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+;
+ENDLEFTCONTEXT,
+(ADJP/X)(),
+BEGINRIGHTCONTEXT,
+Y(wordcl=nn | wordcl=pm)
+-->
+action(help, wordcl:=X.wordcl, deg:=X.deg, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+}
+
+qn_word@qnrecog
+{
+(QN/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl))
+%jump(jj_end, X.no_of_tokens-1)
+}
+
+
+npaccept@acc
+{
+(NPmin/X)(),
+(KN_AS_CL)(),
+(NPmin/Z)(Z[0].text!="varje" & wordcl!=pn) % johan la till för att slippa "saken och det" ola la till text!="varje" eftersom varje är speciell, fler?
+-->
+action(accepting)
+jump(np1_end, X.no_of_tokens+Z.no_of_tokens)
+
+
+;
+
+(NPmin/X)(),
+(KN_AS_CL)(),
+(NPmin/Z)(num=X.num)
+-->
+action(accepting)
+jump(np1_end, X.no_of_tokens+Z.no_of_tokens)
+}
+
+
+pp_1a@pprecog
+{
+(PP_ADV/X)()
+-->
+mark(X)
+action(scrutinizing)
+info("där" tostring(X.wordcl))
+jump(pp_end, X.no_of_tokens)
+}
+
+PP_ADV@
+{
+V(sed=sen),
+---ENDLEFTCONTEXT---,
+X(wordcl=pp),
+(biNP/Y)()
+-->
+action(help, wordcl:=ab)
+;
+
+V(sed=sen),
+---ENDLEFTCONTEXT---,
+(PP/X)()
+-->
+action(help, wordcl:=ab)
+}
+
+
+pp_2a@pprecog
+{
+X(wordcl=pp),
+(biNP/Y)()
+-->
+mark(X Y)
+info("ab")
+action(scrutinizing)
+jump(pp_end, Y.no_of_tokens)
+}
+
+
+
+pp_2b@pprecog
+{
+(PP/X)()
+-->
+mark(X)
+info(tostring(X.wordcl))
+action(scrutinizing)
+jump(pp_end, X.no_of_tokens-1)
+}
+
+pp_end:
+
+
+
+
+
+% lite nödlösning vore bra med subtraktion för att definera konjunktioner som inte fungerar mella satser. snacka med Viggo!
+
+
+
+np_inf1@nprecog
+{
+(INF_NP1/X)()
+-->
+action(scrutinizing)
+mark(X)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num) tostring(X.spec) tostring(X.case))
+jump(np1_end, X.no_of_tokens-1)
+}
+
+np_inf2@nprecog
+{
+(INF_NP2/X)()
+-->
+action(scrutinizing)
+mark(X)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num) tostring(X.spec) tostring(X.case))
+jump(np1_end, X.no_of_tokens-1)
+}
+
+
+
+np_comp@nprecog
+{
+(NPcomp/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num)  tostring(X.spec)  tostring(X.case) tostring(X.pnf))
+jump(np1_end, X.no_of_tokens-1)
+}
+
+np1_end:
+
+
+
+
+
+
+
+np_app@nprecog
+{
+(NPapp/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num)  tostring(X.spec)  tostring(X.case) tostring(X.pnf))
+jump(np_end, X.no_of_tokens-1)
+}
+
+np_relclause@nprecog
+{
+(biNP/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num)  tostring(X.spec)  tostring(X.case) tostring(X.pnf))
+jump(rel_end, X.no_of_tokens-1)
+}
+
+
+np_relclause2@nprecog
+{
+(biNP/X)(),
+(PP/Y)()
+-->
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num)  tostring(X.spec)  tostring(X.case) tostring(X.pnf) )
+action(scrutinizing)
+jump(rel_end, X.no_of_tokens)
+}
+
+rel_end:
+
+(*
+np_predattr@nprecog
+{
+(NPpredattr/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num)  tostring(X.spec)  tostring(X.case))
+jump(np_end, X.no_of_tokens)
+}
+*)
+
+
+np_pm@nprecog
+{
+(NPpm/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num)  tostring(X.spec)  tostring(X.case))
+jump(np_end, X.no_of_tokens-1)
+}
+
+np_jj@nprecog
+{
+(NP_dtjj/X)() --> 
+mark(X)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num)  tostring(X.spec)  tostring(X.case) tostring(X.pnf))
+jump(np_end, X.no_of_tokens-1)
+action(scrutinizing)
+;
+
+(NP_jj/Y)() --> 
+info(tostring(Y.wordcl) tostring(Y.gender) tostring(Y.num)  tostring(Y.spec)  tostring(Y.case) tostring(Y.pnf))
+jump(np_end, Y.no_of_tokens-1)
+action(scrutinizing)
+mark(Y)
+;
+
+(NP_rg/Z)() --> 
+mark(Z)
+info("nn" tostring(Z.gender) tostring(Z.num)  tostring(Z.spec)  tostring(Z.case) tostring(Z.pnf))
+jump(np_end, Z.no_of_tokens-1)
+action(scrutinizing)
+}
+
+
+np_min@nprecog
+{
+(NPmin2/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num)  tostring(X.spec)  tostring(X.case) tostring(X.pnf))
+jump(np_end, X.no_of_tokens-1)
+}
+
+% för att kunna sätta sädragen
+NPmin2@
+{
+(NPmin/X)()
+-->
+action(help, wordcl:=X.wordcl, pnf:=X.pnf,gender:=X.gender, num:=X.num, spec:=def, case:=X.case)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+%NPhp
+np_hp@nprecog
+{
+(NPhp/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num)  tostring(X.spec)  tostring(X.case) tostring(X.pnf))
+jump(np_end, X.no_of_tokens-1)
+}
+
+
+
+%NPhs
+
+np_hs@nprecog
+{
+(NPhs/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.gender) tostring(X.num)  tostring(X.spec)  tostring(X.case) tostring(X.pnf))
+jump(np_end, X.no_of_tokens-1)
+}
+
+
+
+np_end:
+
+
+
+
+
+
+vb_chain1_vb@vbrecog
+{
+(VBCHAIN_NP_VB/X)()
+-->
+mark(X)
+info(tostring(X.wordcl) tostring(X.vbf) tostring(X.voice))
+action(scrutinizing)
+jump(vbhack1, X.no_of_tokens-1)
+}
+
+vbhack1:
+
+vb_chain1_nn@vbrecog
+{
+(VBCHAIN_NP_NN/X)()
+-->
+mark(X)
+info(tostring(X.wordcl) tostring(X.pnf) tostring(X.gender) tostring(X.num) tostring(X.spec) tostring(X.case))
+action(scrutinizing)
+jump(vbhack2, X.no_of_tokens-1)
+}
+
+vbhack2:
+
+
+
+
+
+
+
+
+
+
+
+vb_chain1@vbrecog
+{
+(VBCHAIN1/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.vbf) tostring(X.voice))
+jump(vp_end, X.no_of_tokens)
+}
+
+% han vill spela center --> han spelar center
+% han måste gå nu --> han går nu
+
+
+vb_chain2@vbrecog
+{
+(VBCHAIN2/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.vbf) tostring(X.voice))
+jump(vp_end, X.no_of_tokens-1)
+}
+
+vb_chain3@vbrecog
+{
+(VBCHAIN3/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.vbf) tostring(X.voice))
+jump(vp_end, X.no_of_tokens-1)
+}
+
+
+vb_chain5@vbrecog
+{
+(VBCHAIN5/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.vbf) tostring(X.voice))
+jump(vp_end, X.no_of_tokens-1) %, X.no_of_tokens)
+}
+
+
+(*
+vb_chain6@vbrecog
+{
+(VBCHAIN6/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.vbf) tostring(X.voice))
+jump(vp_end, X.no_of_tokens-1) %, X.no_of_tokens)
+}
+*)
+
+
+vb_chain4@vbrecog
+{
+(VBCHAIN4/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.vbf) tostring(X.voice))
+jump(vp_end, X.no_of_tokens-1) %, X.no_of_tokens)
+}
+
+
+VBCHAIN_NP_VB@
+{
+X(text="ha" | text="har" | text="hade"),
+(NP)(),
+(ABCHAIN)()?,
+Y(wordcl=vb & vbf=sup),
+beginrightcontext,
+Z(vbf!=inf)
+-->
+action(help, wordcl:=vb, vbf:=prt, voice:=Y.voice)
+
+%jump(vb_end, 1)
+;
+X(text="ha" | text="har" | text="hade"),
+(NP)(),
+(ABCHAIN)()?,
+Y(wordcl=vb & vbf=sup),
+(PL/Z)()	      %Z(wordcl=pl)
+-->
+action(help, wordcl:=vb, vbf:=prt, voice:=Y.voice)
+
+%jump(vb_end, 1)
+
+;
+X(vbt=mod | vbt=aux | text="tycks"),
+(NP)(),
+(ABCHAIN)()?,
+(VBINF/Y)(), %(wordcl=vb & vbf=inf),
+beginrightcontext,
+Z(vbf!=sup)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=Y.voice)
+%jump(vb_end, 1)
+;
+
+X(vbt=mod | vbt=aux | text="tycks"),
+(NP)(),
+(ABCHAIN)()?,
+(VBINF/Y)(), %(wordcl=vb & vbf=inf),
+(PL/Z)()     %Z(wordcl=pl)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=Y.voice)
+%jump(vb_end, 1)
+;
+
+% la till 041027, av typ fulhack av Ola
+X(vbf=prs | vbf=prt),
+(NP)(),
+(ABCHAIN)()?,
+%(VBINF/Y)(), %(wordcl=vb & vbf=inf),
+(PL/Z)()     %Z(wordcl=pl)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+%jump(vb_end, 1)
+;
+
+X(lemma="komma"),
+(NP)(),
+(ABCHAIN)()?,
+V(wordcl=ie),
+(VBINF/Y)()
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=Y.voice)
+%jump(vb_end, 1)
+}
+
+
+VBCHAIN_NP_NN@
+{
+X(text="ha" | text="har" | text="hade"),
+(NP)(),
+(ABCHAIN)()?,
+Y(wordcl=vb & vbf=sup),
+beginrightcontext,
+Z(vbf!=inf)
+-->
+action(help, wordcl:=NP.wordcl,  pnf:=NP.pnf, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+
+%jump(vb_end, 1)
+;
+X(text="ha" | text="har" | text="hade"),
+(NP)(),
+(ABCHAIN)()?,
+Y(wordcl=vb & vbf=sup),
+(PL/Z)()    %Z(wordcl=pl)
+-->
+action(help, wordcl:=NP.wordcl, pnf:=NP.pnf, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+
+%jump(vb_end, 1)
+
+;
+X(vbt=mod | vbt=aux | text="tycks"),
+(NP)(),
+(ABCHAIN)()?,
+(VBINF/Y)(), %(wordcl=vb & vbf=inf),
+beginrightcontext,
+Z(vbf!=sup)
+-->
+action(help, wordcl:=NP.wordcl, pnf:=NP.pnf, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+%jump(vb_end, 1)
+;
+
+X(vbt=mod | vbt=aux | text="tycks"),
+(NP)(),
+(ABCHAIN)()?,
+(VBINF/Y)(), %(wordcl=vb & vbf=inf),
+(PL/Z)()		 %Z(wordcl=pl)
+-->
+action(help, wordcl:=NP.wordcl, pnf:=NP.pnf, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+%jump(vb_end, 1)
+;
+
+% la till 041027, av typ fulhack av Ola
+
+X(vbf=prs | vbf=prt),
+(NP)(),
+(ABCHAIN)()?,
+%(VBINF/Y)(), %(wordcl=vb & vbf=inf),
+(PL/Z)()     %Z(wordcl=pl)
+-->
+action(help, wordcl:=NP.wordcl, pnf:=NP.pnf, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+%jump(vb_end, 1)
+;
+
+X(lemma="komma"),
+(NP)(),
+(ABCHAIN)()?,
+V(wordcl=ie),
+(VBINF/Y)()
+-->
+action(help, wordcl:=NP.wordcl, pnf:=NP.pnf, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+%jump(vb_end, 1)
+}
+
+
+
+VBCHAIN@
+{
+(VBCHAIN1/X)() --> action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+;
+(VBCHAIN2/X)() --> action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+;
+(VBCHAIN3/X)() --> action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+;
+(VBCHAIN4/X)() --> action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+;
+(INFP1/X)() --> action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+;
+(INFP2/X)()  --> action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+}
+
+(*
+vb_inf1@vbrecog
+{
+(INFP1/X)()
+-->
+action(scrutinizing)
+info("<INFPH>")
+jump(vb_end, X.no_of_tokens) 
+}
+
+vb_inf2@vbrecog
+{
+(INFP2/X)()
+-->
+action(scrutinizing)
+info("<INFPH>")
+jump(vb_end, X.no_of_tokens) 
+}
+*)
+
+
+VBCHAIN1@
+{
+V(vbt=mod | vbt=aux | text="tycks"),
+X(text="ha"),
+(ABCHAIN)()?,
+Y(wordcl=vb & vbf=sup),
+(VBINF)()
+-->
+action(help, wordcl:=vb, vbf:=prt, voice:=Y.voice)
+
+;
+V(text="ha" | text="har" | text="hade"),
+(ABCHAIN)()?,
+Y(wordcl=vb & vbf=sup),
+(VBINF)()
+-->
+action(help, wordcl:=vb, vbf:=prt, voice:=Y.voice)
+
+;
+X(text="ha" | text="har" | text="hade"),
+%(NP)()?,
+(ABCHAIN)()?,
+Y(wordcl=vb & vbf=sup),
+beginrightcontext,
+Z(vbf!=inf)
+-->
+action(help, wordcl:=vb, vbf:=prt, voice:=Y.voice) %, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+
+%jump(vb_end, 1)
+;
+X(text="ha" | text="har" | text="hade"),
+%(NP)()?,
+(ABCHAIN)()?,
+Y(wordcl=vb & vbf=sup),
+(PL/Z)()    %Z(wordcl=pl)
+-->
+action(help, wordcl:=vb, vbf:=prt, voice:=Y.voice) %, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+
+%jump(vb_end, 1)
+
+;
+X(vbt=mod | vbt=aux | text="tycks"),
+%(NP)()?,
+(ABCHAIN)()?,
+(VBINF/Y)(), %(wordcl=vb & vbf=inf),
+beginrightcontext,
+Z(vbf!=sup)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=Y.voice) %, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+%jump(vb_end, 1)
+;
+
+X(vbt=mod | vbt=aux | text="tycks"),
+%(NP)()?,
+(ABCHAIN)()?,
+(VBINF/Y)(), %(wordcl=vb & vbf=inf),
+(PL/Z)()     %Z(wordcl=pl)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=Y.voice) %, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+%jump(vb_end, 1)
+;
+
+X(lemma="komma"),
+%(NP)()?,
+(ABCHAIN)()?,
+V(wordcl=ie),
+(VBINF/Y)()
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=Y.voice) %, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+%jump(vb_end, 1)
+;
+
+
+X(wordcl=vb & voice=sfo),
+X2(wordcl=ie)?,
+Y(wordcl=vb & vbf=inf)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=akt)
+}
+
+
+VBCHAIN2@
+{
+X(wordcl=vb & (vbt=mod | vbt=aux)),
+(ABCHAIN)()?,
+Y(wordcl=vb & vbt!=mod & vbt!=aux)+,
+beginrightcontext,
+(Clause_end)()
+%Z2(wordcl=pl)?
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=Y.voice)
+}
+
+VBCHAIN3@
+{
+X(wordcl=vb & (vbt=mod | vbt=aux)),
+(ABCHAIN)()?,
+Y(wordcl=vb & vbt!=mod & vbt!=aux),
+(PL/Z)()    %Z(wordcl=pl)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=Y.voice)
+;
+X(wordcl=vb & (vbt=mod | vbt=aux)),
+(ABCHAIN)()?,
+Y(wordcl=vb & vbt!=mod & vbt!=aux),
+beginrightcontext,
+Z(wordcl!=vb)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=Y.voice)
+}
+
+VBCHAIN4@
+{
+X(wordcl=vb),
+(PL/Z)()	%Z(wordcl=pl)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice) %, if X.voice=undef then voice:=akt else voice:=X.voice end)
+;
+X(wordcl=vb)
+%beginrightcontext,
+%Z(wordcl!=vb)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice) %, if X.voice=undef then voice:=akt else voice:=X.voice end)
+}
+
+% reflexiva verbförbindelser, SAG 3, Verbfraser, § 8.
+
+VBCHAIN5@
+{
+X(lemma="ansluta" | lemma="arta" | lemma="avhålla" | lemma="avreagera" | lemma="befatta" | lemma="befinna" | lemma="bege" | lemma="bekanta" | lemma="beklaga" | lemma="bekväma" | lemma="bemöda" | lemma="bestämma" | lemma="bete" | lemma="bilda" | lemma="bosätta" | lemma="bära" | lemma="dra" | lemma="erinra" | lemma="finna" | lemma="förbarma" | lemma="föreställa" | lemma="förirra" | lemma="förkyla" | lemma="förälska" | lemma="gifta" | lemma="gruva" | lemma="gömma" | lemma="huka" | lemma="hämta" | lemma="infinna" | lemma="inlåta" | lemma="klamra" | lemma="känna" | lemma="lära" | lemma="lata" | lemma="missräkna" | lemma="missta" | lemma="nöja" | lemma="resa" | lemma="sjåpa" | lemma="skingra" | lemma="specialisera" | lemma="sprida" | lemma="staka" | lemma="stegra" | lemma="sälla" | lemma="sätta" | lemma="te" | lemma="tilldra" | lemma="tvätta" | lemma="uppenbara" | lemma="uppföra" | lemma="visa" | lemma="ångra" | lemma="återhämta"),
+Y(wordcl=pn & pnf=obj & pnf!=sub)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+}
+
+(*
+VBCHAIN6@
+{
+X(text="befatta sig med" | text="bekanta sig med"
+| text="breda ut sig" | text="bära sig åt" | text="dra sig tillbaka" | text="finna sig i")
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+}
+*)
+
+
+
+vp_end:
+
+
+
+
+% infinte verb phrases
+
+% att komma; att vilja kunna komma
+INFP1@
+{
+X(wordcl=ie),
+Y(wordcl=vb & vbf=inf)+,
+beginrightcontext,
+Z(vbf!=inf)
+-->
+action(help, wordcl:=vb, vbf:=inf, voice:=Y.voice)
+}
+
+%skulle vilja
+INFP2@
+{
+X(wordcl=vb & (vbt=aux | vbt=mod)),
+X2(vbf=inf)?,
+(SUPH)()?,
+Y(wordcl=vb & vbf=inf)+,
+beginrightcontext,
+Z(vbf!=inf)
+-->
+action(help, wordcl:=vb, vbf:=X.vbf, voice:=Y.voice)
+}
+
+SUPH@
+{
+X(wordcl=vb & text="ha"),
+Y(wordcl=vb & vbf=sup)
+-->
+action(help, wordcl:=vb, vbf:=prt, voice:=Y.voice)
+}
+
+
+ABCHAIN@
+{
+X(wordcl=ab)+,
+---BEGINRIGHTCONTEXT---,
+Y(wordcl!=ab)
+-->
+action(help, wordcl:=ab)
+;
+V(wordcl=ab)?,
+X(wordcl=jj & E(lex.wordcl=ab))+,
+Z(wordcl=ab)?
+-->			% ev. följt av ett verb?
+action(help, wordcl:=ab)
+;
+X(wordcl=nn & (text="vintern" | text="sommaren" | text="hösten" | text="våren" | text="året" | text="år")),
+Y(wordcl=rg) % yea?
+-->
+action(help, wordcl:=ab)
+;
+X(wordcl=rg & rgt=yea),
+beginrightcontext,
+Y(wordcl!=jj & wordcl!=nn)
+-->
+action(help, wordcl:=ab)
+}
+
+
+QN@
+{
+X((wordcl=ha | wordcl=hs | wordcl=hd | wordcl=hp) & text!="som")
+-->
+action(help, wordcl:=X.wordcl)
+}
+
+ADJP@
+{
+V(wordcl=ro)?,
+X(wordcl=jj | wordcl=pc)+,
+Y(wordcl=kn),
+Z(wordcl=jj | wordcl=pc)+,
+---BEGINRIGHTCONTEXT---,
+Z2(wordcl!=jj & wordcl!=pc)
+-->
+action(help, wordcl:=jj, deg:=X.deg, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+;
+V(wordcl=ro)?,
+X(wordcl=jj | wordcl=pc)+,
+---BEGINRIGHTCONTEXT---,
+Y(wordcl!=jj & wordcl!=pc)
+-->
+action(help, wordcl:=jj, deg:=X.deg, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+
+
+}
+
+
+
+
+
+JJEXTERNAL@
+{
+V(wordcl!=jj & wordcl!=dt & wordcl!=pc & wordcl!=ps & wordcl!=rg & wordcl!=ro),
+endleftcontext,
+(ADJP/X)(),
+---BEGINRIGHTCONTEXT---,
+Y(wordcl!=jj & wordcl!=nn & wordcl!=pm & wordcl!=pc)
+-->
+action(help, wordcl:=jj, deg:=X.deg, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+}
+
+IEFALSE@
+{
+X(wordcl=ie),
+---BEGINRIGHTCONTEXT---,
+Y(vbf!=inf)*,
+Z(vbf=prs | vbf=prt | vbf=imp)
+-->
+action(help, wordcl:=sn)
+}
+
+(*
+nn_no_tags@nprecog
+{
+(NN_NO_TAGS/X)()
+-->
+info(tostring(X.wordcl)tostring(X.gender) tostring(X.num) tostring(X.spec) tostring(X.case))
+mark(X)
+action(scrutinizing)
+}
+*)
+
+NN_NO_TAGS@
+{
+X(wordcl=dt | wordcl=hd | wordcl=ps | wordcl=jj | wordcl=ro),
+endleftcontext,
+Z(wordcl=nn & gender=undef & num=undef & spec=undef & case=undef)
+-->
+action(help, wordcl:=nn, gender:=X.gender, num:=X.num, spec:=X.spec, case:=nom)
+;
+
+X(wordcl!=dt & wordcl!=hd & wordcl!=ps & wordcl!=jj & wordcl!=ro & wordcl!=rg),
+endleftcontext,
+Z(wordcl=nn & gender=undef & num=undef & spec=undef & case=undef)
+-->
+action(help, wordcl:=nn, gender:=utr, num:=sin, spec:=def, case:=nom)
+;
+
+X(wordcl=dt | wordcl=hd),
+Y(wordcl=jj | wordcl=ro),
+endleftcontext,
+Z(wordcl=nn & gender=undef & num=undef & spec=undef & case=undef)
+-->
+action(help, wordcl:=nn, gender:=X.gender, num:=X.num, spec:=X.spec, case:=nom)
+
+;
+
+X(wordcl=dt | wordcl=hd),
+Y(wordcl=jj | wordcl=ro),
+Y2(wordcl=jj | wordcl=ro),
+endleftcontext,
+Z(wordcl=nn & gender=undef & num=undef & spec=undef & case=undef)
+-->
+action(help, wordcl:=nn, gender:=X.gender, num:=X.num, spec:=X.spec, case:=nom)
+;
+X(wordcl=ps),
+endleftcontext,
+Z(wordcl=nn & gender=undef & num=undef & spec=undef & case=undef)
+-->
+action(help, wordcl:=nn, gender:=X.gender, num:=X.num, spec:=ind, case:=nom)
+;
+
+X(wordcl=ps),
+Y(wordcl=jj | wordcl=ro),
+endleftcontext,
+Z(wordcl=nn & gender=undef & num=undef & spec=undef & case=undef)
+-->
+action(help, wordcl:=nn, gender:=X.gender, num:=X.num, spec:=ind, case:=nom)
+
+;
+
+X(wordcl=ps),
+Y(wordcl=jj | wordcl=ro),
+Y2(wordcl=jj | wordcl=ro),
+endleftcontext,
+Z(wordcl=nn & gender=undef & num=undef & spec=undef & case=undef)
+-->
+action(help, wordcl:=nn, gender:=X.gender, num:=X.num, spec:=ind, case:=nom)
+;
+
+X(wordcl=rg),
+endleftcontext,
+Z(wordcl=nn & gender=undef & num=undef & spec=undef & case=undef)
+-->
+action(help, wordcl:=nn, gender:=utr, num:=X.num, spec:=def, case:=nom)
+;
+
+X(wordcl=rg),
+Y(wordcl=jj | wordcl=ro),
+endleftcontext,
+Z(wordcl=nn & gender=undef & num=undef & spec=undef & case=undef)
+-->
+action(help, wordcl:=nn, gender:=utr, num:=X.num, spec:=def, case:=nom)
+
+;
+
+X(wordcl=rg),
+Y(wordcl=jj | wordcl=ro),
+Y2(wordcl=jj | wordcl=ro),
+endleftcontext,
+Z(wordcl=nn & gender=undef & num=undef & spec=undef & case=undef)
+-->
+action(help, wordcl:=nn, gender:=utr, num:=X.num, spec:=def, case:=nom)
+}
+
+
+
+
+
+
+(*
+vb@vbrecog
+{
+(vbchain/X)()
+-->
+mark(X)
+action(scrutinizing)
+info(tostring(X.wordcl) tostring(X.vbf) tostring(X.voice))
+jump(np_end, X.no_of_tokens-1)
+}
+*)
+
+
+
+
+ 
+(* SAG 3 § 75
+
+När en infitivfras är efterställt attribut har den alltid infintivmärke
+
+sätter wordcl så man vet om frasen inleds med infinitvmärke
+*)
+
+
+
+
+
+VBINF@ 
+{
+V(vbf!=inf),
+endleftcontext,
+(VBCHAIN5/X)(),
+beginrightcontext
+--> action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+;
+V(vbf!=inf),
+endleftcontext,
+X(vbf=inf)+,
+beginrightcontext,
+Y(vbf!=inf & text!="sig")
+--> action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+;
+V(vbf!=inf),
+endleftcontext,
+X(vbf=inf)+,
+Y(wordcl=kn),
+Z(vbf=inf)+,
+beginrightcontext,
+Z2(vbf!=inf & text!="sig")
+--> action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+;
+V(vbf!=inf),
+endleftcontext,
+V2(vbf=inf)+,
+(VBCHAIN5/X)()
+-->  action(help, wordcl:=vb, vbf:=X.vbf, voice:=X.voice)
+}
+
+
+
+
+INF_NP1@
+{
+T(text="att"),
+(ABCHAIN)()?,
+(VBINF)(),
+Y(wordcl=ab)*,
+(NP/Z)()
+-->
+action(help, wordcl:=nn, gender:=neu, num:=sin, spec:=def, case:=nom)
+;
+T(text="att"),
+(ABCHAIN)()?,
+(VBINF)(),
+Y(wordcl=ab)*,
+(NP/Z)(),
+(PP/Z2)()
+-->
+action(help, wordcl:=nn, gender:=neu, num:=sin, spec:=def, case:=nom)
+;
+T(text="att"),
+(ABCHAIN)()?,
+(VBINF)(),
+Y(wordcl=ab)*,
+(PP/Z2)()
+-->
+action(help, wordcl:=nn, gender:=neu, num:=sin, spec:=def, case:=nom)
+;
+T(text="att"),
+(ABCHAIN)()?,
+(NPmin)(),
+(VBINF)()
+-->
+action(help, wordcl:=nn, gender:=neu, num:=sin, spec:=def, case:=nom)
+;
+T(text="att"),
+(ABCHAIN)()?,
+(NPpm)(),
+(VBINF)()
+-->
+action(help, wordcl:=nn, gender:=neu, num:=sin, spec:=def, case:=nom)
+}
+
+
+INF_NP2@
+{
+T(text="att"),
+(VBINF)(),
+Y(wordcl=ab)*
+-->
+action(help, wordcl:=nn, gender:=neu, num:=sin, spec:=def, case:=nom)
+}
+
+(* Bör fixa det här snyggare 
+
+biNPkonj@
+{
+(biNP/X1)(),
+X2(wordcl=kn),
+(biNP/X2)()
+-->
+action(help, gender:=
+*)
+
+
+
+
+
+biNP@
+{
+(NPbisats1)() --> 
+action(help, wordcl:=NPbisats1.wordcl, pnf:=NPbisats1.pnf,gender:=NPbisats1.gender, num:=NPbisats1.num, spec:=NPbisats1.spec, case:=NPbisats1.case); % spec:=def 000508
+
+(NPbisats2)() --> 
+action(help, wordcl:=NPbisats2.wordcl, pnf:=NPbisats2.pnf, gender:=NPbisats2.gender, num:=NPbisats2.num, spec:=NPbisats2.spec, case:=NPbisats2.case)
+;
+
+(NPbisats3)() --> 
+action(help, wordcl:=NPbisats3.wordcl, pnf:=NPbisats3.pnf,gender:=NPbisats3.gender, num:=NPbisats3.num, spec:=NPbisats3.spec, NPbisats3.case);
+
+(NPbisats4)() --> 
+action(help, wordcl:=NPbisats4.wordcl, pnf:=NPbisats4.pnf,gender:=NPbisats4.gender, num:=NPbisats4.num, spec:=NPbisats4.spec, case:=NPbisats4.case);
+
+(NPbisats5)() --> 
+action(help, wordcl:=NPbisats5.wordcl, pnf:=NPbisats5.pnf,gender:=NPbisats5.gender, num:=NPbisats5.num, spec:=NPbisats5.spec, case:=NPbisats5.case);
+
+(NPbisats6)() --> 
+action(help, wordcl:=NPbisats6.wordcl, pnf:=NPbisats6.pnf,gender:=NPbisats6.gender, num:=NPbisats6.num, spec:=NPbisats6.spec, case:=NPbisats6.case)
+;
+(NPbisats7)() --> 
+action(help, wordcl:=NPbisats7.wordcl, pnf:=NPbisats7.pnf,gender:=NPbisats7.gender, num:=NPbisats7.num, spec:=NPbisats7.spec, case:=NPbisats7.case)
+;
+(NPbisats8/X)() --> 
+action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+}
+
+
+binp:
+
+NPcomp@
+{
+(NPkonj)() --> action(help, wordcl:=NPkonj.wordcl, pnf:=NPkonj.pnf, gender:=NPkonj.gender, num:=NPkonj.num, spec:=NPkonj.spec, case:=NPkonj.case); % spec:=def alltid bra?
+
+(NPgen)() --> action(help, wordcl:=NPgen.wordcl, pnf:=NPgen.pnf, gender:=NPgen.gender, num:=NPgen.num, spec:=def, case:=NPgen.case, pnf:=NPgen.pnf);
+
+(NPdbkonj)() --> action(help, wordcl:=NPdbkonj.wordcl,pnf:=undef, pnf:=NPdbkonj.pnf, gender:=NPdbkonj.gender, num:=NPdbkonj.num, spec:=def, case:=NPdbkonj.case);
+
+%(NPapp)()--> action(help, wordcl:=NPapp.wordcl, gender:=NPapp.gender, num:=NPapp.num, spec:=def, case:=NPapp.case);
+
+(NPpartplu)() -->action(help, wordcl:=NPpartplu.wordcl, pnf:=NPpartplu.pnf, gender:=NPpartplu.gender, num:=NPpartplu.num, spec:=def, case:=NPpartplu.case);
+
+%(NPmPP)()--> action(help, wordcl:=NPmPP.wordcl, pnf:=NPmPP.pnf, gender:=NPmPP.gender, num:=NPmPP.num, spec:=NPmPP.spec, case:=NPmPP.case);
+%(NP_INF)() --> action(help, pnf:=NP_INF.pnf, gender:=NP_INF.gender,num:=NP_INF.num, spec:=NP_INF.spec, case:=NP_INF.case);
+
+(NPset)()--> action(help, wordcl:=NPset.wordcl, pnf:=NPset.pnf, gender:=NPset.gender, num:=NPset.num, spec:=def, case:=NPset.case)
+;
+(NPpredattr/X)() --> action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+}
+
+NP@
+{
+%(NPkonj)() --> action(help, wordcl:=NPkonj.wordcl, pnf:=NPkonj.pnf, gender:=NPkonj.gender, num:=NPkonj.num, spec:=NPkonj.spec, case:=NPkonj.case);
+
+%(NPpredattr/X)() --> action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case);
+
+(NPgen)() --> action(help, wordcl:=NPgen.wordcl, gender:=NPgen.gender, num:=NPgen.num, spec:=NPgen.spec, case:=NPgen.case, pnf:=NPgen.pnf);
+
+(NPdbkonj)() --> action(help, wordcl:=NPdbkonj.wordcl, pnf:=undef, gender:=NPdbkonj.gender, 
+		num:=NPdbkonj.num, spec:=NPdbkonj.spec, case:=NPdbkonj.case);
+
+(NPapp)()--> action(help, wordcl:=NPapp.wordcl, pnf:=NPapp.pnf, gender:=NPapp.gender, num:=NPapp.num, spec:=NPapp.spec, case:=NPapp.case);
+
+(NPpm)()--> action(help, wordcl:=pm, pnf:=undef, gender:=undef, num:=undef, spec:=undef, case:=NPpm.case);
+
+(NPpartplu)() -->action(help, wordcl:=NPpartplu.wordcl, pnf:=NPpartplu.pnf, gender:=NPpartplu.gender, num:=NPpartplu.num, spec:=NPpartplu.spec, case:=NPpartplu.case);
+
+%(NPmPP)()--> action(help, wordcl:=NPmPP.wordcl, pnf:=NPmPP.pnf, gender:=NPmPP.gender, num:=NPmPP.num, spec:=NPmPP.spec, case:=NPmPP.case);
+(NP_INF)() --> action(help, pnf:=NP_INF.pnf, gender:=NP_INF.gender,
+			num:=NP_INF.num, spec:=NP_INF.spec, case:=NP_INF.case);
+
+(NPset)()--> action(help, wordcl:=NPset.wordcl, wordcl:=NPset.wordcl, pnf:=NPset.pnf, gender:=NPset.gender, num:=NPset.num, spec:=NPset.spec, case:=NPset.case);
+
+(NPhs)() --> action(help, wordcl:=NPhs.wordcl, pnf:=NPhs.pnf, gender:=NPhs.gender, num:=NPhs.num, spec:=NPhs.spec, case:=NPhs.case);
+
+(NPhp)()--> action(help, wordcl:=NPhp.wordcl, pnf:=NPhp.pnf, gender:=NPhp.gender, num:=NPhp.num, spec:=NPhp.spec, case:=NPhp.case);
+
+(NPmin)(case!=gen) --> action(help, wordcl:=NPmin.wordcl, pnf:=NPmin.pnf, gender:=NPmin.gender, num:=NPmin.num, spec:=NPmin.spec, case:=NPmin.case);
+
+(NP_jj)() --> action(help, wordcl:=nn, pnf:=undef, gender:=NP_jj.gender, num:=NP_jj.num, spec:=NP_jj.spec, case:=NP_jj.case);
+
+(NP_rg)() --> action(help, wordcl:=nn, pnf:=undef, gender:=NP_rg.gender, num:=NP_rg.num, spec:=NP_rg.spec, case:=NP_rg.case);
+
+(NP_dtjj)() --> action(help, wordcl:=nn, pnf:=undef, gender:=NP_dtjj.gender, num:=NP_dtjj.num, spec:=NP_dtjj.spec, case:=NP_dtjj.case)
+%;
+%(NPpredattr)()-->action(help, wordcl:=nn, pnf:=undef, gender:=NPpredattr.gender, num:=NPpredattr.num, spec:=NPpredattr.spec, case:=NPpredattr.case)
+}
+
+
+
+
+NPmPP@ {
+(NPmin/X)(text!="det" & text!="den"),
+(PP)()
+--> action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+;
+(NPpm/X)(),
+(PP)()
+--> action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+}
+
+NP_INF@ 
+{
+(INF_NP1/X)()
+--> action(help, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+;
+(INF_NP2/X)()
+--> action(help, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+}
+
+
+
+(*
+(NPmin)(),
+(INF_NP1)()
+--> action(help, pnf:=NPmin.pnf, gender:=NPmin.gender, num:=NPmin.num, spec:=NPmin.spec, case:=NPmin.case)
+;
+(NPmin)(),
+(INF_NP2)()
+--> action(help, pnf:=NPmin.pnf, gender:=NPmin.gender, num:=NPmin.num, spec:=NPmin.spec, case:=NPmin.case)
+}
+*)
+
+
+NPpartplu@	{
+(Partattr)(),
+(NP)()
+-->
+action(help, wordcl:=NP.wordcl, pnf:=NP.pnf, gender:=NP.gender, num:=NP.num, spec:=NP.spec, case:=NP.case)
+}
+
+
+Partattr@	{
+X1(((wordcl=pn | wordcl=rg) & text!="en" & text!="ett") | token=TOKEN_PERCENTAGE |
+text="hälften"),
+X2(wordcl=pp & text="av")
+--> action(help, pnf:=X1.pnf, gender:=X1.gender, num:=plu, spec:=X1.spec, case:=X1.case);
+X0(wordcl=dt & text="en"),
+X1(substr(length-3,3)="del"),
+X2(wordcl=pp & text="av")
+--> action(help, pnf:=undef, gender:=utr, num:=plu, spec:=ind, case:=nom)
+;
+X1((wordcl=dt & (text="det" | text="den" | text="ett" | text="en")) | wordcl=ps),
+X2(wordcl=rg),
+X3(substr(length-5, 5) = "meter" | text="år" | text="kilo" | text="hekto" | text="gram") % fler?
+--> action(help, pnf:=undef, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
+;
+X1(wordcl=dt & (text="all" | text="alla"))
+--> action(help, pnf:=undef, gender:=X1.gender, num:=X1.num, spec:=X1.spec);
+X1(text="hela" | text="halva" | text="båda")
+--> action(help, pnf:=undef, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
+;
+X1(wordcl=rg)?,
+X2(text="tusen" | text="miljoner" | text="miljarder")
+--> action(help, pnf:=undef, gender:=X1.gender, num:=X1.num, spec:=X1.spec)
+}
+
+
+NPinkPM@ {
+(NP)() --> action(help, wordcl:=NP.wordcl, pnf:=NP.pnf,
+		  num:=NP.num, spec:=NP.spec, case:=NP.case);
+(NPpm)() --> action(help, wordcl:=pm, case:=NPpm.case)
+%X(wordcl=pm)+ --> action(help, wordcl:=pm) 
+}
+
+(* spec:= def, alla namn måste ju vara definita? *)
+
+NPpm@
+{
+V(wordcl=pm),
+X(wordcl=pm | (E(lex.wordcl=pm) & is_cap) | is_cap)+ 
+--> action(help, wordcl:=pm, pnf:=undef,gender:=undef, num:=undef, spec:=undef, case:=X.case)
+%jump(nppm) 
+;
+V(wordcl!=pm),
+---ENDLEFTCONTEXT---,
+X(wordcl=pm),
+---BEGINRIGHTCONTEXT---,
+Y(wordcl!=pm) % & !E(lex.wordcl=pm) & !is_cap)
+--> action(help, wordcl:=pm, pnf:=undef,gender:=undef, num:=undef, spec:=undef, case:=X.case) 
+}
+
+nppm:
+
+
+NPgen@
+{
+(NPmin/X)(case=gen), %NPmin
+(NPmin/Y)(spec=ind)
+-->
+action(help, wordcl:=Y.wordcl, pnf:=undef, gender:=Y.gender, num:=Y.num, spec:=Y.spec, case:=Y.case, pnf:=undef);
+
+(NPpm/X)(case=gen), %NPpm
+(NPmin/Y)(spec=ind)
+-->
+action(help, wordcl:=Y.wordcl, pnf:=undef, gender:=Y.gender, num:=Y.num, spec:=Y.spec, case:=Y.case, pnf:=undef)
+}
+
+
+(* en massa hus, ett fyrtiotal hundar *)
+
+NPset@
+{
+X1(wordcl=dt & num=sin),
+X10(text="hel")?,
+X2((wordcl=nn & nntype=set) | text="miljon" | text="miljard" | text="ton" | text="par" | text="liter" | text="glas" | text="flaska" | text="bit" | text="burk" | text="antal")+,
+X3(wordcl=jj)*,
+X4(wordcl=nn & num=plu & spec=ind)
+-->
+action(help, wordcl:=X4.wordcl, pnf:=undef, gender:=X4.gender, num:=plu, spec:=def, case:=X4.case, pnf:=undef)
+;
+
+X1(wordcl=dt & num=sin),
+X10(text="hel")?,
+X2((wordcl=nn & nntype=set) | text="miljon" | text="miljard" | text="ton" | text="par" | text="liter" | text="glas" | text="flaska" | text="bit" | text="burk" | text="antal")+,
+X3(wordcl=jj)*,
+X4(wordcl=nn & num=sin & spec=ind)
+-->
+action(help, wordcl:=nn, pnf:=undef, gender:=X1.gender, num:=sin, spec:=def, case:=X4.case, pnf:=undef)
+;
+
+X1(wordcl=nn & nntype=set & spec=def),
+X2(wordcl=jj)*,
+X3(wordcl=nn & num=plu)
+-->
+action(help, wordcl:=X1.wordcl, pnf:=undef, gender:=X1.gender, num:=sin, spec:=def, case:=X1.case, pnf:=undef)
+;
+X1(text="en"),
+X2(text="halv"),
+X3(text="miljon" | text="miljard"),
+X4(wordcl=nn & num=plu & spec=ind)
+-->
+action(help, wordcl:=nn, pnf:=undef, gender:=X4.gender, num:=plu, spec:=def, case:=X4.case, pnf:=undef)
+}
+
+(* vems glada fru är snäll? *)
+
+NPhs@
+{ 
+X1(wordcl=hs),
+X2(wordcl=jj)*,
+X3(wordcl=nn)
+-->
+action(help, wordcl:=X3.wordcl, pnf:=undef, gender:=X3.gender, num:=X3.num, spec:=def, case:=X3.case, pnf:=undef)
+}
+
+(* vad är grön? *)
+
+NPhp@
+{
+Y(wordcl=hp & text!="som")
+-->
+action(help, wordcl:=Y.wordcl, pnf:=undef, gender:=Y.gender, num:=Y.num, spec:=Y.spec, case:=Y.case, pnf:=undef)
+}
+
+
+(* min vän generalen, det förunderliga fenomenet bilen 
+   min bror Per, Staden Kalmar 
+   men inte "det fenomenet bilen"
+*)
+
+
+NPapp@
+{
+(NPmin/X)(wordcl=nn & num=sin & spec=def & case=nom & (no_of_tokens!=2 | X[0].wordcl=ps)), % wordcl=nn?
+Y(wordcl=nn & num=sin)% & !is_cap) % & spec=def)
+--> 
+action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=def, case:=Y.case)
+;
+(NPmin/X)(wordcl!=pm & case=nom), %(spec=def),
+(NPpm/Y)()
+-->
+action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=def, case:=Y.case)
+;
+X(wordcl=dt),		% allt
+Y(wordcl=ps & gender=X.gender & num=X.num),	% mitt
+beginrightcontext,
+Z(wordcl!=jj & wordcl!=nn)
+-->
+action(help, wordcl:=nn, pnf:=undef, gender:=Y.gender, num:=Y.num, spec:=def, case:=Y.case)  % funder mer över pnf, det går inte att sätta sub/obj
+;
+X(wordcl=dt),		% allt
+(NPmin/Y)(gender=X.gender & num=X.num)
+-->
+action(help, wordcl:=Y.wordcl, pnf:=Y.pnf, gender:=Y.gender, num:=Y.num, spec:=def, case:=Y.case)
+}
+
+
+(* inget direkt generellt, fixa senare ... 
+såväl<kn> principiella<jj.pos.utr/neu.plu.ind/def.nom> som<kn>
+praktiska<jj.pos.utr/neu.plu.ind/def.nom> utgångspunkter<nn.utr.plu.ind.nom
+*)
+
+NPdbkonj@
+{
+X(text="såväl"),
+Y(wordcl=ab)?,
+Z(wordcl=jj)+,
+Z2(text="som"),
+Z3(wordcl=ab)?,
+Z4(wordcl=jj)+,
+Z5(wordcl=nn)
+-->
+action(help, wordcl:=Z5.wordcl, pnf:=undef, gender:=Z5.gender, num:=Z5.num, spec:=Z5.spec, case:=Z5.case, pnf:=undef)
+}
+
+(* ensamt adjektiv som fungerar som ett substantiv 
+la till text!=för" & text!="som" eftersom det är en form av predikativ
+pred attribut "säcken full"
+*)
+
+NP_jj@
+{
+X(wordcl!=dt & wordcl!=rg & text!="för" & text!="som" & wordcl!=nn & wordcl!=jj & wordcl!=ps & vbt!=kop), % vbt!=kop adj efter kop bör vara adj
+---ENDLEFTCONTEXT---,
+X2(wordcl=ab),
+Y((wordcl=jj | wordcl=ro) & (substr(length-1, 1) = "a"  | substr(length-1, 1) = "e")),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl!=jj & wordcl!=nn & wordcl!=kn)
+-->
+action(help, wordcl:=nn, pnf:=undef, gender:=Y.gender,num:=Y.num,spec:=Y.spec,case:=nom)
+;
+X(wordcl!=dt & wordcl!=rg & text!="för" & text!="som" & wordcl!=nn & wordcl!=jj & wordcl!=ps & vbt!=kop & wordcl!=ab), % vbt!=kop adj efter kop bör vara adj
+---ENDLEFTCONTEXT---,
+Y((wordcl=jj | wordcl=ro) & (substr(length-1, 1) = "a"  | substr(length-1, 1) = "e")),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl!=jj & wordcl!=nn & wordcl!=kn)
+-->
+action(help, wordcl:=nn, pnf:=undef, gender:=Y.gender,num:=Y.num,spec:=Y.spec,case:=nom)
+}
+
+NP_rg@
+{
+X(wordcl!=dt & text!="för" & text!="som" & wordcl!=nn & wordcl!=jj & wordcl!=ps & vbt!=kop), % vbt!=kop adj efter kop bör vara adj
+---ENDLEFTCONTEXT---,
+Y(wordcl=rg & num!=plu & token!=TOKEN_PERCENTAGE),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl!=jj & wordcl!=nn & wordcl!=kn)
+-->
+action(help, wordcl:=nn, pnf:=undef, gender:=utr,num:=sin,spec:=def,case:=nom)
+;
+X(wordcl!=dt & text!="för" & text!="som" & wordcl!=nn & wordcl!=jj & wordcl!=ps & vbt!=kop), % vbt!=kop adj efter kop bör vara adj
+---ENDLEFTCONTEXT---,
+Y(wordcl=rg & num=plu & token!=TOKEN_PERCENTAGE),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl!=jj & wordcl!=nn & wordcl!=kn)
+-->
+action(help, wordcl:=nn, pnf:=undef, gender:=utr,num:=plu,spec:=def,case:=nom)
+;
+X(wordcl!=dt & text!="för" & text!="som" & wordcl!=nn & wordcl!=jj & wordcl!=ps & vbt!=kop), % vbt!=kop adj efter kop bör vara adj
+---ENDLEFTCONTEXT---,
+Y(wordcl=rg & token=TOKEN_PERCENTAGE),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl!=jj & wordcl!=nn & wordcl!=kn)
+-->
+action(help, wordcl:=nn, pnf:=undef, gender:=utr,num:=plu,spec:=def,case:=nom)
+;
+---ENDLEFTCONTEXT---,
+X(wordcl=nn & (text="siffran" | text="kapitel" | text="sidan" | text="§" | text="blad" | text="division" | text="plats" | text="nummer")),
+Y(wordcl=rg),
+---BEGINRIGHTCONTEXT---
+-->
+action(help, wordcl:=nn, pnf:=undef, gender:=utr,num:=plu,spec:=def,case:=nom)
+}
+
+
+NP_dtjj@
+{
+---ENDLEFTCONTEXT---,
+X(wordcl=dt | wordcl=hd | wordcl=ps | wordcl=rg),
+X2(wordcl=ab)?,
+Y((wordcl=jj | wordcl=ro | wordcl=rg))+, % & (substr(length-1, 1) = "a" | substr(length-1, 1) = "e")),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl!=jj & wordcl!=nn)
+-->
+%action(help, wordcl:=nn, pnf:=undef, (if (X.gender=utr & X.gender=neu) then gender:=utr else gender:=X.gender end), num:=X.num, spec:=X.spec, case:=nom)
+
+% så länge:
+action(help, wordcl:=nn, pnf:=undef, gender:=utr, num:=sin, spec:=def, case:=nom)
+}
+
+(* *)
+KN_AS_CL@
+{
+(eva4/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva6/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva9/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva10/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva11/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva12/X)() --> action(help, wordcl:=X.wordcl)
+;
+(ola1/X)() --> action(help, wordcl:=X.wordcl)
+}
+
+
+
+
+% Eva 1
+Clause_begin@
+{
+Z(sed=sen),
+---ENDLEFTCONTEXT---,
+Z2(),
+---BEGINRIGHTCONTEXT---,
+Z3(cht!=mad)
+-->
+action(help, wordcl:=Z2.wordcl)
+;
+% Eva 2
+---ENDLEFTCONTEXT---,
+X(cht=mid),
+---BEGINRIGHTCONTEXT---,
+Y(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=X.wordcl)
+;
+
+(Clause_del/X)() --> action(help, wordcl:=X.wordcl)
+}
+
+
+
+
+% Ola 1
+Clause_end@
+{
+---ENDLEFTCONTEXT---,
+Z(cht=mad),
+---BEGINRIGHTCONTEXT---,
+Z2(sed=sen)
+-->
+action(help, wordcl:=Z.wordcl)
+
+;
+---ENDLEFTCONTEXT---,
+Z(sed=sen),
+---BEGINRIGHTCONTEXT---
+-->
+action(help, wordcl:=Z.wordcl)
+;
+
+(Clause_del/X)()
+-->
+action(help, wordcl:=X.wordcl)
+}
+
+Clause_del@
+{
+(eva2/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva3/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva4/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva5/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva6/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva7/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva8/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva9/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva10/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva11/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva12/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva13/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva14/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva15/X)() --> action(help, wordcl:=X.wordcl)
+;
+(eva16/X)() --> action(help, wordcl:=X.wordcl)
+;
+(ola1/X)() --> action(help, wordcl:=X.wordcl)
+;
+(ola2/X)() --> action(help, wordcl:=X.wordcl)
+;
+(ola3/X)() --> action(help, wordcl:=X.wordcl)
+}
+
+
+eva2@
+{
+% Eva 2
+---ENDLEFTCONTEXT---,
+X(cht=mid),
+---BEGINRIGHTCONTEXT---,
+Y(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=X.wordcl)
+}
+
+% Eva 3
+eva3@
+{
+---ENDLEFTCONTEXT---,
+X(cht=mid),
+---BEGINRIGHTCONTEXT---,
+X2((wordcl=pn & pnf=sub) | (wordcl=nn & case=nom) | (wordcl=pm & case=nom) | wordcl=ab), 
+Y(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=X.wordcl)
+}
+
+% Eva 4
+eva4@
+{
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=kn),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=sn)
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+% Eva 5
+eva5@
+{
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=sn),	% ny sats börjar här
+---BEGINRIGHTCONTEXT---
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+
+% Eva 6
+eva6@
+{
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=kn),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=ha | wordcl=hd | wordcl=hp | wordcl=hs)
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+% Eva 7
+eva7@
+{
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=ha | wordcl=hd | wordcl=hp | wordcl=hs),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=ha | wordcl=hd | wordcl=hp | wordcl=hs)
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+% Eva 8
+eva8@
+{
+X(sed!=sen),
+---ENDLEFTCONTEXT---,
+Y(wordcl=ha | wordcl=hd | wordcl=hs), % | wordcl=hp),
+---BEGINRIGHTCONTEXT---,
+Z()
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+% Eva 9
+eva9@
+{
+X(),
+---ENDLEFTCONTEXT---,
+X2(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup) & (lemma="vara" | lemma="gå" |lemma="stå" | lemma="sitta")),
+---BEGINRIGHTCONTEXT---,
+Y(wordcl=kn),
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=X2.wordcl)
+}
+
+
+% Eva 10 
+eva10@
+{
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=kn),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+
+% Eva 11
+eva11@
+{
+V(sed!=sen & text!="som" & wordcl!=sn),
+X((wordcl=pn & pnf=sub)| (wordcl=pm & case=nom) | (wordcl=nn & case=nom & V.case!=gen) | wordcl=ab),
+---ENDLEFTCONTEXT---,
+Y(wordcl=kn),
+---BEGINRIGHTCONTEXT---,
+Y2(((wordcl=pn & pnf=sub) | (wordcl=pm & case=nom) | (wordcl=nn & case=nom) | wordcl=ab) & wordcl=X.wordcl),
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp)) % | vbf=sup))
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+
+% Eva 12
+eva12@
+{
+V(sed!=sen & text!="som" & wordcl!=sn),
+X(),
+---ENDLEFTCONTEXT---,
+Y(wordcl=kn),
+---BEGINRIGHTCONTEXT---,
+Y2(((wordcl=pn & pnf=sub) | (wordcl=pm & case=nom) | (wordcl=nn & case=nom) | wordcl=ab) & wordcl!=X.wordcl),
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup))
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+
+
+% Ola special
+ola1@
+{
+V(cht=mid),
+endleftcontext,
+X(wordcl=kn),
+beginrightcontext
+-->
+action(help, wordcl:=X.wordcl)
+}
+
+
+% Eva 13
+eva13@
+{
+V(),
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | (vbf=sup & V.lemma="ha")) & vbt!=mod & vbt!=aux),
+---ENDLEFTCONTEXT---,
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp)), % vbf=sup konstigt Eva!
+---BEGINRIGHTCONTEXT---
+
+-->
+action(help, wordcl:=X.wordcl)
+}
+
+% Eva 14 h§23
+eva14@
+{
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup)),
+Y(wordcl!=vb & ((X.vbt=kop & wordcl!=jj & wordcl!=nn) | X.vbt!=kop) & wordcl!=sn & wordcl!=kn),
+---ENDLEFTCONTEXT---,
+Z(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup) & 
+((X.text!="har" & X.text!="hade") | vbf!=sup)),
+---BEGINRIGHTCONTEXT---
+-->
+action(help, wordcl:=Y.wordcl) 
+}
+
+% Eva 15
+eva15@
+{
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup)), % & vbt!=aux & vbt!=mod),
+Y(wordcl!=sn & wordcl!=kn),
+
+---ENDLEFTCONTEXT---,
+(NP/Z)(),
+%Z((wordcl=nn & case=nom & Y.wordcl!=jj) | (wordcl=pn & pnf=sub) | (wordcl=pm & case=nom)),
+---BEGINRIGHTCONTEXT---,
+Z2(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp)) % | vbf=sup))
+-->
+action(help, wordcl:=Z.wordcl)
+}
+
+% Eva 16
+eva16@
+{
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup)), % & vbt!=aux & vbt!=mod),
+Y(wordcl!=sn & wordcl!=kn),
+Z(wordcl!=hp & wordcl!=ha & wordcl!=hd & wordcl!=hs & pnf!=sub),
+---ENDLEFTCONTEXT---,
+Z2(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp)), % | vbf=sup)),
+---BEGINRIGHTCONTEXT---
+-->
+action(help, wordcl:=Z2.wordcl)
+}
+
+
+
+% Ola kopula
+ola2@
+{
+X(wordcl=nn | wordcl=pn | wordcl=pm),
+Y(wordcl=vb & vbt=kop),
+Z(wordcl=jj | wordcl=pc | wordcl=nn),
+endleftcontext,
+Z2(cht!=mad & wordcl!=jj & wordcl!=pc & wordcl!=nn),
+beginrightcontext
+-->
+action(help, wordcl:=X.wordcl)
+}
+
+
+ola3@
+{
+X(),
+---ENDLEFTCONTEXT---,
+(IEFALSE/Y)(),	% ny sats börjar här
+---BEGINRIGHTCONTEXT---
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+
+O1@
+{
+X(wordcl=vb & (vbf=prs | vbf=prt | vbf=imp | vbf=sup)),
+---ENDLEFTCONTEXT---,
+Y(wordcl=kn),
+---BEGINRIGHTCONTEXT---,
+Z()
+-->
+action(help, wordcl:=Y.wordcl)
+}
+
+
+
+
+
+
+
+
+
+
+(* 
+Boken som jag läste var dåligt.
+Boken som jag läste var dåliga.
+Den avhandling vilken Jonsson försvarade i våras blev underkända.
+
+*)
+
+(*
+Det<pn.neu.sin.def.sub/obj> 
+är<vb.prs.akt.kop> 
+alltså<ab> uppenbart<jj.pos.neu.sin.ind.nom> att<sn> 
+den<dt.utr.sin.def> lagstiftning<nn.utr.sin.ind.nom> som<hp> nu<ab>
+införs<vb.prs.sfo> redan<ab> är<vb.prs.akt.kop> 
+föråldrad<jj.pos.utr.sin.ind.nom> och<kn> har<vb.prs.akt.aux> 
+små<jj.pos.utr/neu.plu.ind/def.nom>
+teknikstyrande<pc.prs.utr/neu.sin/plu.ind/def.nom> 
+effekter<nn.utr.plu.ind.nom>.<mad>
+*)
+
+NPbisats1@
+{ 
+(NP/X1)(),
+%X11(cht=mid)?,
+X2(text="som" | text="vilken" | text="vad" | wordcl=hp), % borde va hp, ha är en chansning ev. skulle man endast använda den för de acceperande reglerna.
+(NP/X3)(),
+X31(wordcl=ab)?,
+X4(wordcl=vb), % & (vbf=prs | vbf=prt)/,
+ X44(wordcl=pl | wordcl=jj)?,
+(PP/X5)()?
+%X6(cht=mid)?
+-->
+action(help, wordcl:=X1.wordcl, pnf:=X1.pnf,gender:=X1.gender, num:=X1.num, spec:=X1.spec, case:=X1.case)
+}
+
+
+(* Mannen som sitter på bänken är mina bröder.
+Mannen som står i vassen är dumma.
+
+Skulle det gå att kolla om som saknas här vore det bra, går det, som
+får ju endast utelämnas när subjektet finns i bisatsen: Boken jag läste var trist.
+
+*)
+
+NPbisats2@
+{ 
+(NP/X1)(),
+%X10(cht=mid)?,
+X2(text="som" | text="vilken" | text="vad" | wordcl=hp), % hp 
+X3(wordcl=ab)?,
+X4(wordcl=vb), % & (vbf=prs | vbf=prt)/,
+ X44(wordcl=pl)?,
+(PP/X5)()?,
+(PP/X6)()?	% ny 000221
+%X7(cht=mid)?
+-->
+action(help, wordcl:=X1.wordcl, pnf:=X1.pnf,gender:=X1.gender, num:=X1.num, spec:=X1.spec, case:=X1.case)
+%jump(bisats_end, X1.no_of_tokens + X5.no_of_tokens + X6.no_of_tokens)
+}
+
+
+
+(* Mannen som står därborta är dumma *)
+
+NPbisats3@
+{ 
+(NP/X1)(),
+%X11(cht=mid)?,
+X2(text="som" | text="vilken" | text="vad"| wordcl=hp), % hp ha en chansning 991229
+X3(wordcl=ab)?,
+X4(wordcl=vb), % & (vbf=prs | vbf=prt)/,
+X44(wordcl=pl)?,
+X5(wordcl=ab)+	% vågar vi ? här "Mannen som står är dum."
+%X6(cht=mid)?
+-->
+action(help, wordcl:=X1.wordcl, pnf:=X1.pnf, gender:=X1.gender, num:=X1.num, spec:=X1.spec, case:=X1.case)
+}
+
+
+(* Mannen som gillar fisk är fega. *)
+
+
+NPbisats4@
+{ 
+(NP/X1)(),
+%X11(cht=mid)?,
+X2(text="som" | text="vilken" | text="vad"| wordcl=hp),% hp ha en chansning 991229
+X3(wordcl=ab)?,
+X4(wordcl=vb), % & (vbf=prs | vbf=prt)/,
+ X44(wordcl=pl)?,
+(NP/X5)()
+%X6(cht=mid)?
+-->
+action(help, wordcl:=X1.wordcl, pnf:=X1.pnf, gender:=X1.gender, num:=X1.num, spec:=X1.spec, case:=X1.case)
+}
+
+
+
+
+
+
+(* ett land som sedan mer än 35 år är ockuperat *)
+
+NPbisats5@
+{
+(NP/X1)(),
+X2(text="som"),
+X3(wordcl=ab)+,
+X4(text="än"),
+(NP/X5)()
+-->
+action(help, wordcl:=X1.wordcl, pnf:=X1.pnf,gender:=X1.gender, num:=X1.num, spec:=X1.spec, case:=X1.case)
+}
+
+(* mannen som vi vill ge årets pris *)
+NPbisats6@
+{ 
+(NP/X1)(),
+%X11(cht=mid)?,
+X2(text="som" | text="vilken" | text="vad"| wordcl=hp),% hp ha en chansning 991229
+(NP/X3)(),
+X4(wordcl=vb), % & (vbf=prs | vbf=prt)/,
+ X44(wordcl=pl | (vbf=inf & (X4.vbt=aux | X4.vbt=mod)))?,
+(NP/X5)()
+%X6(cht=mid)?
+-->
+action(help, wordcl:=X1.wordcl, pnf:=X1.pnf, gender:=X1.gender, num:=X1.num, spec:=X1.spec, case:=X1.case)
+}
+
+
+NPbisats7@
+{ 
+(NP/X1)(),
+%X10(cht=mid)?,
+X2(text="som" | text="vilken" | text="vad"| wordcl=hp), % hp ha en chansning 991229
+X3(wordcl=ab)?,
+X4(wordcl=vb & voice=sfo), % & (vbf=prs | vbf=prt)/,
+X44(wordcl=vb & vbf=inf),
+(PP/X5)()?,
+(PP/X6)()? 	% ny 000221
+%X7(cht=mid)?
+-->
+action(help, wordcl:=X1.wordcl, pnf:=X1.pnf,gender:=X1.gender, num:=X1.num, spec:=X1.spec, case:=X1.case)
+}
+
+
+NPbisats8@
+{
+(NP/X1)(),
+X2((wordcl=pn & pnf=sub) | (wordcl=nn & case=nom & spec=def)),
+(ABCHAIN)(),
+(VBCHAIN)(), 
+(PP)()?
+-->
+action(help, wordcl:=X2.wordcl, pnf:=sub, gender:=X2.gender, num:=X2.num, spec:=X2.spec, case:=X2.case)
+}
+
+
+(* 22 *)
+(* gender:=???? fixa *)
+NPkonj@
+{
+(NPkonj1/X)()
+--> action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+;
+(NPkonj2/Y)()
+--> action(help, wordcl:=Y.wordcl, pnf:=Y.pnf, gender:=Y.gender, num:=Y.num, spec:=Y.spec, case:=Y.case)
+;
+
+%(NPkonj3/Z)()
+%--> action(help, wordcl:=Z.wordcl, gender:=Z.gender, num:=Z.num, spec:=Z.spec, %case:=Z.case)
+%;
+
+(NPkonj4/Z2)()
+--> action(help, wordcl:=Z2.wordcl, gender:=Z2.gender, num:=Z2.num, spec:=Z2.spec, case:=Z2.case)
+}
+
+npkonj_end:
+
+
+NPkonj1@
+{ 
+(NP/X)(),
+Y(wordcl=kn & (text="och" | text="&" | text="samt")), % la till text-kraven, borde kanske vara fler 
+(NP/Z)()    %(Z[0].text!="varje" & wordcl!=pn) % johan la till för att slippa "saken och det" ola la till text!="varje" eftersom varje är speciell, fler?
+-->
+action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=Z.case)
+%action(help, if (Y.text="eller" & X.num=sin & Z.num=sin) then num:=sin else num:=plu end, case:=Z.case)
+}
+
+
+NPkonj2@
+{ 
+(NP/X)(),
+Y(wordcl=kn & text="eller"), % la till text-kraven, borde kanske vara fler 
+(NP/Z)(num=X.num)
+-->
+action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=Z.case)
+%action(help, if (Y.text="eller" & X.num=sin & Z.num=sin) then num:=sin else num:=plu end, case:=Z.case)
+}
+
+(*
+NPkonj3@
+{ 
+(NP/X)(num=plu),
+Y(wordcl=kn & text="eller"), % la till text-kraven, borde kanske vara fler 
+(NP/Z)(num=plu)
+-->
+action(help, num:=plu, case:=Z.case)
+%action(help, if (Y.text="eller" & X.num=sin & Z.num=sin) then num:=sin else num:=plu end, case:=Z.case)
+}
+*)
+
+NPkonj4@
+{
+X1(wordcl=dt | wordcl=hd | wordcl=ps)?,
+X2(wordcl=rg | wordcl=ab)?,
+X3(wordcl=ro)?,
+X4(wordcl=jj | wordcl=pc)+,
+X5(wordcl=kn),
+X6(wordcl=jj | wordcl=pc),
+X7(wordcl=nn)
+-->
+action(help, wordcl:=X7.wordcl, pnf:=X7.pnf, gender:=X7.gender, num:=X7.num, spec:=X7.spec, case:=X7.case)
+}
+
+(*
+{
+(NPkonj/X)(num=plu)
+-->
+action(scrutinizing)
+info(tostring(X.num))
+}
+
+*)
+
+NPpredattr@
+{
+V(vbt!=kop),
+---ENDLEFTCONTEXT---,
+(NP/X)(wordcl!=pm),
+Y(wordcl=jj),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl!=jj & wordcl!=nn & wordcl!=pc)
+-->
+action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=def, case:=X.case)
+;
+V(vbt!=kop),
+---ENDLEFTCONTEXT---,
+(NP/X)(wordcl!=pm),
+Y(wordcl=jj),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=pp | text="som"),
+Z2(wordcl=nn)
+-->
+action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=def, case:=X.case)
+;
+V(vbt!=kop),
+---ENDLEFTCONTEXT---,
+(NP/X)(wordcl=pm),
+Y(wordcl=jj),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl!=jj & wordcl!=nn & wordcl!=pc)
+-->
+action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=undef, case:=X.case)
+;
+V(vbt!=kop),
+---ENDLEFTCONTEXT---,
+(NP/X)(wordcl=pm),
+Y(wordcl=jj),
+---BEGINRIGHTCONTEXT---,
+Z(wordcl=pp | text="som"),
+Z2(wordcl=nn)
+-->
+action(help, wordcl:=X.wordcl, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=undef, case:=X.case)
+}
+
+NN@
+{
+X(wordcl=nn & gender!=undef & num!=undef & spec!=undef & case!=undef)
+-->
+action(help, wordcl:=nn, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+;
+(NN_NO_TAGS/X)()
+-->
+action(help, wordcl:=nn, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+}
+
+
+PN@
+{
+X(wordcl=pn)
+-->
+action(help, wordcl:=pn, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec)
+;
+(DT_WRONG/X)()
+-->
+action(help, wordcl:=pn, pnf:=X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec)
+}
+
+
+DT_WRONG@
+{
+X(wordcl!=dt),
+endleftcontext,
+Y(wordcl=dt),
+beginrightcontext,
+Z(wordcl!=dt & wordcl!=rg & wordcl!=ro & wordcl!=pc & wordcl!=jj & wordcl!=nn)
+-->
+action(help, wordcl:=pn, pnf:=sub, gender:=Y.gender, num:=Y.num, spec:=Y.spec)
+}
+
+
+% inför PL in NPbisats också på ett bra sätt.
+
+PL@
+{
+X(wordcl=pl)
+-->
+action(help, wordcl:=pl)
+;
+(PP_WRONG)()
+-->
+action(help, wordcl:=pl)
+}
+
+
+PP_WRONG@
+{
+X(wordcl=vb),
+endleftcontext,
+Y(wordcl=pp),
+beginrightcontext,
+Z(cht=mad)
+-->
+action(help, wordcl:=pl)
+}
+
+
+NPmin@
+{
+X((wordcl=dt & text!="denna" & text!="dessa" & text!="denne" & text!="detta")
+| wordcl=hd | wordcl=rg),
+X2(wordcl=ab | wordcl=rg)?,
+Y(wordcl=jj | wordcl=ro | wordcl=pc)*, 
+(NN/Z)()	    %Z(wordcl=nn)
+-->
+%jump(npmin_slut, 1+X2.no_of_tokens+Y.no_of_tokens)
+action(help, wordcl:=Z.wordcl, pnf:= undef,
+	gender:=Z.gender, num:=Z.num,spec:=Z.spec, case:=Z.case)
+;
+
+X(wordcl!=dt & wordcl!=hd),
+---ENDLEFTCONTEXT---,
+X2(wordcl=ab | wordcl=rg),
+Y(wordcl=jj | wordcl=ro | wordcl=pc)+, 
+(NN/Z)()	    %Z(wordcl=nn)
+-->	% text:=Z.text
+action(help, wordcl:=Z.wordcl, pnf:= undef,
+	gender:=Z.gender, num:=Z.num,spec:=Z.spec, case:=Z.case)
+;
+
+X(wordcl!=dt & wordcl!=hd & wordcl!=ab),
+---ENDLEFTCONTEXT---,
+Y(wordcl=jj | wordcl=ro | wordcl=pc)+, 
+(NN/Z)()	    %Z(wordcl=nn)
+-->	% text:=Z.text
+action(help, wordcl:=Z.wordcl, pnf:= undef,
+	gender:=Z.gender, num:=Z.num,spec:=Z.spec, case:=Z.case);
+
+
+
+X(wordcl!=dt & wordcl!=hd),
+X2(wordcl!=ab & wordcl!=rg & wordcl!=dt & wordcl!=hd),
+Y(wordcl!=jj & wordcl!=ro & wordcl!=pc & wordcl!=dt & wordcl!=hd & wordcl!=rg),---ENDLEFTCONTEXT---,
+(NN/Z)()	     %Z(wordcl=nn)
+-->
+action(help, wordcl:=Z.wordcl, pnf:= undef,
+	gender:=Z.gender, num:=Z.num,spec:=Z.spec, case:=Z.case);
+
+X2(wordcl!=ab & wordcl!=rg & wordcl!=dt & wordcl!=hd),
+Y(wordcl!=jj & wordcl!=ro & wordcl!=pc & wordcl!=dt & wordcl!=hd & wordcl!=rg),
+---ENDLEFTCONTEXT---,
+(NN/Z)()		%Z(wordcl=nn)
+-->
+action(help, wordcl:=Z.wordcl, pnf:= undef,
+	gender:=Z.gender, num:=Z.num,spec:=Z.spec, case:=Z.case);
+
+Y(wordcl!=jj & wordcl!=ro & wordcl!=pc & wordcl!=dt & wordcl!=hd & wordcl!=rg),---ENDLEFTCONTEXT---,
+(NN/Z)()	     %Z(wordcl=nn)
+-->
+action(help, wordcl:=Z.wordcl, pnf:= undef,
+	gender:=Z.gender, num:=Z.num,spec:=Z.spec, case:=Z.case);
+
+
+X(wordcl=ps | (wordcl=dt & (text="denna" | text="dessa" | text="denne" | text="detta"))),
+X2(wordcl=ab | wordcl=rg)?,
+Y(wordcl=jj | wordcl=ro | wordcl=pc)*, 
+(NN/Z)()	    %Z(wordcl=nn)
+-->
+action(help, wordcl:=Z.wordcl, pnf:= undef,
+	gender:=Z.gender, num:=Z.num,spec:=def, case:=Z.case);
+
+(PN/X)() -->action(help, wordcl:=pn, pnf:= X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+
+%X(wordcl=pn) -->action(help, wordcl:=pn,pnf:= X.pnf, gender:=X.gender, num:=X.num, spec:=X.spec, case:=X.case)
+%(NPpm)() --> action(help, wordcl:=pm, pnf:=undef, gender:=undef,num:=undef, spec:=undef,case:=NPpm.case)
+}
+
+
+
+
+PP@
+{
+%b(wordcl=pp),
+%(biNP)()
+%-->
+%action(help, case:=biNP.case)	
+%;
+a(wordcl=pp), % | text="som"),
+(ABCHAIN)()?,
+(NP)(case!=gen)
+-->
+action(help, wordcl:=ab)
+;
+a(wordcl=pp), % | text="som"),
+(ABCHAIN)()?,
+b(wordcl=nn & case=gen),
+---BEGINRIGHTCONTEXT---,
+c(wordcl!=pc & wordcl!=jj & wordcl!=nn)
+-->
+action(help, wordcl:=ab)
+;
+X(wordcl=pp),
+(NPcomp)()
+-->
+action(help, wordcl:=ab)
+}
+
+
+
+
+
+(*
+prob1@prob
+{
+V(sed=sen),
+X()*,
+Y(sed=sen & X.probcheck() >= 0)
+-->
+mark(X[X.probcheck()])
+action(scrutinizing)
+info("probgranskning: misstänkt fel vid ord" tostring(X.probcheck() + 1))
+}
+*)
+
+
+
+
+prob_ok@prob
+{
+V(sed=sen),
+X()*,
+Y(sed=sen & X.probcheck() < 0)
+-->
+action(accepting)
+jump(endlabel, X.no_of_tokens)
+}
+
+(*
+prob_vb_sup@prob
+{
+	V(sed=sen),
+	X1()*,
+	W(text != "har" & text != "hade"),
+	Z(vbf = sup &
+	  (X1.no_of_tokens + 1 = lastproberr() - 1 |
+	   X1.no_of_tokens + 1 = lastproberr() |
+	   X1.no_of_tokens + 1 = lastproberr() + 1)),
+	X2()*,
+	Y(sed=sen)
+-->
+	mark(Z)
+	%corr(Z.insert("har"))
+	action(scrutinizing)
+	info("probgranskning: (ord" tostring(X1.no_of_tokens + 1 + 1) ")"
+	     italics(Z.text) "utan har/hade")
+	jump(endlabel, X1.no_of_tokens + 1 + Z.no_of_tokens + X2.no_of_tokens)
+}
+
+prob_dom@prob
+{
+	V(sed=sen),
+	X1()*,
+	Z(text = "dom" &
+	  (X1.no_of_tokens = lastproberr() - 1 |
+	   X1.no_of_tokens = lastproberr() |
+	   X1.no_of_tokens = lastproberr() + 1)),
+	X2()*,
+	Y(sed=sen)
+-->
+	mark(Z)
+	%corr(Z.insert("har"))
+	action(scrutinizing)
+	info("probgranskning: (ord" tostring(X1.no_of_tokens + 1) ")"
+	     italics(Z.text) "är talspråk, använd de/dem")
+	jump(endlabel, X1.no_of_tokens + Z.no_of_tokens + X2.no_of_tokens)
+}
+
+prob_err@prob
+{
+V(sed=sen),
+X()*,
+Y(sed=sen)
+-->
+mark(X[lastproberr() - 1] X[lastproberr()] X[lastproberr() + 1])
+action(scrutinizing)
+info("probgranskning: (ord" tostring(lastproberr() + 1) ")"
+     "misstänkt fel")
+}
+*)

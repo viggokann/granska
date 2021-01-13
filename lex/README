@@ -1,0 +1,6 @@
+This folder has a set of lexicon files for the Granska tagger.
+
+These files lack some files needed for the parser version of Granska,
+but the folder ../suc has all necessary files so you can either use
+the files there or borrow the missing files (though these are drawn
+from different sources, so there may possibly be problems?)

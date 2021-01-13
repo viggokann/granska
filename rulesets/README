@@ -1,0 +1,9 @@
+This folder contains sets of rules for Granska.
+
+svesve are the rules for grammar checking of Swedish text written by native speakers.
+
+parser are the rules for phrase structure parsing (chunking)
+
+wille are slightly updated, starting from svesve
+
+svesveTng are the latest rules for grammar checking, very similar to svesve
