@@ -6309,6 +6309,7 @@
     417	pm.nom	vb.sup.akt.kop
     536	pm.nom	vb.sup.akt.mod
     773	pm.nom	vb.sup.sfo
+      1	pm.sms	mad
      30	pn.mas.sin.def.sub/obj	ab
       1	pn.mas.sin.def.sub/obj	ab.kom
       1	pn.mas.sin.def.sub/obj	ab.suv
@@ -6416,6 +6417,7 @@
     317	pn.neu.sin.def.sub/obj	pl
      74	pn.neu.sin.def.sub/obj	pm.gen
     525	pn.neu.sin.def.sub/obj	pm.nom
+      1	pn.neu.sin.def.sub/obj	pm.sms
       1	pn.neu.sin.def.sub/obj	pn.mas.sin.def.sub/obj
      20	pn.neu.sin.def.sub/obj	pn.neu.sin.def.sub/obj
     138	pn.neu.sin.def.sub/obj	pn.neu.sin.ind.sub/obj
