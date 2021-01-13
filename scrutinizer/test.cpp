@@ -42,19 +42,25 @@ int main(int argc, char** argv){
 	int size = 10;
 	char* first, *last, *ret;
 	for(int i = 0; i < size; i++){
-		//call granska and store XML in ret
-		ret = granska(str);
-		if(i==0) first = ret; 
-		else if(i==(size-1)) last = ret;
+	  //call granska and store XML in ret
+	  ret = granska(str);
+
+	  if(i==0)
+	    first = ret; 
+	  else if(i==(size-1))
+	    last = ret;
+
 	}
 	printf("\n--------------------------------\n");
 	printf("\nRunning tests on ../rulesets/wille/regelsamling.ver8.testfil:\n\n");
-	if(strcmp(first,last)==0) {
-			printf("\nReproducing test:\t\t\t OK \n");
+	if(strcmp(first,last)==0) {	  
+	  printf("\nReproducing test:\t\t\t OK \n");
 	}
 	else{
-		printf("\nReproducing test: FAILED \n");
-		return 0;
+	  printf("\nReproducing test: FAILED \n");
+
+	  // printf("first:\n%s\n\nlast:\n%s\n\n", first, last);
+	  return 0;
 	}
 	if(argc==3 && strcmp(argv[2],"-p")==0) printf("%s", ret);
 	
@@ -73,7 +79,7 @@ int main(int argc, char** argv){
 		// Do your failure processing here
 		return 1;
 	}
-	char* xmlFile = "x1.xml";
+	const char* xmlFile = "x1.xml";
 	SAX2XMLReader* parser = XMLReaderFactory::createXMLReader();
 	parser->setFeature(XMLUni::fgSAX2CoreValidation, true);
 	
@@ -97,5 +103,6 @@ int main(int argc, char** argv){
         }
 	XMLPlatformUtils::Terminate();
 	printf("\n--------------------------------\n");
+	
 	return 0;
 }

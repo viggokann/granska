@@ -26,6 +26,11 @@ namespace Prob
 {
     int sentence_offset = -1;
 
+    bool prob_check_ran = false;
+    bool prob_check_has_run() {
+      return prob_check_ran;
+    }
+  
     struct Triple
     {
         Triple() : count(0), end(0), length(0) {}
@@ -54,6 +59,8 @@ int
 Prob::prob_check(const Scrutinizer          *scrutinizer,
                  const AbstractSentence     *sent)
 {
+    prob_check_ran = true;
+
     WordToken *first = sent->GetWordToken(0 + 2);
 
     current_sentence = sent;
@@ -81,11 +88,18 @@ Prob::prob_check(const Scrutinizer          *scrutinizer,
     sentence_offset = first->Offset();
     info.sent_offset = sentence_offset;
 
-    Output *force = &output();
+    // no print here, Output *force = &output();
 
-    force->push("s");
-    force->attr("ref", sentence_offset);
-    force->add("words", info.size);
+    // Here the sentence in clear text and the tokens (word, tag,
+    // lemma) are printed.  This function is sometimes called several
+    // times on the same sentence, though. And it is called with
+    // modified sentences to check if a suggested correction makes the
+    // sentence worse or not. Perhaps it is better to print somewhere
+    // else instead (like in PrintResult) ? / Jonas
+    
+    // no print here,     force->push("s");
+    // no print here,     force->attr("ref", sentence_offset);
+    // no print here,     force->add("words", info.size);
 
     // output sentence in clear text    
     
@@ -98,44 +112,41 @@ Prob::prob_check(const Scrutinizer          *scrutinizer,
       s += " ";
       }
   
-      force->add("text",  Misc::fixXML(s.c_str()));
+    // no print here,       force->add("text",  Misc::fixXML(s.c_str()));
       }
     
     //Oscar, fixes output of original text, but oh no it's messing up bad
     //force->add("text", Misc::fixXML(sent->getOriginalText()));
 
-    if(sent->IsHeading())
-        force->add("heading");
-    if(sent->EndsParagraph())
-        force->add("paragraph");
+    // no print here,     if(sent->IsHeading())
+    // no print here,         force->add("heading");
+    // no print here,     if(sent->EndsParagraph())
+    // no print here,         force->add("paragraph");
 
     // get tokens and words
-    force->push("contents");
+    // no print here,     force->push("contents");
     int i;
     for(i = 0; i < info.size; i++)
         {
             info.words[i] = info.tokens[i]->RealString();
             info.tags[i]  = info.tokens[i]->SelectedTag();
-            force->add("w", Misc::fixXML(info.words[i]));
-            force->attr("no", i);
+    // no print here,             force->add("w", Misc::fixXML(info.words[i]));
+    // no print here,             force->attr("no", i);
             if(info.tokens[i]->Offset())
                 out->attr("ref", info.tokens[i]->Offset() - sentence_offset);
 #ifdef DEVELOPER_OUTPUT
             out->attr("tag", info.tags[i]->String());
 #else  // DEVELOPER_OUTPUT
-            force->attr("tag", info.tags[i]->Index());
+    // no print here,             force->attr("tag", info.tags[i]->Index());
 #endif // DEVELOPER_OUTPUT
-            //if(info.tokens[i]->LemmaString()[0] != '"')
-            force->attr("lemma", Misc::fixXML(info.tokens[i]->LemmaString()));
-            //else
-            //   force->attr("lemma", "'");
+    // no print here,             force->attr("lemma", Misc::fixXML(info.tokens[i]->LemmaString()));
         }
     for(i = info.size; i < MAX_SENTENCE_LENGTH; i++)
         {
             info.words[i] = 0;
             info.tags[i]  = 0;
         }
-    force->pop();  // force->push("contents");
+    // no print here,     force->pop();  // force->push("contents");
 
     if(config().repr_file)
         {
@@ -250,7 +261,7 @@ Prob::prob_check(const Scrutinizer          *scrutinizer,
  end:
 #endif // IMPROVE_TAGGER
 
-    force->pop();  // push("s")
+    // no print here,     force->pop();  // push("s")
 
     return last_prob_err;
 }

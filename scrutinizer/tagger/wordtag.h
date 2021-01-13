@@ -37,8 +37,8 @@ enum VerbType {
   NOUN_FEMININ
 };
 
-class WordLexicon;
 class Tag;
+class WordLexicon;
 
 class WordTag {
   friend class Tagger;

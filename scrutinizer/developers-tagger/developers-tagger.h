@@ -93,10 +93,10 @@ private:
   int correctTagsSize;
 
   int CountCorrectTaggings() const;
-  void OptimizeParameter(char *name, bool *p);
-  void OptimizeParameter(char *name, int *p); // jonas
-  void OptimizeParameter(char *name, float* param, float min = -1, float max = -1);
-  void OptimizeParameter(char *name, int* param, int min, int max);
+  void OptimizeParameter(const char *name, bool *p);
+  void OptimizeParameter(const char *name, int *p); // jonas
+  void OptimizeParameter(const char *name, float* param, float min = -1, float max = -1);
+  void OptimizeParameter(const char *name, int* param, int min, int max);
   void OptimizeParameterGolden(float* param, float min = -1, float max = -1);
   void OptimizeParameterLinear(float* param, float min = -1, float max = -1);
   void PrintParameters() const;

@@ -85,11 +85,12 @@ bool GramError::Evaluate() {
 	break;
       }
     }
-    for (DynamicSentence *d2 = m->GetAltSentence(); d2 && d2 != d; d2 = d2->Next())
+    for (DynamicSentence *d2 = m->GetAltSentence(); d2 && d2 != d; d2 = d2->Next()) {
       if (d2->Status() != FORM_NOT_FOUND && d->IsEqual(d2)) {
 	d->status = SAME_AS_ANOTHER;
 	break;
       }
+    }
   }
 
   if (!falseAlarm) {

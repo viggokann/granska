@@ -206,13 +206,16 @@ void HashTable<T>::Initialize(int s) {
   if (s <= 0) s = 10;
   size = 0;
   nObjects = 0;
-  for (int i=(sizeof(int)*8)-1; i>=0; i--)
-    if ((s >> i) & 1)
+  for (int i=(sizeof(int)*8)-1; i>=0; i--) {
+    if ((s >> i) & 1) {
       if (size) {
 	size *= 2;
 	break;
-      } else
+      } else {
 	size = s;
+      }
+    }
+  }
   mask = size-1;
   end = size;
   max = int(threshold*size);

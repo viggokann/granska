@@ -306,7 +306,7 @@ void DevelopersTagger::OptimizeParameterGolden(float *p, float a, float b) {
     *p = oldP;
 }
 
-void DevelopersTagger::OptimizeParameter(char *name, float *p, float a, float b) {
+void DevelopersTagger::OptimizeParameter(const char *name, float *p, float a, float b) {
   Message(MSG_STATUS);
   float r = 1/xScope;
   if (r > 1)
@@ -324,16 +324,16 @@ void DevelopersTagger::OptimizeParameter(char *name, float *p, float a, float b)
     OptimizeParameterLinear(p, a, b);
 }
 
-void DevelopersTagger::OptimizeParameter(char *name, bool *p) {
+void DevelopersTagger::OptimizeParameter(const char *name, bool *p) {
   OptimizeParameter(name, (int*)p, 0, 1);
 }
 
 // jonas
-void DevelopersTagger::OptimizeParameter(char *name, int *p) {
+void DevelopersTagger::OptimizeParameter(const char *name, int *p) {
   OptimizeParameter(name, p, 0, 1);
 }
 
-void DevelopersTagger::OptimizeParameter(char *name, int *p, int a, int b) {
+void DevelopersTagger::OptimizeParameter(const char *name, int *p, int a, int b) {
   if (xRandomize)
     return;
   std::cout<<"optimizing "<<name<<" ("<<*p<<") "<<bestResult<<"..."<<std::endl;

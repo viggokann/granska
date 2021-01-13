@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <stdlib.h>
+#include <cstdlib>
 
 #ifdef TRY_PAROLE_TTT
 #include "trigrams.h"
@@ -121,7 +121,7 @@ namespace Prob
 	    std::cerr << "cluster: could not open file '" 
 		      << file << "'" << std::endl;
 	    //throw "file error";
-	    exit(1);
+	    std::exit(1);
 	}
 
 	for(int i = 0; i < MAX_TAGS; i++)
@@ -152,6 +152,7 @@ namespace Prob
 
 	    Tag *f = l.FindTag(from.c_str());
 	    Tag *t = l.FindTag(to.c_str());
+
 	    if(tag_name[f->Index()].empty())
 		tag_name[f->Index()] = from;
 
@@ -178,7 +179,7 @@ namespace Prob
 		std::cerr << "cluster: could not open file '" 
 			  << file << "'" << std::endl;
 		//throw "file error";
-		exit(1);
+		std::exit(1);
 	    }
 
 	    for(int i = 0; i < MAX_TAGS; i++)
@@ -218,7 +219,7 @@ namespace Prob
 		    std::cerr << "prob: " << prob << ", "
 			      << "tag: " << tag << ", context: " << ctx
 			      << ", repr: " << repr << std::endl;
-		    exit(1);
+		    std::exit(1);
 		}
 
 		if(left)
@@ -258,7 +259,7 @@ namespace Prob
 		std::cerr << "cluster: could not open file '" 
 			  << file << "'" << std::endl;
 		//throw "file error";
-		exit(1);
+		std::exit(1);
 	    }
 
 	    for(int i = 0; i < MAX_TAGS; i++)
@@ -304,7 +305,7 @@ namespace Prob
 		std::cerr << "cluster: could not open file '" 
 			  << file << "'" << std::endl;
 		//throw "file error";
-		exit(1);
+		std::exit(1);
 	    }
 
 	    int tmp;
@@ -325,7 +326,6 @@ namespace Prob
 #endif // TRY_PAROLE_TTT
 
     void load(const TagLexicon &l)
- 
    {
 #ifdef DEVELOPER_OUTPUT
 	for(int j = 0; j < config().model_c; j++)
@@ -347,7 +347,7 @@ namespace Prob
 	    tag_freq[k] = l.t_freq(k);
 	    //std::cerr << l.Element(k) << std::endl;
 	}
-	//exit(0);
+	//std::exit(0);
 
 #ifdef TRY_PAROLE_TTT
 	parole_trigrams = new Trigrams(l);
@@ -502,9 +502,9 @@ namespace Prob
 
     void reset()
     {
-	#ifdef VERBOSE
+#ifdef VERBOSE
 	Message(MSG_STATUS, "resetting probchecker...");
-	#endif
+#endif
 	for(unsigned int i = 0; i < type_count + 1; i++)
 	{
 	    if(i < type_count)
@@ -526,19 +526,29 @@ namespace Prob
     
 	sentence_count = 0;
 	sentence_offset = -1;
+
+	// report_reset();
     }
 
     void print(const Scrutinizer *s)
-    {/*
-    #ifdef DEVELOPER_OUTPUT
-	report_final();
-      #if 0
-	output_new_annotations();
-      #endif
-    #endif // DEVELOPER_OUTPUT
-	output_tag_list(s);
-	output_granska_rules();*/
-	reset();
+    { // This comment ?? Jonas
+      // Without this comment, Wille's test fails
+      // With this comment, tags do not get printed in normal runs
+
+      /*
+#ifdef DEVELOPER_OUTPUT
+#if 0
+      output_new_annotations();
+#endif
+#endif // DEVELOPER_OUTPUT
+      output_tag_list(s);
+      output_granska_rules(); // This call gives different results on the same input
+      */
+#ifndef DEVELOPER_OUTPUT
+      output_tag_list(s);
+#endif
+      
+      reset();
     }
 
     void unload()

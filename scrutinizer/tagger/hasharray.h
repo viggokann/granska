@@ -95,7 +95,7 @@ private:
   int Key(const T &t) const;
   int Key(const char*) const;
   T *array;
-  int* links;
+  int *links;
   int size;
   uint mask;
   uint mask2;
@@ -113,13 +113,13 @@ template <class T>
 HashArray<T>::~HashArray() {
 // jb: purify claims mem leak
   if (size)
-  { 
-	  Message(MSG_STATUS, "deleting", name, "hash array...");
+    { 
+      Message(MSG_STATUS, "deleting", name, "hash array...");
       if (strcmp(name, "tags"))    // jb: why is this?
-	  delete [] array; 
+	delete [] array; 
       delete [] links;		    // jbfix: delete => delete []
       ExtByt(-size*sizeof(int));
-  }
+    }
   DelObj();
 }
 

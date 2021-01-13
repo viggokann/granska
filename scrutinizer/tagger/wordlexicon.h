@@ -107,7 +107,7 @@ private:
   const char *lexiconDir;
   WordTag *more;
   char *strings;
-  int CL, CW, CWT, CMW;
+  unsigned int CL, CW, CWT, CMW;
   int N_STYLEWORDS;
   HashArray<StyleWord> stylewords;
   StringBuf commentBuf;

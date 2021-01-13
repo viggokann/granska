@@ -110,7 +110,7 @@ wwwstatic unsigned char *tillISOTabell;     /* översättning kod -> ISO Latin-1 *
 
 static int ungotCharString = 0;
 
-INLINE int utf8GetFromString(unsigned char **s) {
+int utf8GetFromString(unsigned char **s) {
   int nb;
   int ch = 0;
   int src;
@@ -143,7 +143,7 @@ int utf8string2iso(char *dest, int destSize, unsigned char *src) {
 
 static int ungotChar = 0;
 
-INLINE int utf8get(FILE *f) {
+int utf8get(FILE *f) {
   int nb;
   int ch = 0;
   int src;
@@ -369,7 +369,7 @@ acceptable.  Do NOT use for cryptographic purposes.
 --------------------------------------------------------------------
 */
 
-INLINE int InEL(const unsigned char *k,        /* the key */
+int InEL(const unsigned char *k,        /* the key */
 		int length)   /* the length of the key */
 {  register int len = length;
    register ub4 a,b,c;
@@ -429,7 +429,7 @@ INLINE int InEL(const unsigned char *k,        /* the key */
 /* InILorELbutnotUL kollar om ordet k med längden length finns i
 ordlistorna IL eller EL men inte i UL. I så fall returneras 1.
 Om ordet finns i UL returneras -1, annars returneras 0. */
-INLINE int InILorELbutnotUL(const unsigned char *k,        /* the key */
+int InILorELbutnotUL(const unsigned char *k,        /* the key */
 		    int length)   /* the length of the key */
 {  register int len = length;
    register ub4 a,b,c;
@@ -528,7 +528,7 @@ INLINE int InILorELbutnotUL(const unsigned char *k,        /* the key */
    return -1; /* ordet med i undantagsordlistan */
 }
 
-INLINE int InFL(const unsigned char *k,        /* the key */
+int InFL(const unsigned char *k,        /* the key */
 		int length)   /* the length of the key */
 {  register int len = length;
    register ub4 a,b,c;
@@ -585,7 +585,7 @@ INLINE int InFL(const unsigned char *k,        /* the key */
    return 1;
 }
 
-INLINE int InIL(const unsigned char *k,        /* the key */
+int InIL(const unsigned char *k,        /* the key */
 		int length)   /* the length of the key */
 {  register int len = length;
    register ub4 a,b,c;
@@ -638,7 +638,7 @@ INLINE int InIL(const unsigned char *k,        /* the key */
    return 1;
 }
 
-INLINE int InUL(const unsigned char *k,        /* the key */
+int InUL(const unsigned char *k,        /* the key */
 		int length)   /* the length of the key */
 {  register int len = length;
    register ub4 a,b,c;
@@ -691,7 +691,7 @@ INLINE int InUL(const unsigned char *k,        /* the key */
    return 1;
 }
 
-INLINE int InXL(const unsigned char *k,        /* the key */
+int InXL(const unsigned char *k,        /* the key */
 		int length)   /* the length of the key */
 {  register int len = length;
    register ub4 a,b,c;
@@ -1411,7 +1411,7 @@ static int Initiera(void)
   return 1;
 }
 
-INLINE int InFLSuffix(const unsigned char *ord, int len)
+int InFLSuffix(const unsigned char *ord, int len)
 {
   if (xAndelser && len >= 5) {
     unsigned char word[LANGD];
@@ -1829,7 +1829,7 @@ static int ReadLexicon(const unsigned char *separator)
 }
 
 
-INLINE void VersalerGemena(register const unsigned char *ordin, register unsigned char *ord,
+void VersalerGemena(register const unsigned char *ordin, register unsigned char *ord,
 			   register unsigned char *Ord)
 { register int i;
   int baraGemena, baraVersaler;
@@ -2053,7 +2053,8 @@ int StavaWord(
 
 int SoundWord(const unsigned char *word)     /* word to be checked */
 { 
-	unsigned char buf[LANGD + 3], ord2[LANGD + 3];
+  /* unsigned char buf[LANGD + 3], ord2[LANGD + 3]; */
+  unsigned char buf[LANGD + 3];
   int i, bindestreck = 0;
   for (i = 0; i < LANGD; i++) {
     if (!(buf[i] = bokstavsTabell[word[i]])) break;

@@ -30,7 +30,7 @@ extern "C" {
 Scrutinizer *scrutinizer;       // slightly faster if not pointer
 
 static int yylex(void);                /* lexical analyzer */
-static int yyerror(char *s);           /* automatically called error reporting function */
+static int yyerror(const char *s);           /* automatically called error reporting function */
 
 /* Definierade i regexps.cc: */
 /* CompileRegexpHelp compiles valregexp */
@@ -756,7 +756,7 @@ void ParseWarningArg(const char *s, const char *arg) {
   Message(MSG_CONTINUE, buf);
 }
 
-static int yyerror(char*) {
+static int yyerror(const char*) {
   errorLine = line;
   strcpy(errorLineBuf, linebuf);
   return 0;
@@ -821,7 +821,7 @@ void GotoEntry::Print() const {
   std::cout << "(" << id << "," << nooftokens << ")";
 }
 
-MethodOrFunctionEntry::MethodOrFunctionEntry(char *name_, enum idtype type_,
+MethodOrFunctionEntry::MethodOrFunctionEntry(const char *name_, enum idtype type_,
 			  enum semantictype semtype_, int noofargs_)
   : IdEntry(name_), argtypes(0)
 {
@@ -892,22 +892,22 @@ static bool AddForms(CorrThing *ct, WordTag *wt, ChangeableTag &tag) {
 static void formFunc(MethodOrFunctionEntry*, EvaluatedVariable *p, const char *t,
 		     const Expr *args, union value argval[], union value &res) {
     res.corrThing = NULL;
-    for (int i=0; i<p->NMatchedWordTokens(); i++) {
+    for (int wordTokenIterator=0; wordTokenIterator<p->NMatchedWordTokens(); wordTokenIterator++) {
 	WordTag *wt;
 	if (p == NULL) {
 	    wt = scrutinizer->FindMainOrNewWord(t);
 	    ensure(wt);
 	} else
-	    wt = p->GetWordToken(i)->GetWordTag();
+	    wt = p->GetWordToken(wordTokenIterator)->GetWordTag();
 	//    cout << p->GetWordToken(i) << endl;
-	WordToken *tok = p->GetWordToken(i);
+	WordToken *tok = p->GetWordToken(wordTokenIterator);
 	CorrThing *ct = new CorrThing(CORR_REPLACE, tok); // new OK
 	if (res.corrThing)
 	    ct->SetNext(res.corrThing);
 	res.corrThing = ct;
 	ChangeableTag tag(*tok->SelectedTag()); // hur gör vi när p==NULL undrar Viggo
-	int k = 0;	// using k instead of i (Wille)
-	for (const Expr *argp = args; argp; argp = argp->c.op.Right(), k++) { // using k instead of i (Wille)
+	int argIterator = 0;
+	for (const Expr *argp = args; argp; argp = argp->c.op.Right(), argIterator++) {
 	    const Expr *arg = argp->c.op.Left();
 	    if (arg->type != Expr::Operation || arg->c.op.Op() != ASSIGNSYM) {
 		Message(MSG_WARNING, "a parameter to form() is not an assignment");
@@ -915,7 +915,7 @@ static void formFunc(MethodOrFunctionEntry*, EvaluatedVariable *p, const char *t
 		const Expr *attr = arg->c.op.Left();
 		if (attr->semtype == String && attr->c.id == constantLemma) {
 		    ensure(0);
-		    //	wt = scrutinizer->FindMainOrNewWord(argval[i].string);
+		    //	wt = scrutinizer->FindMainOrNewWord(argval[argIterator].string);
 		    for (int j=0; j<wt->NLemmas(); j++) {
 			Word *wt2 = wt->Lemma(j)->GetWord();
 			ct->Add(wt2, wt2->String());
@@ -923,7 +923,7 @@ static void formFunc(MethodOrFunctionEntry*, EvaluatedVariable *p, const char *t
 		    return;	  
 		} else if (attr->semtype == SemFeatureClass) {
 		    const int fClass = attr->GetFeatureClass();
-		    const int fValue = argval[k].feature; // using k instead of i (Wille)
+		    const int fValue = argval[argIterator].feature;
 		    tag.SetFeature(fClass, fValue);
 		} else
 		    Message(MSG_WARNING, "non-feature assigned in form()");
@@ -1034,7 +1034,10 @@ static void containsStyleWordFunc(MethodOrFunctionEntry*, const Expr *args,
 static void CollectSpellSuggestions(CorrThing *ct, char *corr) {
   if (!corr) return;
   int n = 0;
-  for (const char *s = strtok(corr, "\t"); s; s = strtok(NULL, "\t")) {
+
+  /* This strtok call needs to be consistent with the version of Stava being used */
+  /* for (const char *s = strtok(corr, "\t"); s; s = strtok(NULL, "\t")) { */
+  for (const char *s = strtok(corr, ","); s; s = strtok(NULL, ",")) { 
     ct->Add(NULL, s);
     if (++n >= xMaxSpellSuggestions)
       break;

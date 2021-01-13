@@ -131,7 +131,7 @@ public:
   } func;
   int featureClass; /* used only when semtype is Feature or SemFeatureClass */
 
-  MethodOrFunctionEntry(char *name_, enum idtype type_, 
+  MethodOrFunctionEntry(const char *name_, enum idtype type_, 
 			enum semantictype semtype_, int noofargs_);
   ~MethodOrFunctionEntry();
   int ParametersOK(Expr *actuals) const;

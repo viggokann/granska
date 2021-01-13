@@ -89,8 +89,8 @@ void TagLexicon::ComputeProbs() {
       }
   }
   if (xLambdaUni != prevUni || xLambdaBi != prevBi ||
-      xLambdaTri != prevTri || xLambdaTriExp != prevExp)
-    if (xLambdaTriExp < 0.6)
+      xLambdaTri != prevTri || xLambdaTriExp != prevExp) {
+    if (xLambdaTriExp < 0.6) {
       for (i=0; i<CTTT; i++) {
 	TagTrigram &t = ttt[i];
 	ensure(bigramFreqs[t.tag1][t.tag2] > 0);
@@ -105,8 +105,10 @@ void TagLexicon::ComputeProbs() {
 	  xLambdaTri*t.pf.freq*(float)pow(bigramFreqs[t.tag1][t.tag2], xLambdaTriExp-1);
 	  ensure(t.pf.prob > 0); */
       }
-    else
+    } else {
       Message(MSG_MINOR_WARNING, "xLambdaTriExp cannot exceed 0.6 (not tested)");
+    }
+  }
   prevUni = xLambdaUni;
   prevBi = xLambdaBi;
   prevTri = xLambdaTri;

@@ -48,6 +48,14 @@ void Prob::report_granska_rule_use(const Rule *r)
       granska_rule_types[cat]++;
 }
 
+void Prob::report_reset() {
+  granska_rule_types_t::iterator i = granska_rule_types.begin();
+  for(; i != granska_rule_types.end(); ++i) {
+    i->second = 0;
+  }
+  //granska_rules_used.clear();
+}
+
 void Prob::output_granska_rules()
 {
     Output &out = output();
@@ -56,11 +64,13 @@ void Prob::output_granska_rules()
 
     // first, we output the rule categories
     out.push("categories");
+
     granska_rule_types_t::const_iterator i = granska_rule_types.begin();
     for(; i != granska_rule_types.end(); ++i)
     {
 	out.push("category");
 	out.add("name", i->first->Name());
+						     
 	const char *tmp;
 	tmp = i->first->Info();
 	if(tmp && strcmp(tmp, "") != 0)
@@ -345,7 +355,7 @@ Prob::report_rules(const Match     *m[],
 
     out->push("rule_use");
     bool dummy;
-    bool found = false;
+    // bool found = false;
     annot_iter it = annots.find(offset);
     if(it == annots.end())
     {
@@ -383,7 +393,7 @@ Prob::report_rules(const Match     *m[],
 		    out->attr("hex", s.str().c_str());
 		}
 	        type_index(a.type[j], types, dummy);
-		found = true;
+		// found = true;
 	    }
 	out->pop();  // push("annots");
     }
@@ -499,6 +509,11 @@ inc_type_counts(int      type[],
 void
 Prob::report_final()
 {
+
+  std::cout << "report_final()" << std::endl;
+  
+#ifdef PROBCHECK
+
     std::vector<char> stat;
     std::vector<char> det;
     unsigned int i;
@@ -883,4 +898,6 @@ Prob::report_final()
 	std::cout << "false alarms: " << false_alarms << std::endl;
     }
 #endif // #if 0
+
+#endif // ifdef PROBCHECK
 }

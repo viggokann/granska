@@ -28,6 +28,8 @@ namespace Prob
 		   const int		       start[],
 		   const int		       stop[]);
     Config &config();
+
+    bool prob_check_has_run();
 }
 
 

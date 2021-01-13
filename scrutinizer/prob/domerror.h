@@ -1,21 +1,16 @@
 #ifndef DOMERROR_H
 #define DOMERROR_H
 
-//#include <xercesc/sax/SAXParseException.hpp>
-//#include <xercesc/sax/ErrorHandler.hpp>
-#include <xercesc/sax/HandlerBase.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
+
+#include <sax/SAXParseException.hpp>
+#include <sax/ErrorHandler.hpp>
 #include <iostream>
 
-//class SAXParseException;
-
-using namespace xercesc;
 
 // ---------------------------------------------------------------------------
 // Simple error handler deriviative to install on parser
 // ---------------------------------------------------------------------------
-
-class DOMCountErrorHandler : public HandlerBase
+class DOMCountErrorHandler : public xercesc::ErrorHandler
 {
 public:
     // -----------------------------------------------------------------------
@@ -34,9 +29,9 @@ public:
     // -----------------------------------------------------------------------
     // Implementation of the SAX ErrorHandler interface
     // -----------------------------------------------------------------------
-    void warning(const SAXParseException& e);
-    void error(const SAXParseException& e);
-    void fatalError(const SAXParseException& e);
+    void warning(const xercesc::SAXParseException& e);
+    void error(const xercesc::SAXParseException& e);
+    void fatalError(const xercesc::SAXParseException& e);
     void resetErrors();
 
 
@@ -73,7 +68,7 @@ public :
     StrX(const XMLCh* const toTranscode)
     {
         // Call the private transcoding method
-        fLocalForm = XMLString::transcode(toTranscode);
+        fLocalForm = xercesc::XMLString::transcode(toTranscode);
     }
 
     ~StrX()
@@ -125,7 +120,7 @@ inline DOMCountErrorHandler::~DOMCountErrorHandler()
 // ---------------------------------------------------------------------------
 // DOMCountHandlers: Overrides of the SAX ErrorHandler interface
 // ---------------------------------------------------------------------------
-inline void DOMCountErrorHandler::error(const SAXParseException& e)
+inline void DOMCountErrorHandler::error(const xercesc::SAXParseException& e)
 {
     fSawErrors = true;
     std::cerr << "\nError at file " << StrX(e.getSystemId())
@@ -134,7 +129,7 @@ inline void DOMCountErrorHandler::error(const SAXParseException& e)
          << "\n Message: " << StrX(e.getMessage()) << std::endl;
 }
 
-inline void DOMCountErrorHandler::fatalError(const SAXParseException& e)
+inline void DOMCountErrorHandler::fatalError(const xercesc::SAXParseException& e)
 {
     fSawErrors = true;
     std::cerr << "\nFatal Error at file " << StrX(e.getSystemId())
@@ -143,7 +138,7 @@ inline void DOMCountErrorHandler::fatalError(const SAXParseException& e)
          << "\n Message: " << StrX(e.getMessage()) << std::endl;
 }
 
-inline void DOMCountErrorHandler::warning(const SAXParseException& e)
+inline void DOMCountErrorHandler::warning(const xercesc::SAXParseException& e)
 {
     std::cerr << "\nWarning at file " << StrX(e.getSystemId())
          << ", line " << e.getLineNumber()

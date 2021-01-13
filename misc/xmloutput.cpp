@@ -43,7 +43,7 @@ namespace Misc
         bool pushed;
         bool inited;
         bool exited;
-		bool lib;
+        bool lib;
 		
         std::stack<std::string> elem;
         std::ofstream out;
@@ -178,48 +178,48 @@ std::string Misc::Output_impl_normal::getCharP(){
 
 void Misc::Output_impl_normal::flush()
 {
-    if(exited)
-        return;
-	if(lib && node != "")
+  if(exited)
+    return;
+  if(lib && node != "")
+    {
+      ostr() << "<" << node;
+      for(unsigned int i = 0; i < attrib.size(); i++)
+	ostr() << " " << attrib[i].name << "=\""
+	       << attrib[i].value << "\"";
+      if(!pushed)
 	{
-		ostr() << "<" << node;
-		for(unsigned int i = 0; i < attrib.size(); i++)
-			ostr() << " " << attrib[i].name << "=\""
-			  << attrib[i].value << "\"";
-		if(!pushed)
-			{
-				if(value == "")
-					ostr() << "/>" << std::endl;
-				else
-					ostr() << ">" << value << "</" << node << ">" << std::endl;
-			}
-		else
-			ostr() << ">";
-
+	  if(value == "")
+	    ostr() << "/>" << std::endl;
+	  else
+	    ostr() << ">" << value << "</" << node << ">" << std::endl;
 	}
-	else if(!lib && node != "")
+      else
+	ostr() << ">";
+
+    }
+  else if(!lib && node != "")
+    {
+      str() << "<" << node;
+      for(unsigned int i = 0; i < attrib.size(); i++)
+	str() << " " << attrib[i].name << "=\""
+	      << attrib[i].value << "\"";
+      if(!pushed)
 	{
-		str() << "<" << node;
-		for(unsigned int i = 0; i < attrib.size(); i++)
-			str() << " " << attrib[i].name << "=\""
-			  << attrib[i].value << "\"";
-		if(!pushed)
-			{
-				if(value == "")
-					str() << "/>" << std::endl;
-				else
-					str() << ">" << value << "</" << node << ">" << std::endl;
-			}
-		else
-			str() << ">";
+	  if(value == "")
+	    str() << "/>" << std::endl;
+	  else
+	    str() << ">" << value << "</" << node << ">" << std::endl;
 	}
-    else if(!inited)	// first node
-        init();
+      else
+	str() << ">";
+    }
+  else if(!inited)	// first node
+    init();
 
-    node = "";
-    value = "";
-    attrib.clear();
-    pushed = false;
+  node = "";
+  value = "";
+  attrib.clear();
+  pushed = false;
 }
 
 void Misc::Output_impl_normal::push(std::string n)

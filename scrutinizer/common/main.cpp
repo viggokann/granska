@@ -99,10 +99,10 @@ static void RepeatTest(Scrutinizer *s, const char *ruleFile, const char *textFil
 static void PrintUsage(char *progName) {
     // jbfix: getenv() returns 0 if env.var. unavailable
     // this caused operator<<(0) to abort
-    char *stava_lex = getenv("STAVA_LEXICON");
-    char *tagger_lex = getenv("TAGGER_LEXICON");
-    char *scrut_rule = getenv("SCRUTINIZER_RULE_FILE");
-    char *scrut_test = getenv("SCRUTINIZER_TEST_TEXT");
+    const char *stava_lex = getenv("STAVA_LEXICON");
+    const char *tagger_lex = getenv("TAGGER_LEXICON");
+    const char *scrut_rule = getenv("SCRUTINIZER_RULE_FILE");
+    const char *scrut_test = getenv("SCRUTINIZER_TEST_TEXT");
     if(!stava_lex) stava_lex = "<NULL>";
     if(!tagger_lex) tagger_lex = "<NULL>";
     if(!scrut_rule)	scrut_rule = "<NULL>";
@@ -185,8 +185,8 @@ static int run(const char *ruleFile, const char *textFile) {
   }
   int n;
   if (xTryLatestFeature) {
-    char *str1 = "En hus.";
-    char *str2 = "Iledning.";
+    const char *str1 = "En hus.";
+    const char *str2 = "Iledning.";
     scrutinizer.ReadTextFromString(str1);
     scrutinizer.Scrutinize(&n);
     scrutinizer.PrintResult();
@@ -221,12 +221,12 @@ static int run(const char *ruleFile, const char *textFile) {
 }
 
 #ifdef WEB_SCRUTINIZER
-extern int WebScrutinize(Scrutinizer*, int, char**); //johan020226
+extern int WebScrutinize(Scrutinizer*, int, char**, char**, int); //johan020226
 
-static int WebScrut(int argc, char **argv) {
+static int WebScrut(int argc, char **argv, char** orgArgv, int orgArgc) {
   SetMessageStream(MSG_STATUS, NULL);
   Scrutinizer scrutinizer;
-  return WebScrutinize(&scrutinizer, argc, argv);
+  return WebScrutinize(&scrutinizer, argc, argv, orgArgv, orgArgc);
 }
 #endif // WEB_SCRUTINIZER
 
@@ -242,8 +242,8 @@ int main(int argc, char **argv) {
       char *textFile = NULL;
       int c;
   #ifdef DEVELOPER_OUTPUT
-      for(c = 0; c < argc; c++)
-	  std::cout << "argv[" << c << "]: " << argv[c] << std::endl;
+      // for(c = 0; c < argc; c++)
+      // 	  std::cout << "argv[" << c << "]: " << argv[c] << std::endl;
   #endif // DEVELOPER_OUTPUT
       for(c = 1; c < argc; c++) {
 	if (argv[c][0] == '-')
@@ -366,9 +366,8 @@ int main(int argc, char **argv) {
 
       if(xDoWebScrut) {
 	// jonas, we do not want -w to take the rest of the command line
-	return WebScrut(4, WebArgv);	      
+	return WebScrut(4, WebArgv, argv, argc);	      
       }
-
       
       if (!ruleFile)
 	ruleFile = getenv("SCRUTINIZER_RULE_FILE");

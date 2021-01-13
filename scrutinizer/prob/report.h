@@ -24,6 +24,8 @@ namespace Prob
     void report_rules(const Match *[], int, int, int, int);
     void out_type(int sentence, int begin, int end);
     void report_final();
+
+    void report_reset();
 }
 
 

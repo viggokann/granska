@@ -4,7 +4,7 @@
  */
 
 #include <netdb.h>
-#include <strings.h>
+#include <cstring>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -24,7 +24,7 @@ Socket::Socket (const char *addr, ushort port) :
   std::streambuf (),
   std::iostream ((std::streambuf *) this) {
   gbuf = pbuf = NULL;
-  strncpy (_host_name, addr, 1023);
+  std::strncpy (_host_name, addr, 1023);
   r_port_ = port;
   CreateSocket (addr, port);
   InitBuf (SOCK_BUFSIZE);
@@ -72,7 +72,7 @@ void Socket::Set (int socket, struct sockaddr_in *client_info) {
                                           sizeof client_info->sin_addr,
                                           AF_INET);
   if (c_host) {
-    strcpy (_host_name, c_host->h_name);
+    std::strcpy (_host_name, c_host->h_name);
   }
   socket_ = socket;
 }

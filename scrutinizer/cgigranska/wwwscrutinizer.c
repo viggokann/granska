@@ -16,6 +16,8 @@
 #include <errno.h>
 #include <ctype.h>
 
+#include "utf2latin1.h"
+
 extern char tempfile[100], ruletempfile[100];
 
 #define MAXURLLEN 400
@@ -61,6 +63,10 @@ static int FindTempFileName(char *filename)
 
 
 static void TextScrutinize(char *t) {
+  if(looksLikeUTF(t)) {
+    utf2latin1(t);
+  }
+
   (*wwwscrutinizer)(t, tempfile, NULL, noOfRuleLines > 0 ? ruletempfile : NULL);
   return;
   /*
@@ -113,81 +119,41 @@ static void DocScrutinize(char *t) {
 
 /* UrlScrutinize granskar en webbsida på angiven URL */
 static int UrlScrutinize(char *url, char *tempfilename) {
-  FILE *fin;
-  char *urlprefix = "";
-  char *s = strchr(url, '"');
-  pid_t f;
-  int c;
+  const char *lynxHead = "lynx -dump -nolist '";
+  const char *lynxTail = "' | tr '[:space:]' ' ' | tr -s ' ' | sed 's/\\[INLINE\\]//g'";
+
+  char buf[maxlen];
   
-  if (s)
-    *s = '\0'; /* för att undvika säkerhetsluckor: bryt vid citattecken */
-  if (strncmp(url, "//", 2) == 0)
-    urlprefix = "http:";
-  else if (*url == '/')
-    urlprefix = "http://www.nada.kth.se";
-  if (*urlprefix) {
-    char *tmp = malloc(strlen(url)+100);
-    sprintf(tmp, "%s%s", urlprefix, url);
-    url = tmp;
-  }
-  f = fork();
-  if (f == 0) {
-    f = fork();
-    if (f == 0) {
-      c = execl("/usr/local/hacks/bin/wget", "wget", url, "-O", tempfilename, NULL);
-      if (c) {
-	fin = fopen(tempfilename, "w");
-	switch(errno) {
-	case E2BIG: s = "E2BIG"; break;
-	case EACCES: s = "EACCES"; break;
-	case EAGAIN: s = "EAGAIN"; break;
-	case EFAULT: s = "EFAULT"; break;
-	case EINTR:  s = "EINTR"; break;
-	case ELOOP: s = "ELOOP"; break;
-	case EMULTIHOP: s = "EMULTIHOP"; break;
-	case ENAMETOOLONG: s = "ENAMETOOLONG"; break;
-	case ENOENT: s = "ENOENT"; break;
-	case ENOEXEC: s = "ENOEXEC"; break;
-	case ENOLINK: s = "ENOLINK"; break;
-	case ENOMEM: s = "ENOMEM"; break;
-	case ENOTDIR: s = "ENOTDIR"; break;
-	default: s = "other"; break;
-	}
-	fprintf(fin, "failed to get the page %s, error = %s\n", url, s);
-	fclose(fin);
-	unlink(tempfilename);
-	return 0;
-      }
-    } else
-      wait(&c);
-    c = execl("/disk0/httpd/cgi-bin/lexikon/granska/html2txt", "html2txt", tempfilename, tempfile, NULL);
-    unlink(tempfilename);
-    if (c) {
-      fin = fopen(tempfilename, "w");
-      switch(errno) {
-      case E2BIG: s = "E2BIG"; break;
-      case EACCES: s = "EACCES"; break;
-      case EAGAIN: s = "EAGAIN"; break;
-      case EFAULT: s = "EFAULT"; break;
-      case EINTR:  s = "EINTR"; break;
-      case ELOOP: s = "ELOOP"; break;
-      case EMULTIHOP: s = "EMULTIHOP"; break;
-      case ENAMETOOLONG: s = "ENAMETOOLONG"; break;
-      case ENOENT: s = "ENOENT"; break;
-      case ENOEXEC: s = "ENOEXEC"; break;
-      case ENOLINK: s = "ENOLINK"; break;
-      case ENOMEM: s = "ENOMEM"; break;
-      case ENOTDIR: s = "ENOTDIR"; break;
-      default: s = "other"; break;
-      }
-      fprintf(fin, "failed to read html %s, error = %s\n", url, s);
-      fclose(fin);
+  int i = 0;
+  for(i = 0; i < MAXURLLEN && url[i] > 0; i++) {
+    if(url[i] == 13) {
+      url[i] = 0;
     }
-    return 0;
-  } else
-    wait(&c);
+    if(url[i] == '"' || url[i] == '\'') {
+      url[i] = 0; // we do not want the external input to terminate our qoutation and add malicious code
+    }
+  }
+
+  int needed = 0;
+  
+  needed += strlen(url);
+  needed += strlen(lynxHead);
+  needed += strlen(lynxTail);
+  needed++;
+
+  char *command_buf = malloc(needed);
+  sprintf(command_buf, "%s%s%s", lynxHead, url, lynxTail);
+
   printf("läser %s...<BR>\n", url);
-  wwwscrutinizer(NULL, tempfile, url, noOfRuleLines > 0 ? ruletempfile : NULL);
+
+  FILE *lynx_pipe = popen(command_buf, "r");
+  //long bytes = fread(buf, sizeof(buf), 1, lynx_pipe);
+  fread(buf, sizeof(buf), 1, lynx_pipe);
+
+  free(command_buf);
+
+  TextScrutinize(buf);
+
   return 0;
 }
 
@@ -264,7 +230,8 @@ static char *InterpretString(char *origstring, char *result)
 static int Parse(void) {
   long length, i;
   char *bufp, *tmp, *res, *value;
-  char *finalline, *name, *filename;
+  /* char *finalline; */
+  char *name, *filename;
   long filesize;
   /*  unsigned int number; */
   char *textp; /* pekare till text som ska granskas */
@@ -273,6 +240,7 @@ static int Parse(void) {
   if (tmp == NULL || *tmp == '\0') { 
     /* Uppslagsord kan finnas i QUERY_STRING */
     tmp = getenv("QUERY_STRING");
+    
     if (tmp == NULL || *tmp == '\0') return 1; /* error */
     buf = malloc(strlen(tmp) + 1);
     InterpretString(tmp, buf);
@@ -286,6 +254,7 @@ static int Parse(void) {
   for (i = 0; i < length; i++) buf[i] = getchar();
   buf[length] = '\0';
   res = buf+length;
+  
   /* Avkoda hexadecimala koder i meddelandet:
   res = buf;
   for (tmp = buf; *tmp != '\0'; tmp++) {
@@ -312,7 +281,7 @@ static int Parse(void) {
     return 1;
   }
   sprintf(res, "\n%s--\r\n", buf);
-  finalline = res + 1;
+  /* finalline = res + 1; */
   /* Kolla vad nästa del har för namn, dvs sök efter name="xxx": */
   while (*bufp) {
     name = strchr(bufp, '=');
@@ -327,7 +296,9 @@ static int Parse(void) {
     for (; *bufp == '\r' || *bufp == '\n'; bufp++);
     if (IsName(name, "test")) {
       printf("<PRE>\n");
-      for (; *bufp; bufp++); putchar(*bufp);
+      for (; *bufp; bufp++)
+	;
+      putchar(*bufp);
       printf("</PRE>\n");
     } else
       if (IsName(name, "regler")) {
@@ -363,7 +334,7 @@ static int Parse(void) {
 	if (value) {
 	  xUseStandardRules = 1;
 	  if (noOfRuleLines > 0) {
-	    FILE *rulefp = fopen("/misc/tcs/granska/lib/www/default-swedish-rules", "r");
+	    FILE *rulefp = fopen(DEFAULTRULEFILE, "r");
 	    FILE *fp = fopen(ruletempfile, "a");
 	    int ch;
 	    if (!fp) {
@@ -404,7 +375,7 @@ static int Parse(void) {
 	if (SkipToNextPart(&bufp) == 0) return 0;
       } else if (IsName(name, "demotext")) {
 	textp = bufp;
-	FileScrutinize("/afs/nada.kth.se/public/www/theory/projects/granska/scrutinizer-web-demo-exempel.txt");
+	FileScrutinize(EXAMPLESENTENCESFILE);
 	// free(buf);
 	return 0;
       } else 
@@ -473,10 +444,11 @@ static int Parse(void) {
 }
 
 int wwwscrutinize(int (*f)(char*, char *, char *, char *)) {
-  int res;
+  /* int res; */
   wwwscrutinizer = f;
   PrintHead("Resultat av granskning");
-  res = Parse();
+  /* res = Parse(); */
+  Parse();
   PrintFoot("");
   return 0; /* res; */
 }

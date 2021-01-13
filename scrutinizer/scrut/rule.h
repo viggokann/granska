@@ -23,7 +23,6 @@ class Expr;
 
 #include "sentence.h"
 #include "taglexicon.h"
-#include <map>
 
 #define MAXNOOFELEMENTS 15 /* max allowed number of elements in a rule */
 
@@ -97,9 +96,13 @@ public:
   const char *GetDetect() const { return detect; }
   const char *GetAccept() const { return accept; }
   const char *GetLinkURL() const {
-    if (!linkURL && GetCategory()) return GetCategory()->LinkURL(); return linkURL; }
+    if (!linkURL && GetCategory())
+      return GetCategory()->LinkURL();
+    return linkURL; }
   const char *GetLinkText() const {
-    if (!linkText && GetCategory()) return GetCategory()->LinkText(); return linkText; }
+    if (!linkText && GetCategory())
+      return GetCategory()->LinkText();
+    return linkText; }
   bool ExactScope() const { return exactScope; } // ComputeScope has to be run first
   int TokensBefore(int index); // counts the (minimal) number of tokens before Element index
   void OptimizeRuleMatching();
@@ -193,7 +196,9 @@ public:
   int Number() const { return number; }
   const char* Name() const;
   const char *CategoryName() const {
-    if (Name() && strchr(Name(), '@')) return strchr(Name(), '@')+1; return NULL;}
+    if (Name() && strchr(Name(), '@'))
+      return strchr(Name(), '@')+1;
+    return NULL;}
   virtual void ResolveHelpRules();
   int MinScope() const { return minScope; }
   int MinScopeWithContext() const { return minScopeWithContext; }

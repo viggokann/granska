@@ -48,7 +48,7 @@ D         [0-9]
 <STRING>\"             { char *t = lexStringBuf.NewString(yyleng);  /* jbfix: introduced stringbuf */
 			 char *u = t;
                          int i;
-			 for(i=0; i<yyleng-1; i++) {
+			 for(i=0; i+1<yyleng; i++) {
 			   if (yytext[i] == '\\' &&
                                (yytext[i+1] == '\\' || yytext[i+1] == '"'))
                                   i++;

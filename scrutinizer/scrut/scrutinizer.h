@@ -22,6 +22,7 @@
 #include "gramerror.h"
 #include "tagger.h"
 #include "prob.h"
+#include <map>
 
 class RuleSet;
 class Output;
@@ -41,9 +42,10 @@ public:
   const Text *ReadTextFromFile(const char *fileName);
   // reads and tags a text from file
 
-  const Text *ReadTextFromString(char *string);
+  const Text *ReadTextFromString(const char *string);
   // reads and tags a text from string
   // the string may be changed, depends on how istringstream works
+  // is this ^^^ really true? Jonas
 
   const Text *ReadTextFromStream(std::istream*);
   // reads and tags a text from stream

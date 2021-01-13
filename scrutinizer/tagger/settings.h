@@ -85,7 +85,7 @@ extern bool xListMultipleLemmas;
 extern optConst bool xPrintUnknownLemmas;
 
 // lexicon:
-extern char *xSettingsFile;
+extern const char *xSettingsFile;
 extern const char xVersion[60];
 
 // new words analysis:

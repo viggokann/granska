@@ -110,10 +110,14 @@ void RuleTerm::PrintBestWords() {
 // AddBestWordsAndRuleTerm adds bestWords and the current RuleTerm to the 
 // lexicon.
 void RuleTerm::AddBestWordsAndRuleTerm() {
-  for (int i = 0; i < bestWordsN; i++)
+  for (int i = 0; i < bestWordsN; i++) {
     if (!scrutinizer->AddWordRuleTerm((Word *)(bestWords[i]), 
-				      (const RuleTerm *) this))
-      if (xPrintOptimization) std::cout << tab << bestWords[i] << " added twice" << std::endl; 
+				      (const RuleTerm *) this)) {
+      if (xPrintOptimization) {
+	std::cout << tab << bestWords[i] << " added twice" << std::endl;
+      }
+    }
+  }
 }
 
 // ZeroSavedWords must be called before using savedWords or bestWords.
@@ -886,6 +890,7 @@ void RuleTerm::FindMatchingsOptimized(AbstractSentence *s) {
     if (n > 0) { // Kolla också om regeln är aktiv
       for (i = 0; i < n; i++) {
 	RuleTerm *r = ruleTermsToCheck[ruleno][i];
+
 	const int idx = ruleTermsToCheckIdx[ruleno][i];
 	r->TryMatching(s, idx, slen - idx + 1);
 	if (xTakeTime) r->GetRule()->evaluationTime += timer.Restart();
@@ -896,6 +901,7 @@ void RuleTerm::FindMatchingsOptimized(AbstractSentence *s) {
     if (n > 0) { // Kolla också om regeln är aktiv
       for (i = 0; i < n; i++) {
 	RuleTerm *r = ruleTermsToCheckEverywhere[ruleno][i];
+
 	// if (i > 0) std::cout << "&&& i>0 för regel " << r << std::endl;
 	const int ubound = slen - r->MinScopeWithContext() + 1;
 	for (int j = 1; j <= ubound; j++) // johan 0 -> 1
@@ -1371,11 +1377,17 @@ bool RuleTerm::OptimizeRuleMatchingExtra(double probLevel,
   bestProb = minProb;
 
   bool everyTag = true;
-  if (!minOnlyWords)
-    for (i = 0; i < nTags; i++)
-      for (j = 0; j < nTags; j++)
-	if (minPossibleTagPair[i][j]) possibleTagPair[i][j] = 1;
-	else everyTag = false;
+  if (!minOnlyWords) {
+    for (i = 0; i < nTags; i++) {
+      for (j = 0; j < nTags; j++) {
+	if (minPossibleTagPair[i][j]) {
+	  possibleTagPair[i][j] = 1;
+	} else {
+	  everyTag = false;
+	}
+      }
+    }
+  }
   if (xPrintOptimization) {
       // Print();
       std::cout << tab << "without anchor with prob "

@@ -12,15 +12,32 @@
 #include "prob.h"
 #endif // PROBCHECK
 
+#include <sys/types.h>
+#include <unistd.h>
+#include <iostream>
+extern "C" {
+ #include "utf2latin1.h"
+}
+#include <sys/stat.h>
+
 static Scrutinizer *xScrutinizer = NULL;
 static const char *xRuleSet = NULL;
-static char *granskaHome = "";
-static char *granskaLogs = "";
+static const char *granskaHome = "";
+static const char *granskaLogs = "";
 static const int MAX_INFLECT_TEXT_LEN = 1024;
 static const int MAX_TEXT_LEN = 1000000;
 static const int MAX_URL_LEN = 1024;
+static const int MAX_RULE_LEN = 1000000;
+static const int MAX_RULEFILE_NAME_LEN = 1024;
+static const std::string TEMPFOLDER("/var/tmp/");
+
 static bool doLogging = false;
 static std::ofstream logStream;
+
+static int xOrgArgc = 0;
+static int xWebArgc = 0;
+static char **xOrgArgv = NULL;
+static char **xWebArgv = NULL;
 
 // statuskod tillbaks till scrut.php
 // varje rad som skickas på socket till scut inleds med en fyrteckens label. Om fjärde tecknet är < så är allt efterföljande data fram till EOF, annars bara resten av raden.
@@ -93,9 +110,116 @@ static void ReadExamples(char *text) {
   strcpy(text, all_lines.c_str());
 }
 
+static void userRules(Socket &socket, bool useGranskaRules, char *newRuleFile) {
+  char *extrarules = new char[MAX_RULE_LEN];
+  int offset = 0;
+
+  alarm(30); // if we still haven't finished in 30 seconds, die...
+  
+  socket.get();
+  bool foundEndOfRules = false;
+  
+  while(!foundEndOfRules) {
+    socket.getline(extrarules + offset, MAX_RULE_LEN-1-offset);
+
+    offset = strlen(extrarules);
+    extrarules[offset] = '\n';
+    offset++;
+
+    char *res = strstr(extrarules, "ENDOFRULES");
+    if(res != NULL) {
+      foundEndOfRules = true;
+      *res = '\0';
+    }
+    if(MAX_RULE_LEN -1 -offset <= 0) {
+      break;
+    }
+  }
+
+  alarm(0); // remove alarm
+
+  if(looksLikeUTF(extrarules)) {
+    utf2latin1(extrarules);
+  }
+
+  // std::cerr << "Received command for new rules" << std::endl;
+  // std::cerr << "---------------\n" << extrarules << "-----------"<<std::endl;
+  // int temp = looksEmpty(extrarules);
+  // std::cerr << "---------------\n Empty? " << temp << "-----------"<<std::endl;
+  // std::cerr << "---------------\n";
+  // for(int jjj=0; extrarules[jjj]; jjj++)
+  //   std::cerr << (int)(extrarules[jjj]) << std::endl;
+  // std::cerr << "-----------"<<std::endl;
+  
+  
+  if(looksEmpty(extrarules)) {
+    std::cerr << "Received command for new rules but no actual rules." << std::endl;
+    newRuleFile[0] = '\0';
+  } else {
+  
+    // get our process ID to create hopefully unique filenames for tempfiles
+    int pid = getpid();
+  
+    std::string tempFile = TEMPFOLDER;
+    if(tempFile[tempFile.size() - 1] != '/') {
+      tempFile += "/";
+    }
+    tempFile += "webscrutinizer.tmp." + std::to_string(pid);
+  
+    // make sure the temp folder exists
+    system((std::string("mkdir -p ") + TEMPFOLDER).c_str());
+
+    // make sure no old optimized rule file is already there
+    system((std::string("rm -f ") + tempFile + ".opt").c_str());
+
+    // if(useGranskaRules) {
+    //   char fileName[2048];
+    //   sprintf(fileName, "%s/rulesets/%s/therules", granskaHome, xRuleSet);
+    
+    //   system((std::string("cp ") + fileName + " " + tempFile).c_str());
+    // } else {
+    //   system((std::string("rm -f ") + tempFile).c_str());
+    //   system((std::string("touch ") + tempFile).c_str());
+    // }
+  
+    // std::ofstream temp;
+    // temp.open(tempFile, std::ios_base::app);
+    // temp << extrarules << std::endl;
+    // temp.close();
+
+
+    // add Granska original rules last in the file (the parsing rules require this, because of the GOTO etc.)
+    system((std::string("rm -f ") + tempFile).c_str());
+    system((std::string("touch ") + tempFile).c_str());
+
+    std::ofstream temp;
+    temp.open(tempFile);
+    temp << extrarules << std::endl << std::endl;
+    temp.close();
+
+    if(useGranskaRules) {
+      char fileName[2048];
+      sprintf(fileName, "%s/rulesets/%s/therules", granskaHome, xRuleSet);
+    
+      system((std::string("cat ") + fileName + " >> " + tempFile).c_str());
+    }
+  
+
+    if(tempFile.size() < MAX_RULEFILE_NAME_LEN) {
+      for(unsigned int i = 0; i < tempFile.size(); i++) {
+	newRuleFile[i] = tempFile[i];
+      }
+      newRuleFile[tempFile.size()] = '\0';
+    } else {
+      std::cerr << "Warning: name of temp file is too long: '" << tempFile << "'" << std::endl;
+    }
+  }
+  delete [] extrarules;
+}
+
 // hämta ett uppdrag från scrut:
-static bool GetWebTask(ServerSocket *server, Socket &socket, char *text, char *url, char *inflect_text) {
-  *inflect_text = *text = *url = '\0';
+  static bool GetWebTask(ServerSocket *server, Socket &socket, char *text, char *url, char *inflect_text, char *newRuleFile) {
+  *inflect_text = *text = *url = *newRuleFile = '\0';
   std::cerr << xRuleSet << ": waiting for something to scrutinize...\n";
   // här kommer programmet att vänta tills nåt kommer:
   server->Accept(socket);
@@ -109,12 +233,26 @@ static bool GetWebTask(ServerSocket *server, Socket &socket, char *text, char *u
     if (!strcmp(buf, "TEXT")) {
       socket.get();
       socket.getline(text, MAX_TEXT_LEN-1);
+
+      if(looksLikeUTF(text)) {
+	utf2latin1(text);
+      }
+
     } else if (!strcmp(buf, "URL")) {
       socket.get();
       socket.getline(url, MAX_URL_LEN-1);
     } else if (!strcmp(buf, "INFLECT")) {
       socket.get();
       socket.getline(inflect_text, MAX_INFLECT_TEXT_LEN-1);
+      
+    } else if(!strcmp(buf, "EXTRARULES")) { // use Granska standard rules and these extra rules
+
+      userRules(socket, true, newRuleFile);
+      
+    } else if(!strcmp(buf, "NEWRULES")) { // use only these rules, no standard Granska rules
+
+      userRules(socket, false, newRuleFile);
+      
     } else if (!strcmp(buf, "ENDQ"))
       break;
     else if (!strcmp(buf, "CRSH")) {
@@ -124,6 +262,14 @@ static bool GetWebTask(ServerSocket *server, Socket &socket, char *text, char *u
       std::cerr << xRuleSet << ": got order to loop eternally, looping...\n";
       for (;;);
     } else if (!strcmp(buf, "XML")) {
+      /*
+      std::cerr << xRuleSet << ": got order to send xml-data...\n";
+      SendXML(socket);
+      return false;
+      */
+      ReadExamples(text);
+      return true;
+    } else if (!strcmp(buf, "EXAMPLESENTENCES")) {
       /*
       std::cerr << xRuleSet << ": got order to send xml-data...\n";
       SendXML(socket);
@@ -227,6 +373,7 @@ void ScrutinizeText(Socket &socket, char *text) {
   text[N] = 0; // only print first N letters
   std::cerr << xRuleSet << ": got text for Granska to read: (" << text << ")...\n";
   text[N] = ugly;
+
   const Text *t = xScrutinizer->ReadTextFromString(text);
   if (!t) {
     std::cerr << xRuleSet << ": Granska did not read the text.\n";
@@ -262,17 +409,173 @@ void ScrutinizeText(Socket &socket, char *text) {
 #endif
 }
 
+std::string whereAmI() {
+
+  std::string whereIAm(granskaHome);
+  if(whereIAm[whereIAm.size()-1] == '/') {
+    whereIAm += "bin/";
+  } else {
+    whereIAm += "/bin/";
+  }
+
+  std::string argv0(xOrgArgv[0]);
+  std::size_t pos = argv0.find_last_of("/\\");
+  whereIAm += argv0.substr(pos+1);
+
+  std::cout << "\nWhere Am I? : " << argv0 << " ---> " << whereIAm << "\n";
+  
+  return whereIAm;
+}
+
+void ScrutinizeWithRules(Socket &socket, const char *newRuleFile) {
+  bool sawOptionS = false;
+  bool sawOptionO = false;
+  
+  std::string textFile(newRuleFile);
+  textFile += ".txt";
+
+  std::string resultFile(newRuleFile);
+  resultFile += ".res";
+
+  std::ostringstream command_buf;
+
+  command_buf << "rm -f " << newRuleFile << ".opt ; ";
+
+  command_buf << whereAmI();
+  
+  for(int a = 1; a < xOrgArgc; a++) {
+    if(xOrgArgv + a + 1 == xWebArgv) {
+      for(int skip = 0; skip < xWebArgc; skip++) {
+	a++;
+      }
+    } else {
+      if(strcmp(xOrgArgv[a], "-s") == 0) {
+	sawOptionS = true;
+      }
+      if(strcmp(xOrgArgv[a], "-o") == 0) {
+	sawOptionO = true;
+      }
+    }
+  }
+
+  if(!sawOptionS) {
+    command_buf << " -s";
+  }
+  if(!sawOptionO) {
+    command_buf << " -o";
+  }
+  
+  command_buf << " -r "
+	      << newRuleFile
+	      << " "
+	      << textFile;
+
+  for(int a = 1; a < xOrgArgc; a++) {
+    if(xOrgArgv + a + 1 == xWebArgv) {
+      for(int skip = 0; skip < xWebArgc; skip++) {
+	a++;
+      }
+    } else {
+      command_buf << " " << xOrgArgv[a];
+    }
+  }
+  
+  command_buf << " > "
+	      << resultFile;
+      
+  std::cerr	<< std::endl << "command_buf "
+		<< command_buf.str()
+		<< std::endl;
+	   
+  system(command_buf.str().c_str());
+
+  struct stat stat_buf;
+  int rc = stat(resultFile.c_str(), &stat_buf);
+
+  if(rc != 0 || stat_buf.st_size <= 0) {
+    socket << "STAT 200\nREPL Granskningen misslyckades. Fel i regelsamlingen?\n";
+  } else {
+    socket << "STAT 100\nREPL Granska har granskat texten."
+	   << "\nTXT< ";
+
+    std::ifstream in(resultFile);
+    std::string line;
+    while(std::getline(in, line)) {
+      socket << line << std::endl;
+    }
+    in.close();
+  }
+  
+  std::ostringstream cleanup;
+  cleanup << "rm -f "
+	  << newRuleFile
+	  << " " << newRuleFile << ".opt"
+	  << " " << resultFile
+	  << " " << textFile
+    ;
+  system(cleanup.str().c_str());
+}
+
+void ScrutinizeTextWithRules(Socket &socket, const char *text, const char *newRuleFile) {
+  std::string textFile(newRuleFile);
+  textFile += ".txt";
+
+  std::ofstream out(textFile);
+  out << text;
+  out.close();
+
+  ScrutinizeWithRules(socket, newRuleFile);
+}
+  
+void ScrutinizeURLWithRules(Socket &socket, const char *URL, const char *newRuleFile, char *text) {
+  std::string textFile(newRuleFile);
+  textFile += ".txt";
+
+  std::ostringstream command_buf;
+
+  
+  // command_buf << "lynx -dump -nolist '" << URL << "' | tr '[:space:]' ' ' | tr -s ' ' | sed 's/\\[INLINE\\]//g'"
+  // 	      << " > "
+  // 	      << textFile;
+
+  // system(command_buf.str().c_str());
+
+  // ScrutinizeWithRules(socket, newRuleFile);
+
+
+
+  text[0] = 0;
+
+  command_buf << "lynx -dump -nolist '" << URL << "' | tr '[:space:]' ' ' | tr -s ' ' | sed 's/\\[INLINE\\]//g'";
+
+  FILE *lynx_pipe = popen(command_buf.str().c_str(), "r");
+  fread(text, MAX_TEXT_LEN, 1, lynx_pipe);
+
+  if(looksLikeUTF(text)) {
+    utf2latin1(text);
+  }
+      
+  //  if(*text) {
+  if(!looksEmpty(text)) {
+    ScrutinizeTextWithRules(socket, text, newRuleFile);
+  } else {
+    socket << "STAT " << SCRUT_NO_INPUT << std::endl
+	   << "REPL Fick inget att granska." << std::endl;
+  }
+}
+
 // en socket "socket" skapas vid varje anrop, när socket deletas så anropas close() och EOF skickas.
 static bool Loop(ServerSocket *server) {
   if(doLogging)
     MaybeSwitchLogStream();
   char text[MAX_TEXT_LEN] = "";
+  char newRuleFile[MAX_RULEFILE_NAME_LEN];
   char url[MAX_URL_LEN] = "";
   char inflect_text[MAX_INFLECT_TEXT_LEN] = "";
   //StatusCode status = SCRUT_NOT_YET_DETERMINED;
   Socket socket;
   if (server) {
-    if (!GetWebTask(server, socket, text, url, inflect_text))
+    if (!GetWebTask(server, socket, text, url, inflect_text, newRuleFile))
       return true;
     if (!strcmp(text, "areuup4711")) {
       std::cerr << xRuleSet << ": got areuup, replying...\n";
@@ -287,28 +590,74 @@ static bool Loop(ServerSocket *server) {
     std::cerr << xRuleSet << ": got exit4711, terminating...\n";
     return false;
   }
+  
   char reply[1024] = "inget svar påhittat än";
-  if (*text)
-    ScrutinizeText(socket, text);
-  else if (*url) {
-    text[0] = 0;
-    std::ostringstream command_buf;
-    command_buf << "lynx -dump -nolist " << url << " | tr '[:space:]' ' ' | tr -s ' ' | sed 's/\\[INLINE\\]//g'";
-    FILE *lynx_pipe = popen(command_buf.str().c_str(), "r");
-    fread(text, MAX_TEXT_LEN, 1, lynx_pipe);
-    ScrutinizeText(socket, text);
-    /*
-    if (GetURLContent(url, text, MAX_TEXT_LEN)) {
-      std::cerr << xRuleSet << ": URL contents fetched.\n";
-      status = SCRUT_OK;
-      // nu har bara innehållet hämtats. här ska man köra html2txt och sen granska och skicka tibaks svaret.
-    } else {
-      socket << "STAT " << SCRUT_BAD_URL << std::endl
-	     << "REPL Webbsidan kunde inte hämtas:" << std::endl
-	     << "TXT< " << text << std::endl; 
+  
+  if(*url) {
+        for(int i = 0; i < MAX_URL_LEN && url[i] > 0; i++) {
+      if(url[i] == 13) {
+	url[i] = 0;
+      }
+      if(url[i] == '"' || url[i] == '\'') {
+	url[i] = 0; // we do not want the external input to terminate our qoutation and add malicious code
+      }
     }
-    */
+    url[MAX_URL_LEN - 1] = 0;
+
+    if((url[0] == 'h'
+	&& url[1] == 't'
+	&& url[2] == 't'
+	&& url[3] == 'p'
+	&& ((url[4] == ':' && url[5] == '/' && url[6] == '/')
+	    || (url[4] == 's' && url[5] == ':' && url[6] == '/' && url[7] == '/')))
+       || (url[0] == 'f' && url[1] == 't' && url[2] == 'p' && url[3] == ':' && url[4] == '/' && url[5] == '/')) {
+      // this should be fine
+
+    } else {
+      // suspicious looking URL
+      // we do not want lynx to go looking for files in our local file system, for example
+      url[0] = '\0';
+    }
+  }
+  
+  if (*text) {
+    if(*newRuleFile) {
+      std::cerr << "Scrutinize with custom rules." << std::endl;
+      ScrutinizeTextWithRules(socket, text, newRuleFile);
+    } else {
+      ScrutinizeText(socket, text);
+    }
+  } else if (*url) {
+    text[0] = 0;
+    
+    if(*newRuleFile) {
+      std::cerr << "Scrutinize URL with custom rules." << std::endl;
+      ScrutinizeURLWithRules(socket, url, newRuleFile, text);
+    } else {
+      std::ostringstream command_buf;
+      command_buf << "lynx -dump -nolist '" << url << "' | tr '[:space:]' ' ' | tr -s ' ' | sed 's/\\[INLINE\\]//g'";
+
+      FILE *lynx_pipe = popen(command_buf.str().c_str(), "r");
+      fread(text, MAX_TEXT_LEN, 1, lynx_pipe);
+
+      if(looksLikeUTF(text)) {
+	utf2latin1(text);
+      }
+      
+      //      if(*text) {
+      if(!looksEmpty(text)) {
+	ScrutinizeText(socket, text);
+      } else {
+	socket << "STAT " << SCRUT_NO_INPUT << std::endl
+	       << "REPL Fick inget att granska." << std::endl;
+      }
+    }
   } else if(*inflect_text) {
+
+    if(looksLikeUTF(inflect_text)) {
+      utf2latin1(inflect_text);
+    }
+    
     int n = strlen(inflect_text) - 1;
     while(inflect_text[n] == '\r' ||
           inflect_text[n] == '\n') {
@@ -329,6 +678,8 @@ static bool Loop(ServerSocket *server) {
 	inflect_text[n] = 'ö';
       n--;
     }
+    
+    std::cerr << "inflect_text: '" << inflect_text << "'" << std::endl;
     xScrutinizer->Words().ServerAnalyzeWordAndPrintInflections(socket, inflect_text);    
   } else {
     // varken text eller URL kom in, alltså fel:
@@ -341,6 +692,7 @@ static bool Loop(ServerSocket *server) {
     //PutWebResult(socket, status, text, url, reply);
   } else
     PutTerminalResult(text, url, reply);
+
   return true;
 }
 
@@ -370,9 +722,16 @@ bool LoadRules() {
   return xScrutinizer->Load(NULL, fileName);
 }
 
-int WebScrutinize(Scrutinizer *scrut, int argc, char **argv) {
+int WebScrutinize(Scrutinizer *scrut, int argc, char **argv, char **orgArgv, int orgArgc) {
   xScrutinizer = scrut;
 
+  xOrgArgc = orgArgc;
+  xWebArgc = argc;
+  xOrgArgv = orgArgv;
+  xWebArgv = argv;
+
+  xPrintAllSentences = true;
+  
   granskaHome = getenv("GRANSKA_HOME");
   if (!granskaHome) {
     std::cerr << "env-var GRANSKA_HOME not defined, quitting...\n";

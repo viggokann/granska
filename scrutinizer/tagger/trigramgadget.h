@@ -40,7 +40,7 @@ private:
   Tag *tag[MAX_WORD_VERSIONS];
   probType lexProb[MAX_WORD_VERSIONS];
   probType prob[MAX_WORD_VERSIONS][MAX_WORD_VERSIONS];
-  char prev[MAX_WORD_VERSIONS][MAX_WORD_VERSIONS];      // using char instead of int seemed faster on UNIX 981012
+  uchar prev[MAX_WORD_VERSIONS][MAX_WORD_VERSIONS];      // using char instead of int seemed faster on UNIX 981012
 };
 
 inline void TrigramGadget::Reset() {

@@ -131,13 +131,17 @@ void WordToken::PrintVerbose(std::ostream& out) const {
 }
 
 void WordToken::PrettyPrintTextString(std::ostream& out) const {
-  if(RealString()) // jonas, program crashes when RealString() is null otherwise
-    for (const char *s = RealString(); *s; s++)
+  if(RealString()) { // jonas, program crashes when RealString() is null otherwise
+    for (const char *s = RealString(); *s; s++) {
       if (IsSpace(*s)) {
 	out << ' ';
-	while(IsSpace(*(s+1)))
+	while(IsSpace(*(s+1))) {
 	  s++;
-      } else
+	}
+      } else {
 	out << *s;
+      }
+    }
+  }
 }
   

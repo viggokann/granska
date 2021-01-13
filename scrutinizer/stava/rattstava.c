@@ -412,7 +412,7 @@ static void PartClear(struct corrData *cd, int part)
 
 /* Kolla om word finns i ordlistan. Parametern check styr vilka av
    ordlistorna EL, IL och FL som ska användas */
-INLINE void Check(struct corrData *cd, uchar *word, int point, int part, int len, int check)
+void Check(struct corrData *cd, uchar *word, int point, int part, int len, int check)
 {
   if (check & CHECK_IL) {
     if (InUL(word, len)) return;
@@ -445,27 +445,30 @@ static void GenereraLjudbyten(struct corrData *cd, unsigned char *ord)
   for (s = ord; *s; s++) {
     for (p = LJUDPOST(toLowerCase[*s], s[1]); p; p = p->next) {
       for (i = 1; p->ljud[i]; i++) 
-		if (p->ljud[i] != s[i]) goto notsame;
-		  /* ljud hittat, byt det mot varje annat ljud i klassen */
-		  sound = p->ljud;
-		  soundlen = strlen((char *)sound);
-		  for (newsound = p->ljudklass; **newsound; newsound++) 
-			if (*newsound != sound) {
-			  strcpy((char *)word, (char *)ord);
-			  strcpy((char *)word + (s-ord), (char *)*newsound);
-			  if (isUpperCase[*s]) word[s-ord] = toUpperCase[**newsound];
-				strcat((char *)word, (char *)s + soundlen);
-			  if (FyrKoll(word, s-ord, strlen((char *)*newsound)) > 0) {
-				if (CheckWord(word, 2)){
-				  AddSuggestion(cd, word, REPPVAL-1 + WordFreq(word));
-				}
-				else if ((noofparts = SimpleIsCompound(word, 
-								   strlen((char *)word))))
-				  AddSuggestion(cd, word, 
-						REPPVAL-1 + WordFreq(word) + PARTCOST*(noofparts-1));
-			  }
-			}
-			notsame: continue;
+	if (p->ljud[i] != s[i]) goto notsame;
+      /* ljud hittat, byt det mot varje annat ljud i klassen */
+      sound = p->ljud;
+      soundlen = strlen((char *)sound);
+      for (newsound = p->ljudklass; **newsound; newsound++) {
+	if (*newsound != sound) {
+	  strcpy((char *)word, (char *)ord);
+	  strcpy((char *)word + (s-ord), (char *)*newsound);
+	  if (isUpperCase[*s]) {
+	    word[s-ord] = toUpperCase[**newsound];
+	  }
+	  strcat((char *)word, (char *)s + soundlen);
+	  if (FyrKoll(word, s-ord, strlen((char *)*newsound)) > 0) {
+	    if (CheckWord(word, 2)) {
+	      AddSuggestion(cd, word, REPPVAL-1 + WordFreq(word));
+	    }
+	    else if ((noofparts = SimpleIsCompound(word, 
+						   strlen((char *)word))))
+	      AddSuggestion(cd, word, 
+			    REPPVAL-1 + WordFreq(word) + PARTCOST*(noofparts-1));
+	  }
+	}
+      }
+    notsame: continue;
     }
   }
 }

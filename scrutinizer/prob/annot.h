@@ -29,7 +29,6 @@ namespace Prob
 
     typedef std::map<int, Annot> annot_map; 
     typedef std::map<int, Annot>::const_iterator annot_iter; 
-    
     extern annot_map annots;
     extern std::vector<New_annot> not_annot;
 
@@ -39,12 +38,11 @@ namespace Prob
 		FALSE_ALARM = -12,
 		NO_CORRECTION_FOUND = -13
     };
-    enum annot_t { 
-		   ERR_TYPE         = 0x0000,
-	       NO_TYPE			= 0x0001,
-		   PH_INTERPOSED	= 0x0002,
+    enum annot_t { ERR_TYPE                     = 0x0000,
+	           NO_TYPE			= 0x0001,
+		   PH_INTERPOSED	        = 0x0002,
 		   HARD_TTT			= 0x0004,
-		   ERR_TOK_SENT		= 0x0008,
+		   ERR_TOK_SENT		        = 0x0008,
 		   BAD_TAG			= 0x0010,
 		   FOREIGN			= 0x0020,
 		   STYLE			= 0x0040,

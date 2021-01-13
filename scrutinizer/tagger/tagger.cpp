@@ -38,9 +38,9 @@
 static const int TOKEN_BUF_CHUNK = 13000;
 
 void Tagger::Reset() {
-    #ifdef VERBOSE
+#ifdef VERBOSE
     Message(MSG_STATUS, "resetting tagger...");
-    #endif
+#endif
     theText.Reset();
     WordToken::Reset();
     for (int i=0; i<nTokens; i++)
@@ -232,7 +232,7 @@ void Tagger::TagUnknownWord(Word *w, bool normalize, bool suffixCheck,
         }
     }
     if (token) {
-        if (xMorfCapital)
+      if (xMorfCapital) {
             if (token->IsFirstCapped() && !token->IsFirstInSentence()) {
                 Tags().SpecialTag(TOKEN_PROPER_NOUN)->lexProb *= xAlphaUnknownCapital;
                 Tags().SpecialTag(TOKEN_PROPER_NOUN_GENITIVE)->lexProb *= xAlphaUnknownCapital;
@@ -247,6 +247,7 @@ void Tagger::TagUnknownWord(Word *w, bool normalize, bool suffixCheck,
                 if (xPrintLexicalProbs)
                     std::cout << w << ": AllCapped, len<5, pm-tags factored by " << xAlphaUnknownCapital << std::endl;
             }
+      }
         if (xMorfNonCapital) 
             if (!token->IsFirstCapped()) {
                 Tags().SpecialTag(TOKEN_PROPER_NOUN)->lexProb *= xAlphaUnknownNonCapital;
@@ -348,7 +349,7 @@ void Tagger::SetLexicalProbs(Word *w, const WordToken &t, TrigramGadget *g) {
             ensure(tg);
             g->tag[i] = tg;
             g->lexProb[i] = q->LexProb();
-            if (!w->IsNewWord() && tg->IsProperNoun())
+            if (!w->IsNewWord() && tg->IsProperNoun()) {
                 if (t.IsFirstCapped()) { 
                     if (!t.IsFirstInSentence() && xMorfCapital) {
                         if (xPrintLexicalProbs)
@@ -362,6 +363,7 @@ void Tagger::SetLexicalProbs(Word *w, const WordToken &t, TrigramGadget *g) {
                         std::cout << w << ": NOT First Capped, prob of " << tg << " factored by "
                                   << xAlphaNonCapital << std::endl;
                 }
+	    }
             if (g->lexProb[i] <= 0)
                 Message(MSG_WARNING, w->String(), "has non-positive prob for tag",
                         q->GetTag()->String());
@@ -560,9 +562,9 @@ void Tagger::Rewind(AbstractSentence *s, int endPos) {
 }
 
 void Tagger::TagText() {
-	#ifdef VERBOSE
+#ifdef VERBOSE
     if (!xOptimize) Message(MSG_STATUS, "tagging text...");
-    #endif
+#endif
     Timer timer;
     if (xTakeTime) 
         timer.Start();
@@ -608,9 +610,9 @@ void Tagger::TagText() {
 
 void Tagger::ReadText() {
     Reset();
-    #ifdef VERBOSE
+#ifdef VERBOSE
     Message(MSG_STATUS, "reading tokens...");
-    #endif
+#endif
     Timer timer;
     if (xTakeTime) 
         timer.Start();
@@ -722,9 +724,9 @@ void Tagger::ReadText() {
                 continue;
             }
         case TOKEN_BEGIN_PARAGRAPH:
-			//printf("PARAGRAF\n");
-			//theTokens[nTokens+1].SetWord(specialWord[TOKEN_PARAGRAPH], "$P", TOKEN_END);
-			theTokens[nTokens].SetSelectedTag(Tags().SpecialTag(TOKEN_QUESTION_MARK), false);
+	  //printf("PARAGRAF\n");
+	  //theTokens[nTokens+1].SetWord(specialWord[TOKEN_PARAGRAPH], "$P", TOKEN_END);
+	  theTokens[nTokens].SetSelectedTag(Tags().SpecialTag(TOKEN_QUESTION_MARK), false);
         case TOKEN_BEGIN_HEADING:
         case TOKEN_END_HEADING:
         case TOKEN_BEGIN_TITLE:
@@ -797,9 +799,9 @@ void Tagger::BuildSentences(WordToken *tokens) {
     //  int nChecked = 0, nFound = 0;
     Token delToken = TOKEN_DELIMITER_OTHER;
     if(theText.firstSentence!=NULL) theText.delete_sentences();
-    #ifdef VERBOSE
+#ifdef VERBOSE
     Message(MSG_STATUS, "building sentences...");
-    #endif
+#endif
     theText.firstSentence = NULL;
     Sentence *s = NULL;
     char string[MAX_WORD_LENGTH], lookUpString[MAX_WORD_LENGTH];
@@ -1009,14 +1011,15 @@ void Tagger::BuildSentences(WordToken *tokens) {
                s->tokens[2]->word = specialWord[TOKEN_RIGHT_PAR];
                }
             */
-            unsigned int startOffset = 0;
-            unsigned int endOffset = 0;
+
+	    // unsigned int startOffset = 0;
+            // unsigned int endOffset = 0;
             for (int k=2; k<m+2; k++)
                 if (s->tokens[k]->GetToken() != TOKEN_PUNCTUATION &&
                     s->tokens[k]->GetToken() != TOKEN_CITATION &&
                     s->tokens[k]->GetToken() != TOKEN_RIGHT_PAR) {
                     s->tokens[k]->firstInSentence = 1;
-                    startOffset = s->tokens[k]->Offset(); //Oscar
+                    // startOffset = s->tokens[k]->Offset(); //Oscar
                     break;
                 }
             WordToken *del = &specialWordToken[delToken];
@@ -1031,8 +1034,9 @@ void Tagger::BuildSentences(WordToken *tokens) {
                 else
                     punktLista = false;
             }
-            endOffset = s->tokens[m+1]->Offset(); //Oscar
-            s->setOriginalText(theOriginalString.substr(startOffset,endOffset-startOffset+1)); //Oscar
+	    // The get and set of OriginalText does not work properly // Jonas
+            // endOffset = s->tokens[m+1]->Offset(); //Oscar
+            // s->setOriginalText(theOriginalString.substr(startOffset,endOffset-startOffset+1)); //Oscar
             ensure(del->word);
             s->tokens[0] = s->tokens[1] = 
                 s->tokens[m+2] = s->tokens[m+3] = del;
@@ -1150,9 +1154,9 @@ void Tagger::ReadTaggedTextQnD() {
     // now do the usual, but add tags... harder than one might think
 
     Reset();
-    #ifdef VERBOSE
+#ifdef VERBOSE
     Message(MSG_STATUS, "reading tokens...");
-    #endif
+#endif
     Timer timer;
     if (xTakeTime) 
         timer.Start();

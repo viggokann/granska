@@ -33,7 +33,7 @@ public:
     const char  *decision;
     const char  *annot_file;
     const char  *repr_file;
-    char   *pipe_name;
+    const char   *pipe_name;
     int     g_no;
     double  g_coeff;
     int	    h_no;

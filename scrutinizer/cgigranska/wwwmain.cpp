@@ -10,6 +10,7 @@
 #include "wwwscrutinizer.h"
 #include "scrutinizer.h"
 #include "ruleset.h"
+
 #include <unistd.h>
 
 bool xReadTaggedText = false; // jonas, intended for use only for evaluation study 030120 - 030228
@@ -20,20 +21,21 @@ bool xReadTaggedText = false; // jonas, intended for use only for evaluation stu
 char tempfile[100];
 char ruletempfile[100];
 
-int wwwscrutinizer(char *text, char *filename, char *URLName, char *rulefile) {
-  //  char *taggerlexdir = "/afs/nada.kth.se/misc/tcs/granska/lib/www/";
- // char *taggerlexdir = "/afs/nada.kth.se/misc/tcs/granska/lib/lexicons/suc/";
-  char *taggerlexdir = getenv("TAGGER_LEXICON");
-  //if (!rulefile || !*rulefile) rulefile = "/afs/nada.kth.se/misc/tcs/granska/lib/www/default-swedish-rules";
-  if (!rulefile || !*rulefile) rulefile = getenv("SCRUTINIZER_RULE_FILE");
+int wwwscrutinizer(char *text, char *filename, char *URLName, const char *rulefile) {
+
+  const char *taggerlexdir = TAGGERLEXICONFOLDER;
+  
+  if (!rulefile || !*rulefile) rulefile = DEFAULTRULEFILE;
   else xOptimizeMatchings = false; // inserted 2006-09-03 by Viggo
+  
   xPrintWordInfo = false;
   xPrintGramErrors = true;
   SetMessageStream(MSG_ERROR, &std::cout);
   SetMessageStream(MSG_WARNING, &std::cout);
-  std::cout << "laddar lexikon... <BR>" << std::endl;
+  //std::cout << "laddar lexikon... <BR>" << std::endl;
   Scrutinizer scrutinizer(OUTPUT_MODE_HTML);
   scrutinizer.Load(taggerlexdir, rulefile);
+  
   if (!scrutinizer.IsLoaded()) {
     std::cout << "Granska kunde inte laddas <P>" << std::endl;
     return 1;

@@ -127,7 +127,7 @@ void WordLexicon::LoadLemmas() {
   std::ofstream out;
   int freq;
   nExtraLemmas = 0;
-  for (int i = 0; i<CWT; i++) {
+  for (unsigned int i = 0; i<CWT; i++) {
     in >> freq;
     while (in.peek() == '\t') in.get();
     //    in.getline(wordString, MAX_WORD_LENGTH, '\t'); // jonas, doesn't work if length > MAX, neither did my fix, skip long words in lexicon
@@ -218,16 +218,17 @@ void WordLexicon::AddExtraRule(WordTag *wt, ushort ruleIndex) {
     Message(MSG_ERROR, "too many inflection rules for",
 	    wt->String(), wt->GetTag()->String());
   ExtraRules *s = NULL;
-  if (nExtraRules>0)
-    if (extraRules[nExtraRules-1].wt == wt)
+  if (nExtraRules>0) {
+    if (extraRules[nExtraRules-1].wt == wt) {
       s = &extraRules[nExtraRules-1];
-    else if (strcmp(extraRules[nExtraRules-1].wt->String(), wt->String()) > 0)
+    } else if (strcmp(extraRules[nExtraRules-1].wt->String(), wt->String()) > 0)
     {
 	std::cout << "Before '" << wt->String() << "', '" 
 		  << extraRules[nExtraRules-1].wt->String() << "'"
 		  << std::endl;
 	//Message(MSG_ERROR, "word rules files must be sorted");
     }
+  }
   if (!s) {
     s = &extraRules[nExtraRules++];
     s->wt = wt;
@@ -283,7 +284,7 @@ void WordLexicon::LoadStyleWords() {
     N_STYLEWORDS = 0;
     return;
   }
-  int i;
+  unsigned int i;
   for (i=0; i<MAX_STYLES; i++)
     StyleWord::styles[i][0] = '\0';
   for (i=0; i<CW; i++)
@@ -345,7 +346,8 @@ void WordLexicon::LoadStyleWords() {
       for (m=0; (c = (char)in.peek()) != ';' && c != '\n' && c != '#'; m++) {
 	wordString[m] = (char) in.get();
 	if (m >= MAX_WORD_LENGTH) {
-	  wordString[m] = '\0';
+	  // wordString[m] = '\0';
+	  wordString[MAX_WORD_LENGTH - 1] = '\0';
 	  Message(MSG_WARNING, "style: too long alternative word", wordString);
 	  break;
 	}
@@ -394,7 +396,7 @@ void WordLexicon::LoadSlow(const char *dir, const TagLexicon* tgs, NewWordLexico
   char *buff = strings;
   std::ifstream in;
   FixIfstream(in, lexiconDir, "cw");
-  int i;
+  unsigned int i;
   for (i=0; i<CW; i++) {
     //  Word &w = words[i];
     Word &w = (*this)[i];
@@ -455,7 +457,7 @@ void WordLexicon::LoadSlow(const char *dir, const TagLexicon* tgs, NewWordLexico
   char wordString[MAX_WORD_LENGTH], lemmaString[MAX_WORD_LENGTH];
   Tag tag;
   int freq;
-  int j = 0;
+  unsigned int j = 0;
   int unknownTags = 0;
   for (i=0; i<CWT; i++) {
     in >> freq;
@@ -696,9 +698,10 @@ Word **WordLexicon::GetWordsInRange(const char *s, int *n) const {
 void WordLexicon::SetPointersFromIndices() {
   Message(MSG_STATUS, "setting word pointers...");
   int i;
-  for (i=0; i<CW; i++) {
-    Word *w = &(*this)[i];
-    //    Word *w = &words[i];
+  unsigned int ui;
+  for (ui=0; ui<CW; ui++) {
+    Word *w = &(*this)[ui];
+    //    Word *w = &words[ui];
     w->string = strings + (size_t)w->string;
     WordTag *wt;
     for (wt = w; wt; wt=wt->Next()) {
@@ -714,8 +717,8 @@ void WordLexicon::SetPointersFromIndices() {
       else
 	wt->next = &more[(size_t)wt->next];
     }
-    wordsAlpha[i] = &(*this)[(size_t)wordsAlpha[i]];
-    //    wordsAlpha[i] = &words[(int)wordsAlpha[i]];
+    wordsAlpha[ui] = &(*this)[(size_t)wordsAlpha[ui]];
+    //    wordsAlpha[ui] = &words[(int)wordsAlpha[ui]];
   }
   for (i=0; i<nExtraLemmas; i++) {
     ExtraLemma &wtal = extraLemmas[i];
@@ -771,7 +774,7 @@ bool WordLexicon::LoadFast(const char *dir, const TagLexicon *tgs, NewWordLexico
   SetPointersFromIndices();
   LoadStyleWords();
   if (xWarnAll)
-    for (int i=0; i<CW-1; i++)
+    for (unsigned int i=0; i<CW-1; i++)
       if (strcmp(wordsAlpha[i]->String(), wordsAlpha[i+1]->String()) > 0)
 	std::cout << wordsAlpha[i] << ' ' << wordsAlpha[i+1] << std::endl;
   return true;
@@ -784,12 +787,13 @@ bool WordLexicon::Save() {
   Message(MSG_STATUS, "saving fast word lexicon...");
   in.close();
   int i;
-  for (i=0; i<CW; i++) {
+  unsigned int ui;
+  for (ui=0; ui<CW; ui++) {
     WordTag *wt, *next;
-    (*this)[i].string = (*this)[i].string - (size_t)strings;
-    //    words[i].string = words[i].string - (uint)strings;
-    for (wt=&(*this)[i]; wt; wt=next) {
-      //    for (wt=&words[i]; wt; wt=next) {
+    (*this)[ui].string = (*this)[ui].string - (size_t)strings;
+    //    words[ui].string = words[ui].string - (uint)strings;
+    for (wt=&(*this)[ui]; wt; wt=next) {
+      //    for (wt=&words[ui]; wt; wt=next) {
       next = wt->Next();
       if (next)
 	wt->next = (WordTag*) (wt->next - &more[0]); // i.e. index of wt->next in more
@@ -797,7 +801,7 @@ bool WordLexicon::Save() {
 	wt->next = (WordTag*) -1;
       if (wt->lemma)
 	if (wt->lemma->IsWord()) {
-	  ensure((int)((Word*)wt->lemma - &(*this)[0]) < CW);
+	  ensure((unsigned int)((Word*)wt->lemma - &(*this)[0]) < CW);
 	  //	  ensure((int)((Word*)wt->lemma - &words[0]) < CW);
 	  wt->lemma = (WordTag*) ((Word*)wt->lemma - &(*this)[0]);
 	  //	  wt->lemma = (WordTag*) ((Word*)wt->lemma - &words[0]);
@@ -806,20 +810,20 @@ bool WordLexicon::Save() {
       else
 	wt->lemma = (WordTag*)-1;
     }
-    wordsAlpha[i] = (Word*) (wordsAlpha[i] - &(*this)[0]);
-    //    wordsAlpha[i] = (Word*) (wordsAlpha[i] - &words[0]);
+    wordsAlpha[ui] = (Word*) (wordsAlpha[ui] - &(*this)[0]);
+    //    wordsAlpha[i] = (Word*) (wordsAlpha[ui] - &words[0]);
   }
   for (i=0; i<nExtraLemmas; i++) {
     ExtraLemma &wtal = extraLemmas[i];
     if (wtal.lemma->IsWord()) {
-      ensure((int)((Word*)wtal.lemma - &(*this)[0]) < CW);
+      ensure((unsigned int)((Word*)wtal.lemma - &(*this)[0]) < CW);
       //      ensure((int)((Word*)wtal.lemma - &words[0]) < CW);
       wtal.lemma = (WordTag*) ((Word*)wtal.lemma - &(*this)[0]);
       //      wtal.lemma = (WordTag*) ((Word*)wtal.lemma - &words[0]);
     } else
       wtal.lemma = (WordTag*) (CW + (wtal.lemma - &more[0]));
     if (wtal.wt->IsWord()) {
-      ensure((int)((Word*)wtal.wt - &(*this)[0]) < CW);
+      ensure((unsigned int)((Word*)wtal.wt - &(*this)[0]) < CW);
       //      ensure((int)((Word*)wtal.wt - &words[0]) < CW);
       wtal.wt = (WordTag*) ((Word*)wtal.wt - &(*this)[0]);
       //      wtal.wt = (WordTag*) ((Word*)wtal.wt - &words[0]);
@@ -829,7 +833,7 @@ bool WordLexicon::Save() {
   for (i=0; i<nExtraRules; i++) {
     ExtraRules &wtar = extraRules[i];
     if (wtar.wt->IsWord()) {
-      ensure((int)((Word*)wtar.wt - &(*this)[0]) < CW);
+      ensure((unsigned int)((Word*)wtar.wt - &(*this)[0]) < CW);
       //      ensure((int)((Word*)wtar.wt - &words[0]) < CW);
       wtar.wt = (WordTag*) ((Word*)wtar.wt - &(*this)[0]);
       //      wtar.wt = (WordTag*) ((Word*)wtar.wt - &words[0]);
@@ -862,7 +866,7 @@ void WordLexicon::CompressStrings() {
   Message(MSG_STATUS, "compressing word strings...");
   // assuming newWord-bit is 0 for all words
   // mark words that are are subwords:
-  int i;
+  unsigned int i;
   for (i=0; i<CW; i++)
     for (const char *s = (*this)[i].string+1; *s; s++) {
       //    for (const char *s = words[i].string+1; *s; s++) {
@@ -914,7 +918,7 @@ void WordLexicon::PrintStatistics() const {
 }
 
 void WordLexicon::Print() const {
-  for (int i=0; i<CW; i++)
+  for (unsigned int i=0; i<CW; i++)
     std::cout << (*this)[i] << std::endl;
 }
 
@@ -1189,9 +1193,9 @@ void WordLexicon::AnalyzeNewWord(NewWord *w, bool tryHard) const {
 }
 
 void WordLexicon::AnalyzeNewWords() const {
-  #ifdef VERBOSE
+#ifdef VERBOSE
   Message(MSG_STATUS, "analyzing new words...");
-  #endif
+#endif
   NewWord *w;
   for (int i=0; (w = (*newWords)[&i]); i++)
     if (!w->IsAnalyzed())
@@ -1317,7 +1321,7 @@ WordTag *WordLexicon::GetInflectedForm(WordTag* wt, uint ruleIndex, const Tag* t
 
 void WordLexicon::GenerateInflections(bool onlyUnknownWordTags) const {
   Message(MSG_STATUS, "generating inflections...");
-  for (int i=0; i<CW; i++) {
+  for (unsigned int i=0; i<CW; i++) {
     const Word* w = &(*this)[i];
     //    const Word* w = &words[i];
     for (const WordTag *wt = w; wt; wt = wt->Next())
@@ -1483,7 +1487,7 @@ char *WordLexicon::GetInflectionList(const char *string, char *result) const {
 /* jonas, from obsolete tagger code */
 void WordLexicon::GenerateExtraWordTags() const {
   Message(MSG_STATUS, "generating extra word tags...");
-  for (int i=0; i<CW; i++) {
+  for (unsigned int i=0; i<CW; i++) {
     const Word* w = &(*this)[i];
     //    const Word* w = &words[i];
     for (const WordTag *wt = w; wt; wt = wt->Next())
@@ -1523,8 +1527,9 @@ void WordLexicon::ServerAnalyzeWordAndPrintInflections(std::iostream &socket,
   Word *w = Find(string);
   if (w) {
     socket << tab << "all forms found in lexicon:" << "\n";
-    for (const WordTag *wt=w; wt; wt=wt->Next())
+    for (const WordTag *wt=w; wt; wt=wt->Next()) {
       wt->Print(socket);
+    }
   } else {
     socket << string << " is not in main lexicon, analyzing..." << "\n";
     NewWord *nw = newWords->AddWord(string);

@@ -124,7 +124,7 @@ bool xListMultipleLemmas = false;
 optConst bool xPrintUnknownLemmas = false;
 
 // lexicon:
-char *xSettingsFile = "settings";
+const char *xSettingsFile = "settings";
 
 const char xVersion[60] = "version 0.990913 PC   (c) 1999 KTH, NADA, Johan Carlberger";
 

@@ -57,13 +57,15 @@ const WordRuleTerms *Lexicon::FindWordRuleTerms(const Word *w) {
 bool Lexicon::AddWordRuleTerm(Word *w, const RuleTerm *r) {
   bool check = true;
   WordRuleTerms *wrt= (WordRuleTerms*) FindWordRuleTerms(w);
-  //  std::cout << "add: " << w << ' ' << r << ' ' << wrt << std::endl;
+  // std::cout << "add: " << w << ' ' << r << ' ' << wrt << std::endl;
   if (wrt) {
     for (const RuleTermList *l = wrt; l; l = l->Next()) {
+
       if (l->GetRuleTerm() == r) {
 	Message(MSG_WARNING,
 		"AddWordRuleTerm() detected something Viggo promised would never happen, word = ",
 		w->String());
+						      
 	check = false;
 	return false;
       }

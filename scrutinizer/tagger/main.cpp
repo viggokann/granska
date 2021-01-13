@@ -76,7 +76,7 @@ void PrintUsage(char *progName) {
 }
 
 int main(int argc, char **argv) {
-  char *lexiconDir = getenv("TAGGER_LEXICON");
+  const char *lexiconDir = getenv("TAGGER_LEXICON");
   int i;
   xPrintAllWords = xPrintSelectedTag = true;
   for (i=1; i<argc && argv[i][0] == '-'; i++)

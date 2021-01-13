@@ -36,9 +36,9 @@ const extern unsigned char *wordSeparator;
 extern int InitRattstava(const char *fyrgramfilename, 
 			 const unsigned char *separator);
 /* LagraFyrgram ser till att ett ords alla fyrgram är tillåtna */
-INLINE extern void LagraFyrgram(const unsigned char *ord);
+void LagraFyrgram(const unsigned char *ord);
 /* FyrKollaHela kollar om ett ords alla fyrgram är tillåtna */
-INLINE extern int FyrKollaHela(const unsigned char *ord);
+int FyrKollaHela(const unsigned char *ord);
 
 /* GenerateSimpleCorrections genererar rangordnade rättelseförslag på avstånd 1 i EL och IL från 
    ett potentiellt riktigt stavat ord word. Rättelseförslagen läggs i cset.

@@ -40,8 +40,8 @@ inline T Abs(T a) { if (a < T(0)) return -a; return a; }
 inline void neg(bool &a) { a = !a; }
 inline void neg(int &a) { a = !a; }
 
-inline char *dont(bool a) { if (a) return " don't "; else return " "; }
-inline char *noOrNuff(bool a) { if (a) return ""; else return "no "; }
+inline const char *dont(bool a) { if (a) return " don't "; else return " "; }
+inline const char *noOrNuff(bool a) { if (a) return ""; else return "no "; }
 inline char optS(bool a) { if (a) return 's'; else return '\0'; }
 
 #ifdef COUNT_OBJECTS

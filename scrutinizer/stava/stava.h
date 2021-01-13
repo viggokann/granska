@@ -110,7 +110,7 @@ extern unsigned char *lowerCaseLetters; /* alla små bokstäver */
 extern unsigned char *upperCaseLetters; /* alla stora bokstäver */
 extern unsigned char *delimiters; /* alla icke-bokstäver */
 
-extern INLINE void VersalerGemena(register const unsigned char *ordin, 
+void VersalerGemena(register const unsigned char *ordin, 
 				  register unsigned char *ord,
 				  register unsigned char *Ord);
 /* StavaSkrivOrd anropas vid rättstavningen för att skriva ut ett
@@ -131,12 +131,12 @@ extern void sWriteISO(unsigned char *res, const unsigned char *s);
   formating string containing the string %s */
 void PrintErrorWithText(const char *format, const char *text);
 
-extern INLINE int InEL(const unsigned char *ord, int len);
-extern INLINE int InFL(const unsigned char *ord, int len);
-extern INLINE int InIL(const unsigned char *ord, int len);
-extern INLINE int InUL(const unsigned char *ord, int len);
-extern INLINE int InXL(const unsigned char *ord, int len);
-extern INLINE int InILorELbutnotUL(const unsigned char *ord, int len);
+int InEL(const unsigned char *ord, int len);
+int InFL(const unsigned char *ord, int len);
+int InIL(const unsigned char *ord, int len);
+int InUL(const unsigned char *ord, int len);
+int InXL(const unsigned char *ord, int len);
+int InILorELbutnotUL(const unsigned char *ord, int len);
 
 extern int x8bitar;
 extern int xAndelser, xForkortningar, xNamn, xDatatermer;
