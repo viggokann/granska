@@ -63,9 +63,10 @@ bool Lexicon::AddWordRuleTerm(Word *w, const RuleTerm *r) {
 
       if (l->GetRuleTerm() == r) {
 	Message(MSG_WARNING,
-		"AddWordRuleTerm() detected something Viggo promised would never happen, word = ",
+		// "AddWordRuleTerm() detected something Viggo promised would never happen, word = ",
+		"AddWordRuleTerm() detected rule/word duplicate. This should not happen. The cause could be a cached rule (.opt) file built for a different tagger lexicon than the current one. To resolve, delete the rule .opt-file.  word = ",
 		w->String());
-						      
+	
 	check = false;
 	return false;
       }
