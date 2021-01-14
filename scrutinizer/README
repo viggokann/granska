@@ -20,31 +20,105 @@ be set within the sript setEnv.sh.
 
 ------- CGI-Granska -------------
 When building cgi-granska (wwwscrutinizer):
+
 * If you want to debug, remember to remove the line "strip
-wwwscrutinizer" from the Makefile.
+  wwwscrutinizer" from the Makefile.
 * Comment out the flags $(PROBCHECK_FLAGS) $(WEB_FLAGS) from ALL_FLAGS
-and -DDEVELOPER_OUTPUT from SCRUT_FLAGS
-* The locations of the rule file, the tagger lexicon files, example sentences file, and rule file when adding user created rules all used to be hardcoded in wwwmain.cpp and wwwscrutinizer.c but these have now been moved to the Makefile. The TAGGERLEXICONFOLDER, EXAMPLESENTENCESFILE, DEFAULTRULEFILE, and STAVALEXICONFOLDER need to be set to the correct file system locations before compiling.
+  and -DDEVELOPER_OUTPUT from SCRUT_FLAGS
+* The locations of the rule file, the tagger lexicon files, example
+  sentences file, and rule file when adding user created rules all
+  used to be hardcoded in wwwmain.cpp and wwwscrutinizer.c but these
+  have now been moved to the Makefile. The TAGGERLEXICONFOLDER,
+  EXAMPLESENTENCESFILE, DEFAULTRULEFILE, and STAVALEXICONFOLDER need
+  to be set to the correct file system locations before compiling.
 * If the rulefile does not have a stored .opt file, wwwscrutinizer
-needs write permission in the folder of the rulefile the first time it
-runs or you will get a segmentation fault. A quick way to avoid
-problems is to run wwwscrutinizer once as root (sudo), but when
-running as root wwwscrutinizer needs to have something to scrutinize
-or it will not even try to load the rule file. Similarly, if there are
-no "fast" files for the tagger lexicon files, the wwwscrutinizer will
-try to write such files and fail if write permission is not given.
+  needs write permission in the folder of the rulefile the first time
+  it runs or you will get a segmentation fault. A quick way to avoid
+  problems is to run wwwscrutinizer once as root (sudo), but when
+  running as root wwwscrutinizer needs to have something to scrutinize
+  or it will not even try to load the rule file (and thus not write a
+  .opt file). Similarly, if there are no "fast" files for the tagger
+  lexicon files, the wwwscrutinizer will try to write such files and
+  fail if write permission is not given.
+
+------- Server/socket mode of Granska -------------
+
+To run Granska in server mode (listen to a socket for input text), the
+following options are used:
+./scrutinizer -w $i $PORT $MODE $DESC
+
+$i is the rule set name, and Granska will expect to find a rule file in a folder with this name
+$PORT is the port number to listen to
+$MODE is either PUBLIC or PRIVATE
+$DESC is a description that is used in some menus showing which versions of Granska are running
+
+For the rule set, the folder is expected to have the name $i and be
+located in $GRANSKA_HOME. $GRANSKA_HOME should be an environment
+variable.
+
+For example:
+./scrutinizer -w svesveTng 4711 PUBLIC TestingGranskaSockets
 
 ------- Parser version of Granska -------------
+
 When using Granska for parsing, you need to compile the scrutinizer
 with -DDEVELOPER_OUTPUT.
 
 You also need to give lots of extra options when running the program:
 
-./scrutinizer.parse -Cb 1 -Cr /home/jsh/servergranskafiles/servergranska/lexikon/tags/repr.ptt -w parse 6127 public parse -Ch 4 -CH 3 -J none 0 2
+./scrutinizer.parse -Cb 1 -Cr ../suc/tags/repr.ptt -w parse 6127 public parse -Ch 4 -CH 3 -J none 0 2
+
+The parser version needs a repr.ptt file, and these should be created
+from the same resource as the tagger lexicon files. There is a
+repr.ptt file provided for the "suc" lexicon files, but not for the
+"lex" lexicon files. The repr.ptt from the "suc" files can possibly be
+used with the "lex" lexicon files, but it may possibly lead to some
+problems.
+
+
+------- Specifying lexicon files etc. -------------
+
+Granska needs to know where lexicon files are located. This can be
+specified in different ways.
+
+* The Makefile contains hard coded default locations that you can set
+  before compiling.
+
+* The environment variables $TAGGER_LEXICON, $STAVA_LEXICON,
+  $GRANSKA_HOME, $SCRUTINIZER_RULE_FILE, $SCRUTINIZER_TEST_TEXT can be set.
+
+* Some of the files can be specified with command line arguments, for example -r [rule file]
+
+There is a file "setEnv.sh" that sets GRANSKA_HOME, TAGGER_LEXICON,
+and STAVA_LEXICON to reasonable values if you checked out everything
+from Github, which can be run by ". setEnv.sh" (note the space after
+the ".").
+
+
+------- Calling via sockets -------------
+
+If you have a Granska listening for input on a socket, it can be called like this:
+
+> telnet localhost $PORT
+TEXT Jag skiver ett litet testmeningen.
+ENDQ
+
+The input should be the reserved word "TEXT", followed by a space, and
+then all the input on one long line. Then there should be a new line
+with the reserved word "ENDQ" on a line by itself.
+
+There are other commands available too, for example "INFLECT <word to
+inflect>" or "URL <url to text to scrutinize>", also followed by a new
+line with "ENDQ".
+
+More information can be found here:
+https://skrutten.csc.kth.se/granskaapi/sockets.html
 
 
 --------------------------------
-Here is a simple example rule to test the "use my own rules" for the CGI version of Granska:
+It is possible to add more rules when scrutinizing. Here is a simple
+example rule to test the "use my own rules" for the CGI version of
+Granska:
 --------------------------------
 % Varje regel måste tillhöra en kategori, den anges såhär:
 category exempelregler {
@@ -63,3 +137,9 @@ mark(X Y)
 action(scrutinizing)
 }
 --------------------------------
+
+For more information on Granska and related tools, see
+https://skrutten.csc.kth.se/
+
+Documentation:
+https://skrutten.csc.kth.se/documentation/
