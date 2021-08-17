@@ -299,6 +299,10 @@ int Expr::Eval(union value &res) const {
 	    res.boolean = obj->GetWordToken()->IsFirstCapped(); return 1; }
 	  else if (arg->c.id == constantAllCap) {
 	    res.boolean = obj->GetWordToken()->IsAllCapped(); return 1; }
+	  else if (arg->c.id == constantManyCap) {
+	    res.boolean = obj->GetWordToken()->IsManyCapped(); return 1; }
+	  else if (arg->c.id == constantHyphen) {
+	    res.boolean = obj->GetWordToken()->IsHyphened(); return 1; }
 	  else if (arg->c.id == constantSpellOK) {
 	    res.boolean = obj->GetWordToken()->IsSpellOK(); return 1; }
 	  else if (arg->c.id == constantBeginOK) {
@@ -572,9 +576,34 @@ int Expr::Eval(union value &res) const {
       else break;
     case Boolean:
       if (c.id == constantCap)
-	{ res.boolean = t->IsFirstCapped(); return 1; }
+	{
+	  if(scrutinizer->GetMatchingSet().CheckMode()) {
+	    res.boolean = t->FirstCappedAgain();
+	  } else {
+	    res.boolean = t->IsFirstCapped();
+	  }
+	  return 1;
+	}
       if (c.id == constantAllCap)
-	{ res.boolean = t->IsAllCapped(); return 1; }
+	{
+	  if(scrutinizer->GetMatchingSet().CheckMode()) {
+	    res.boolean = t->AllCappedAgain();
+	  } else {
+	    res.boolean = t->IsAllCapped();
+	  }
+	  return 1;
+	}
+      if (c.id == constantManyCap)
+	{
+	  if(scrutinizer->GetMatchingSet().CheckMode()) {
+	    res.boolean = t->ManyCappedAgain();
+	  } else {
+	    res.boolean = t->IsManyCapped();
+	  }
+	  return 1;
+	}
+      if (c.id == constantHyphen) 
+	{ res.boolean = t->IsHyphened(); return 1; }	
       if (c.id == constantSpellOK)
 	{ res.boolean = t->IsSpellOK(); return 1; }
       if (c.id == constantBeginOK) {
@@ -950,7 +979,7 @@ int Expr::OptEval(bool &unknown, union value &res) const {
       else break;
     case Boolean:
       if (c.id == constantSpellOK || constantBeginOK || constantEndOK || c.id == constantCap
-	  || c.id == constantAllCap || c.id == constantIsForeign
+	  || c.id == constantAllCap || c.id == constantManyCap || c.id == constantIsForeign || c.id == constantHyphen
 	  || c.id == constantIsRepeated) { return 1; } // johan, rätt? 
       break;
     default: break;

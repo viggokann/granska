@@ -88,7 +88,7 @@ IdEntry *constantLemma;
 static IdEntry *constantNoOfTokens, *constantToken;
 static IdEntry *constantSpellOK, *constantBeginOK, *constantEndOK, *constantIsRepeated;
 static IdEntry *constantLength, *constantGetReplacement, *constantGetValues;
-static IdEntry *constantLex, *constantCap, *constantAllCap, *constantIsForeign;
+ static IdEntry *constantLex, *constantCap, *constantAllCap, *constantManyCap, *constantIsForeign, *constantHyphen;
 
 static Expr *DotExpr(Expr *left, Expr *right);
 static Expr *AssignExpr(Expr *lhs, Expr *rhs);
@@ -1323,6 +1323,8 @@ void DefinePredefined(void) {
   constantLex = new IdEntry("lex", IdEntry::AttributeId, LexVariable);
   constantCap = new IdEntry("is_cap", IdEntry::AttributeId, Boolean);
   constantAllCap = new IdEntry("is_all_cap", IdEntry::AttributeId, Boolean);
+  constantManyCap = new IdEntry("is_many_cap", IdEntry::AttributeId, Boolean);
+  constantHyphen = new IdEntry("is_hyphen", IdEntry::AttributeId, Boolean);
   constantIsForeign = new IdEntry("is_foreign", IdEntry::AttributeId, Boolean);
   pm = new MethodOrFunctionEntry("substr", IdEntry::MethodId, String, 2);
   pm->func.method = &subfunc;

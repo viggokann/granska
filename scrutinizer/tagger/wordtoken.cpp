@@ -42,12 +42,150 @@ void WordToken::SetWord(Word *w, const char *s, Token t) {
 }
 
 void WordToken::SetCapped(const char *s) {
-  if (IsUpper(*s))
+  int caps = 0;
+  int nots = 0;
+
+  int internal = 0;
+  const char *start = s;
+  
+  if (IsUpper(*s)) {
     firstCapped = 1;
-  for(; *s; s++)
-    if (!IsUpper(*s))
-      return;
+  }
+  
   allCapped = 1;
+  for(; *s; s++) {
+    if (IsLower(*s)) {
+      allCapped = 0;
+      nots++;
+    } else if(IsUpper(*s)) {
+      caps++;
+
+      if(s > start) {
+	if(*(s - 1) != ' '
+	   && *(s - 1) != '.'
+	   && *(s - 1) != '-') {
+	  internal++;
+	}
+      }
+      
+    }
+    
+    if(*s == '-' || *s == ':') {
+      hyphen = 1;
+    }
+  }
+
+  /*
+  if(nots > 0 && (caps > 1 || (caps > 0 && !firstCapped))) {
+    manyCapped = 1;
+  }
+  */
+  if(internal > 0 && !allCapped) {
+    manyCapped = 1;
+
+    if(caps == 2 && *start == 'M' && *(start + 1) == 'c' && IsUpper(*(start+2))) {
+      manyCapped = 0;
+    }
+    if(caps == 2 && *start == 'M' && *(start + 1) == 'a' && *(start + 2) == 'c' && IsUpper(*(start+3))) {
+      manyCapped = 0;
+    }
+    if(caps == 2 && *start == 'D' && *(start + 1) == 'e' && IsUpper(*(start+2))) {
+      manyCapped = 0;
+    }
+    if(caps == 2 && *start == 'D' && *(start + 1) == 'i' && IsUpper(*(start+2))) {
+      manyCapped = 0;
+    }
+    if(caps == 2 && *start == 'L' && *(start + 1) == 'a' && IsUpper(*(start+2))) {
+      manyCapped = 0;
+    }
+    if(caps == 2 && *start == 'L' && *(start + 1) == 'e' && IsUpper(*(start+2))) {
+      manyCapped = 0;
+    }
+    if(nots == 1 && (*(s-1) == 's' || *(s-1) == 'e' || *(s-1) == 't' || *(s-1) == 'n')) {
+      manyCapped = 0;
+    } 
+
+    /*
+    std::cerr << caps << " "
+	      << nots << " "
+	      << internal << ", "
+	      << start << ", '"
+	      << *(start) << "' '"
+	      << *(start+1) << "' '"
+	      << *(start+2) << "', "
+	      << IsUpper(*(start+2)) << std::endl;
+    */
+  }
+}
+
+bool WordToken::AllCappedAgain() const {
+  const char *s = string;
+
+  for(; *s; s++) {
+    if (!IsUpper(*s)) {
+      return 0;
+    }
+  }
+  return 1;
+}
+
+bool WordToken::ManyCappedAgain() const {
+  const char *s = string;
+  int caps = 0;
+  int nots = 0;
+  int all = 1;
+
+  int internal = 0;
+  
+  for(; *s; s++) {
+    if (IsLower(*s)) {
+      all = 0;
+      nots++;
+    } else if(IsUpper(*s)) {
+      caps++;
+
+      if(s > string) {
+	if(*(s - 1) != ' '
+	   && *(s - 1) != '.'
+	   && *(s - 1) != '-') {
+	  internal++;
+	}
+      }
+      
+    }
+  }
+
+  /*
+  if(nots > 0 && (caps > 1 || (caps > 0 && !firstCapped))) {
+    return 1;
+  }
+  */
+  if(internal > 0 && !all) {
+    if(caps == 2 && *string == 'M' && *(string + 1) == 'c' && IsUpper(*(string+2))) {
+      return 0;
+    }
+    if(caps == 2 && *string == 'M' && *(string + 1) == 'a' && *(string + 2) == 'c' && IsUpper(*(string+3))) {
+      return 0;
+    }
+    if(caps == 2 && *string == 'D' && *(string + 1) == 'e' && IsUpper(*(string+2))) {
+      return 0;
+    }
+    if(caps == 2 && *string == 'D' && *(string + 1) == 'i' && IsUpper(*(string+2))) {
+      return 0;
+    }
+    if(caps == 2 && *string == 'L' && *(string + 1) == 'a' && IsUpper(*(string+2))) {
+      return 0;
+    }
+    if(caps == 2 && *string == 'L' && *(string + 1) == 'e' && IsUpper(*(string+2))) {
+      return 0;
+    }
+    if(nots == 1 && (*(s-1) == 's' || *(s-1) == 'e' || *(s-1) == 't' || *(s-1) == 'n')) {
+      return 0;
+    }
+    
+    return 1;
+  }
+  return 0;
 }
 
 void WordToken::SetFirstInSentence(bool b) {

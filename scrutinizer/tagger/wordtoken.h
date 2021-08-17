@@ -44,8 +44,8 @@ class WordToken {
     ~WordToken() { DelObj(); }
     void Clear() { word = NULL; string = NULL; tagSelected = NULL; selectedTagErasable = 1; 
     // next 2 lines by jonas 030321
-    token=TOKEN_END;offset=0;current=0;orgPos=0;firstCapped=0;allCapped=0;firstInSentence=0;
-    trailingSpace=0;hard=0;repeated=0;changed=0;inserted=0;marked=0;marked2=0;
+      token=TOKEN_END;offset=0;current=0;orgPos=0;firstCapped=0;allCapped=0;manyCapped=0;firstInSentence=0;
+      trailingSpace=0;hard=0;repeated=0;changed=0;inserted=0;marked=0;marked2=0;hyphen=0;
   
     }
     const WordTag *FirstInterpretation();
@@ -70,6 +70,11 @@ class WordToken {
                                   xAcceptSpellProperNouns && SelectedTag()->IsProperNoun()); }
     bool IsFirstCapped() const { return firstCapped; }
     bool IsAllCapped() const { return allCapped; }
+    bool IsManyCapped() const { return manyCapped; }
+    bool IsHyphened() const { return hyphen; }
+    bool FirstCappedAgain() const { return IsUpper(*string); }
+    bool AllCappedAgain() const;
+    bool ManyCappedAgain() const;
     bool HasTrailingSpace() const { return trailingSpace; }
     bool IsHard() const { return hard; }
     bool IsRepeated() const { return repeated; }
@@ -97,6 +102,8 @@ class WordToken {
     char orgPos;            // used by DynamicSentence only
     Bit firstCapped : 1;
     Bit allCapped : 1;
+    Bit manyCapped : 1;
+    Bit hyphen : 1;
     Bit firstInSentence : 1;
     Bit trailingSpace : 1;
     Bit hard : 1;
@@ -106,7 +113,7 @@ class WordToken {
     Bit inserted : 1;
     Bit marked : 1;         // used by rules
     Bit marked2 : 1;         // used by rules
-    // 13 bits free
+    // 11 bits free
 
     DecObj();
 };
@@ -121,6 +128,8 @@ inline WordToken::WordToken()
      orgPos(0),
      firstCapped(0),
      allCapped(0),
+     manyCapped(0),
+     hyphen(0),
      firstInSentence(0),
      trailingSpace(0),
      hard(0),

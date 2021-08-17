@@ -52,7 +52,7 @@ namespace Misc
         
     public:
         Output_impl_normal()
-            : pushed(false), inited(false), exited(false), s(0), lib(false)
+            : pushed(false), inited(false), exited(false), lib(false), s(0)
         {}
         ~Output_impl_normal() { exit(); }
 		std::string getCharP();
