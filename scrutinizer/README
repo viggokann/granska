@@ -18,6 +18,18 @@ be set within the sript setEnv.sh.
 
 --- 2020-12-01 ----
 
+------- "Normal" Granska -------------
+
+The CGI and parser versions of Granska need some special options
+(details below in the respective sections) when building. When
+building the "normal" version of Granska these options should not be
+set. For the normal version, make sure to:
+
+* Do NOT Comment out the flags $(PROBCHECK_FLAGS) $(WEB_FLAGS) from
+  ALL_FLAGS
+
+* Do NOT to compile the scrutinizer with the option -DDEVELOPER_OUTPUT.
+
 ------- CGI-Granska -------------
 When building cgi-granska (wwwscrutinizer):
 
