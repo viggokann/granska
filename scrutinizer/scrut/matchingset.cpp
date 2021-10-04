@@ -15,9 +15,9 @@ static int HELP_MATCHING_BUF_SIZE = 4000;
 static const int EM_BUF_SIZE = 5000;
 static const int HELP_MATCHING_BUF_SIZE = 1000;
 */
-static const int HELP_TAG_BUF_SIZE = 25000; // Viggo increased size 2000->3000
+static const int HELP_TAG_BUF_SIZE = 30000; // Viggo increased size 2000->3000
                                             // Johnny increased size 3000->10000
-                                            // Jonas increased size 10000 -> 25000
+                                            // Jonas increased size 10000 -> 30000
 
 static int max_tag_buf_end = 0;
 
