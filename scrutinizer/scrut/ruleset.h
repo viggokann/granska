@@ -9,7 +9,7 @@
 
 #include "rule.h"
 
-const int MAX_RULES = 600;
+const int MAX_RULES = 700;
 const int MAX_HELP_RULES = 200;
 const int MAX_RULE_TERMS = 700;
 const int MAX_CATEGORIES = 100;
