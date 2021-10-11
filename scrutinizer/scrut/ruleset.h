@@ -9,9 +9,9 @@
 
 #include "rule.h"
 
-const int MAX_RULES = 700;
-const int MAX_HELP_RULES = 200;
-const int MAX_RULE_TERMS = 700;
+const int MAX_RULES = 900;
+const int MAX_HELP_RULES = 250;
+const int MAX_RULE_TERMS = 900;
 const int MAX_CATEGORIES = 100;
 
 class RuleSet {
