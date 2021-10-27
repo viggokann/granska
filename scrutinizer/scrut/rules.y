@@ -210,7 +210,7 @@ rule	: maybename '{' altrules '}' {
 				       corr ? corr->c.string : NULL,
 				       r->GetJump(), r->GetInfo(),
 				       r->GetAction(),
-				       r->GetDetect(), r->GetAccept()));
+				       r->GetDetect(), r->GetAccept(), r));
 	    IdEntry::NewScope();
 	  }
 	| maybename '{' '/' error '}' { ParseError("Fel i reguljärt uttrycks-regel"); }

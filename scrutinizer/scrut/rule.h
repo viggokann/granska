@@ -309,7 +309,7 @@ public:
   }
   RegExpRule(Element *el, const char *regexp_, IdEntry *id, Expr *mark_, 
 	     const char *corr_, GotoEntry *jump_, Expr *info_, Expr *action_,
-	     const char *detect_, const char *accept_);
+	     const char *detect_, const char *accept_, RuleTerm *rt);
   int ComputeScope();
   const char *Type() const { return "RegExpRule"; }
 };

@@ -635,8 +635,8 @@ Rule::Rule(IdEntry *id_, RuleTerm *first) :
 
 RegExpRule::RegExpRule(Element *el, const char *regexp_, IdEntry *id, Expr *mark_, 
 	     const char *corr_, GotoEntry *jump_, Expr *info_, Expr *action_,
-	     const char *detect_, const char *accept_) :
-    Rule(id, NULL),
+		       const char *detect_, const char *accept_, RuleTerm *rt) :
+    Rule(id, rt),
     element(el),
     regexp(regexp_),
     mark(mark_),
@@ -645,7 +645,7 @@ RegExpRule::RegExpRule(Element *el, const char *regexp_, IdEntry *id, Expr *mark
     info(info_),
     action(action_),
     detect(detect_),
-    accept(accept_)
+    accept(accept_)    
   {
     /*
     std::cout << "RegExpRule: " << id->Name() << 
