@@ -1,0 +1,282 @@
+------------------------------------------------------------------
+Reguljära uttryck i Granskas regelspråk
+------------------------------------------------------------------
+
+Det finns två sätt att använda reguljära uttryck i Granskas
+regelspråk. Man kan dels använda ett reguljärt uttryck direkt på
+texten, dels använda ett reguljärt uttryck för att matcha mot en token
+från Granskas tokeniserare.
+
+------------------------------------------------------------------
+Reguljära uttryck för att matcha mot hela texten
+------------------------------------------------------------------
+
+En regel som matchar mot texten kan bara ha ett reguljärt uttryck som
+matchningskrav (inga andra tokenbaserade matchingar eller
+liknande). En sådan regel kan bara ha "corr"-fält som innehåller en
+textsträng. Den strängen kommer att användas för att ersätta den del
+av texten uttrycket matchade, så den fungerar som "replace" i vanliga
+"corr"-fält. Det reguljära uttrycket skrivs med framåtslash följt av
+en textsträng och slutligen en framåtslash igen. Strängen behöver
+citationstecken för att indikera att det är en sträng.
+
+Exempel:
+
+/"[ ][ ][ ]*"/
+
+Denna regel matchar två eller flera mellanslag i rad.
+
+"corr"-fältet behöver också ha citationstecken runt strängen. Strängen
+kan vara en enkel textsträng som då bara används rakt av. Den kan
+också innehålla referenser till delar av den text som matchats. När
+referenser används behöver strängen börja och sluta med
+framåtslash. Referenser anges som backslash och ett nummer, där numret
+anger vilken parentesgrupp i matchningsuttrycket som avses,
+t.ex. corr("/\1/") som skulle ersätta den matchade texten med den
+första delen av matchningen.
+
+Exempel:
+
+/"([a-zA-ZåäöÅÄÖ][a-zA-ZåäöÅÄÖ]*),([a-zA-ZåäöÅÄÖ]*[a-zA-ZåäöÅÄÖ])"/
+-->
+corr("/\1, \2/")
+
+Denna regel matchar bokstäver följt av ett kommatecken och sen fler
+bokstäver, dvs text där det saknas mellanslag efter
+komma. "corr"-fältet innehåller två referenser, \1 som indikerar den
+text som matchas av den första parentesgruppen,
+([a-zA-ZåäöÅÄÖ][a-zA-ZåäöÅÄÖ]*), och \2 som indikerar den andra
+parentesgruppen. Så regeln matchar text där det saknas mellanslag
+efter kommatecken och ersätter texten med det första ordet, ett
+kommatecken, ett mellanslag, och slutligen det andra ordet.
+
+Regler som matchar reguljära uttryck direkt mot texten (inte mot en
+token från Granskas tokeniserare) specialbehandlas på flera sätt. De
+matchas separat från andra regler, så "jump" för att hoppa över regler
+o.dyl. fungerar inte som vanlig för regler med reguljära uttryck. Då
+reglerna inte matchar mot någon token som kan bindas till en viss
+mening kommer inte felrapporterna att rapporteras som för vanliga
+regler heller. Normalt rapporteras alla felrapporter per mening, men
+en regel med ett reguljärt uttryck kan matcha delar av flera olika
+meningar eller teckensekvenser mellan två meningar m.m. så de kan inte
+alltid placeras i en specifik mening.
+
+För närvarande samlas felrapporter från regler med reguljära uttryck i
+en del i Granskas utmatning med namnet "<regularExpressions>". Varje
+felrapport anges inom taggen "<regexMatch>". <regexMatch>-taggarna har
+attributen "markBeg" och "markEnd" som indikerar teckenpositioner i
+texten som granskats. För vanliga regler anges normalt ord som början
+och slut, men regler med reguljära uttryck kan matcha utanför ord
+eller mitt i ord så de anges med referens till teckenpositioner
+istället.
+
+<regexMatch>-fälten kan ha ett <info>-fält med en beskrivande text om
+regeln har ett sådant fält. Det finns också ett <mark>-fält som
+innehåller den del av originaltexten som matchats och ett <sugg>-fält
+som innehåller ett ersättningsförslag.
+
+Exempel:
+
+<regularExpressions>
+<regexMatch markBeg="116" markEnd="127"><info>Texten matchar reguljärt uttryck. Mellanslag saknas efter kommatecken.</info>
+<mark>humor,sa</mark>
+<sugg>humor, sa</sugg>
+</regexMatch>
+</regularExpressions>
+
+Denna felrapport säger att mellan tecken 116 och tecken 127 står det
+"humor,sa" i originaltexten och föreslår att denna del av texten ska
+ersättas med "humor, sa" (dvs lägga till ett mellanslag efter
+kommatecknet).
+
+Felrapporterna för regler med reguljära uttryck skrivs innanför
+"<scrutinizer>"-taggen, efter alla meningar med vanliga felrapporter.
+
+------------------------------------------------------------------
+Reguljära uttryck för att matcha mot en token
+------------------------------------------------------------------
+
+För att matcha ett reguljärt uttryck mot en token i en vanlig regel
+används tecknet "~". Det reguljära uttrycket anges i en sträng, och
+strängen ska börja och sluta med framåtslash. Exempel:
+
+X(real_text ~ "/[A-ZÅÄÖ]*[a-zåäö]+[A-ZÅÄÖ]+[a-zåäöA-ZÅÄÖ]*/")
+
+Denna regel matchar ord som blandar små och stora bokstäver.
+
+"corr"-fältet kan se ut som "corr"-fält för vanliga regler, så det går
+att slå ihop ordet med andra ord, ta bort det, eller transformera text
+t.ex. med corr(X.replace(tolower(X.real_text))) som skulle ersätta
+ordet med samma ord skrivet med bara små bokstäver.
+
+Det går att använda referenser till delar av den matchade texten även
+för matchningar mot en token. Det skrivs på samma sätt som ovan, dvs
+med en sträng som börjar och slutar med framåtslash och där backslash
+följt av ett nummer anger referenser till delar av matchningen.
+
+Exempel:
+
+X(real_text ~ "/([0-9][0-9]*)((kr)|(km)|m|(dm)|(cm)|(mm)|l|(dl)|(cl)|(ml)|(kg)|(hg)|(krm)|(tsk)|(msk)|(tim)|(min)|(sek)|(år))/")
+-->
+mark(X)
+corr(X.replace("/\1 \2/"))
+
+Denna regel matchar mätetal och enhet som skrivits ihop utan
+mellanslag. "corr"-fältet ersätter texten med mätetalet och enheten
+med ett mellanslag mellan dem.
+
+För närvarande fungerar sådana referenser bara för "corr"-fält med
+"replace", inte med t.ex. "join" etc.
+
+Regler som innehåller reguljära uttryck enbart matchade inom tokens
+behandlas som vanliga regler och felrapporterna ser ut precis som
+vanligt.
+
+------------------------------------------------------------------
+Exempel på regler med reguljära uttryck
+------------------------------------------------------------------
+
+Exempel på regler med reguljära uttryck:
+
+category re {
+info("Experiment med reguljära uttryck")
+link("" "")
+}
+
+regextest1@re {
+/"   *"/
+-->
+corr(" ")
+info("Texten matchar reguljärt uttryck. Mer än ett mellanslag i rad.")
+accept("En mening med normala mellanslag.")
+detect("En mening med  flera mellanslag.")
+action(scrutinizing)
+}
+
+regextest2@re {
+/"([a-zA-ZåäöÅÄÖ][a-zA-ZåäöÅÄÖ]*),([a-zA-ZåäöÅÄÖ]*[a-zA-ZåäöÅÄÖ])"/
+-->
+corr("/\1, \2/")
+info("Texten matchar reguljärt uttryck. Mellanslag saknas efter kommatecken.")
+accept("En mening, med korrekta kommatecken.")
+detect("En mening,med konstiga kommatecken.")
+action(scrutinizing)
+}
+
+regextest3@re {
+X(real_text ~ "/[A-ZÅÄÖ]*[a-zåäö]+[A-ZÅÄÖ]+[a-zåäöA-ZÅÄÖ]*/")
+-->
+mark(X)
+corr(X.replace(tolower(X.real_text)))
+info("Texten matchar reguljärt uttryck. Blanding av små och stora bokstäver.")
+accept("Ett ord som skrivits korrekt är Sverige.")
+detect("Ett ord som skrivits koNsTigt.")
+action(scrutinizing)
+}
+
+regextest4@re {
+X(real_text ~ "/([0-9][0-9]*)((kr)|(km)|m|(dm)|(cm)|(mm)|l|(dl)|(cl)|(ml)|(kg)|(hg)|(krm)|(tsk)|(msk)|(tim)|(min)|(sek)|(år))/")
+-->
+mark(X)
+corr(X.replace("/\1 \2/"))
+info("Texten matchar reguljärt uttryck. Saknat mellanslag mellan mätvärde och enhet.")
+accept("3 msk med soja är rätt.")
+detect("3msk med soja blev fel.")
+action(scrutinizing)
+}
+
+------------------------------------------------------------------
+Reguljära uttryck i Granskas källkod
+------------------------------------------------------------------
+
+För reguljära uttryck i Granskas regelspråk används standarbiblioteket
+i C++ som tillhandahåller reguljära uttryck (i paketet <regex>).
+
+I mappen "scrut" finns re.h och re.cpp som innehåller kod hantering av
+reguljära uttryck. Där finns tre funktioner:
+
+bool isValidRegex(const char *regex)
+
+Denna funktion returnernar true om strängen regex innehåller något som
+kan användas som ett reguljärt uttryck, och false om strängen inte
+följer syntaxen för reguljära uttryck.
+
+bool regexMatch(const char *leftVal, const char *rightVal)
+
+Denna funktion returnerar true om det reguljära uttrycket i rightVal
+matchar texten i leftVal, false annars. Den används för matchingar i
+regelspråket där innehållet i en token matchas med operatorn "~".
+
+std::vector<std::string> regexGroups(std::string text, const char *re)
+
+Denna funktion returnerar en vektor med strängarna för de olika
+delgrupperna som matchas när det reguljära uttrycket i "re" matchas
+mot texten i "text".
+
+I eval.cpp finns ny kod som används för att hantera "corr"-fält med
+"replace" där matchningen gjordes med operatorn "~" och det
+eventuellet finns referenser till delar av matchningen.
+
+I rule.h finns mer kod för klassen RegexpRule, väsentligen funktioner
+som är public som gör att man kan läsa regex-fältet och info-fältet.
+
+I rules.y görs nu anrop till regexp-funktionerna för att skapa
+RegexpRule o.dyl. när det behövs. Om en RegexpRule skapas (dvs det
+finns minst en regel som matchar reguljära uttryck direkt mot texten,
+inte mot tokens) sätts även flaggan "haveRegexpRules" i den
+Scrutinizer som används.
+
+I scrutinzer.cpp finns en flagga "haveRegexpRules" som anger om det
+finns regler som matchar direkt mot originaltexten (inte mot tokens)
+eller ej. Det finns en ny funtion:
+
+std::istream * Scrutinizer::CopyInputStream(std::istream *in)
+
+Denna funktion fångar upp inmatningen innan den skickas till tokenizer
+och skapar en kopia som kan användas för matchning av reguljära
+uttryck.
+
+void Scrutinizer::RegexpRuleMatching()
+
+Denna funktion gör matchningen av de RegexpRule som finns mot den
+kopierade texten. Denna matchning görs innan andra regler matchas mot
+tokensekvensen som tokenizer har skapat.
+
+void Scrutinizer::PrintRegexpAlarms()
+
+Denna funktion matar ut alla felrapporter från de RegexpRule som
+finns.
+
+I scrutinizer.h finns nya medlemsvariabler och medlemsfunktioner. De
+används för att hålla reda på om det finns RegexpRule i den
+regelsamling som används, för att behålla en kopia av inmatningen
+ifall sådana regler finns, och för att samla felrapporter från sådana
+regler.
+
+------------------------------------------------------------------
+Reguljära uttryck i Granskas tidigare källkod
+------------------------------------------------------------------
+
+Denna kod fanns sedan tidigare i Granska. Den verkar inte göra något
+och har ersatts med ovanstående istället.
+
+rules.y
+ RegexpCheck()
+
+ Matchar ett leftvalue mot ett regex. För närvarande gör funktionen
+ inget.
+
+regexp.h
+ class RegexpMatching
+ class RegexpRules
+ class Regexps
+
+ no class is ever mentioned in any other file
+ 
+regexps.cc
+ CompileRegexpHelp
+ RegexpCheckHelp
+
+ mentioned in rules.y
+ no function ever called
+
