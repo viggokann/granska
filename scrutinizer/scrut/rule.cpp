@@ -654,11 +654,13 @@ RegExpRule::RegExpRule(Element *el, const char *regexp_, IdEntry *id, Expr *mark
       "' detect: '" << (detect_ ? detect_ : (const char *) "") <<
       "' accept: '" << (accept_ ? accept_ : (const char *) "") << "'" << std::endl; 
     */
+    /*
     std::cout << id->Name() << std::endl <<
       regexp_ << std::endl <<
       (detect_ ? detect_ : (const char *) "") << std::endl <<
       (accept_ ? accept_ : (const char *) "") << std::endl << 
       "----------------------------------------------------------" << std::endl; 
+    */
   }
 
 const char* Rule::Name() const {
@@ -1197,7 +1199,8 @@ void RuleTerm::OptimizeRuleMatching() {
     if (!minOnlyWords)
       for (i = 0; i < nTags; i++)
 	for (j = 0; j < nTags; j++)
-	  if (minPossibleTagPair[i][j]) AddMatchingCheck(i,j);
+	  if (minPossibleTagPair[i][j])
+	    AddMatchingCheck(i,j);
   }
 }
 

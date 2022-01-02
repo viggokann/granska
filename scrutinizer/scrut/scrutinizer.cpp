@@ -29,6 +29,8 @@ extern "C" {
 #include "defines.h"
 #include "report.h"
 
+#include <regex>
+
 std::ofstream messageStream("messages");
 
 static const int GE_BUF_SIZE = 200;
@@ -104,6 +106,7 @@ bool Scrutinizer::Load(const char *taggerLexDir, const char *ruleFile) {
     ruleFile = getenv("SCRUTINIZER_RULE_FILE");
   if (!ruleFile)
     ruleFile = DEFAULTRULEFILE;
+  haveRegexpRules = false;
   ruleSet = ReadRules(this, ruleFile);
   if (!ruleSet->IsFixed())
     return false;
@@ -184,10 +187,31 @@ const Text *Scrutinizer::ReadTextFromFile(const char *fileName) {
     return ReadTextFromStream(&in);
   }
 }
+
+std::istream * Scrutinizer::CopyInputStream(std::istream *in) {
+  copyOfInputString = "";
+  char buffer[4096];
+  while (in->read(buffer, sizeof(buffer))) {
+    copyOfInputString.append(buffer, sizeof(buffer));
+  }
+  copyOfInputString.append(buffer, in->gcount());
+
+  copyAsStream = std::istringstream(copyOfInputString);
+  return &copyAsStream;
+}
+
 extern bool xReadTaggedText;// jonas, intended for use only for evaluation study 030120 - 030228
 const Text *Scrutinizer::ReadTextFromStream(std::istream *in) {
   if (xTakeTime) timer.Start();
-  SetStream(in);
+
+  if(haveRegexpRules) {
+    std::istream *newStream = CopyInputStream(in);
+    SetStream(newStream);
+  } else {
+    copyOfInputString = "";
+    SetStream(in);
+  }
+
   xTaggedText = false;
   while(nGramErrors > 0)
     delete gramErrors[--nGramErrors];
@@ -217,6 +241,128 @@ void Scrutinizer::Scrutinize(AbstractSentence *s) {
   xCurrSentence = NULL;
 }
 
+// Matches all the RegexpRules (rules that are on regular expression
+// matched to the input text, not rules that have one or more tokens
+// that are matched with regular expressions after tokenization (such
+// rules are handled like normal rules).
+//
+// The RegexpRules require a copy of the original input text to match
+// the expression to, which is normally not available (only the
+// sequence of tokens is available). When ReadRules() detexts
+// RegexpRules, a flag 'haveRegexpRules' is set to indicate that at
+// least one RegexpRule is present, and a copy of the original text is
+// stored in the variable 'copyOfInputString'.
+//
+// The suggestions etc. for the matching are stored in regexpMatches,
+// a member of Scrutinizer.
+//
+// RegexpRules are only allowed to have correction suggestions on the
+// form: corr("[string]"), a string that replaces the matched part of
+// the text. This string can use variables to refer to parts of the
+// match, for example corr("/\1 \2/"), where \1 and \2 refer to
+// subgroups 1 and 2 in the matched text.
+void Scrutinizer::RegexpRuleMatching() {
+  // Loop through the rules, find the RegexpRules
+
+  // Do the regexp search for each rule, apply the corrections
+  
+  regexpMatches.clear();
+  
+  const int nrules = ruleSet->NRules();
+  if (nrules > 0) {
+    const std::string &text = copyOfInputString; // The original input text
+    
+    for(int ri = 0; ri < nrules; ri++) { // for each rule ...
+      Rule *r = ruleSet->GetRule(ri);
+      if(strcmp(r->Type(), "RegExpRule") == 0) { // ... if it is a RegexpRule, see if it matches
+
+	int posOffs = 0;
+      
+	// std::cout << "Rule no " << ri << " is a RegexpRule\n";
+	RegExpRule *rr = static_cast<RegExpRule *>(r);
+	std::regex ex(rr->GetRegexp());
+	std::smatch m;
+
+	std::string s = text;
+
+	while(std::regex_search(s, m, ex)) {
+	  // We have a matching section of text, output suggestions etc.
+
+	  const char *ce = rr->GetCorr();
+	  Expr *ie = rr->GetInfo();
+
+	  if(ce != NULL) {
+	    bool regexpReplace = false;
+	    std::string repl = "";
+	    
+	    if(ce[0] == '/') {
+	      int l = strlen(ce);
+	      if(l > 0 && ce[l - 1] == '/') {
+		// suggestion possibly contains references to subgroups in the match
+		regexpReplace = true;
+
+		std::vector<std::string> groups;
+		bool haveGroups = false;
+
+		for(int ii = 1; ii < l - 1; ii++) {
+		  if(ce[ii] == '\\' && isdigit(ce[ii + 1])) {
+		    unsigned int nn = 0, jj = 0;
+		    for(jj = ii+1; isdigit(ce[jj]); jj++) {
+		      nn = nn*10 + (ce[jj] - '0');
+		    }
+		    ii = jj - 1;
+
+		    if(!haveGroups) {
+		      haveGroups = true;
+
+		      // if he suggestions refer to parts of the regexp, here are the subgroups
+		      for(unsigned int i = 0; i < m.size(); i++) {
+			groups.push_back(m[i]);
+		      }
+		    }
+
+		    if(nn < groups.size()) {
+		      repl += groups[nn];
+		    } else {
+		      repl += "[okänd regexpgrupp]";
+		    }
+		  } else {
+		    repl += ce[ii];
+		  } 
+		}
+	      }
+	    }
+	  
+	    if(!regexpReplace) {
+	      repl = ce;
+	    }
+
+	    RegexResult temp(posOffs + m.position(), posOffs + m.position() + m.length(), repl, ie->c.string, r->Name());
+	    regexpMatches.push_back(temp);
+	    /*
+	    std::cout << "=====================================================\nRegexp Match: "
+	      << rr->GetRegexp() << "\n"
+	      << "from pos " << (posOffs + m.position()) << " to pos " << (posOffs + m.position() + m.length())
+	      << " replace '" << m.str() << "' with '" << repl.c_str() << "'\n"
+	      << " add information '" << ie->c.string << "'\n"
+	      << "\n-------------------------------\n"
+	      << copyOfInputString.substr(0, posOffs + m.position())
+	      << repl.c_str()  
+	      << copyOfInputString.substr(posOffs + m.position() + m.length(), std::string::npos)
+	      << "\n----------------------------------------\n";
+	    */	 
+								 
+	  }
+	      
+          // go to next match	      
+          posOffs = posOffs + m.position() + m.length();
+	  s = m.suffix();
+	}
+      }
+    }
+  }
+}
+
 GramError **Scrutinizer::Scrutinize(int *n) {
   if (nGramErrors > 0) {
     Message(MSG_WARNING, "same text scrutinized twice");
@@ -236,6 +382,12 @@ GramError **Scrutinizer::Scrutinize(int *n) {
   GetMatchingSet().Clear();
   RuleTerm::prepTime = 0;
   Expr::evalTime = 0;
+
+  if(haveRegexpRules) {
+    // regexp rules do not trigger during the normal search, because they have no ruleterms
+    RegexpRuleMatching();
+  }
+  
   for (Sentence *s=theText.FirstSentence(); s; s=s->Next()) {
     Scrutinize(s);
     for (const GramError *g = s->gramError; g; g = g->Next()) {
@@ -273,21 +425,25 @@ void Scrutinizer::CheckAcceptAndDetect() {
       std::cout << "checking " << r->Header() << "..." << std::endl << std::endl;
       if (d) {
 	std::cout << "detect: " << std::endl;
-	// Scrutinize(d);
-	/*	if (!FirstGramError()) {
-		Message(MSG_WARNING, r->Header(), "did not detect");
-		Message(MSG_CONTINUE, d);
-		nMissed++;
-		}*/
+	/*
+	Scrutinize(d);
+	if (!FirstGramError()) {
+	  Message(MSG_WARNING, r->Header(), "did not detect");
+	  Message(MSG_CONTINUE, d);
+	  nMissed++;
+	}
+	*/
       }
       if (a) {
 	std::cout << "accept: " << std::endl;
-	// Scrutinize(a);
-	/*if (FirstGramError()) {
+	/*
+	Scrutinize(a);
+	if (FirstGramError()) {
 	  Message(MSG_WARNING, r->Header(), "detected");
 	  Message(MSG_CONTINUE, a);
 	  nFalse++;
-	  }*/
+	}
+	*/
       }
     } else
       nWithout++;
@@ -300,6 +456,46 @@ void Scrutinizer::CheckAcceptAndDetect() {
     Message(MSG_WARNING, int2str(nFalse), "accept texts were detected");
   Message(MSG_COUNTS, "during accept and detect check");
 }
+
+#ifdef PROBCHECK
+void Scrutinizer::PrintRegexpAlarms() {
+  Prob::Output &o = Prob::output();
+  if(regexpMatches.size() > 0) {
+    o.push("regularExpressions");
+    for(unsigned int i = 0; i < regexpMatches.size(); i++) {
+      RegexResult m = regexpMatches[i];
+      o.push("regexMatch");
+      o.attr("markBeg", m.startpos);
+      o.attr("markEnd", m.endpos);
+      o.add("rule", m.ruleName);
+      o.add("info", m.info);
+      o.add("mark", copyOfInputString.substr(m.startpos, m.endpos - m.startpos));
+      o.add("sugg", m.replacement);
+      o.pop();
+    }
+    o.pop();
+  }
+}
+#else
+void Scrutinizer::PrintRegexpAlarms(std::ostream &out) {
+  if(regexpMatches.size() > 0) {
+    out << "<regularExpressions>\n";
+    for(unsigned int i = 0; i < regexpMatches.size(); i++) {
+      RegexResult m = regexpMatches[i];
+      out << "<regexMatch";
+      out << " \"markBeg\"=" << m.startpos;
+      out << " \"markEnd\"=" << m.endpos;
+      out << ">\n";
+      out << "<rule>" << m.ruleName << "</rule>\n";
+      out << "<info>" << m.info << "</info>\n";
+      out << "<mark>" << copyOfInputString.substr(m.startpos, m.endpos - m.startpos) << "</mark>\n";
+      out << "<sugg>" << m.replacement << "</sugg>\n";
+      out << "</regexMatch>\n";
+    }
+    out << "</regularExpressions>\n";
+  }
+}
+#endif
 
 void Scrutinizer::PrintResult(std::ostream &out) {
   if (xPrintMatchings || xPrintOptimization || !xPrintGramErrors) return;
@@ -549,6 +745,11 @@ void Scrutinizer::PrintResult(std::ostream &out) {
 
     o.pop();  // push("sentence");
   }
+
+  if(haveRegexpRules) {
+    PrintRegexpAlarms();
+  }
+  
   o.pop();  // push("scrutinizer");
 
   Prob::print(this);
@@ -586,6 +787,7 @@ void Scrutinizer::PrintResult(std::ostream &out) {
 	if(g->IsError())
 	  out << g << xEndl;
     }
+  PrintRegexpAlarms(out);
 #endif
 
 }

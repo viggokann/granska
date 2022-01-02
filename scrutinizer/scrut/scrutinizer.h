@@ -24,6 +24,8 @@
 #include "prob.h"
 #include <map>
 
+#include <vector>
+
 class RuleSet;
 class Output;
 
@@ -67,6 +69,8 @@ public:
   void Scrutinize(AbstractSentence*);
   void CheckAcceptAndDetect();
   MatchingSet &GetMatchingSet() const { return RuleTerm::GetMatchingSet(); }
+
+  bool haveRegexpRules = false;
   
 private:
   void Scrutinize(char*);
@@ -77,7 +81,30 @@ private:
   int nGramErrors;
   int gramErrorBufSize;
   DecObj();
-};
+
+  std::istream *CopyInputStream(std::istream *in);
+  std::string copyOfInputString;
+  std::istringstream copyAsStream;
+  void RegexpRuleMatching();
+
+  struct RegexResult {
+    int startpos;
+    int endpos;
+    std::string replacement;
+    std::string info;
+    std::string ruleName;
+
+  RegexResult(int s, int e, std::string r, std::string i, std::string rn) : startpos(s), endpos(e), replacement(r), info(i), ruleName(rn) {}
+  RegexResult(const RegexResult &r) : startpos(r.startpos), endpos(r.endpos), replacement(r.replacement), info(r.info), ruleName(r.ruleName) {}
+    ~RegexResult() {}
+  };
+  std::vector<RegexResult> regexpMatches;
+#ifdef PROBCHECK
+  void PrintRegexpAlarms();
+#else
+  void PrintRegexpAlarms(std::ostream &out);
+#endif
+  };
 
 void PrintCorrForPos(Scrutinizer &scrutinizer);
 // use to test GramError functionality

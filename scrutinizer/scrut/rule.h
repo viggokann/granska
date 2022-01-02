@@ -312,6 +312,17 @@ public:
 	     const char *detect_, const char *accept_, RuleTerm *rt);
   int ComputeScope();
   const char *Type() const { return "RegExpRule"; }
+  const char *GetRegexp() { return regexp; }
+
+  Element *GetElement(int n) const { return element; }
+  GotoEntry *GetJump() const { return jump; }
+  const char *GetCorr() const { return corr; }
+  Expr *GetMark() const { return mark; }
+  Expr *GetInfo() const { return info; }
+  Expr *GetAction() const { return action; }
+  const char *GetDetect() const { return detect; }
+  const char *GetAccept() const { return accept; }
+  
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Rule &r) {

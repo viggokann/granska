@@ -5,6 +5,9 @@
  * comments:
  */
 
+#include "re.h"
+#include <vector>
+
 static bool evalEverything = 0; /* Eval will not shortcircuit anything if =1 */
 
 Matching *Expr::matching = NULL;
@@ -100,9 +103,64 @@ void Expr::CorrectionEval(union value val) const {
       for (i=1; i<ct->NStrings(); i++)
 	ct->ds[i] = m->DuplicateAltSentences();
       for (i=0; i<ct->NStrings(); i++) {
-	for (DynamicSentence *d = ct->ds[i]; d; d=d->Next())
-	  if (!d->Replace(ct->GetWord(i), ct->String(i), pos))
-	    Message(MSG_WARNING, "CorrctionEval(), replace failed");
+
+	// if the replacement string looks like "/.../" we dig out the
+	// original text and the original regular expression, then
+	// look for references on the form "\1" etc. in the
+	// replacement string and match these to the regular
+	// expression matching subgroups to build a correction string
+	const char *temp = ct->String(i);
+	bool regexReplace = 0;
+	if(temp[0] == '/') {
+	  int l = strlen(temp);
+	  if(temp[l - 1] == '/') {
+	    if(m->GetElementMatching(0).GetElement()->expr->type == Expr::Operation
+	       && m->GetElementMatching(0).GetElement()->expr->c.op.Right()->semtype == Regexp) {
+	      
+	      regexReplace = 1;	      
+	      
+	      std::string repl = "";
+	      std::vector<std::string> groups;
+	      bool haveGroups = false;
+	      
+	      for(int ii = 1; ii < l - 1; ii++) {
+
+		if(temp[ii] == '\\' && isdigit(temp[ii + 1])) {
+		  unsigned int nn = 0, jj = 0;
+		  for(jj = ii+1; isdigit(temp[jj]); jj++) {
+		    nn = nn*10 + (temp[jj] - '0');
+		  }
+		  ii = jj - 1;
+
+		  if(!haveGroups) {
+		    const char *orgStr = ct->GetWordToken()->RealString();
+		    const char *reStr = (m->GetElementMatching(0).GetElement()->expr->c.op.Right()->c).regexp.regexp;
+		    haveGroups = true;
+		    groups = regexGroups(orgStr, reStr);
+		  }
+
+		  if(nn < groups.size()) {
+		    repl += groups[nn];
+		  } else {
+		    repl += "[okänd regexpgrupp]";
+		  }
+		} else {
+		  repl += temp[ii];
+		}
+	      }
+	    
+	      for (DynamicSentence *d = ct->ds[i]; d; d=d->Next())
+		if (!d->Replace(ct->GetWord(i), repl.c_str(), pos))
+		  Message(MSG_WARNING, "CorrctionEval(), replace failed");
+	    }
+	  }
+	}
+	
+	if(!regexReplace) {
+	  for (DynamicSentence *d = ct->ds[i]; d; d=d->Next())
+	    if (!d->Replace(ct->GetWord(i), ct->String(i), pos))
+	      Message(MSG_WARNING, "CorrctionEval(), replace failed");
+	}
       }
       for (i=1; i<ct->NStrings(); i++)
 	m->AddAltSentences(ct->ds[i]);

@@ -16,6 +16,7 @@ extern "C" {
 #include <string.h>
 #include "libstava.h"
 }
+#include "re.h"
 #include "scrutinizer.h"
 #include "rules.h"
 #include "ruleset.h"
@@ -34,10 +35,10 @@ static int yyerror(const char *s);           /* automatically called error repor
 
 /* Definierade i regexps.cc: */
 /* CompileRegexpHelp compiles valregexp */
-char *CompileRegexpHelp(const char *valregexp);
+/* char *CompileRegexpHelp(const char *valregexp); */
 
 /* RegexpCheckHelp checks if regular expression in valcompiled matches s */
-int RegexpCheckHelp(const char *s, const char *valcompiled);
+/* int RegexpCheckHelp(const char *s, const char *valcompiled); */
 
 /* exprUse tells in which context expr is used */
 static enum exprusetype {InConst, InLHS, InMark, InCorr, InJump, InInfo, 
@@ -99,10 +100,30 @@ StringBuf evalStringBuf;
 
 /* CompileRegexp compiles the regexp in val.string */
 
-
+/*
 static int CompileRegexp(union value&) { return 0; }
 static bool RegexpCheck(const char*, union value, enum semantictype) {
   return false; }
+*/
+
+
+/* currently only checks if the text is a valid regular expression */
+ static int CompileRegexp(union value &exp) {
+   if(isValidRegex(exp.string)) {
+     struct CompiledRegexp re;
+     re.regexp = exp.string;
+     exp.regexp = re;
+     return true;
+   }
+   return false;
+ }
+
+/* returns true if the regex matches some part of the string 
+ TODO: should the whole string match instead?
+*/
+static bool RegexpCheck(const char *leftVal, union value rightVal, enum semantictype st) {
+  return regexMatch(leftVal, rightVal.string);
+}
 
 
 %}
@@ -205,6 +226,7 @@ rule	: maybename '{' altrules '}' {
 	      ParseError("Corr-instruktionen i en teckenmatchningsregel måste vara en textsträng");
 	      corr = NULL;
 	    }
+	    scrutinizer->haveRegexpRules = true;
 	    ruleSet.Add(new RegExpRule(NewElements(tempElements, 1), $4,
 				       $1, r->GetMark(), 
 				       corr ? corr->c.string : NULL,

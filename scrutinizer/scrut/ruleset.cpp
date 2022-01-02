@@ -48,7 +48,13 @@ Rule *RuleSet::Add(Rule *r) {
   } else {
     if (nActiveRules > MAX_RULES - MAX_HELP_RULES)
       Message(MSG_ERROR, "too many non-help rules, increase MAX_RULES and recompile");
-    activeRules[nActiveRules++] = r;
+
+    if(strcmp(r->Type(), "RegExpRule") == 0) {
+      // RegexpRules are handled differently since they work on the
+      // raw text, not on tokens
+    } else {
+      activeRules[nActiveRules++] = r;
+    }
   }
   rules[nRules] = r;
   r->number = nRules;

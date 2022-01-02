@@ -62,7 +62,8 @@ inline std::ostream& operator<<(std::ostream& os, const CorrThing *s) {
 
 
 struct CompiledRegexp { /* semantic record for compiled regexp */
-  char *regexp, *compiled;
+  //  char *regexp, *compiled;
+  const char *regexp;
 };
 
 struct ActualMethod { /* semantic record for method or function call */
