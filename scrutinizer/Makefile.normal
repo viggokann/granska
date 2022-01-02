@@ -94,7 +94,7 @@ TAGGER_FLAGS = -DPROB_DOUBLE # jonas, I get lots of prob = 0 (smaller than float
 SCRUT_OBJ = $(SD)/rules.tab.o $(SD)/element.o $(SD)/expr.o\
   $(SD)/gramerror.o $(SD)/identry.o $(SD)/matching.o\
   $(SD)/matchingset.o $(SD)/operation.o $(SD)/rule.o $(SD)/ruleset.o\
-  $(SD)/rulesettings.o $(SD)/scrutinizer.o
+  $(SD)/rulesettings.o $(SD)/scrutinizer.o $(SD)/re.o
 SCRUT_FLAGS = $(DEFAULTFILES) -DMESSAGES -DTIMER #-DDEVELOPER_OUTPUT #Developer_output use for parser version of granska
 
 PROBCHECK_OBJ = $(PD)/annot.o $(PD)/output.o\
