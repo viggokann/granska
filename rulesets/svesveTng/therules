@@ -72,6 +72,50 @@ info("Upprepad ordsekvens")
 action(scrutinizing)
 }
 
+(* ----- Konstig blandning av små och stora bokstäver ----- *)
+
+sma_och_stora@stil {
+X(is_many_cap & !is_hyphen & real_text != "SvD")
+-->
+corr(X.replace(tolower(X.real_text)))
+info(italics(X.real_text) "blandar små och stora bokstäver, vilket är ovanligt.")
+action(scrutinizing)
+}
+
+(* ----- Diverse reguljära uttryck ----- *)
+
+regexComma@stil {
+/"([a-zA-ZåäöÅÄÖ][a-zA-ZåäöÅÄÖ]*),([a-zA-ZåäöÅÄÖ]*[a-zA-ZåäöÅÄÖ])"/
+-->
+corr("/\1, \2/")
+info("Texten matchar reguljärt uttryck. Mellanslag saknas efter kommatecken.")
+accept("En mening, med korrekta kommatecken.")
+detect("En mening,med konstiga kommatecken.")
+action(scrutinizing)
+}
+
+regexValueUnit@stil {
+X(real_text ~ "/([0-9][0-9]*)((kr)|(km)|m|(dm)|(cm)|(mm)|l|(dl)|(cl)|(ml)|(kg)|(hg)|(krm)|(tsk)|(msk)|(tim)|(min)|(sek)|(år))/")
+-->
+mark(X)
+corr(X.replace("/\1 \2/"))
+info("Texten matchar reguljärt uttryck. Saknat mellanslag mellan mätvärde och enhet.")
+accept("3 msk med soja är rätt.")
+detect("3msk med soja blev fel.")
+action(scrutinizing)
+}
+
+regexSpaces@stil {
+/"[ ][ ][ ][ ]*"/
+-->
+corr(" ")
+info("Texten matchar reguljärt uttryck. Flera mellanslag i rad.")
+accept("En mening med normala mellanslag.")
+detect("En mening med   flera mellanslag.")
+action(scrutinizing)
+}
+
+
 (* ----- STAVNING ----- *)
 
 category stavning {
@@ -5957,7 +6001,7 @@ X3(wordcl=kn),
 (NP/X4)()
 -->
 corr(X4.insert(X1.text))
-corr(X2.insert(X0.real_text) X0.delete())
+corr(X2.insert(X0.text) X0.delete())
 info("Felaktigt prepositionsbruk")
 action(scrutinizing)
 detect("Detta erbjuds inte vare sig i Lund eller Malmö.")
