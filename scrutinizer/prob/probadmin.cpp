@@ -328,17 +328,20 @@ namespace Prob
     void load(const TagLexicon &l)
    {
 #ifdef DEVELOPER_OUTPUT
+     // Originally, this printed to std::cout, but we should either
+     // print XML correctly, or not print to cout. Currently changed
+     // the output to std::cerr
 	for(int j = 0; j < config().model_c; j++)
 	{
-	    std::cout << "model[" << j << "]: " << model_name(config().model[j])
+	    std::cerr << "model[" << j << "]: " << model_name(config().model[j])
 		      << " (" << config().model[j] << "), factor "
 		      << config().thresh[j] << std::endl;
 	}
-	std::cout << "decision_type = " << config().decision << std::endl;
-	std::cout << "function g = " << config().g_no << std::endl;
-	std::cout << "coeff g = " << config().g_coeff << std::endl;
-	std::cout << "function h = " << config().h_no << std::endl;
-	std::cout << "coeff h = " << config().h_coeff << std::endl;
+	std::cerr << "decision_type = " << config().decision << std::endl;
+	std::cerr << "function g = " << config().g_no << std::endl;
+	std::cerr << "coeff g = " << config().g_coeff << std::endl;
+	std::cerr << "function h = " << config().h_no << std::endl;
+	std::cerr << "coeff h = " << config().h_coeff << std::endl;
 #endif // DEVELOPER_OUTPUT
     
 	for(int k = 0; k < l.Size(); k++)

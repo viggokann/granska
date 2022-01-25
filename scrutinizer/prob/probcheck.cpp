@@ -132,10 +132,11 @@ Prob::prob_check(const Scrutinizer          *scrutinizer,
             info.tags[i]  = info.tokens[i]->SelectedTag();
     // no print here,             force->add("w", Misc::fixXML(info.words[i]));
     // no print here,             force->attr("no", i);
-            if(info.tokens[i]->Offset())
-                out->attr("ref", info.tokens[i]->Offset() - sentence_offset);
+
+            // if(info.tokens[i]->Offset()) // do we need this line? remove for now
+	    //   out->attr("ref", info.tokens[i]->Offset() - sentence_offset); // do we need this line? remove for now
 #ifdef DEVELOPER_OUTPUT
-            out->attr("tag", info.tags[i]->String());
+            // out->attr("tag", info.tags[i]->String()); // do we need this line? remove for now
 #else  // DEVELOPER_OUTPUT
     // no print here,             force->attr("tag", info.tags[i]->Index());
 #endif // DEVELOPER_OUTPUT
