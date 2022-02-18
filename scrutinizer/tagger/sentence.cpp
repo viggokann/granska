@@ -259,13 +259,52 @@ void DynamicSentence::Insert(int pos, Word *w, const char *string) {
   nWords++;
 }
 
+bool strcmpIgnoreWhitespace(const char *a, const char *b) {
+  int ia = 0;
+  int ib = 0;
+  
+  while(a[ia] && b[ib]) {
+    // read past all whitespace
+    while(a[ia] && IsSpace(a[ia])) {
+      ia++;
+    }
+    while(b[ib] && IsSpace(b[ib])) {
+      ib++;
+    }
+    
+    if(a[ia] && b[ib] && a[ia] == b[ib]) {
+      // if the next char is the same, move one char ahead
+      ia++;
+      ib++;
+    } else if(!a[ia] && !b[ib]) {
+      // if all chars have been read, strings are equal
+      return 0;
+    } else {
+      // not equal
+      return 1;
+    }
+  }
+  // strip any trailing space
+  while(a[ia] && IsSpace(a[ia])) {
+    ia++;
+  }
+  while(b[ib] && IsSpace(b[ib])) {
+    ib++;
+  }
+  if(!a[ia] && !b[ib]) {
+    return 0;
+  }
+  return 1;
+}
+
 bool AbstractSentence::IsEqual(const AbstractSentence *s) const {
   if (NTokens() != s->NTokens())
     return false;
-  for (int i=2; i<nTokens-2; i++)
-    if (/*GetWord(i) != s->GetWord(i) ||*/ // jonas: if the surface form is equal, treat as equal 
-	strcmp(GetWordToken(i)->RealString(), s->GetWordToken(i)->RealString()))
+  for (int i=2; i<nTokens-2; i++) {
+    if (/*GetWord(i) != s->GetWord(i) ||*/ // jonas: if the surface form is equal, treat as equal
+	strcmpIgnoreWhitespace(GetWordToken(i)->RealString(), s->GetWordToken(i)->RealString()))
       return false;
+  }
   return true;
 }
 
