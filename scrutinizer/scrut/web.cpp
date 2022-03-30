@@ -20,6 +20,8 @@ extern "C" {
 }
 #include <sys/stat.h>
 
+#include <limits>
+
 static Scrutinizer *xScrutinizer = NULL;
 static const char *xRuleSet = NULL;
 static const char *granskaHome = "";
@@ -232,8 +234,14 @@ static void userRules(Socket &socket, bool useGranskaRules, char *newRuleFile) {
     socket >> buf; // fel:.getline(buf, 5, ' ');
     if (!strcmp(buf, "TEXT")) {
       socket.get();
-      socket.getline(text, MAX_TEXT_LEN-1);
+      socket.getline(text, MAX_TEXT_LEN);
 
+      if (socket.gcount() == MAX_TEXT_LEN-1 && strlen(text) == MAX_TEXT_LEN-1) {
+	// The input was too large, so there are characters left on the line
+	socket.clear();
+	socket.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      }
+      
       if(looksLikeUTF(text)) {
 	utf2latin1(text);
       }
@@ -568,7 +576,7 @@ void ScrutinizeURLWithRules(Socket &socket, const char *URL, const char *newRule
 static bool Loop(ServerSocket *server) {
   if(doLogging)
     MaybeSwitchLogStream();
-  char text[MAX_TEXT_LEN] = "";
+  char text[MAX_TEXT_LEN + 1] = "";
   char newRuleFile[MAX_RULEFILE_NAME_LEN];
   char url[MAX_URL_LEN] = "";
   char inflect_text[MAX_INFLECT_TEXT_LEN] = "";
