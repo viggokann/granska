@@ -8,7 +8,9 @@
 #include "scrutinizer.h"
 #include "matchingset.h"
 #include "ruleset.h"
-	
+
+#include <signal.h>
+
 bool xAnalyze = false;
 bool xReadTaggedText = false; // jonas, intended for use only for evaluation study 030120 - 030228
 
@@ -231,6 +233,8 @@ static int WebScrut(int argc, char **argv, char** orgArgv, int orgArgc) {
 #endif // WEB_SCRUTINIZER
 
 int main(int argc, char **argv) {
+  // ignore SIGPIPE, do not kill the server process if the client closes the socket early
+  ::signal(SIGPIPE, SIG_IGN); 
 #ifdef PROBCHECK
     using Prob::config;
 #endif // PROBCHECK

@@ -179,7 +179,7 @@ int Socket::overflow (int ch) {
   /* -- Loop until the entire buffer is sent                                -- */
   while (buf_len) {
     send_len = ::send (socket_, (char *)(pbase () + next_send), buf_len, 0);
-    if (send_len < -1) {
+    if (send_len <= -1) {
       std::cerr << "Error while writing to socket" << std::endl;
       return EOF;
     }
