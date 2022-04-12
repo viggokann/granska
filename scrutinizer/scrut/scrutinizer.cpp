@@ -204,6 +204,9 @@ extern bool xReadTaggedText;// jonas, intended for use only for evaluation study
 const Text *Scrutinizer::ReadTextFromStream(std::istream *in) {
   if (xTakeTime) timer.Start();
 
+  theOriginalText.str("");
+  theOriginalText.clear();
+  
   if(haveRegexpRules) {
     std::istream *newStream = CopyInputStream(in);
     SetStream(newStream);
@@ -917,7 +920,10 @@ char* Scrutinizer::GetResult() {
 
   std::string str = o.getCharP(); // This closes the output, so we need to do all the printing before this / Jonas
 
-  theOriginalText.str(std::string());
+  // theOriginalText.str(std::string());
+  theOriginalText.str("");
+  theOriginalText.clear();
+  
   ruleCount.clear();
 #else
   std::string str = ""; // Is this OK? At least this compiles... /Jonas
