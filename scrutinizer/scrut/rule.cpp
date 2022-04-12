@@ -1795,11 +1795,11 @@ bool RuleTerm::SaveMatchingOptimization(FILE *fp) {
 	    WriteShort(fp, a);
       if (k != n) {
 	Message(MSG_WARNING, "couldn't save, internal error 2");
-	delete nMatchCheck; return false;
+	delete[] nMatchCheck; return false;
       }
       WriteShort(fp, ruletermN);
     }
-  delete nMatchCheck;
+  delete[] nMatchCheck;
   WriteInt(fp, -1);
   
   const int wordsN = scrutinizer->Words().Cw();
@@ -1835,12 +1835,12 @@ bool RuleTerm::ReadMatchingOptimization(FILE *fp) {
     nMatchCheck[i] = ReadInt(fp);
   if (ReadInt(fp) != -1) {
     Message(MSG_WARNING, "error 2");
-    delete nMatchCheck; return false;
+    delete[] nMatchCheck; return false;
   }
   const int nsum = ReadInt(fp);
   if (nsum <= 0) {
     Message(MSG_WARNING, "error 3");
-    delete nMatchCheck; return false;
+    delete[] nMatchCheck; return false;
   }
   RuleTerm **p = new RuleTerm *[nsum];
   int pi = 0;
@@ -1849,7 +1849,7 @@ bool RuleTerm::ReadMatchingOptimization(FILE *fp) {
       const int n = ReadShort(fp);
       if (n < 0) {
 	Message(MSG_WARNING, "error 4");
-	delete nMatchCheck; return false;
+	delete[] nMatchCheck; return false;
       }
       matchingCheckN[i][j] = n;
       matchingCheckAllocatedN[i][j] = 0;
@@ -1857,7 +1857,7 @@ bool RuleTerm::ReadMatchingOptimization(FILE *fp) {
       pi += n;
       if (pi > nsum) {
 	Message(MSG_WARNING, "error 4b");
-	delete nMatchCheck; return false;
+	delete[] nMatchCheck; return false;
       }
       int k = 0, b = ReadShort(fp);
       for (int a=0; a<ruletermN; a++) {
@@ -1872,10 +1872,10 @@ bool RuleTerm::ReadMatchingOptimization(FILE *fp) {
       }
       if (b != ruletermN || k != n) {
 	Message(MSG_WARNING, "error 5");
-	delete nMatchCheck; return false;
+	delete[] nMatchCheck; return false;
       }
     }  
-  delete nMatchCheck;
+  delete[] nMatchCheck;
   if (ReadInt(fp) != -1) {
     Message(MSG_WARNING, "error 6"); return false;
   }  
