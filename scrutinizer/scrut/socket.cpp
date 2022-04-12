@@ -118,9 +118,9 @@ bool Socket::CreateSocket (const char *addr, const ushort port) {
 
 bool Socket::InitBuf (int size) {
   if (gbuf != NULL) 
-    delete gbuf;
+    delete[] gbuf;
   if (pbuf != NULL) 
-    delete pbuf;
+    delete[] pbuf;
   gbuf = new char[size]; // new OK
   pbuf = new char[size]; // new OK
   if (!gbuf || !pbuf) {
@@ -197,8 +197,8 @@ int Socket::overflow (int ch) {
 
 Socket::~Socket() {
   this->sync ();
-  if (gbuf) delete gbuf;
-  if (pbuf) delete pbuf;
+  if (gbuf) delete[] gbuf;
+  if (pbuf) delete[] pbuf;
   if (socket_ >= 0) {
     shutdown(socket_, 2);
     close(socket_);
