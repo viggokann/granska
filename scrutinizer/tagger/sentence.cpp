@@ -181,7 +181,7 @@ DynamicSentence::~DynamicSentence() {
   for (int i=1; i<nTokens-1; i++)
     if (tokens[i]->inserted)
       delete tokens[i];
-  delete tokens;
+  delete[] tokens;
   delete[] actualTokens;
   tokens = NULL;
 }
