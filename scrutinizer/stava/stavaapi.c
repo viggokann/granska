@@ -1660,7 +1660,7 @@ static INLINE int Finns(const unsigned char *word, int len)
   case 1: 
     return 1;
   }
-  if (xSammansatta) {
+  if (xSammansatta && len >= STARTDELORDMIN + SLUTDELORDMIN) {
     IsCompound(word, &cdatarec, len);
     if (cdatarec.noofcompounds > 0) {
       if (xxDebug) {
