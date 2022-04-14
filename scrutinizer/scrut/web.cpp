@@ -558,7 +558,8 @@ void ScrutinizeURLWithRules(Socket &socket, const char *URL, const char *newRule
 
   FILE *lynx_pipe = popen(command_buf.str().c_str(), "r");
   fread(text, MAX_TEXT_LEN, 1, lynx_pipe);
-
+  pclose(lynx_pipe);
+  
   if(looksLikeUTF(text)) {
     utf2latin1(text);
   }
@@ -582,6 +583,7 @@ static bool Loop(ServerSocket *server) {
   char inflect_text[MAX_INFLECT_TEXT_LEN] = "";
   //StatusCode status = SCRUT_NOT_YET_DETERMINED;
   Socket socket;
+
   if (server) {
     if (!GetWebTask(server, socket, text, url, inflect_text, newRuleFile))
       return true;
@@ -647,7 +649,8 @@ static bool Loop(ServerSocket *server) {
 
       FILE *lynx_pipe = popen(command_buf.str().c_str(), "r");
       fread(text, MAX_TEXT_LEN, 1, lynx_pipe);
-
+      pclose(lynx_pipe);
+      
       if(looksLikeUTF(text)) {
 	utf2latin1(text);
       }
@@ -775,7 +778,7 @@ int WebScrutinize(Scrutinizer *scrut, int argc, char **argv, char **orgArgv, int
 #ifdef PROBCHECK    // jb: added probcheck support 2003-02-21
     Prob::load(xScrutinizer->Tags());
 #endif // PROBCHECK
-    server = new ServerSocket(webPort);
+    server = new ServerSocket(webPort); // delete is never called, but this function never returns, so maybe ok?
     if (!server || !server->IsOK()) {
       // porten antagligen upptagen, hitta på ett annat portnummer:
       std::cerr << xRuleSet << ": cannot create ServerSocket for port " << webPort << std::endl;
