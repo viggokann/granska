@@ -125,8 +125,11 @@ static void userRules(Socket &socket, bool useGranskaRules, char *newRuleFile) {
     socket.getline(extrarules + offset, MAX_RULE_LEN-1-offset);
 
     offset = strlen(extrarules);
-    extrarules[offset] = '\n';
-    offset++;
+    if(offset < MAX_RULE_LEN - 1) {
+      extrarules[offset] = '\n';
+      extrarules[offset+1] = 0;
+      offset++;
+    }
 
     char *res = strstr(extrarules, "ENDOFRULES");
     if(res != NULL) {
