@@ -43,6 +43,7 @@ public:
   bool Save() const;
   Tag* FindTag(const char *s) const { Tag t(s); return Find(t); }
   float Pt3_t1t2(const Tag* t1, const Tag* t2, const Tag* t3) const;
+#ifdef LOW_MEMORY
   static float Pt3_t1t2(uchar t1, uchar t2, uchar t3) {   // P(t3 | t1, t2)
     if (ttOff[t1][t2] >= 0) {
       TagTrigram *t = ttt + ttOff[t1][t2];
@@ -54,10 +55,20 @@ public:
     //    TagTrigram *t = tagTrigrams.Find(TagTrigram(t1, t2, t3));
     //    return t ? t->pf.prob : bigramProbs[t2][t3];
   }
+#else
+  static float Pt3_t1t2(uchar t1, uchar t2, uchar t3) {   // P(t3 | t1, t2)
+    if (ttOff[t1][t2][t3] >= 0) {
+      TagTrigram *t = ttt + ttOff[t1][t2][t3];
+      return t->pf.prob;
+    }
+    return bigramProbs[t2][t3];
+  }
+#endif
   float Pt1t2(uchar t1, uchar t2) const {               // P(t1, t2) = P(t1)*P(t2 | t1)
     ensure(bigramFreqs);
     return Element(t1).UniProb() * bigramFreqs[t1][t2] / Element(t1).Frq();
   }
+#ifdef LOW_MEMORY
   static int ttt_freq(uchar t1, uchar t2, uchar t3) {
     if (ttOff[t1][t2] >= 0) {
       TagTrigram *t = ttt + ttOff[t1][t2];
@@ -67,6 +78,15 @@ public:
     }
     return 0; //bigramFreqs[t2][t3];
   }
+#else
+  static int ttt_freq(uchar t1, uchar t2, uchar t3) {
+    if (ttOff[t1][t2][t3] >= 0) {
+      TagTrigram *t = ttt + ttOff[t1][t2][t3];
+      return t->pf.freq;
+    }
+    return 0;
+  }
+#endif
   int tt_freq(uchar t1, uchar t2) const
   {
       return bigramFreqs[t1][t2];
@@ -108,7 +128,11 @@ private:
   int **bigramFreqs;
   //  HashArray<TagTrigram> tagTrigrams;
   static TagTrigram *ttt;
+#ifdef LOW_MEMORY
   static int ttOff[MAX_TAGS][MAX_TAGS];
+#else
+  static int ttOff[MAX_TAGS][MAX_TAGS][MAX_TAGS];
+#endif
   static int CT, CTT, CTTT, CWT;
   Tag *specialTags[MAX_TAGS];
   int specialTagIndices[MAX_TAGS];

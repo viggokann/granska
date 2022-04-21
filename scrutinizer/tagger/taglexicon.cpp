@@ -44,7 +44,11 @@ DefObj(TagTrigram);
 
 int TagLexicon::CT = 0, TagLexicon::CTT = 0, TagLexicon::CTTT = 0, TagLexicon::CWT = 0;
 float TagLexicon::bigramProbs[MAX_TAGS][MAX_TAGS];
+#ifdef LOW_MEMORY
 int TagLexicon::ttOff[MAX_TAGS][MAX_TAGS];
+#else
+int TagLexicon::ttOff[MAX_TAGS][MAX_TAGS][MAX_TAGS];
+#endif
 TagTrigram *TagLexicon::ttt;
 
 TagLexicon::~TagLexicon() {
@@ -134,7 +138,11 @@ bool TagLexicon::Save() const {
   Store(out);
   //  tagTrigrams.Store(out);
   WriteData(out, (char*) ttt, sizeof(TagTrigram)*(CTTT+1), "tagtrigrams");
+#ifdef LOW_MEMORY
   WriteData(out, (char*) ttOff, sizeof(int)*MAX_TAGS*MAX_TAGS, "ttoffset");
+#else
+  WriteData(out, (char*) ttOff, sizeof(int)*MAX_TAGS*MAX_TAGS*MAX_TAGS, "ttoffset");
+#endif
   WriteVar(out, nFeatures);
   WriteVar(out, nFeatureClasses);
   WriteData(out, (char*) features, sizeof(FeatureValue)*(nFeatures+1), "features");
@@ -167,7 +175,11 @@ bool TagLexicon::LoadFast(const char* dir, bool warn) {
   Load(in);
   //  tagTrigrams.Load(in);
   ReadData(in, (char*) ttt, sizeof(TagTrigram)*(CTTT+1), "tagtrigrams");
+#ifdef LOW_MEMORY
   ReadData(in, (char*) ttOff, sizeof(int)*MAX_TAGS*MAX_TAGS, "ttoffset");
+#else
+  ReadData(in, (char*) ttOff, sizeof(int)*MAX_TAGS*MAX_TAGS*MAX_TAGS, "ttoffset");
+#endif
   //  ComputeProbs();
   ReadVar(in, nFeatures);
   ReadVar(in, nFeatureClasses);
@@ -529,6 +541,7 @@ void TagLexicon::LoadTagTrigrams() {
   ensure(i = CTTT);
   ttt[CTTT].tag1 = ttt[CTTT].tag2 = ttt[CTTT].tag3 = CT;
   qsort((char*)ttt, CTTT, sizeof(TagTrigram), TagTriComp);
+#ifdef LOW_MEMORY
   int a1 = -1, a2 = -1;
   for (i=0; i<CT; i++)
     for (int j=0; j<CT; j++)
@@ -540,6 +553,15 @@ void TagLexicon::LoadTagTrigrams() {
     if (c) ttOff[a1][a2] = i;
   }
   //  tagTrigrams.Hashify();
+#else
+  for (i=0; i<CT; i++)
+    for (int j=0; j<CT; j++)
+      for (int k=0; k<CT; k++)
+	ttOff[i][j][k] = -1;
+  for (i=0; i<CTTT; i++) {
+    ttOff[ttt[i].tag1][ttt[i].tag2][ttt[i].tag3] = i;
+  }
+#endif  
 }
 
 void TagLexicon::PrintStatistics() const {
