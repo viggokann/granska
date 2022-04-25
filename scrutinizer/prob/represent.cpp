@@ -41,6 +41,8 @@ namespace Prob
 	for(j = 0; j < MAX_TAGS; j++)
 	    count_left[j] = count_right[j] = count_global[j] = BIG_NUM;
 
+	Config &cfg = config();
+	
 	if(output)
 	{
 	    std::cout << std::endl;
@@ -126,7 +128,7 @@ namespace Prob
 	for(j = 0; j < MAX_TAGS; j++)
 	{
 	    double val = 0;
-	    if(config().use_context == 4)		// jb: output to pos_context.4
+	    if(cfg.use_context == 4)		// jb: output to pos_context.4
 	    {
 		val += count_left[j];
 		val += count_right[j];
@@ -186,8 +188,10 @@ namespace Prob
 	int    nonzero_count = 0;
 	double max_weighted = 0;
 
+	Config &cfg = config();
+	
 	// bigram baseline
-	if(config().h_no == 5)
+	if(cfg.h_no == 5)
 	    return l.tt_freq(t[1], t[2]);
   #if 0
 	// jb: performance much improved for higher thresholds (i.e. >= 10)
@@ -199,11 +203,11 @@ namespace Prob
 	int (*best)[BEST_COUNT] = 0;
   #ifdef TRY_CONTEXT_REPRESENTATIVES
 	int get_best[MAX_TAGS][BEST_COUNT];
-	if(config().use_context != 0)
+	if(cfg.use_context != 0)
 	{
 	    // jb: wow! this one was ugly! (output at first use)
 	    static void *p = &(std::cout << "using context info "
-					 << config().use_context << std::endl);
+					 << cfg.use_context << std::endl);
 
 
 	    // left and right context
@@ -253,11 +257,11 @@ namespace Prob
 		    double weight = prob1 * repr_fact[i1] *
 				    prob2 * repr_fact[i2] *
 				    prob3 * repr_fact[i3];
-		    if(config().h_no == 4)
+		    if(cfg.h_no == 4)
 		    {
-			if(i1 + 1 > config().h_coeff ||
-			   i2 + 1 > config().h_coeff ||
-			   i3 + 1 > config().h_coeff)
+			if(i1 + 1 > cfg.h_coeff ||
+			   i2 + 1 > cfg.h_coeff ||
+			   i3 + 1 > cfg.h_coeff)
 			   weight = 0;
 		    }
 
@@ -293,7 +297,7 @@ namespace Prob
 
 	// choose weight schema
 	{
-	    switch(config().h_no)
+	    switch(cfg.h_no)
 	    {
 	    case 0: break;
 	    case 1: res /= nonzero_count; break;
