@@ -581,7 +581,7 @@ static bool Loop(ServerSocket *server) {
   if(doLogging)
     MaybeSwitchLogStream();
   char text[MAX_TEXT_LEN + 1] = "";
-  char newRuleFile[MAX_RULEFILE_NAME_LEN];
+  char newRuleFile[MAX_RULEFILE_NAME_LEN] = "";
   char url[MAX_URL_LEN] = "";
   char inflect_text[MAX_INFLECT_TEXT_LEN] = "";
   //StatusCode status = SCRUT_NOT_YET_DETERMINED;
