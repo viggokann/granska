@@ -264,14 +264,16 @@ static void userRules(Socket &socket, bool useGranskaRules, char *newRuleFile) {
 
       userRules(socket, false, newRuleFile);
       
-    } else if (!strcmp(buf, "ENDQ"))
+    } else if (!strcmp(buf, "ENDQ")) {
       break;
-    else if (!strcmp(buf, "CRSH")) {
+#ifdef DEVELOPEROPTIONS 
+    } else if (!strcmp(buf, "CRSH")) {
       std::cerr << xRuleSet << ": got order to crash, exiting...\n";
       exit(1);
     } else if (!strcmp(buf, "LOOP")) {
       std::cerr << xRuleSet << ": got order to loop eternally, looping...\n";
       for (;;);
+#endif
     } else if (!strcmp(buf, "XML")) {
       /*
       std::cerr << xRuleSet << ": got order to send xml-data...\n";
