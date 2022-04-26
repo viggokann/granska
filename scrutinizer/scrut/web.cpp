@@ -255,7 +255,29 @@ static void userRules(Socket &socket, bool useGranskaRules, char *newRuleFile) {
     } else if (!strcmp(buf, "INFLECT")) {
       socket.get();
       socket.getline(inflect_text, MAX_INFLECT_TEXT_LEN-1);
-      
+      inflect_text[MAX_INFLECT_TEXT_LEN-1] = '\0';
+      int l = strlen(inflect_text);
+      int first = -1;
+      for(int i = 0; i < l; i++) {
+	if(inflect_text[i] == ' ' || inflect_text[i] == '\n') {
+	  if(first >= 0) {
+	    inflect_text[i] = '\0';
+	    break;
+	  }
+	} else {
+	  if(first < 0) {
+	    first = i;
+	  }
+	}
+      }
+      if(first > 0) {
+	for(int i = 0; i + first < MAX_INFLECT_TEXT_LEN; i++) {
+	  inflect_text[i] = inflect_text[i+first];
+	  if(inflect_text[i + first] == '\0') {
+	    break;
+	  }
+	}
+      }
     } else if(!strcmp(buf, "EXTRARULES")) { // use Granska standard rules and these extra rules
 
       userRules(socket, true, newRuleFile);
@@ -601,7 +623,7 @@ static bool Loop(ServerSocket *server) {
     LogInput(text, url);
   } else
     GetTerminalTask(text, url);
-  if (*text && !strcmp(text, "exit4711")) {
+  if (*text && !strncmp(text, "exit4711", 8)) {
     std::cerr << xRuleSet << ": got exit4711, terminating...\n";
     return false;
   }
@@ -783,7 +805,7 @@ int WebScrutinize(Scrutinizer *scrut, int argc, char **argv, char **orgArgv, int
 #ifdef PROBCHECK    // jb: added probcheck support 2003-02-21
     Prob::load(xScrutinizer->Tags());
 #endif // PROBCHECK
-    server = new ServerSocket(webPort); // delete is never called, but this function never returns, so maybe ok?
+    server = new ServerSocket(webPort);
     if (!server || !server->IsOK()) {
       // porten antagligen upptagen, hitta på ett annat portnummer:
       std::cerr << xRuleSet << ": cannot create ServerSocket for port " << webPort << std::endl;
@@ -798,6 +820,12 @@ int WebScrutinize(Scrutinizer *scrut, int argc, char **argv, char **orgArgv, int
 
   // ta emot texter och svara:
   while(Loop(server));
+
+  if(server) {
+    delete server;
+    server = NULL;
+  }
+  
   return 0;
 }
 
