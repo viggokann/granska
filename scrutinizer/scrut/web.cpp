@@ -614,7 +614,8 @@ static bool Loop(ServerSocket *server) {
   if (server) {
     if (!GetWebTask(server, socket, text, url, inflect_text, newRuleFile))
       return true;
-    if (!strcmp(text, "areuup4711")) {
+
+    if (!strncmp(text, "areuup4711", 10)) {
       std::cerr << xRuleSet << ": got areuup, replying...\n";
       socket << "STAT " << SCRUT_UP_CHECK << std::endl
 	     << "REPL yesiamup" << std::endl;
